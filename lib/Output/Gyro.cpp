@@ -47,13 +47,16 @@ void Gyro::get_cord() {
     // BNO055から加速度データを取得（単位：m/s^2）
     for (int i = 0; i < 2; i++) {
         float dt = (millis() - old_cordtime) / 1000.0; // 秒単位に変換
-        dt2 += dt;
         
         sensors_event_t event;
         sensors_event_t euler_event;
         
         bno.getEvent(&event, Adafruit_BNO055::VECTOR_LINEARACCEL);
         float a[3] = {event.acceleration.x, event.acceleration.y, event.acceleration.z };
+        Serial.print(">Accel_x:");
+        Serial.println(a[0]);
+        Serial.print(">Accel_y:");
+        Serial.println(a[1]);
 
         bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
         yaw_rad = radians(euler_event.orientation.x + yawtweak); // Yawをラジアンに変換
@@ -87,25 +90,14 @@ void Gyro::get_cord() {
         old_accel_x = highpassvalue_x;
         old_accel_y = highpassvalue_y;
         
+        states[0] += speed_x * dt;
+        states[1] += speed_y * dt;
         old_cordtime = millis();
     }
 
-    // 座標更新（修正）
-    states[0] += speed_x / 2 * dt2;
-    states[1] += speed_y / 2 * dt2;
     world_x = states[0] * cos(-yaw_rad) - states[1] * sin(-yaw_rad);
     world_y = states[0] * sin(-yaw_rad) + states[1] * cos(-yaw_rad);
 
-    // 速度リセット
-    speed_x = 0;
-    speed_y = 0;
-
-    // デバッグ出力
-    Serial.print("PosX");
-    Serial.print(states[0]);
-    Serial.print("   ");
-    Serial.print("PosY");
-    Serial.println(states[1]);
 }
 
 void Gyro::restart() { //瞬間的にモードを変えることで初期化

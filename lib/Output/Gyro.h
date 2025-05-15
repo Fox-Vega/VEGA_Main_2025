@@ -23,9 +23,8 @@ class Gyro {
 
     private:
         //調整用
-        const float dt = 0.1;
-        const float accel_noise = 0.1f;
-        const float collision_border = 15.0f;
+        const float accel_noise = 0.2f;
+        const float collision_border = 10.0f;
         const float alpha = 0.98;
         const float filterCoefficient = 0.98; //高くするとジャイロの優先度も高くなる（高速な動きに強い）
         
