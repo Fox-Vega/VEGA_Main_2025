@@ -24,7 +24,7 @@ class Gyro {
     private:
         //調整用
         const float accel_noise = 0.2f;
-        const float collision_border = 10.0f;
+        const float collision_border = 8.0f;
         const float alpha = 0.98;
         const float filterCoefficient = 0.98; //高くするとジャイロの優先度も高くなる（高速な動きに強い）
         
@@ -32,12 +32,16 @@ class Gyro {
         int world_x;
         int world_y;
         int yawtweak;
-        float dt2;
+        int z_count;
+        int accel_PoMi[2] = {99, 99};
+        int PoMi[2] = {1, 1}; //1は1~、0は~-1、10は0
+        int first_PoMi[2] = {1, 1};
+        bool moving[2] = {false, false};
+        float difcord_x;
+        float difcord_y;
         float yaw_rad;
         float speed_x;
         float speed_y;
-        float old_speed_x;
-        float old_speed_y;
         float old_accel_x;
         float old_accel_y;
         float old_cordtime;
