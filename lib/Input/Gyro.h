@@ -23,19 +23,19 @@ class Gyro {
 
     private:
         //調整用
-        const float accel_noise = 0.2f;
+        const float accel_noise = 0.15f;
+        const float adaptive_noise = 0.02f;
         const float collision_border = 8.0f;
-        
+
         int azimuth;
         // int world_x;
         // int world_y;
         int yawtweak;
-        int zero_count_x;
-        int zero_count_y;
+        int zero_count;
         int j;
         int PoMi[2] = {1, 1}; //1は1~、0は~-1、10は0
-        // int first_PoMi[2] = {1, 1}; //TODO 後で消す
-        int first_PoMi[4] = {10, 10, 10, 10};
+        int first_PoMi[2] = {10, 10};
+        bool move[2] = {false, false};
         float difcord_x;
         float difcord_y;
         float yaw_rad;
