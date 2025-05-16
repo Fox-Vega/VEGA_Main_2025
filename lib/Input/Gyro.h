@@ -25,36 +25,26 @@ class Gyro {
         //調整用
         const float accel_noise = 0.2f;
         const float collision_border = 8.0f;
-        const float alpha = 0.98;
-        const float filterCoefficient = 0.98; //高くするとジャイロの優先度も高くなる（高速な動きに強い）
         
         int azimuth;
-        int world_x;
-        int world_y;
+        // int world_x;
+        // int world_y;
         int yawtweak;
-        int z_count;
-        int accel_PoMi[2] = {99, 99};
+        int zero_count_x;
+        int zero_count_y;
+        int j;
         int PoMi[2] = {1, 1}; //1は1~、0は~-1、10は0
-        int first_PoMi[2] = {1, 1};
-        bool moving[2] = {false, false};
+        // int first_PoMi[2] = {1, 1}; //TODO 後で消す
+        int first_PoMi[4] = {10, 10, 10, 10};
         float difcord_x;
         float difcord_y;
         float yaw_rad;
         float speed_x;
         float speed_y;
-        float old_accel_x;
-        float old_accel_y;
         float old_cordtime;
-        float old_azimuthtime;
-        float lowpassvalue_x;
-        float lowpassvalue_y;
-        float highpassvalue_x;
-        float highpassvalue_y;
         float accel_bias[3] = {0.0, 0.0, 0.0};
-        unsigned long lastupdate;
         Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
         //自己位置推定用
         float states[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 
-        int pos[3];
 };

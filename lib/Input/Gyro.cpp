@@ -41,58 +41,78 @@ void Gyro::get_cord() {
     float a[3] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1], event.acceleration.z - accel_bias[2]};
     int azimuth = gyro.get_azimuth();
 
-    for (int i = 0; i < 2; i++) {
-        if (fabs(a[i]) < accel_noise) { //ノイズを除外
-            a[i] = 0;
-        }
-        if (a[i] > 0.0f) {
-            moving[i] = true;
-        } else {
-            moving[i] = false;
-        }
-        if (a[i] > 0) {
-            if (first_PoMi[i] == 10) {
-                first_PoMi[i] = 1;
-            }
-            PoMi[i] = 1;
-        } else if (a[i] == 0) {
-            first_PoMi[i] = 10;
-            PoMi[i] = 10;
-        } else {
-            if (first_PoMi[i] == 10) {
-                first_PoMi[i] = 0;
-            }
-            PoMi[i] = 0;
-        }
-        if (first_PoMi[i] != PoMi[i]) {
-            a[i] = 0;
-        }
-    }
-    Serial.print(">PoMi_x:");
-    Serial.println(first_PoMi[0]);
-    Serial.print(">PoMi_y:");
-    Serial.println(first_PoMi[1]);
     Serial.print(">Accel_x:");
     Serial.println(a[0]);
     Serial.print(">Accel_y:");
     Serial.println(a[1]);
+
+    first_PoMi[1] = first_PoMi[0];
+    first_PoMi[2] = first_PoMi[1];
+    first_PoMi[4] = first_PoMi[3];
+    first_PoMi[5] = first_PoMi[4];
+
+    for (int i = 0; i < 2; i++) {
+        if (i = 0) {
+            j = 0;
+        } else {
+            j = 2;
+        }
+        if (fabs(a[i]) < accel_noise) { //ノイズを除外
+            a[i] = 0;
+        }
+        if (a[i] > 0) {
+            if (first_PoMi[j] == 10) {
+                first_PoMi[j] = 1;
+            }
+            PoMi[i] = 1;
+        } else if (a[i] == 0) {
+            first_PoMi[i + j] = 10;
+            PoMi[i] = 10;
+        } else {
+            if (first_PoMi[j] == 10) {
+                first_PoMi[j] = 0;
+            }
+            PoMi[i] = 0;
+        }
+        if (first_PoMi[j] != PoMi[i]) {
+            a[i] = 0;
+        }
+    }
     Serial.print(">Azimuth:");
     Serial.println(azimuth);
+    Serial.print(">PoMi_x:");
+    Serial.println(first_PoMi[1]);
+    Serial.print(">PoMi_y:");
+    Serial.println(first_PoMi[3]);
 
 
-    if (a[0] == 0.0f && a[1] == 0.0f) { //停止検知
-        z_count += 1;
+    if (a[0] == 0.0f) { //停止検知
+        zero_count_x += 1;
     } else {
-        z_count = 0;
+        zero_count_x = 0;
     }
-    if (z_count >= 3) {
+    if (zero_count_x >= 3) {
         speed_x = 0;
         speed_y = 0;
         a[0] = 0;
         a[1] = 0;
     }
-    Serial.print(">Zero:");
-    Serial.println(z_count);
+    if (a[1] == 0.0f) { //停止検知
+        zero_count_y += 1;
+    } else {
+        zero_count_y = 0;
+    }
+    if (zero_count_y >= 3) {
+        speed_x = 0;
+        speed_y = 0;
+        a[0] = 0;
+        a[1] = 0;
+    }
+
+    Serial.print(">Zero Count_x:");
+    Serial.println(zero_count_x);
+    Serial.print(">Zero Count_y:");
+    Serial.println(zero_count_y);
 
     if (fabs(a[0]) > collision_border || fabs(a[1]) > collision_border) { //衝突時の加速度を無効化
         a[0] = a[1] = a[2] = 0.0;
