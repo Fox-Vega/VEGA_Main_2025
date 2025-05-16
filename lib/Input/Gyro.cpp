@@ -14,8 +14,8 @@ void Gyro::setup() {
     while (millis() < 5000) {
         sensors_event_t event;
         bno.getEvent(&event, Adafruit_BNO055::VECTOR_LINEARACCEL);  
-        float a[3] = { event.acceleration.x, event.acceleration.y, event.acceleration.z };
-        for (int i = 0; i < 3; i++) {
+        float a[2] = { event.acceleration.x, event.acceleration.y};
+        for (int i = 0; i < 2; i++) {
             accel_bias[i] = (accel_bias[i] + a[i]) * 0.5; //平均値を計算
         }
     }
@@ -41,15 +41,8 @@ void Gyro::get_cord() {
     float a[3] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1], event.acceleration.z - accel_bias[2]};
     int azimuth = gyro.get_azimuth();
 
-    Serial.print(">Accel_x:");
-    Serial.println(a[0]);
-    Serial.print(">Accel_y:");
-    Serial.println(a[1]);
-
     first_PoMi[1] = first_PoMi[0];
-    first_PoMi[2] = first_PoMi[1];
-    first_PoMi[4] = first_PoMi[3];
-    first_PoMi[5] = first_PoMi[4];
+    first_PoMi[3] = first_PoMi[2];
 
     for (int i = 0; i < 2; i++) {
         if (i = 0) {
@@ -78,13 +71,17 @@ void Gyro::get_cord() {
             a[i] = 0;
         }
     }
+
+    Serial.print(">Accel_x:");
+    Serial.println(a[0]);
+    Serial.print(">Accel_y:");
+    Serial.println(a[1]);
     Serial.print(">Azimuth:");
     Serial.println(azimuth);
     Serial.print(">PoMi_x:");
     Serial.println(first_PoMi[1]);
     Serial.print(">PoMi_y:");
     Serial.println(first_PoMi[3]);
-
 
     if (a[0] == 0.0f) { //停止検知
         zero_count_x += 1;
