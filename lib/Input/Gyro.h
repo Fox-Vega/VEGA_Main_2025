@@ -5,6 +5,8 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
+#include "Input.h"
+#include "Output.h"
 
 class Gyro {
     public:
@@ -23,10 +25,10 @@ class Gyro {
 
     private:
         //調整用
-        const float accel_noise = 0.25f;
-        const float adaptive_noise = 0.02f;
-        const float collision_border = 8.0f;
-        const float movement_border = 0.4f;
+        const float accel_noise = 0.25f; //動いていないと判断した際に使用するフィルタ（加速度センサーのノイズ除去）
+        const float adaptive_noise = 0.02f; //動いていると判断した際に使用するフィルタ
+        const float collision_border = 4.0f; //衝突判定ボーダー
+        const float movement_border = 0.4f; //動作判定ボーダー
 
         int azimuth;
         // int world_x;
@@ -37,7 +39,9 @@ class Gyro {
         int PoMi[2] = {1, 1}; //1は1~、0は~-1、10は0
         int first_PoMi[2] = {10, 10};
         bool move[2] = {false, false};
-        float old_a[2];
+        bool collision;
+        bool moving;
+        float old_accel_data[2];
         float difcord_x;
         float difcord_y;
         float yaw_rad;

@@ -41,13 +41,24 @@ void MyPIXEL::multis(int PIXELNUMstart, int PIXELNUMend, int red, int green, int
     }
 }
 
-void MyPIXEL::closest(int azimuth, int red, int green, int blue) {
+void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
     if (usePIXEL == true) {
-        int ClosestPIXEL = NUMPIXEL + (azimuth / 360.0 * NUMPIXEL);
+        int ClosestPIXEL = (azimuth / 360 * NUMPIXEL);
         if (ClosestPIXEL >= 16) {
             ClosestPIXEL = 0;
         }
-        mypixel.uni(ClosestPIXEL, red, green, blue);
+        if (num != 1) {
+            int PIXELNUMstart = ClosestPIXEL - ((num - 1) / 2);
+        } else {
+            int PIXELNUMstart = ClosestPIXEL;
+        }
+        for (int i = 0; i < num; i++) {
+            int j = PIXELNUMstart + i;
+            if (j >= NUMPIXEL) {
+                j -= 16;
+            }
+            mypixel.uni(j, red, green, blue);
+        }
     }
 }
 
@@ -64,11 +75,15 @@ void MyBUZZER::setup() {
 }
 
 void MyBUZZER::start(int BUZZERnote, int BUZZERduration) {
-    int NoteDuration = 1000 / BUZZERduration;
-    tone(BUZZER_PIN, BUZZERnote, NoteDuration);
-    delay(BUZZERduration * 1.4);
-    noTone(BUZZER_PIN);
-    delay(100);
+    if (BUZZERduration != 999) {
+        int NoteDuration = 1000 / BUZZERduration;
+        tone(BUZZER_PIN, BUZZERnote, NoteDuration);
+        delay(BUZZERduration * 1.3);
+        noTone(BUZZER_PIN);
+        delay(10);
+    } else {
+        tone(BUZZER_PIN, BUZZERnote);
+    }
 }
 
 void MyBUZZER::preset(int BUZZERpresetNUM) {
