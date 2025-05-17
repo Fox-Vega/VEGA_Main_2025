@@ -43,7 +43,12 @@ void MyPIXEL::multis(int PIXELNUMstart, int PIXELNUMend, int red, int green, int
 
 void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
     if (usePIXEL == true) {
-        int ClosestPIXEL = (azimuth / 360 * NUMPIXEL);
+        float ClosestPIXEL = (azimuth / 360 * NUMPIXEL);
+        if ((ClosestPIXEL - (int)ClosestPIXEL) > 0.5) {
+            ClosestPIXEL = (int)ClosestPIXEL + 1;
+        } else {
+            ClosestPIXEL = (int)ClosestPIXEL;
+        }
         if (ClosestPIXEL >= 16) {
             ClosestPIXEL = 0;
         }
