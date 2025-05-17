@@ -49,28 +49,6 @@ void Gyro::get_cord() {
     Serial.print(">Accel_y:");
     Serial.println(a[1]);
 
-    for (int i = 0; i < 2; i++) {
-        if (a[i] > 0.2f) { //（静止　・　＋方向に移動中　・　ー方向に移動中）　を記録
-            if (first_PoMi[i] == 10) {
-                first_PoMi[i] = 1;
-            }
-            PoMi[i] = 1;
-        } else if (a[i] < -0.2f) {
-            if (first_PoMi[i] == 10) {
-                first_PoMi[i] = 0;
-            }
-            PoMi[i] = 0;
-        } else {
-            if (zero_count > 1){
-                first_PoMi[i] = 10;
-                PoMi[i] = 10;
-            }
-        } //初めに動きを記録した向きと現在の動きが異なる場合は現在の動きをキャンセル（減速時の加速度を無効化）
-        if (first_PoMi[i] != PoMi[i]) {
-            a[i] = 0;
-        }
-    }
-
     for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
         if (i == 0) {
             j = 1;
@@ -87,13 +65,46 @@ void Gyro::get_cord() {
             }
         }
     }
+    
+    for (int i = 0; i < 2; i++) {
+        float dif_a = fabs(old_a[i] - a[i]);
+        if (a[i] > 0.2f) { //（静止　・　＋方向に移動中　・　ー方向に移動中）　を記録
+            if (dif_a > movement_border) {
+                if (first_PoMi[i] == 10) {
+                    first_PoMi[i] = 1;
+                }
+                PoMi[i] = 1;
+            } else {
+                first_PoMi[i] = 10;
+                PoMi[i] = 10;
+            }
+        } else if (a[i] < -0.2f) {
+            if (dif_a > movement_border) {
+                if (first_PoMi[i] == 10) {
+                    first_PoMi[i] = 0;
+                }
+                PoMi[i] = 0;
+            } else {
+                first_PoMi[i] = 10;
+                PoMi[i] = 10;
+            }
+        } else {
+            if (dif_a < movement_border) {
+                first_PoMi[i] = 10;
+                PoMi[i] = 10;
+            }
+        } //初めに動きを記録した向きと現在の動きが異なる場合は現在の動きをキャンセル（減速時の加速度を無効化）
+        if (first_PoMi[i] != PoMi[i]) {
+            a[i] = 0;
+        }
+    }
 
-    if (a[0] == 0.0f || a[1] == 0.0f) { //静止検知数を記録・静止時処理
+    if (a[0] == 0.0f && a[1] == 0.0f) { //静止検知数を記録・静止時処理
         zero_count += 1;
     } else {
         zero_count = 0;
     }
-    if (zero_count >= 3) {
+    if (zero_count >= 2) {
         speed_x = 0;
         speed_y = 0;
         a[0] = 0;
@@ -116,6 +127,8 @@ void Gyro::get_cord() {
     // world_y = states[0] * sin(yaw_rad) + states[1] * cos(yaw_rad);
 
     old_cordtime = millis();
+    old_a[0] = a[0];
+    old_a[1] = a[1];
 
     //TelePlot用
     Serial.print(">Azimuth:");
