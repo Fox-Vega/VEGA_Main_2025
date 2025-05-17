@@ -1,6 +1,14 @@
-#include "Gyro.h"
+#include "GAM.h"
+#include "Input.h"
+#include "Output.h"
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+#include <utility/imumaths.h>
 
-void Gyro::setup() {
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
+
+void GAM::setup() {
     mypixel.multi(1, 16, 225, 0, 0);
     Wire.begin();
     if (!bno.begin()) {
@@ -22,14 +30,14 @@ void Gyro::setup() {
     mypixel.clear();
 }
 
-int Gyro::get_azimuth() {
+int GAM::get_azimuth() {
     sensors_event_t euler_event;
     bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
 
     return (int)(euler_event.orientation.x);
 }
 
-void Gyro::get_cord() {
+void GAM::get_cord() {
     //BNO055から加速度データを取得（単位：m/s^2）
     float dt = (millis() - old_cordtime) / 1000.0; //秒単位に変換
 
@@ -62,6 +70,7 @@ void Gyro::get_cord() {
     //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
     for (int i = 0; i < 2; i++) { 
         if((fabs(old_accel_data[i] - accel_data[i])) > movement_border) {
+            ten_count = 0;
             zero_count = 0;
             if (accel_data[i] > 0.2f) { //+方向に動いている時の処理
                 if (first_PoMi[i] == 10) { //直前まで静止していたら初回動作検知方向に現在の方向を記録
@@ -75,8 +84,11 @@ void Gyro::get_cord() {
                 PoMi[i] = 0;
             }
         } else {
-            first_PoMi[i] = 10;
-            PoMi[i] = 10;
+            ten_count += 1;
+            if (ten_count >= 2) {
+                first_PoMi[i] = 10;
+                PoMi[i] = 10;
+            }
             if (zero_count <= 2) {
                 zero_count += 1;
             } else {
@@ -115,7 +127,7 @@ void Gyro::get_cord() {
     difcord_y = accel_data[1] * dt * 100;
 
     Serial.print(">Azimuth:");
-    Serial.println(gyro.get_azimuth());
+    Serial.println(gam.get_azimuth());
     Serial.print(">PoMi_x:");
     Serial.println(first_PoMi[0]);
     Serial.print(">PoMi_y:");
@@ -132,7 +144,7 @@ void Gyro::get_cord() {
     Serial.print(moving);
 }
 
-void Gyro::restart() { //瞬間的にモードを変えることで初期化
+void GAM::restart() { //瞬間的にモードを変えることで初期化
     bno.setMode(OPERATION_MODE_CONFIG);
     delay(25);
     bno.setMode(OPERATION_MODE_AMG);
@@ -147,13 +159,13 @@ void Gyro::restart() { //瞬間的にモードを変えることで初期化
     }
 }
 
-void Gyro::dir_reset() {
-    yawtweak = gyro.get_azimuth();
+void GAM::dir_reset() {
+    yawtweak = gam.get_azimuth();
 }
-int Gyro::get_x() {
+int GAM::get_x() {
     return states[0];
 }
 
-int Gyro::get_y() {
+int GAM::get_y() {
     return states[1];
 }

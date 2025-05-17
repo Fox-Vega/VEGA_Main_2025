@@ -8,9 +8,9 @@ void setup() {
 }
 
 void loop() {
-  gyro.get_cord();
+  gam.get_cord();
   Serial.print(">pos_x:");
-  Serial.println(gyro.get_x());
+  Serial.println(gam.get_x());
   Serial.print(">pos_y:");
-  Serial.println(gyro.get_y());
+  Serial.println(gam.get_y());
 }

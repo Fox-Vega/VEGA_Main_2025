@@ -53,9 +53,9 @@ void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
             ClosestPIXEL = 0;
         }
         if (num != 1) {
-            int PIXELNUMstart = ClosestPIXEL - ((num - 1) / 2);
+            PIXELNUMstart = ClosestPIXEL - ((num - 1) / 2);
         } else {
-            int PIXELNUMstart = ClosestPIXEL;
+            PIXELNUMstart = ClosestPIXEL;
         }
         for (int i = 0; i < num; i++) {
             int j = PIXELNUMstart + i;

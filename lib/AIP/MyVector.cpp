@@ -18,8 +18,8 @@ void MyVECTOR::get_cord(int azimuth, int magnitude) {
 }
 
 void MyVECTOR::get_plpocord(int po_x, int po_y) {
-    int pl_x = gyro.get_x();
-    int pl_y = gyro.get_y();
+    int pl_x = gam.get_x();
+    int pl_y = gam.get_y();
 
     //差の絶対値を取得
     plpo_x = abs(po_x - pl_x);
@@ -34,8 +34,8 @@ void MyVECTOR::get_plpocord(int po_x, int po_y) {
 }
 
 void MyVECTOR::get_tarcord(int tar_azimuth, int tar_magnitude) {
-    int pl_x = gyro.get_x();
-    int pl_y = gyro.get_y();
+    int pl_x = gam.get_x();
+    int pl_y = gam.get_y();
 
     myvector.get_cord(tar_azimuth, tar_magnitude);
     tarcord_x = (int)myvector.get_x() + pl_x;
@@ -43,8 +43,8 @@ void MyVECTOR::get_tarcord(int tar_azimuth, int tar_magnitude) {
 }
 
 void MyVECTOR::get_svec(int tar_azimuth, int tar_magnitude) {
-    cord_x = gyro.get_x();
-    cord_y = gyro.get_y();
+    cord_x = gam.get_x();
+    cord_y = gam.get_y();
     myvector.get_tarcord(tar_azimuth, tar_magnitude);
     tarcord_x = myvector.get_tar_x();
     tarcord_y = myvector.get_tar_y();

@@ -1,14 +1,8 @@
 #pragma once
 
 #include <Arduino.h>
-#include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
-#include <utility/imumaths.h>
-#include "Input.h"
-#include "Output.h"
 
-class Gyro {
+class GAM { //いろいろエラーが出てたから弄った結果、GAMクラス誕生☆　Gyro,Accelometer,Magneticをテキトーにもじりました
     public:
         void setup(); //初期設定
         int get_azimuth(); //方位角取得（ドリフト対策無）
@@ -35,6 +29,7 @@ class Gyro {
         // int world_y;
         int yawtweak;
         int zero_count;
+        int ten_count;
         int j;
         int PoMi[2] = {1, 1}; //1は1~、0は~-1、10は0
         int first_PoMi[2] = {10, 10};
@@ -49,7 +44,6 @@ class Gyro {
         float speed_y;
         float old_cordtime;
         float accel_bias[3] = {0.0, 0.0, 0.0};
-        Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
         //自己位置推定用
         float states[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; 

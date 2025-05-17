@@ -42,7 +42,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
 }
 
 int MyMOTOR::difix(int setpoint) {
-    double error = setpoint - gyro.get_azimuth();
+    double error = setpoint - gam.get_azimuth();
     integral += error;
     derivative = error - prev_error;
     prev_error = error;

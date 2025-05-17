@@ -5,7 +5,7 @@
 
 void General::setup() {
     ball.setup();
-    gyro.setup();
+    gam.setup();
     // line.setup();
     mymotor.setup();
     mypixel.setup();
@@ -55,7 +55,7 @@ int General::startup() {
                         startcord += 1;
                     }
                     mypixel.clear();
-                    gyro.cord_custom(startcords_x[startcord], startcords_y[startcord]);
+                    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mypixel.unis(startPIXELs[startcord], 255, 0, 0);
                     mybuzzer.start(300, 4);
                     delay(100);
@@ -72,13 +72,13 @@ int General::startup() {
                     mybuzzer.start(100, 4);
                     break;
                 } else if (switch_pressed == 2) {
-                    gyro.dir_reset();
+                    gam.dir_reset();
                     mybuzzer.start(200, 2);
                     delay(100);
                     mybuzzer.start(100, 4);
                     break;
                 } else if (switch_pressed == 3) {
-                    gyro.cord_custom(startcords_x[startcord], startcords_y[startcord]);
+                    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mybuzzer.start(300, 4);
                     delay(100);
                     mybuzzer.start(300, 4);

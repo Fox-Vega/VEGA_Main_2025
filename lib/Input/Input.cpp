@@ -2,5 +2,5 @@
 
 // LINE line;
 BALL ball;
-Gyro gyro;
+GAM gam;
 MySWITCH myswitch;
