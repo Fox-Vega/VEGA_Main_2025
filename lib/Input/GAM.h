@@ -19,17 +19,17 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
 
     private:
         //調整用
-        const float accel_noise = 0.25f; //動いていないと判断した際に使用するフィルタ（加速度センサーのノイズ除去）
+        const float accel_noise = 0.3f; //動いていないと判断した際に使用するフィルタ（加速度センサーのノイズ除去）
         const float adaptive_noise = 0.02f; //動いていると判断した際に使用するフィルタ
-        const float collision_border = 4.0f; //衝突判定ボーダー
-        const float movement_border = 0.4f; //動作判定ボーダー
+        const float movement_border = 0.3f; //動作判定ボーダー　accel_noiseよりは高い値を使用すること
+        const float stop_border = 0.02f; //完全静止判定ボーダー
 
         int azimuth;
         // int world_x;
         // int world_y;
         int yawtweak;
-        int zero_count;
-        int ten_count;
+        int zero_count[2];
+        int ten_count; //値を10にするかを決めるやつ
         int j;
         int PoMi[2] = {1, 1}; //1は1~、0は~-1、10は0
         int first_PoMi[2] = {10, 10};

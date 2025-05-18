@@ -45,10 +45,11 @@ void GAM::get_cord() {
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_LINEARACCEL);
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
 
-    Serial.print(">Accel_x:");
-    Serial.println(accel_data[0]);
-    Serial.print(">Accel_y:");
-    Serial.println(accel_data[1]);
+    //TODO
+    // Serial.print(">Accel_x:");
+    // Serial.println(accel_data[0]);
+    // Serial.print(">Accel_y:");
+    // Serial.println(accel_data[1]);
 
     for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
         if (i == 0) {
@@ -69,36 +70,39 @@ void GAM::get_cord() {
 
     //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
     for (int i = 0; i < 2; i++) { 
-        if((fabs(old_accel_data[i] - accel_data[i])) > movement_border) {
-            ten_count = 0;
-            zero_count = 0;
-            if (accel_data[i] > 0.2f) { //+方向に動いている時の処理
-                if (first_PoMi[i] == 10) { //直前まで静止していたら初回動作検知方向に現在の方向を記録
-                    first_PoMi[i] = 1;
-                }
-                PoMi[i] = 1;
-            } else if (accel_data[i] < -0.2f) { //-方向に動いている時の処理
-                if (first_PoMi[i] == 10) {
-                    first_PoMi[i] = 0;
-                }
-                PoMi[i] = 0;
-            }
-        } else {
+        float accel_dif = old_accel_data[i] - accel_data[i];
+        if(fabs(accel_dif) < movement_border) {
             ten_count += 1;
-            if (ten_count >= 2) {
+            if (ten_count >= 3) {
                 first_PoMi[i] = 10;
                 PoMi[i] = 10;
             }
-            if (zero_count <= 2) {
-                zero_count += 1;
-            } else {
-                speed_x = 0;
-                speed_y = 0;
-                accel_data[0] = 0;
-                accel_data[1] = 0;
+            if (accel_dif < stop_border) {
+                if (zero_count[i] <= 3) {
+                    zero_count[i] += 1;
+                } else {
+                    speed_x = 0;
+                    speed_y = 0;
+                    accel_data[0] = 0;
+                    accel_data[1] = 0;
+                }
             }
+        } else if(accel_data[i] > 0) {
+            zero_count[i] = 0;
+            ten_count = 0;
+            if (first_PoMi[i] == 10) { //直前まで静止していたら初回動作検知方向に現在の方向を記録
+                first_PoMi[i] = 1;
+            }
+            PoMi[i] = 1;
+        } else { //-方向に動いている時の処理
+            zero_count[i] = 0;
+            ten_count = 0;
+            if (first_PoMi[i] == 10) {
+                first_PoMi[i] = 0;
+            }
+            PoMi[i] = 0;
         }
-
+        delay(5);
         if (first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は現在の動きをキャンセル（減速時の加速度を無効化）
             accel_data[i] = 0;
         }
@@ -126,22 +130,32 @@ void GAM::get_cord() {
     difcord_x = accel_data[0] * dt * 100;
     difcord_y = accel_data[1] * dt * 100;
 
-    Serial.print(">Azimuth:");
-    Serial.println(gam.get_azimuth());
-    Serial.print(">PoMi_x:");
-    Serial.println(first_PoMi[0]);
-    Serial.print(">PoMi_y:");
-    Serial.println(first_PoMi[1]);
-    Serial.print(">Zero Count:");
-    Serial.println(zero_count);
+    Serial.print(">pos_x:");
+    Serial.println(states[0]);
+    Serial.print(">pos_y:");
+    Serial.println(states[1]);
+    // Serial.print(">Azimuth:");
+    // Serial.println(gam.get_azimuth());
+    // Serial.print(">firstPoMi_x:");
+    // Serial.println(first_PoMi[0]);
+    // Serial.print(">firstPoMi_y:");
+    // Serial.println(first_PoMi[1]);
+    // Serial.print(">PoMi_x:");
+    // Serial.println(PoMi[0]);
+    // Serial.print(">PoMi_y:");
+    // Serial.println(PoMi[1]);
+    // Serial.print(">Zero Count_x:");
+    // Serial.println(zero_count[0]);
+    // Serial.print(">Zero Count_y:");
+    // Serial.println(zero_count[1]);
     Serial.print(">Speed_x:");
     Serial.println(speed_x);
     Serial.print(">Speed_y:");
     Serial.println(speed_y);
-    Serial.print(">DT:");
-    Serial.println(dt);
-    Serial.print(">Moving:");
-    Serial.print(moving);
+    // Serial.print(">DT:");
+    // Serial.println(dt);
+    // Serial.print(">Moving:");
+    // Serial.print(moving);
 }
 
 void GAM::restart() { //瞬間的にモードを変えることで初期化
