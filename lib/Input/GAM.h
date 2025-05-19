@@ -20,7 +20,7 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         const float accel_noise = 0.12f; //動いていないと判断した際に使用するフィルタ（加速度センサーのノイズ除去）
         const float movement_border = 0.15f; //動作判定ボーダー　accel_noiseよりは高い値を使用してください
         const float adaptive_noise = 0.02f; //動いていると判断した際に使用するフィルタ
-        const float accel_tweaker = 1.0f; //この値が大きければ大きいほど、小さい値が増幅される
+        const float accel_tweaker = 0.4f; //この値が大きければ大きいほど、小さい値が増幅される
         const float filterCoefficient = 0.95; //速度の平滑度合い　1に近いほど強い
         const float reset_border = 3; //0が何回続いたらリセットするか
         const float accel_offset_x = 1.1;

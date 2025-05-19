@@ -60,10 +60,14 @@ void GAM::get_cord() {
                 accel_data[i] = 0;
             }
         }
-        if ((oold_accel_data[i] - accel_data[i]) == 0) {
+        if (oold_accel_data[i] == accel_data[i]) {
             accel_data[i] = 0;
-            if (accel_data[i] > old_accel_data[i]) {
+            if (accel_data[i] > 0) {
+                accel_bias[i] -= (accel_data[i] / 2);
+            } else if (accel_data[i] < 0) {
                 accel_bias[i] += (accel_data[i] / 2);
+            } else if (old_accel_data[i] > 0) {
+                accel_bias[i] -= (old_accel_data[i] / 2);
             } else {
                 accel_bias[i] += (old_accel_data[i] / 2);
             }
