@@ -37,7 +37,7 @@ int GAM::get_azimuth() {
     return (int)(euler_event.orientation.x);
 }
 
-void GAM::get_cord() {
+void GAM::get_cord1() {
     //BNO055から加速度データを取得（単位：m/s^2）
     float dt = (millis() - old_cordtime) / 1000.0; //秒単位に変換
 
@@ -148,6 +148,130 @@ void GAM::get_cord() {
     // Serial.println(dt);
     // Serial.print(">Moving:");
     // Serial.print(moving);
+}
+
+void GAM::get_cord() {
+    //BNO055から加速度データを取得（単位：m/s^2）
+    float dt = (millis() - old_cordtime) / 1000.0; //秒単位に変換
+
+    sensors_event_t accel_event;
+    bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
+    float accel_data[2] = {accel_event.acceleration.x - accel_bias[0], accel_event.acceleration.y - accel_bias[1]};
+
+    //TODO
+    // Serial.print(">Accel_x:");
+    // Serial.println(accel_data[0]);
+    // Serial.print(">Accel_y:");
+    // Serial.println(accel_data[1]);
+
+    for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
+        if (i == 0) {
+            j = 1;
+        } else {
+            j = 0;
+        }
+        if (accel_data[j] > accel_noise) {
+            if (fabs(accel_data[i]) < adaptive_noise) {
+                accel_data[i] = 0;
+            }
+        } else {
+            if (fabs(accel_data[i]) < accel_noise) {
+                accel_data[i] = 0;
+            }
+        }
+    }
+
+    //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
+    for (int i = 0; i < 2; i++) { 
+        float accel_dif = old_accel_data[i] - accel_data[i];
+        if(fabs(accel_dif) < movement_border) {
+            ten_count += 1;
+            if (ten_count >= 3) {
+                first_PoMi[i] = 10;
+                PoMi[i] = 10;
+                speed_x = 0;
+                speed_y = 0;
+                accel_data[0] = 0;
+                accel_data[1] = 0;
+            }
+        } else if(accel_data[i] > 0) {
+            ten_count = 0;
+            if (first_PoMi[i] == 10) { //直前まで静止していたら初回動作検知方向に現在の方向を記録
+                first_PoMi[i] = 1;
+            }
+            PoMi[i] = 1;
+        } else { //-方向に動いている時の処理
+            ten_count = 0;
+            if (first_PoMi[i] == 10) {
+                first_PoMi[i] = 0;
+            }
+            PoMi[i] = 0;
+        }
+        delay(5);
+        if (PoMi[i] != 10 && first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は現在の動きをキャンセル（減速時の加速度を無効化）
+            a = fabs(old_accel_data);
+            a_dt[i] = dt * (a / (a + b));
+            b_dt[i] = a_dt[i] * (b / a);
+            gyro.process_accel(a_dt[i], 0, i);
+            gyro.get_speed(i);
+        }
+    }
+    // states[0] = accel_data[0] * dt * 100;
+    // states[1] = accel_data[1] * dt * 100;
+    // float yaw_rad = radians(gyro.get_azimuth());
+    // world_x += states[0] * cos(yaw_rad) - states[1] * sin(yaw_rad);
+    // world_y += states[0] * sin(yaw_rad) + states[1] * cos(yaw_rad);
+    
+    //最終情報更新
+    old_cordtime = millis();
+    old_accel_data[0] = accel_data[0];
+    old_accel_data[1] = accel_data[1];
+
+
+    //TelePlot用
+    speed_x += difcord_x / dt;
+    speed_y += difcord_y / dt;
+    difcord_x = accel_data[0] * dt * 100;
+    difcord_y = accel_data[1] * dt * 100;
+
+    Serial.print(">pos_x:");
+    Serial.println(states[0]);
+    Serial.print(">pos_y:");
+    Serial.println(states[1]);
+    // Serial.print(">Azimuth:");
+    // Serial.println(gam.get_azimuth());
+    // Serial.print(">firstPoMi_x:");
+    // Serial.println(first_PoMi[0]);
+    // Serial.print(">firstPoMi_y:");
+    // Serial.println(first_PoMi[1]);
+    // Serial.print(">PoMi_x:");
+    // Serial.println(PoMi[0]);
+    // Serial.print(">PoMi_y:");
+    // Serial.println(PoMi[1]);
+    // Serial.print(">Zero Count_x:");
+    // Serial.println(zero_count[0]);
+    // Serial.print(">Zero Count_y:");
+    // Serial.println(zero_count[1]);
+    Serial.print(">Speed_x:");
+    Serial.println(speed_x);
+    Serial.print(">Speed_y:");
+    Serial.println(speed_y);
+    // Serial.print(">DT:");
+    // Serial.println(dt);
+    // Serial.print(">Moving:");
+    // Serial.print(moving);
+}
+
+void GAM::process_accel(float dt, float accel,short index) {
+    //https://qiita.com/mzk1644/items/ea621cc872acd996a6e8 この記事のコードを使わせていただきました
+    lowpassValue[index] = lowpassValue[index] * filterCoefficient + accel * (1 - filterCoefficient);
+    highpassValue[index] = accel - lowpassValue[index];
+    speed[index] = ((highpassValue[index] + old_accel_data[index]) * dt) / 2 + speed[index];
+    old_accel_data[index] = highpassValue[index];
+}
+
+void GAM::get_speed(short i) {
+    return speed[i];
 }
 
 void GAM::restart() { //瞬間的にモードを変えることで初期化
