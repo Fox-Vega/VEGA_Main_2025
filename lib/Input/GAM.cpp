@@ -76,26 +76,18 @@ void GAM::get_cord() {
             if (ten_count >= 3) {
                 first_PoMi[i] = 10;
                 PoMi[i] = 10;
-            }
-            if (accel_dif < stop_border) {
-                if (zero_count[i] <= 3) {
-                    zero_count[i] += 1;
-                } else {
-                    speed_x = 0;
-                    speed_y = 0;
-                    accel_data[0] = 0;
-                    accel_data[1] = 0;
-                }
+                speed_x = 0;
+                speed_y = 0;
+                accel_data[0] = 0;
+                accel_data[1] = 0;
             }
         } else if(accel_data[i] > 0) {
-            zero_count[i] = 0;
             ten_count = 0;
             if (first_PoMi[i] == 10) { //直前まで静止していたら初回動作検知方向に現在の方向を記録
                 first_PoMi[i] = 1;
             }
             PoMi[i] = 1;
         } else { //-方向に動いている時の処理
-            zero_count[i] = 0;
             ten_count = 0;
             if (first_PoMi[i] == 10) {
                 first_PoMi[i] = 0;
