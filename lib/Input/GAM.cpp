@@ -9,7 +9,7 @@
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
 void GAM::setup() {
-    mypixel.multi(1, 16, 225, 0, 0);
+    mypixel.multi(0, 15, 225, 0, 0);
     Wire.begin();
     if (!bno.begin()) {
         Serial.println("BNO055 not detected.");
@@ -208,11 +208,12 @@ void GAM::get_cord() {
             PoMi[i] = 0;
         }
         delay(5);
-        if (PoMi[i] != 10 && first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は現在の動きをキャンセル（減速時の加速度を無効化）
-            a = fabs(old_accel_data);
-            a_dt[i] = dt * (a / (a + b));
-            b_dt[i] = a_dt[i] * (b / a);
-            gyro.process_accel(a_dt[i], 0, i);
+        if (first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算
+            a = fabs(old_accel_data[i]);
+            b = fabs(accel_data[i]);
+            a_dt = dt * (a / (a + b));
+            b_dt = a_dt * (b / a);
+            gyro.process_accel(a_dt, 0, i);
             gyro.get_speed(i);
         }
     }
@@ -262,16 +263,13 @@ void GAM::get_cord() {
     // Serial.print(moving);
 }
 
-void GAM::process_accel(float dt, float accel,short index) {
+int GAM::get_speed(float dt, float accel,short index) {
     //https://qiita.com/mzk1644/items/ea621cc872acd996a6e8 この記事のコードを使わせていただきました
     lowpassValue[index] = lowpassValue[index] * filterCoefficient + accel * (1 - filterCoefficient);
     highpassValue[index] = accel - lowpassValue[index];
     speed[index] = ((highpassValue[index] + old_accel_data[index]) * dt) / 2 + speed[index];
     old_accel_data[index] = highpassValue[index];
-}
-
-void GAM::get_speed(short i) {
-    return speed[i];
+    return speed[index];
 }
 
 void GAM::restart() { //瞬間的にモードを変えることで初期化
