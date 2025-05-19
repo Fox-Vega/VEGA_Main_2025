@@ -1,6 +1,6 @@
 #include "Input.h"
 
 // LINE line;
-BALL ball;
 GAM gam;
+BALL ball;
 MySWITCH myswitch;

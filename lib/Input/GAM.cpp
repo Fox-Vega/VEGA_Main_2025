@@ -60,6 +60,22 @@ void GAM::get_cord() {
                 accel_data[i] = 0;
             }
         }
+        if ((oold_accel_data[i] - accel_data[i]) == 0) {
+            accel_data[i] = 0;
+            if (accel_data[i] > old_accel_data[i]) {
+                accel_bias[i] += (accel_data[i] / 2);
+            } else {
+                accel_bias[i] += (old_accel_data[i] / 2);
+            }
+        }
+        float a = accel_tweaker / fabs(accel_data[i]);
+        if (accel_data[i] != 0.0f) {
+            if (accel_data[i] > 0) {
+                accel_data[i] += a;
+            } else {
+                accel_data[i] -= a;
+            }
+        }
     }
 
     //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
@@ -67,7 +83,7 @@ void GAM::get_cord() {
         float accel_dif = old_accel_data[i] - accel_data[i];
         if(fabs(accel_dif) < movement_border) {
             ten_count += 1;
-            if (ten_count >= 3) {
+            if (ten_count >= reset_border) {
                 first_PoMi[i] = 10;
                 PoMi[i] = 10;
                 speed[0] = 0;
@@ -120,6 +136,8 @@ void GAM::get_cord() {
     
     //最終情報更新
     old_cordtime = millis();
+    oold_accel_data[0] = old_accel_data[0];
+    oold_accel_data[1] = old_accel_data[1];
     old_accel_data[0] = accel_data[0];
     old_accel_data[1] = accel_data[1];
 
@@ -150,6 +168,15 @@ void GAM::get_speed(float dt, float accel,short i) {
     Serial.println(speed[1]);
 }
 
+void GAM::dir_reset() {
+    yawtweak = gam.get_azimuth();
+}
+
+void GAM::cord_reset() {
+    states[0] = 0;
+    states[1] = 0;
+}
+
 void GAM::restart() { //瞬間的にモードを変えることで初期化
     bno.setMode(OPERATION_MODE_CONFIG);
     delay(25);
@@ -165,9 +192,6 @@ void GAM::restart() { //瞬間的にモードを変えることで初期化
     }
 }
 
-void GAM::dir_reset() {
-    yawtweak = gam.get_azimuth();
-}
 int GAM::get_x() {
     return states[0];
 }
