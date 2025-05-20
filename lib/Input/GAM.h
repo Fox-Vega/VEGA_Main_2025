@@ -5,13 +5,13 @@
 class GAM { //いろいろエラーが出てたから弄った結果、GAMクラス誕生☆　Gyro,Accelometer,Magneticをテキトーにもじりました
     public:
         void setup(); //初期設定
-        int get_azimuth(); //方位角取得（ドリフト対策無）
+        int get_azimuth(); //方位角取得
         void get_cord(); //自己位置取得
-        void get_speed(float dt, float accel,short i); //半自動速度計算関数
+        void get_speed(float dt, float accel,short i); //半自動計算関数
         void dir_reset(); //方向初期化
         void cord_reset(); //位置情報初期化
-        void cord_custom(int x, int y); //自由位置に座標を設定可能
-        void restart(); //センサーを初期化
+        void cord_custom(int x, int y); //自由座標に設定可能
+        void restart(); //センサー完全初期化
         int get_x(); //座標のxを取得
         int get_y(); //座標のyを取得
 
