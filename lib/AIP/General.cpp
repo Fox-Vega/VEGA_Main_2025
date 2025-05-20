@@ -4,6 +4,7 @@
 
 
 void General::setup() {
+    Serial.begin(9600);
     ball.setup();
     gam.setup();
     // line.setup();
@@ -11,7 +12,6 @@ void General::setup() {
     mypixel.setup();
     mybuzzer.setup();
     myswitch.setup();
-    Serial.begin(9600);
 }
 
 int General::startup() {
