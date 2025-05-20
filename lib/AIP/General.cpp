@@ -109,5 +109,8 @@ int General::check_mode() {
 }
 
 void General::update() {
-    
+    ball.read();
+    if (usePIXEL) {
+        mypixel.closest(ball.get_azimuth(), 255, 0, 0, 1);
+    }
 }
