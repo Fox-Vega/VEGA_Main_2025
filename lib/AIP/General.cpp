@@ -17,10 +17,10 @@ void General::setup() {
 int General::startup() {
     phase = 1;
     mypixel.brightness(100);
-    while(phase != 4){
+    while(phase < 4){
         switch_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
-        if (phase != 3) {
+        if (phase < 3) {
             if (mode == 1) {
                 mypixel.multis(0, 15, 255, 0, 0);
             } else if (mode == 2) {
