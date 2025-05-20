@@ -98,7 +98,7 @@ int General::startup() {
     return Run;
 }
 
-int General::check_run() {
+int General::get_run() {
     if (myswitch.check_toggle() == 0) {
         Run = false;
     } else {
@@ -107,7 +107,7 @@ int General::check_run() {
     return Run;
 }
 
-int General::check_mode() {
+int General::get_mode() {
     return mode;
 }
 
