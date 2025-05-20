@@ -9,9 +9,9 @@ void setup() {
 
 void loop() {
   gam.get_cord();
-  if (mode == 0) {
+  if (mode == 1) {
     attack.attack_();
-  } else if (mode == 1) {
+  } else if (mode == 2) {
     //defence
   } else {
     //test
