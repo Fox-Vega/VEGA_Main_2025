@@ -15,6 +15,9 @@
 
 class MyPIXEL {
     public:
+        //調整用
+        const bool usePIXEL = true; //ネオピクセルの使用有無
+
         void setup(); //初期設定
         void brightness(int brightness); //ネオピクの明るさ調整　999にすると既定値になる
 
@@ -28,7 +31,6 @@ class MyPIXEL {
 
     private:
         //調整用
-        const bool usePIXEL = true; //ネオピクセルの使用有無
         const int PIXELbrightness = 255; //最大で255
         
         int PIXELNUMstart;
