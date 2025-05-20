@@ -10,7 +10,7 @@ void setup() {
 void loop() {
   gam.get_cord();
   if (mode == 0) {
-    attack.attack();
+    attack.attack_();
   } else if (mode == 1) {
     //defence
   } else {
