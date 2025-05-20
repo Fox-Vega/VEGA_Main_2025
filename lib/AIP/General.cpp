@@ -107,3 +107,7 @@ int General::check_run() {
 int General::check_mode() {
     return mode;
 }
+
+void General::update() {
+    
+}
