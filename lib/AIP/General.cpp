@@ -29,7 +29,7 @@ int General::startup() {
                 mypixel.multis(0, 15, 255, 0, 255);
             }
             mypixel.unis(startPIXELs[startcord], 0, 255, 0);
-            mypixel.closest(ball.get_azimuth(), 255, 255, 0);
+            mypixel.closests(ball.get_azimuth(), 255, 255, 0);
         }
         switch (phase) {
             case 1:
