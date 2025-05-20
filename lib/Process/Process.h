@@ -3,5 +3,5 @@
 #include <Attack.h>
 // #include <Defense.h>
 
-Attack attack;
+extern Attack attack;
 // Defence defence;

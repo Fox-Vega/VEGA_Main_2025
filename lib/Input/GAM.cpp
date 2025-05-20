@@ -43,8 +43,13 @@ void GAM::get_cord() {
 
     sensors_event_t event;
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
-    float accel_data[2] = {(event.acceleration.x - accel_bias[0]) * accel_offset_x, (event.acceleration.y - accel_bias[1]) * accel_offset_y};
+    float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
 
+    Serial.print(">RAccel_x:");
+    Serial.println(accel_data[0]);
+    Serial.print(">RAccel_y:");
+    Serial.println(accel_data[1]);
+    
     for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
         if (i == 0) {
             j = 1;
@@ -60,26 +65,16 @@ void GAM::get_cord() {
                 accel_data[i] = 0;
             }
         }
-        if (oold_accel_data[i] == accel_data[i]) {
-            accel_data[i] = 0;
-            if (accel_data[i] > 0) {
-                accel_bias[i] -= (accel_data[i] / 2);
-            } else if (accel_data[i] < 0) {
-                accel_bias[i] += (accel_data[i] / 2);
-            } else if (old_accel_data[i] > 0) {
-                accel_bias[i] -= (old_accel_data[i] / 2);
-            } else {
-                accel_bias[i] += (old_accel_data[i] / 2);
-            }
-        }
-        float a = accel_tweaker / fabs(accel_data[i]);
-        if (accel_data[i] != 0.0f) {
-            if (accel_data[i] > 0) {
-                accel_data[i] += a;
-            } else {
-                accel_data[i] -= a;
-            }
-        }
+    }
+    if (accel_data[0] > 0) {
+        accel_data[0] = accel_data[0] * accel_offsetp_x;
+    } else {
+        accel_data[0] = accel_data[0] * accel_offsetm_x;
+    }
+    if (accel_data[1] > 0) {
+        accel_data[1] = accel_data[1] * accel_offsetp_y;
+    } else {
+        accel_data[1] = accel_data[1] * accel_offsetm_y;
     }
 
     //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
@@ -108,6 +103,9 @@ void GAM::get_cord() {
             }
             PoMi[i] = 0;
         }
+        if (accel_data[i] != 0.0f) {
+            accel_data[i] = accel_data[i] + (accel_tweaker / accel_data[i]);
+        }
         if (first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算
             a = fabs(old_accel_data[i]);
             b = fabs(accel_data[i]);
@@ -124,14 +122,15 @@ void GAM::get_cord() {
             gam.get_speed(dt, accel_data[i], i);
         }
     }
+
     //台形積分で速度算出(TelePlot用)
-    states[0] += ((speed[0] + old_speed[0]) * dt) / 2;
-    states[1] += ((speed[1] + old_speed[1]) * dt) / 2;
+    states[0] += ((speed[0] + old_speed[0]) * dt) / 2 * 100;
+    states[1] += ((speed[1] + old_speed[1]) * dt) / 2 * 100;
 
     //座標をコート座標に変換
     float yaw_rad = radians(gam.get_azimuth());
-    int x = ((speed[0] + old_speed[0]) * dt) / 2;
-    int y = ((speed[1] + old_speed[1]) * dt) / 2;
+    int x = ((speed[0] + old_speed[0]) * dt) / 2 * 100;
+    int y = ((speed[1] + old_speed[1]) * dt) / 2 * 100;
     world_x += x * cos(yaw_rad) - y * sin(yaw_rad);
     world_y += x * sin(yaw_rad) + y * cos(yaw_rad);
     

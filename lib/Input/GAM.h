@@ -17,16 +17,21 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
 
     private:
         //調整用
-        const float movement_border = 0.15f; //動作判定ボーダー　accel_noiseより大きい値を使用するのがおすすめ
-        const float adaptive_noise = 0.02f; //動作判断時に使用するフィルタ
-        const float accel_noise = 0.12f; //静止判断時に使用するフィルタ
-        const float accel_tweaker = 0.4f; //この値が大きければ大きいほど、小さい値が増幅される(低速時加速度増幅目的)
-        const float filterCoefficient = 0.95; //1に近いほど値の平滑度合いが強い
+        const float movement_border = 0.25f; //動作判定ボーダー accel_noiseより大きい値を使って
+        const float adaptive_noise = 0.1f; //動作判断時に使用するフィルタ
+        const float accel_noise = 0.2f; //静止判断時に使用するフィルタ
+        const float accel_sparknoise = 12.0f;
+        const float accel_tweaker = 0.6f; //この値が大きければ大きいほど、小さい値が増幅される(低速時加速度増幅目的)
+        const float filterCoefficient = 0.98; //1に近いほど値の平滑度合いが強い
         const float reset_border = 3; //加速度変化無しが何回続いたら速度をリセットするか
-        const float accel_offset_x = 1.1; //x軸出力の倍率
-        const float accel_offset_y = 1.0; //y軸出力の倍率
+        const float accel_offsetp_x = 1.5; //x軸+出力の倍率
+        const float accel_offsetm_x = 1.3; //x軸-出力の倍率
+        const float accel_offsetp_y = 1.0; //y軸+出力の倍率
+        const float accel_offsetm_y = 1.0; //y軸-出力の倍率
+
 
         int j;
+        int stable;
         int world_x;
         int world_y;
         int azimuth;

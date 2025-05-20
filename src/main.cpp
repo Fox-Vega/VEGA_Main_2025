@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Input.h"
 #include "AIP.h"
+#include "Process.h"
 
 
 void setup() {
@@ -10,7 +11,7 @@ void setup() {
 void loop() {
     gam.get_cord();
     if (general.get_mode() == 1) {
-        attack.attack_();
+        // attack.attack_();
     } else if (general.get_mode() == 2) {
         //defence
     } else {

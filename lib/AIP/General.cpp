@@ -29,7 +29,7 @@ int General::startup() {
                 mypixel.multis(0, 15, 255, 0, 255);
             }
             mypixel.unis(startPIXELs[startcord], 0, 255, 0);
-            mypixel.closests(ball.get_azimuth(), 255, 255, 0);
+            mypixel.closests(ball.get_azimuth(), 255, 255, 0, 0);
         }
         switch (phase) {
             case 1:
@@ -113,7 +113,5 @@ int General::get_mode() {
 
 void General::update() {
     ball.read();
-    if (usePIXEL) {
-        mypixel.closest(ball.get_azimuth(), 255, 0, 0, 1);
-    }
+    mypixel.closest(ball.get_azimuth(), 255, 0, 0, 1);
 }

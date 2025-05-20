@@ -15,16 +15,13 @@
 
 class MyPIXEL {
     public:
-        //調整用
-        const bool usePIXEL = true; //ネオピクセルの使用有無
-
         void setup(); //初期設定
         void brightness(int brightness); //ネオピクの明るさ調整　999にすると既定値になる
 
         //ピクセル番号は時計回りで 0~15
         void uni(int PIXELNUM, int red, int green, int blue); //単ピクセル点灯
         void multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue); //連続ピクセル点灯
-        void closest(int azimuth, int red, int green, int blue, int num); //入力角度に最も近いピクセル点灯 numには光らせる個数を入力（奇数）
+        void closest(int azimuth, int red, int green, int blue, int num);
         void unis(int PIXELNUM, int red, int green, int blue); //単ピクセル点灯
         void multis(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue); //連続ピクセル点灯
         void closests(int azimuth, int red, int green, int blue, int num); //入力角度に最も近いピクセル点灯 numには光らせる個数を入力（奇数）
@@ -32,6 +29,7 @@ class MyPIXEL {
 
     private:
         //調整用
+        const bool usePIXEL = true; //ネオピクセルの使用有無
         const int PIXELbrightness = 255; //最大で255
         
         int PIXELNUMstart;
