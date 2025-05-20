@@ -48,10 +48,11 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         float highpassValue[2];
         float old_accel_data[2];
         float oold_accel_data[2];
+        float speed[2];
+        float old_speed[2];
         float difcord_x;
         float difcord_y;
         float yaw_rad;
-        float speed[2];
         float old_cordtime;
         float accel_bias[3] = {0.0, 0.0, 0.0};
 
