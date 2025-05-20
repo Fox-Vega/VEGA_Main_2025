@@ -132,8 +132,8 @@ void GAM::get_cord() {
             gam.get_speed(dt, accel_data[i], i);
         }
     }
-    states[0] += speed[0] * 100 * dt;
-    states[1] += speed[1] * 100 * dt;
+    states[0] += ((speed[0] + old_speed[0]) * dt) / 2;
+    states[1] += ((speed[1] + old_speed[1]) * dt) / 2;
     float yaw_rad = radians(gam.get_azimuth());
     world_x += states[0] * cos(yaw_rad) - states[1] * sin(yaw_rad);
     world_y += states[0] * sin(yaw_rad) + states[1] * cos(yaw_rad);
@@ -144,6 +144,8 @@ void GAM::get_cord() {
     oold_accel_data[1] = old_accel_data[1];
     old_accel_data[0] = accel_data[0];
     old_accel_data[1] = accel_data[1];
+    old_speed[0] = speed[0];
+    old_speed[1] = speed[1];
 
     Serial.print(">Accel_x:");
     Serial.println(accel_data[0]);
