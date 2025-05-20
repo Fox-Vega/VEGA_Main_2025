@@ -85,7 +85,7 @@ void GAM::get_cord() {
     //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
     for (int i = 0; i < 2; i++) { 
         float accel_dif = old_accel_data[i] - accel_data[i];
-        if(fabs(accel_dif) < movement_border) {
+        if(fabs(accel_dif) < movement_border) { //静止時処理
             ten_count += 1;
             if (ten_count >= reset_border) {
                 first_PoMi[i] = 10;
@@ -95,13 +95,13 @@ void GAM::get_cord() {
                 accel_data[0] = 0;
                 accel_data[1] = 0;
             }
-        } else if(accel_data[i] > 0) {
+        } else if(accel_data[i] > 0) { //+方向動作時処理
             ten_count = 0;
-            if (first_PoMi[i] == 10) { //直前まで静止していたら初回動作検知方向に現在の方向を記録
+            if (first_PoMi[i] == 10) {
                 first_PoMi[i] = 1;
             }
             PoMi[i] = 1;
-        } else { //-方向に動いている時の処理
+        } else { //-方向動作時処理
             ten_count = 0;
             if (first_PoMi[i] == 10) {
                 first_PoMi[i] = 0;
@@ -118,25 +118,22 @@ void GAM::get_cord() {
                 a_dt = dt * (a / (a + b));
                 b_dt = dt * (b / (a + b));
             }
-            Serial.print(">a_dt:");
-            Serial.println(a_dt);
-            Serial.print(">b_dt:");
-            Serial.println(b_dt);
-            Serial.print(">a:");
-            Serial.println(a);
-            Serial.print(">b:");
-            Serial.println(b);
             gam.get_speed(a_dt, 0, i);
             gam.get_speed(b_dt, accel_data[i], i);
         } else {
             gam.get_speed(dt, accel_data[i], i);
         }
     }
+    //台形積分で速度算出(TelePlot用)
     states[0] += ((speed[0] + old_speed[0]) * dt) / 2;
     states[1] += ((speed[1] + old_speed[1]) * dt) / 2;
+
+    //座標をコート座標に変換
     float yaw_rad = radians(gam.get_azimuth());
-    world_x += states[0] * cos(yaw_rad) - states[1] * sin(yaw_rad);
-    world_y += states[0] * sin(yaw_rad) + states[1] * cos(yaw_rad);
+    int x = ((speed[0] + old_speed[0]) * dt) / 2;
+    int y = ((speed[1] + old_speed[1]) * dt) / 2;
+    world_x += x * cos(yaw_rad) - y * sin(yaw_rad);
+    world_y += x * sin(yaw_rad) + y * cos(yaw_rad);
     
     //最終情報更新
     old_cordtime = millis();
@@ -147,6 +144,10 @@ void GAM::get_cord() {
     old_speed[0] = speed[0];
     old_speed[1] = speed[1];
 
+    Serial.print(">Speed_x:");
+    Serial.println(speed[0]);
+    Serial.print(">Speed_y:");
+    Serial.println(speed[1]);
     Serial.print(">Accel_x:");
     Serial.println(accel_data[0]);
     Serial.print(">Accel_y:");
@@ -162,16 +163,11 @@ void GAM::get_cord() {
 }
 
 void GAM::get_speed(float dt, float accel,short i) {
-    // https://qiita.com/mzk1644/items/ea621cc872acd996a6e8 この記事のコードを使わせていただきました
-    //
+    // https://qiita.com/mzk1644/items/ea621cc872acd996a6e8 こちらのコードを使わせていただきました。
     lowpassValue[i] = lowpassValue[i] * filterCoefficient + accel * (1 - filterCoefficient);
     highpassValue[i] = accel - lowpassValue[i];
     speed[i] = (float)((highpassValue[i] + old_accel_data[i]) * dt) / 2 + speed[i];
     old_accel_data[i] = highpassValue[i];
-    Serial.print(">Speed_x:");
-    Serial.println(speed[0]);
-    Serial.print(">Speed_y:");
-    Serial.println(speed[1]);
 }
 
 void GAM::dir_reset() {
@@ -179,20 +175,21 @@ void GAM::dir_reset() {
 }
 
 void GAM::cord_reset() {
-    states[0] = 0;
-    states[1] = 0;
+    world_x = 0;
+    world_y = 0;
 }
 
 void GAM::restart() { //瞬間的にモードを変えることで初期化
+    int s = millis();
     bno.setMode(OPERATION_MODE_CONFIG);
     delay(25);
     bno.setMode(OPERATION_MODE_AMG);
     delay(1000);
-    while (millis() < 5000) {
+    while ((millis() - s) < 4000) {
         sensors_event_t event;
-        bno.getEvent(&event, Adafruit_BNO055::VECTOR_LINEARACCEL);  
-        float accel_data[3] = { event.acceleration.x, event.acceleration.y, event.acceleration.z };
-        for (int i = 0; i < 3; i++) {
+        bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
+        float accel_data[3] = { event.acceleration.x, event.acceleration.y};
+        for (int i = 0; i < 2; i++) {
             accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
         }
     }
