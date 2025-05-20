@@ -17,6 +17,8 @@ void General::setup() {
 int General::startup() {
     phase = 1;
     while(phase != 4){
+        ball.read();
+        mypixel.closest(ball.get_azimuth(), 255, 0, 0, 1);
         switch_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
         mypixel.brightness(100);
