@@ -18,16 +18,14 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
     private:
         //調整用
         const float movement_border = 0.25f; //動作判定ボーダー accel_noiseより大きい値を使って
-        const float adaptive_noise = 0.1f; //動作判断時に使用するフィルタ
-        const float accel_noise = 0.2f; //静止判断時に使用するフィルタ
-        const float accel_sparknoise = 12.0f;
-        const float accel_tweaker = 0.6f; //この値が大きければ大きいほど、小さい値が増幅される(低速時加速度増幅目的)
-        const float filterCoefficient = 0.98; //1に近いほど値の平滑度合いが強い
+        const float adaptive_noise = 0.05f; //動作判断時に使用するフィルタ
+        const float accel_noise = 0.15f; //静止判断時に使用するフィルタ
+        const float accel_sparknoise = 8.0f; //スパークノイズ（個人的な呼び名）の判定基準（衝突にも流用）
+        const float accel_tweaker = 0.3f; //この値が大きければ大きいほど、小さい値が増幅される(低速時微弱加速度増幅目的)
+        const float filterCoefficient = 0.7; //1に近いほど値の平滑度合いが強い
         const float reset_border = 3; //加速度変化無しが何回続いたら速度をリセットするか
-        const float accel_offsetp_x = 1.5; //x軸+出力の倍率
-        const float accel_offsetm_x = 1.3; //x軸-出力の倍率
-        const float accel_offsetp_y = 1.0; //y軸+出力の倍率
-        const float accel_offsetm_y = 1.0; //y軸-出力の倍率
+        const float accel_offsetp[2] = {1.1, 1.0}; //+出力の倍率 x,y
+        const float accel_offsetm[2] = {1.1, 1.0}; //-出力の倍率 x,y
 
 
         int j;
@@ -39,6 +37,7 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         int ten_count;
         int PoMi[2] = {1, 1}; //値の正負を保存する変数　1は1~、0は~-1、10は0
         int first_PoMi[2] = {10, 10}; //最初に検出された値の正負を保存する変数
+        bool zero_pro = true;
         bool move[2] = {false, false};
         float a;
         float b;

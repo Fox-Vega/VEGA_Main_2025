@@ -65,16 +65,9 @@ void GAM::get_cord() {
                 accel_data[i] = 0;
             }
         }
-    }
-    if (accel_data[0] > 0) {
-        accel_data[0] = accel_data[0] * accel_offsetp_x;
-    } else {
-        accel_data[0] = accel_data[0] * accel_offsetm_x;
-    }
-    if (accel_data[1] > 0) {
-        accel_data[1] = accel_data[1] * accel_offsetp_y;
-    } else {
-        accel_data[1] = accel_data[1] * accel_offsetm_y;
+        if (accel_data[i] > accel_sparknoise) {
+            accel_data[i] = 0;
+        }
     }
 
     //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
@@ -91,14 +84,18 @@ void GAM::get_cord() {
                 accel_data[1] = 0;
             }
         } else if(accel_data[i] > 0) { //+方向動作時処理
+            accel_data[i] = accel_data[i] * accel_offsetp[i];
             ten_count = 0;
             if (first_PoMi[i] == 10) {
+                zero_pro = true;
                 first_PoMi[i] = 1;
             }
             PoMi[i] = 1;
         } else { //-方向動作時処理
+            accel_data[i] = accel_data[i] * accel_offsetp[i];
             ten_count = 0;
             if (first_PoMi[i] == 10) {
+                zero_pro = true;
                 first_PoMi[i] = 0;
             }
             PoMi[i] = 0;
@@ -106,7 +103,7 @@ void GAM::get_cord() {
         if (accel_data[i] != 0.0f) {
             accel_data[i] = accel_data[i] + (accel_tweaker / accel_data[i]);
         }
-        if (first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算
+        if (first_PoMi[i] != PoMi[i] && zero_pro) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算
             a = fabs(old_accel_data[i]);
             b = fabs(accel_data[i]);
             if (a == 0 ||  b == 0) {
