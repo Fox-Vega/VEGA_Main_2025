@@ -17,15 +17,15 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
 
     private:
         //調整用
-        const float movement_border = 0.25f; //動作判定ボーダー accel_noiseより大きい値を使って
-        const float adaptive_noise = 0.05f; //動作判断時に使用するフィルタ
+        const float movement_border = 0.3f; //動作判定ボーダー accel_noiseより大きい値を使って
+        const float adaptive_noise = 0.03f; //動作判断時に使用するフィルタ
         const float accel_noise = 0.15f; //静止判断時に使用するフィルタ
         const float accel_sparknoise = 8.0f; //スパークノイズ（個人的な呼び名）の判定基準（衝突にも流用）
         const float accel_tweaker = 0.3f; //この値が大きければ大きいほど、小さい値が増幅される(低速時微弱加速度増幅目的)
-        const float filterCoefficient = 0.7; //1に近いほど値の平滑度合いが強い
+        const float filterCoefficient = 0.9; //1に近いほど値の平滑度合いが強い
         const float reset_border = 3; //加速度変化無しが何回続いたら速度をリセットするか
-        const float accel_offsetp[2] = {1.1, 1.0}; //+出力の倍率 x,y
-        const float accel_offsetm[2] = {1.1, 1.0}; //-出力の倍率 x,y
+        const float accel_offsetp[2] = {1.3, 1.0}; //+出力の倍率 x,y
+        const float accel_offsetm[2] = {1.3, 1.0}; //-出力の倍率 x,y
 
 
         int j;
