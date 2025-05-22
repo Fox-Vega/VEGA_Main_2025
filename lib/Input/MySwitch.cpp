@@ -8,7 +8,7 @@ void MySWITCH::setup() {
 }
 
 int MySWITCH::check_tact() {
-    pushed_tact = 10;
+    pushed_tact = 0;
     for (int i = 0; i < 3; i++) {
         if (digitalRead(tactswitchPIN[i]) == LOW) {
             pushed_tact = i + 1;
