@@ -111,8 +111,3 @@ int General::get_run() {
 int General::get_mode() {
     return mode;
 }
-
-void General::update() {
-    ball.read();
-    mypixel.closest(ball.get_azimuth(), 255, 0, 0, 1);
-}
