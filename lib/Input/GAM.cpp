@@ -9,7 +9,6 @@
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
 void GAM::setup() {
-    mypixel.multi(0, 15, 225, 0, 0);
     Wire.begin();
     if (!bno.begin()) {
         Serial.println("BNO055 not detected.");
@@ -27,7 +26,6 @@ void GAM::setup() {
             accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
         }
     }
-    mypixel.clear();
 }
 
 int GAM::get_azimuth() {
