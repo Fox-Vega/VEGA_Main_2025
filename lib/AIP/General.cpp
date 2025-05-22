@@ -39,24 +39,20 @@ void General::startup() {
                     mode = 1;
                     phase = 2;
                     mybuzzer.start(200, 4);
-                    break;
                 } else if (switch_pressed == 2) {
                     mode = 2;
                     phase = 2;
                     mybuzzer.start(200, 4);
-                    break;
                 } else if (switch_pressed == 3) {
                     mode = 3;
                     phase = 2;
                     mybuzzer.start(200, 4);
-                    break;
                 }
             
             case 2:
                 if (switch_pressed == 1){
                     phase = 1;
                     mybuzzer.start(100, 4);
-                    break;
                 } else if (switch_pressed == 2) {
                     if (startcord < 4) {
                         startcord += 1;
@@ -67,24 +63,20 @@ void General::startup() {
                     mybuzzer.start(300, 4);
                     delay(100);
                     mybuzzer.start(300, 4);
-                    break;
                 } else if (switch_pressed == 3) {
                     phase = 3;
                     mybuzzer.start(200, 4);
-                    break;
                 }
             case 3:
                 if (switch_pressed == 1){
                     phase = 2;
                     mybuzzer.start(100, 4);
-                    break;
                 } else if (switch_pressed == 2) {
                     gam.dir_reset();
                     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mybuzzer.start(300, 1);
-                    break;
                 } else if (switch_pressed == 3) {
-                    break;
+                    //何もしない
                 } else if (toggle_stat == 1) {
                     Run = true;
                     phase = 4;
