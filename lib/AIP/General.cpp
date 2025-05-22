@@ -6,16 +6,17 @@
 void General::setup() {
     Serial.begin(9600);
     mypixel.setup();
-    mypixel.multis(0, 15, 255, 0, 0)
+    mypixel.multis(0, 15, 255, 128, 0)
     ball.setup();
     gam.setup();
     // line.setup();
     mymotor.setup();
     mybuzzer.setup();
     myswitch.setup();
+    mypixel.clear();
 }
 
-int General::startup() {
+void General::startup() {
     phase = 1;
     mypixel.brightness(100);
     while(phase < 4){
@@ -96,7 +97,6 @@ int General::startup() {
         }
     }
     mypixel.brightness(999);
-    return Run;
 }
 
 int General::get_run() {
