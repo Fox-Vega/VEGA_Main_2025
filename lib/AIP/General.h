@@ -5,10 +5,9 @@
 class General {
     public:
         void setup(); //初期設定
-        int startup(); //設定
-        int get_run(); //タクトスイッチを確認し、実行していいかを確認
+        void startup(); //設定
+        int get_run(); //トグルスイッチを確認し、実行していいかを確認
         int get_mode(); //モードを確認
-        void update(); //値を更新
 
     private:
         byte startcord = 0;
