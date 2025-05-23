@@ -146,14 +146,14 @@ void GAM::get_cord() {
     // Serial.println(accel_data[0]);
     // Serial.print(">Accel_y:");
     // Serial.println(accel_data[1]);
-    // Serial.print(">pos_x:");
-    // Serial.println(states[0]);
-    // Serial.print(">pos_y:");
-    // Serial.println(states[1]);
+    Serial.print(">pos_x:");
+    Serial.println(states[0]);
+    Serial.print(">pos_y:");
+    Serial.println(states[1]);
     // Serial.print(">Azimuth:");
     // Serial.println(gam.get_azimuth());
-    Serial.print(">DT:");
-    Serial.println(dt);
+    // Serial.print(">DT:");
+    // Serial.println(dt);
 }
 
 void GAM::get_speed(float dt, float accel,short i) {

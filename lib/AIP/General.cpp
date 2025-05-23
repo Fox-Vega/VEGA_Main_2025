@@ -6,7 +6,7 @@
 void General::setup() {
     Serial.begin(9600);
     mypixel.setup();
-    mypixel.multis(0, 15, 255, 128, 0)
+    mypixel.multis(0, 15, 255, 128, 0);
     ball.setup();
     gam.setup();
     // line.setup();
