@@ -45,10 +45,10 @@ void GAM::get_cord() {
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
 
-    Serial.print(">RAccel_x:");
-    Serial.println(accel_data[0]);
-    Serial.print(">RAccel_y:");
-    Serial.println(accel_data[1]);
+    // Serial.print(">RAccel_x:");
+    // Serial.println(accel_data[0]);
+    // Serial.print(">RAccel_y:");
+    // Serial.println(accel_data[1]);
     
     for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
         if (i == 0) {
@@ -56,16 +56,16 @@ void GAM::get_cord() {
         } else {
             j = 0;
         }
-        if (accel_data[j] > accel_noise) {
-            if (fabs(accel_data[i]) < adaptive_noise) {
+        if (accel_data[j] > accel_noise[i]) {
+            if (fabs(accel_data[i]) < adaptive_noise[i]) {
                 accel_data[i] = 0;
             }
         } else {
-            if (fabs(accel_data[i]) < accel_noise) {
+            if (fabs(accel_data[i]) < accel_noise[i]) {
                 accel_data[i] = 0;
             }
         }
-        if (accel_data[i] > accel_sparknoise) {
+        if (accel_data[i] > accel_sparknoise[i]) {
             accel_data[i] = 0;
         }
     }
@@ -73,7 +73,7 @@ void GAM::get_cord() {
     //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
     for (int i = 0; i < 2; i++) { 
         float accel_dif = old_accel_data[i] - accel_data[i];
-        if(fabs(accel_dif) < movement_border) { //静止時処理
+        if(fabs(accel_dif) < movement_border[i]) { //静止時処理
             ten_count += 1;
             if (ten_count >= reset_border) {
                 first_PoMi[i] = 10;
@@ -84,7 +84,7 @@ void GAM::get_cord() {
                 accel_data[1] = 0;
             }
         } else if(accel_data[i] > 0) { //+方向動作時処理
-            accel_data[i] = accel_data[i] * accel_offsetp[i];
+            accel_data[i] = accel_data[i] * accel_offsetp[robotNUM][i];
             ten_count = 0;
             if (first_PoMi[i] == 10) {
                 zero_pro = true;
@@ -92,7 +92,7 @@ void GAM::get_cord() {
             }
             PoMi[i] = 1;
         } else { //-方向動作時処理
-            accel_data[i] = accel_data[i] * accel_offsetp[i];
+            accel_data[i] = accel_data[i] * accel_offsetp[robotNUM][i];
             ten_count = 0;
             if (first_PoMi[i] == 10) {
                 zero_pro = true;
@@ -101,7 +101,7 @@ void GAM::get_cord() {
             PoMi[i] = 0;
         }
         if (accel_data[i] != 0.0f) {
-            accel_data[i] = accel_data[i] + (accel_tweaker / accel_data[i]);
+            accel_data[i] = accel_data[i] + (accel_tweaker[i] / accel_data[i]);
         }
         if (first_PoMi[i] != PoMi[i] && zero_pro) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算
             a = fabs(old_accel_data[i]);
@@ -140,20 +140,20 @@ void GAM::get_cord() {
     old_speed[0] = speed[0];
     old_speed[1] = speed[1];
 
-    Serial.print(">Speed_x:");
-    Serial.println(speed[0]);
-    Serial.print(">Speed_y:");
-    Serial.println(speed[1]);
-    Serial.print(">Accel_x:");
-    Serial.println(accel_data[0]);
-    Serial.print(">Accel_y:");
-    Serial.println(accel_data[1]);
-    Serial.print(">pos_x:");
-    Serial.println(states[0]);
-    Serial.print(">pos_y:");
-    Serial.println(states[1]);
-    Serial.print(">Azimuth:");
-    Serial.println(gam.get_azimuth());
+    // Serial.print(">Speed_x:");
+    // Serial.println(speed[0]);
+    // Serial.print(">Speed_y:");
+    // Serial.println(speed[1]);
+    // Serial.print(">Accel_x:");
+    // Serial.println(accel_data[0]);
+    // Serial.print(">Accel_y:");
+    // Serial.println(accel_data[1]);
+    // Serial.print(">pos_x:");
+    // Serial.println(states[0]);
+    // Serial.print(">pos_y:");
+    // Serial.println(states[1]);
+    // Serial.print(">Azimuth:");
+    // Serial.println(gam.get_azimuth());
     Serial.print(">DT:");
     Serial.println(dt);
 }
