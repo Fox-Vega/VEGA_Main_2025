@@ -10,24 +10,26 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         void get_speed(float dt, float accel,short i); //半自動計算関数
         void dir_reset(); //方向初期化
         void cord_reset(); //位置情報初期化
+        void accel_reset();
         void cord_custom(int x, int y); //自由座標に設定可能
         void restart(); //センサー完全初期化
         int get_x(); //座標のxを取得
         int get_y(); //座標のyを取得
 
     private:
-        //使用機体 １はオフェンス　２はディフェンス
-        const short robotNUM = 1;
+        //使用機体 0はオフェンス　1はディフェンス
+        const short robotNUM = 0;
         //調整用
-        const float movement_border[2] = {0.18f, 0.18f}; //動作判定ボーダー accel_noiseより大きい値を使って
-        const float adaptive_noise[2] = {0.02f, 0.02f}; //動作判断時に使用するフィルタ
-        const float accel_noise[2] = {0.08f, 0.08f};; //静止判断時に使用するフィルタ
-        const float accel_sparknoise[2] = {10.0f, 10.0f}; //スパークノイズ（個人的な呼び名）の判定基準（衝突にも流用）
-        const float accel_tweaker[2] = {0.1f, 0.0f}; //この値が大きければ大きいほど、小さい値が増幅される(低速時微弱加速度増幅目的)
-        const float filterCoefficient = 0.9; //1に近いほど値の平滑度合いが強い
+        const float movement_border = 0.15f; //動作判定ボーダー accel_noiseより大きい値を使って
+        const float adaptive_noise = 0.03f; //動作判断時に使用するフィルタ
+        const float accel_noise = 0.05f; //静止判断時に使用するフィルタ
+        const float accel_sparknoise = 10.0f; //スパークノイズ（個人的な呼び名）の判定基準（衝突にも流用）
+        const float filterCoefficient = 0.1; //1に近いほど値の平滑度合いが強い　低速時の感度も変化
+        const float slow_tweak = 0.2; //逆方向の変化に強くなる
         const float reset_border = 3; //加速度変化無しが何回続いたら速度をリセットするか
-        const float accel_offsetp[2][2] = {{1.3, 1.0}, {1.0, 1.0}}; //+出力の倍率 x,y
-        const float accel_offsetm[2][2] = {{1.1, 1.4}, {1.0, 1.0}}; //-出力の倍率 x,y
+
+        const float accel_offsetp[2][2] = {{1.1, 1.0}, {1.0, 1.0}}; //+出力の倍率 x,y
+        const float accel_offsetm[2][2] = {{1.0, 1.2}, {1.0, 1.0}}; //-出力の倍率 x,y
 
         int j;
         int stable;

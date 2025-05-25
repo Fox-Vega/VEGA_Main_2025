@@ -73,6 +73,7 @@ void General::startup() {
                     mybuzzer.start(100, 4);
                 } else if (switch_pressed == 2) {
                     gam.dir_reset();
+                    gam.cord_reset();
                     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mybuzzer.start(300, 1);
                 } else if (switch_pressed == 3) {
