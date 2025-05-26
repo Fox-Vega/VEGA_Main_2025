@@ -26,7 +26,7 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         const float reset_border = 2; //加速度変化無しが何回続いたら速度をリセットするか
         const float accel_offsetp[2][2] = {{1.1, 1.0}, {1.0, 1.0}}; //+出力の倍率 x,y
         const float accel_offsetm[2][2] = {{1.0, 1.3}, {1.0, 1.0}}; //-出力の倍率 x,y
-        const float accel_offset[2][2] = {{-0.01f, -0.4f}, {0.0f, 0.0f}}; //ノイズ出力の補正 x,y
+        const float accel_offset[2][2] = {{-0.02f, -0.4f}, {0.0f, 0.0f}}; //ノイズ出力の補正 x,y
 
         int j;
         int stable;
