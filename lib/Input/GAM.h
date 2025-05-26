@@ -10,7 +10,6 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         void get_speed(float dt, float accel,short i); //半自動計算関数
         void dir_reset(); //方向初期化
         void cord_reset(); //位置情報初期化
-        void accel_reset();
         void cord_custom(int x, int y); //自由座標に設定可能
         void restart(); //センサー完全初期化
         int get_x(); //座標のxを取得

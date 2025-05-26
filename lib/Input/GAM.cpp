@@ -15,8 +15,6 @@ void GAM::setup() {
         while (1);  //センサー未検出時は停止
     }
     bno.setExtCrystalUse(true);
-    bno.setMode(OPERATION_MODE_CONFIG);
-    delay(25);
     bno.setMode(OPERATION_MODE_AMG);
     delay(1000);
     azimuth = 0;
@@ -33,7 +31,6 @@ void GAM::setup() {
 int GAM::get_azimuth() {
     sensors_event_t euler_event;
     bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
-
     return (int)(euler_event.orientation.x);
 }
 
@@ -44,6 +41,10 @@ void GAM::get_cord() {
     sensors_event_t event;
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
+    Serial.print(">Accel_x:");
+    Serial.println(event.acceleration.x);
+    Serial.print(">Accel_y:");
+    Serial.println(event.acceleration.y);
     
     for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
         if (accel_data[i] > 0) {
@@ -170,25 +171,13 @@ void GAM::cord_reset() {
     world_y = 0;
 }
 
-void GAM::accel_reset() {
-    int s = millis();
-    while ((millis() - s) < 2000) {
-        sensors_event_t event;
-        bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
-        float accel_data[3] = { event.acceleration.x, event.acceleration.y};
-        for (int i = 0; i < 2; i++) {
-            accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
-        }
-    }
-}
-
 void GAM::restart() { //瞬間的にモードを変えることで初期化
     int s = millis();
     bno.setMode(OPERATION_MODE_CONFIG);
     delay(25);
     bno.setMode(OPERATION_MODE_AMG);
     delay(1000);
-    while ((millis() - s) < 2000) {
+    while ((millis() - s) < 1000) {
         sensors_event_t event;
         bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
         float accel_data[3] = { event.acceleration.x, event.acceleration.y};
