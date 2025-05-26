@@ -48,7 +48,7 @@ void GAM::get_cord() {
     for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
         if (accel_data[i] > 0) {
             accel_data[i] *= accel_offsetp[robotNUM][i];
-        } else if (accel_data < 0) {
+        } else if (accel_data[i] < 0) {
             accel_data[i] *= accel_offsetm[robotNUM][i];
         }
         if (i == 0) {
@@ -56,7 +56,7 @@ void GAM::get_cord() {
         } else {
             j = 0;
         }
-        if (accel_data[j] > accel_noise) {
+        if (accel_data[j] > accel_noise && first_PoMi[i] != 10) {
             if (fabs(accel_data[i]) < adaptive_noise) {
                 accel_data[i] = 0;
             }
@@ -73,7 +73,7 @@ void GAM::get_cord() {
     //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
     for (int i = 0; i < 2; i++) { 
         float accel_dif = old_accel_data[i] - accel_data[i];
-        if(fabs(accel_dif) < movement_border) { //静止時処理
+        if(fabs(accel_dif) == 0.0f) { //静止時処理
             ten_count += 1;
             if (ten_count >= reset_border) {
                 first_PoMi[i] = 10;
@@ -97,9 +97,6 @@ void GAM::get_cord() {
                 first_PoMi[i] = 0;
             }
             PoMi[i] = 0;
-        }
-        if (accel_data[i] != 0.0f) {
-            accel_data[i] += slow_tweak / accel_data[i];
         }
         if (first_PoMi[i] != PoMi[i] && zero_pro) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算
             a = fabs(old_accel_data[i]);
