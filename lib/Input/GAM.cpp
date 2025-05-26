@@ -18,14 +18,19 @@ void GAM::setup() {
     bno.setMode(OPERATION_MODE_AMG);
     delay(1000);
     azimuth = 0;
+    int sampleNUM[2] = {0, 0};
+    float total_noise[2] = {0.0f, 0.0f};
     while (millis() < 3000) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
         for (int i = 0; i < 2; i++) {
-            accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
+            total_noise[i] += accel_data[i];
+            sampleNUM[i] += 1;
         }
     }
+    accel_bias[0] = total_noise[0] / sampleNUM[0]; //平均値を計算
+    accel_bias[1] = total_noise[1] / sampleNUM[1]; //平均値を計算
 }
 
 int GAM::get_azimuth() {
@@ -57,7 +62,10 @@ void GAM::get_cord() {
         } else {
             j = 0;
         }
-        if (accel_data[j] > accel_noise && first_PoMi[i] != 10) {
+        if (accel_data[j] > accel_noise) {
+            if (accel_data[j] > accel_noise + 0.05 || accel_data[i] < accel_noise + 0.3) {
+                accel_data[i] += accel_offset[robotNUM][i];
+            }
             if (fabs(accel_data[i]) < adaptive_noise) {
                 accel_data[i] = 0;
             }
