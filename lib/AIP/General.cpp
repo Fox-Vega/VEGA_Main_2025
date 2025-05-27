@@ -14,6 +14,7 @@ void General::setup() {
     mybuzzer.setup();
     myswitch.setup();
     mypixel.clear();
+    mybuzzer.preset(1);
 }
 
 void General::startup() {
@@ -40,25 +41,23 @@ void General::startup() {
                 if (switch_pressed == 1){
                     mode = 1;
                     phase = 2;
-                    mybuzzer.start(200, 4);
-                    delay(500);
+                    mybuzzer.start(500, 200);
                 } else if (switch_pressed == 2) {
                     mode = 2;
                     phase = 2;
-                    mybuzzer.start(200, 4);
-                    delay(500);
+                    mybuzzer.start(500, 200);
                 } else if (switch_pressed == 3) {
                     mode = 3;
                     phase = 2;
-                    mybuzzer.start(200, 4);
-                    delay(500);
+                    mybuzzer.start(500, 200);
                 }
+                delay(100);
                 break;
             case 2:
                 if (switch_pressed == 1){
                     phase = 1;
-                    mybuzzer.start(100, 4);
-                    delay(500);
+                    startcord = 0;
+                    mybuzzer.start(100, 500);
                 } else if (switch_pressed == 2) {
                     if (startcord < 4) {
                         startcord += 1;
@@ -66,39 +65,33 @@ void General::startup() {
                         startcord = 0;
                     }
                     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
-                    mybuzzer.start(300, 4);
-                    delay(100);
-                    mybuzzer.start(300, 4);
-                    delay(500);
+                    mybuzzer.start(300, 100);
+                    mybuzzer.start(300, 500);
                 } else if (switch_pressed == 3) {
                     phase = 3;
-                    mybuzzer.start(200, 4);
-                    delay(500);
+                    mybuzzer.start(500, 500);
                 }
+                mybuzzer.start(300, 90);
+                delay(50);
                 break;
             case 3:
                 if (switch_pressed == 1){
                     phase = 2;
-                    mybuzzer.start(100, 4);
-                    delay(500);
+                    mybuzzer.start(100, 500);
                 } else if (switch_pressed == 2) {
                     gam.dir_reset();
                     gam.cord_reset();
                     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
-                    mybuzzer.start(300, 1);
-                    delay(500);
+                    mybuzzer.start(300, 500);
                 } else if (switch_pressed == 3) {
-                    delay(500);
+                    //機能無し
                 } else if (toggle_stat == 1) {
                     Run = true;
                     phase = 4;
-                    delay(500);
                 } else {
-                    mybuzzer.start(400, 8);
-                    delay(100);
-                    mybuzzer.start(400, 8);
-                    delay(500);
+                    mybuzzer.start(500, 30);
                 }
+                delay(100);
                 break;
         }
     }
