@@ -19,8 +19,8 @@ class General {
         short phase = 0; //設定フェーズ
         short color[3] = {1, 1, 1};
         //スタート座標　通常　左奥　右奥　右前　左前　
-        short startcords_x[5] = {0, 0, 0, 0, 0}; //スタート位置のx座標
-        short startcords_y[5] = {0, 0, 0, 0, 0}; //スタート位置のy座標
+        int startcords_x[5] = {1, 1, 1, 1, 1}; //スタート位置のx座標
+        int startcords_y[5] = {1, 1, 1, 1, 1}; //スタート位置のy座標
         short startPIXELs[5] = {99, 14, 2, 6, 10};
         short switch_pressed; //押されたスイッチ
         float lastbuzzer;

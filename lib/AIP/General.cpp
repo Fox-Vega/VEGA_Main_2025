@@ -9,11 +9,11 @@ void General::setup() {
     mypixel.multi(0, 15, 255, 128, 0);
     mypixel.shows();
     ball.setup();
-    gam.setup();
     // line.setup();
     mymotor.setup();
     mybuzzer.setup();
     myswitch.setup();
+    gam.setup();
     mypixel.clear();
     mypixel.shows();
     mybuzzer.preset(1);
@@ -91,8 +91,6 @@ void General::startup() {
                     mybuzzer.start(100, 500);
                 } else if (switch_pressed == 2) {
                     gam.dir_reset();
-                    gam.cord_reset();
-                    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mybuzzer.start(300, 500);
                 } else if (switch_pressed == 3) {
                     //機能無し
@@ -112,6 +110,7 @@ void General::startup() {
     mypixel.brightness(999);
     mypixel.clear();
     mypixel.shows();
+    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
 }
 
 int General::get_run() {

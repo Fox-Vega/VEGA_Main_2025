@@ -3,6 +3,9 @@
 #include "AIP.h"
 
 void MyVECTOR::get_cord(int azimuth, int magnitude) {
+    if (magnitude < 0) {
+        azimuth += 180;
+    }
     theta = 90 - azimuth; //方位角をy軸基準の角度に変換(+-180度)
 
     //値を調整
@@ -13,8 +16,8 @@ void MyVECTOR::get_cord(int azimuth, int magnitude) {
     }
 
     //座標を計算
-    x = static_cast<int>(round(cos(radians(theta)) * magnitude));
-    y = static_cast<int>(round(sin(radians(theta)) * magnitude));
+    x = static_cast<int>(round(cos(radians(theta)) * abs(magnitude)));
+    y = static_cast<int>(round(sin(radians(theta)) * abs(magnitude)));
 }
 
 void MyVECTOR::get_plpocord(int po_x, int po_y) {
