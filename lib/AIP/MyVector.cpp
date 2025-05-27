@@ -13,8 +13,8 @@ void MyVECTOR::get_cord(int azimuth, int magnitude) {
     }
 
     //座標を計算
-    x = (int)cos(radians(theta)) * magnitude;
-    y = (int)sin(radians(theta)) * magnitude;
+    x = static_cast<int>(round(cos(radians(theta)) * magnitude));
+    y = static_cast<int>(round(sin(radians(theta)) * magnitude));
 }
 
 void MyVECTOR::get_plpocord(int po_x, int po_y) {

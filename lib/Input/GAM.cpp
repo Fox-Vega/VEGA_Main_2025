@@ -36,7 +36,11 @@ void GAM::setup() {
 int GAM::get_azimuth() {
     sensors_event_t euler_event;
     bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
-    return (int)(euler_event.orientation.x);
+    azimuth = euler_event.orientation.x - yawtweak;
+    if (azimuth < 0) {
+        azimuth += 360;
+    }
+    return azimuth;
 }
 
 void GAM::get_cord() {
@@ -171,7 +175,9 @@ void GAM::get_speed(float dt, float accel,short i) {
 }
 
 void GAM::dir_reset() {
-    yawtweak = gam.get_azimuth();
+    sensors_event_t euler_event;
+    bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
+    yawtweak = euler_event.orientation.x;
 }
 
 void GAM::cord_reset() {

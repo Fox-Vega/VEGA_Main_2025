@@ -21,7 +21,7 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         //調整用
         const float filterCoefficient = 0.1; //1に近いほど値の平滑度合いが強い　低速時の感度も変化 大事
         const float adaptive_noise = 0.03f; //動作判断時に使用するフィルタ
-        const float accel_noise = 0.05f; //静止判断時に使用するフィルタ
+        const float accel_noise = 0.07f; //静止判断時に使用するフィルタ
         const float accel_sparknoise = 10.0f; //スパークノイズ（個人的な呼び名）の判定基準（衝突にも流用）
         const float reset_border = 2; //加速度変化無しが何回続いたら速度をリセットするか
         const float accel_offsetp[2][2] = {{1.1, 1.0}, {1.0, 1.0}}; //+出力の倍率 x,y

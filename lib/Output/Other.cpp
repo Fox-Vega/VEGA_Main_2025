@@ -16,88 +16,69 @@ void MyPIXEL::brightness(int brightness) {
 }
 
 void MyPIXEL::uni(int PIXELNUM, int red, int green, int blue) {
-    if (usePIXEL == true) {
-        PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red, green, blue));
-        PIXEL.show();
-    }
+    PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red, green, blue));
 }
 
 void MyPIXEL::multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue) {
-    if (usePIXEL == true) {
-        for (int i = PIXELNUMstart; i <= PIXELNUMend; i++) {
-            mypixel.uni(i, red, green, blue);
-        }
-    }
-}
-
-void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
-    if (usePIXEL == true) {
-        float ClosestPIXEL = (azimuth / 360 * NUMPIXEL);
-        if ((ClosestPIXEL - (int)ClosestPIXEL) > 0.5) {
-            ClosestPIXEL = (int)ClosestPIXEL + 1;
-        } else {
-            ClosestPIXEL = (int)ClosestPIXEL;
-        }
-        if (ClosestPIXEL >= 16) {
-            ClosestPIXEL = 0;
-        }
-        if (num != 1) {
-            PIXELNUMstart = ClosestPIXEL - ((num - 1) / 2);
-        } else {
-            PIXELNUMstart = ClosestPIXEL;
-        }
-        for (int i = 0; i < num; i++) {
-            int j = PIXELNUMstart + i;
-            if (j >= NUMPIXEL) {
-                j -= 16;
-            }
-            mypixel.uni(j, red, green, blue);
-        }
-    }
-}
-
-void MyPIXEL::unis(int PIXELNUM, int red, int green, int blue) {
-    PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red, green, blue));
-    PIXEL.show();
-}
-
-void MyPIXEL::multis(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue) {
     for (int i = PIXELNUMstart; i <= PIXELNUMend; i++) {
         mypixel.uni(i, red, green, blue);
     }
 }
 
-void MyPIXEL::closests(int azimuth, int red, int green, int blue, int num) {
-    float ClosestPIXEL = (azimuth / 360 * NUMPIXEL);
-    if ((ClosestPIXEL - (int)ClosestPIXEL) > 0.5) {
-        ClosestPIXEL = (int)ClosestPIXEL + 1;
-    } else {
-        ClosestPIXEL = (int)ClosestPIXEL;
-    }
-    if (ClosestPIXEL >= 16) {
+void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
+    float ClosestPIXEL = (azimuth / 360.0f * NUMPIXEL); //浮動小数点演算を明確化
+    ClosestPIXEL = round(ClosestPIXEL); //標準の丸め関数を使用
+
+    //ピクセルの範囲補正
+    if (ClosestPIXEL >= NUMPIXEL) {
         ClosestPIXEL = 0;
     }
-    if (num != 1) {
-        PIXELNUMstart = ClosestPIXEL - ((num - 1) / 2);
-    } else {
-        PIXELNUMstart = ClosestPIXEL;
+
+    //numが偶数の場合も正しく範囲を決定
+    PIXELNUMstart = ClosestPIXEL - (num / 2);
+    if (PIXELNUMstart < 0) {
+        PIXELNUMstart += NUMPIXEL;
     }
+
     for (int i = 0; i < num; i++) {
-        int j = PIXELNUMstart + i;
-        if (j >= NUMPIXEL) {
-            j -= 16;
-        }
+        int j = (PIXELNUMstart + i) % NUMPIXEL; //インデックス補正を動的に処理
+
         mypixel.uni(j, red, green, blue);
     }
+}
+
+void MyPIXEL::rainbow() {
+    if (usePIXEL == 1) {
+        for(int i = 0; i < (int)PIXEL.numPixels(); i++) {
+            //ストリップの長さに沿って色相環（65536の範囲）を1回転させる量だけピクセルの色相をオフセットします。
+            int pixelHue = step_num + (i * 65536L / PIXEL.numPixels());
+            //ColorHSV関数に色相(0 to 65535)を渡し、その結果をgamma32()でガンマ補正します。
+            PIXEL.setPixelColor(i, PIXEL.gamma32(PIXEL.ColorHSV(pixelHue)));
+        }
+        PIXEL.show();
+        step_num += 256;
+        if (step_num == 65536) {
+            step_num = 0;
+        }
+        delay(8);
+    }
+}
+
+void MyPIXEL::show() {
+    if (usePIXEL == 1) {
+        PIXEL.show();
+    }
+}
+
+void MyPIXEL::shows() {
+    PIXEL.show();
 }
 
 void MyPIXEL::clear() {
     for (int i = 0; i < NUMPIXEL; i++) {
         PIXEL.setPixelColor(i, PIXEL.Color(0, 0, 0));
     }
-    PIXEL.show();
 }
-
 
 void MyBUZZER::setup() {
     pinMode(BUZZER_PIN, OUTPUT);

@@ -12,31 +12,40 @@ void BALL::read() {
     total_x = 0;
     total_y = 0;
     max_ballvalue = 0;
-    for (int i = 0; i < 16; i++) {
+
+    // ballvalues の初期化
+    for (int i = 0; i < NUMball; i++) {
         ballvalues[i] = 0;
     }
+
+    // センサー値の取得
     for (int j = 0; j < 60; j++) {
         for (int i = 0; i < NUMball; i++) {
-            if (digitalRead(ballPINs[i]) == HIGH) {
-                ballvalues[i] = ballvalues[i] + 1;
+            if (digitalRead(ballPINs[i]) == LOW) {
+                ballvalues[i]++;
             }
         }
     }
+
+    // 最大値の探索
     for (int i = 0; i < NUMball; i++) {
         if (ballvalues[i] > max_ballvalue) {
             max_ballvalue = ballvalues[i];
             max_ballNUM = i;
         }
     }
+
+    // ballNUMstart の補正
     int ballNUMstart = max_ballNUM - 3;
     if (ballNUMstart < 0) {
-        ballNUMstart += 16;
+        ballNUMstart += NUMball;
     }
-    for (int i = ballNUMstart; i < ballNUMstart + 6; i++) {
-        if (i >= NUMball) {
-            i -= 16;
-        }
-        myvector.get_cord(balldirs[i], ball.get_value(i));
+
+    // 座標計算
+    for (int i = 0; i < 6; i++) {
+        int ballNUM = (ballNUMstart + i) % NUMball; // 自動循環処理
+
+        myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
         total_x += myvector.get_x();
         total_y += myvector.get_y();
     }
