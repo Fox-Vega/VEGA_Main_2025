@@ -6,6 +6,7 @@
 
 void setup() {
     general.setup();
+    general.startup();
 }
 
 void loop() {
