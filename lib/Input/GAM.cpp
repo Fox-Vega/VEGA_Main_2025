@@ -179,6 +179,11 @@ void GAM::cord_reset() {
     world_y = 0;
 }
 
+void GAM::cord_custom(int x, int y) {
+    world_x = x;
+    world_y = y;
+}
+
 void GAM::restart() { //瞬間的にモードを変えることで初期化
     int s = millis();
     bno.setMode(OPERATION_MODE_CONFIG);
