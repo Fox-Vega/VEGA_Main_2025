@@ -1,17 +1,15 @@
 #pragma once
 
 #include <Arduino.h>
-#include "Input.h"
-#include "Output.h"
-#include "Process.h"
-#include "AIP.h"
 
 class Test {
     public:
-        void gyro();
+        void test_();
+        void input();
         // void goal();
         void ir();
         // void ln();
-
     private:
+        int t_mode = 1;
+        int lastbuzzer = 0;
 };

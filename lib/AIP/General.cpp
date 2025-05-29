@@ -6,15 +6,17 @@
 void General::setup() {
     Serial.begin(9600);
     mypixel.setup();
-    mypixel.multi(0, 15, 255, 128, 0);
+    mypixel.multi(0, 15, 255, 255, 255);
     mypixel.shows();
+    mypixel.multi(0, 15, 255, 128, 0);
+    mypixel.show();
     ball.setup();
     // line.setup();
     mymotor.setup();
     mybuzzer.setup();
     myswitch.setup();
     gam.setup();
-    mypixel.clear();
+    mypixel.multi(0, 15, 255, 255, 255);
     mypixel.shows();
     mybuzzer.preset(1);
 }
@@ -28,22 +30,29 @@ void General::startup() {
         if (phase < 3) {
             mypixel.clear();
             if (mode == 1) {
-                mypixel.multi(0, 15, 255, 0, 0);
+                mypixel.multi(0, 15, 255, 130, 130);
             } else if (mode == 2) {
-                mypixel.multi(0, 15, 0, 0, 255);
+                mypixel.multi(0, 15, 130, 255, 130);
             } else if (mode == 3) {
-                mypixel.multi(0, 15, 255, 255, 0);
+                mypixel.multi(0, 15, 255, 255, 90);
             }
+            int d = 0 - gam.get_azimuth();
+            if (d < 0) {
+                d += 360;
+            }
+            mypixel.closest(d, 255, 0, 100, 3);
             if (startPIXELs[startcord] == 99) {
-                mypixel.uni(2, 255, 0, 255);
-                mypixel.uni(6, 255, 0, 255);
-                mypixel.uni(10, 255, 0, 255);
-                mypixel.uni(14, 255, 0, 255);
+                mypixel.uni(2, 255, 255, 255);
+                mypixel.uni(6, 255, 255, 255);
+                mypixel.uni(10, 255, 255, 255);
+                mypixel.uni(14, 255, 255, 255);
             } else {
-                mypixel.uni(startPIXELs[startcord], 255, 0, 255);
+                mypixel.uni(startPIXELs[startcord], 255, 255, 255);
             }
             ball.read();
-            mypixel.closest(ball.get_azimuth(), 255, 255, 0, 3);
+            if (ball.get_magnitude() != 0) {
+                mypixel.closest(ball.get_azimuth(), 80, 0, 255, 1);
+            }
             mypixel.shows();
         }
         switch (phase) {
@@ -99,7 +108,7 @@ void General::startup() {
                     phase = 4;
                 } else {
                     mypixel.rainbow();
-                    if (millis() - lastbuzzer > 200) {
+                    if (millis() - lastbuzzer > 500) {
                         mybuzzer.start(400, 50);
                         lastbuzzer = millis();
                     }

@@ -12,14 +12,13 @@ void BALL::read() {
     total_x = 0;
     total_y = 0;
     max_ballvalue = 0;
-
     // ballvalues の初期化
     for (int i = 0; i < NUMball; i++) {
         ballvalues[i] = 0;
     }
 
     // センサー値の取得
-    for (int j = 0; j < 60; j++) {
+    for (int j = 0; j < 25; j++) {
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
@@ -36,13 +35,13 @@ void BALL::read() {
     }
 
     // ballNUMstart の補正
-    int ballNUMstart = max_ballNUM - 3;
+    int ballNUMstart = max_ballNUM - 2;
     if (ballNUMstart < 0) {
         ballNUMstart += NUMball;
     }
 
     // 座標計算
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 4; i++) {
         int ballNUM = (ballNUMstart + i) % NUMball; // 自動循環処理
 
         myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
@@ -52,11 +51,14 @@ void BALL::read() {
 }
 
 int BALL::get_value(short ballNUM) { 
+    if (ballvalues[ballNUM] < detection_border) {
+        ballvalues[ballNUM] = 0;
+    }
     return ballvalues[ballNUM] * ballvalue_offset;
 }
 
 int BALL::get_magnitude() {
-    return myvector.get_magnitude(total_x, total_y);
+    return ballvalues[max_ballNUM] * ballvalue_offset;
 }
 
 int BALL::get_azimuth() {
