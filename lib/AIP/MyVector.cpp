@@ -11,6 +11,8 @@ void MyVECTOR::get_cord(int azimuth, int magnitude) {
     //値を調整
     if (theta < -180) {
         theta += 360;
+    } else if (theta > 540) {
+        theta -= 720;
     } else if (theta > 180) {
         theta -= 360;
     }

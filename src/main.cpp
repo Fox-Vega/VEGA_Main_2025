@@ -17,6 +17,6 @@ void loop() {
     } else if (general.get_mode() == 2) {
         defence.defence_();
     } else {
-        //test
+        test.test_();
     }
 }

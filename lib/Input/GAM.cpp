@@ -12,24 +12,12 @@ Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 void GAM::setup() {
     Wire.begin();
     if (!bno.begin()) {
-        Serial.println("BNO055 not detected.");
         while (1); // センサー未検出時は停止
     }
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
     delay(1000);
     azimuth = 0;
-    mypixel.multi(0, 15, 255, 0, 255);
-    mypixel.shows();
-    int i = 0;
-    while(i == 0) {
-        if (myswitch.check_tact() == 2) {
-            i = 1;
-        }
-        mybuzzer.start(400, 50);
-    }
-    mypixel.multi(0, 15, 255, 128, 0);
-    mypixel.shows();
     gam.cord_custom(0, 0);
     delay(500);
     int sampleNUM[2] = {0, 0};
@@ -140,12 +128,15 @@ void GAM::get_cord() {
         }
     }
 
-    // 台形積分で速度算出
+    // 台形積分で変位算出
     states[0] += ((speed[0] + old_speed[0]) * dt) / 2 * 100;
     states[1] += ((speed[1] + old_speed[1]) * dt) / 2 * 100;
 
-    int azimuth_x = gam.get_azimuth() + 90;
-    int azimuth_y = gam.get_azimuth();
+    int azimuth_y = 0 - gam.get_azimuth();
+    if (azimuth_y < 0) {
+        azimuth_y += 360;
+    }
+    int azimuth_x = azimuth_y + 90;
     if (azimuth_x >= 360) {
         azimuth -= 360;
     }
@@ -163,14 +154,14 @@ void GAM::get_cord() {
     old_speed[0] = speed[0];
     old_speed[1] = speed[1];
 
-    Serial.print(">pos_x:");
-    Serial.println(states[0]);
-    Serial.print(">pos_y:");
-    Serial.println(states[1]);
-    Serial.print(">world_x:");
-    Serial.println(world_x);
-    Serial.print(">world_y:");
-    Serial.println(world_y);
+    // Serial.print(">pos_x:");
+    // Serial.println(states[0]);
+    // Serial.print(">pos_y:");
+    // Serial.println(states[1]);
+    // Serial.print(">world_x:");
+    // Serial.println(world_x);
+    // Serial.print(">world_y:");
+    // Serial.println(world_y);
 }
 
 void GAM::get_speed(float dt, float accel, short i) {

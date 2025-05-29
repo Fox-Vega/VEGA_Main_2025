@@ -12,12 +12,14 @@ class BALL {
 
     private:
         //調整用
-        const int ballvalue_offset = 200;
+        const int ballvalue_offset = 13;
+        const int detection_border = 3; //反応ボーダー
         
         int total_x = 0;
         int total_y = 0;
         int ballvalue;
         int ballvalues[16]; //ボールの値を格納する配列
+        int total_magnitude = 0;
         byte ballNUMstart;
         byte max_ballNUM = 0;
         byte max_ballvalue = 0;

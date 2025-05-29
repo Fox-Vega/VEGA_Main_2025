@@ -21,8 +21,9 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         dir_azimuth -= 360;
     }
     difixPWM = mymotor.difix(dir_azimuth); //姿勢制御の値
+    int azimuth = gam.get_azimuth();
     for (int i = 0; i < 4; i++) {
-        azimuth_motor = movement_azimuth - motor_degrees[i]; //オムニの軸がy軸になるようにする
+        azimuth_motor = movement_azimuth - azimuth - motor_degrees[i]; //オムニの軸がy軸になるようにする
         myvector.get_cord(azimuth_motor, power_ - abs(difixPWM)); //座標計算
         power = myvector.get_x(); //x座標を取得(モーターの回転速度)
         if (power >= 0) {   
