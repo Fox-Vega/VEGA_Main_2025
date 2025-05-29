@@ -12,7 +12,6 @@
 // int Purple[3] = {255, 0, 255};
 // int White[3] = {255, 255, 255};
 
-
 class MyPIXEL {
     public:
         void setup(); //初期設定
@@ -22,22 +21,22 @@ class MyPIXEL {
         void uni(int PIXELNUM, int red, int green, int blue); //単ピクセル点灯
         void multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue); //連続ピクセル点灯
         void closest(int azimuth, int red, int green, int blue, int num);
-        void unis(int PIXELNUM, int red, int green, int blue); //単ピクセル点灯
-        void multis(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue); //連続ピクセル点灯
-        void closests(int azimuth, int red, int green, int blue, int num); //入力角度に最も近いピクセル点灯 numには光らせる個数を入力（奇数）
+        void rainbow();
+        void show();
+        void shows();
         void clear(); //全消灯
 
     private:
         //調整用
-        const bool usePIXEL = true; //ネオピクセルの使用有無
+        const byte usePIXEL = 1; //ネオピクセルの使用有無
         const int PIXELbrightness = 255; //最大で255
         
+        int step_num = 0;
         int PIXELNUMstart;
         const byte PIXELPIN = 45; // Pin where the NeoPixel ring is connected
         const byte NUMPIXEL = 16; // NUMber of pixels in the strip
         Adafruit_NeoPixel PIXEL = Adafruit_NeoPixel(NUMPIXEL, PIXELPIN, NEO_GRB + NEO_KHZ800);
 };
-
 
 class MyBUZZER {
     public:

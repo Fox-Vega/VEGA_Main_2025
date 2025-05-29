@@ -4,7 +4,7 @@ class MySWITCH {
     public:
         void setup();
         int check_tact();//タクトスイッチの状態を確認（右側が優先）
-        int check_toggle();//トグルスイッチの状態を確認
+        int check_toggle();//トグルスイッチの状態を確認 0が奥、1が手前
 
     private:
         byte pushed_tact;

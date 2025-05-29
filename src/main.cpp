@@ -10,8 +10,9 @@ void setup() {
 }
 
 void loop() {
-    gam.get_cord();
     if (general.get_mode() == 1) {
+        gam.get_cord();
+        ball.read();
         // attack.attack_();
     } else if (general.get_mode() == 2) {
         defence.defence();

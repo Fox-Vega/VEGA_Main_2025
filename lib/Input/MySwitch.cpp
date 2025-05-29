@@ -8,7 +8,7 @@ void MySWITCH::setup() {
 }
 
 int MySWITCH::check_tact() {
-    pushed_tact = 10;
+    pushed_tact = 0;
     for (int i = 0; i < 3; i++) {
         if (digitalRead(tactswitchPIN[i]) == LOW) {
             pushed_tact = i + 1;
@@ -19,7 +19,7 @@ int MySWITCH::check_tact() {
 
 int MySWITCH::check_toggle() {
     toggle_stat = 0;
-    if (digitalRead(toggleswitchPIN) == LOW) {
+    if (digitalRead(toggleswitchPIN) == HIGH) {
         toggle_stat = 1;
     }
     return toggle_stat;

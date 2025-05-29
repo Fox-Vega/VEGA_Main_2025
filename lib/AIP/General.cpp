@@ -6,59 +6,69 @@
 void General::setup() {
     Serial.begin(9600);
     mypixel.setup();
-    mypixel.multis(0, 15, 255, 128, 0);
+    mypixel.multi(0, 15, 255, 128, 0);
+    mypixel.shows();
     ball.setup();
-    gam.setup();
     // line.setup();
     mymotor.setup();
     mybuzzer.setup();
     myswitch.setup();
+    gam.setup();
     mypixel.clear();
+    mypixel.shows();
+    mybuzzer.preset(1);
 }
 
 void General::startup() {
     phase = 1;
-    mypixel.brightness(100);
+    mypixel.brightness(150);
     while (phase < 4) {
         switch_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
-        Serial.println(switch_pressed);
-        Serial.println(toggle_stat);
         if (phase < 3) {
+            mypixel.clear();
             if (mode == 1) {
-                mypixel.multis(0, 15, 255, 0, 0);
+                mypixel.multi(0, 15, 255, 0, 0);
             } else if (mode == 2) {
-                mypixel.multis(0, 15, 0, 0, 255);
+                mypixel.multi(0, 15, 0, 0, 255);
             } else if (mode == 3) {
-                mypixel.multis(0, 15, 255, 0, 255);
+                mypixel.multi(0, 15, 255, 255, 0);
             }
-            mypixel.unis(startPIXELs[startcord], 0, 255, 0);
-            mypixel.closests(ball.get_azimuth(), 255, 255, 0, 0);
+            if (startPIXELs[startcord] == 99) {
+                mypixel.uni(2, 255, 0, 255);
+                mypixel.uni(6, 255, 0, 255);
+                mypixel.uni(10, 255, 0, 255);
+                mypixel.uni(14, 255, 0, 255);
+            } else {
+                mypixel.uni(startPIXELs[startcord], 255, 0, 255);
+            }
+            ball.read();
+            mypixel.closest(ball.get_azimuth(), 255, 255, 0, 3);
+            mypixel.shows();
         }
         switch (phase) {
             case 1:
                 if (switch_pressed == 1){
                     mode = 1;
                     phase = 2;
-                    mybuzzer.start(200, 4);
-                    delay(500);
+                    mybuzzer.start(500, 200);
                 } else if (switch_pressed == 2) {
                     mode = 2;
                     phase = 2;
-                    mybuzzer.start(200, 4);
-                    delay(500);
+                    mybuzzer.start(500, 200);
                 } else if (switch_pressed == 3) {
                     mode = 3;
                     phase = 2;
-                    mybuzzer.start(200, 4);
-                    delay(500);
+                    mybuzzer.start(500, 200);
                 }
+                delay(100);
                 break;
             case 2:
                 if (switch_pressed == 1){
                     phase = 1;
-                    mybuzzer.start(100, 4);
-                    delay(500);
+                    startcord = 0;
+                    mode = 0;
+                    mybuzzer.start(100, 500);
                 } else if (switch_pressed == 2) {
                     if (startcord < 4) {
                         startcord += 1;
@@ -66,43 +76,41 @@ void General::startup() {
                         startcord = 0;
                     }
                     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
-                    mybuzzer.start(300, 4);
-                    delay(100);
-                    mybuzzer.start(300, 4);
-                    delay(500);
+                    mybuzzer.start(500, 50);
+                    mybuzzer.start(500, 50);
                 } else if (switch_pressed == 3) {
                     phase = 3;
-                    mybuzzer.start(200, 4);
-                    delay(500);
+                    mybuzzer.start(500, 500);
+                    mypixel.clear();
+                    mypixel.shows();
                 }
                 break;
             case 3:
                 if (switch_pressed == 1){
                     phase = 2;
-                    mybuzzer.start(100, 4);
-                    delay(500);
+                    mybuzzer.start(100, 500);
                 } else if (switch_pressed == 2) {
                     gam.dir_reset();
-                    gam.cord_reset();
-                    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
-                    mybuzzer.start(300, 1);
-                    delay(500);
+                    mybuzzer.start(300, 500);
                 } else if (switch_pressed == 3) {
-                    delay(500);
+                    //機能無し
                 } else if (toggle_stat == 1) {
                     Run = true;
                     phase = 4;
-                    delay(500);
                 } else {
-                    mybuzzer.start(400, 8);
-                    delay(100);
-                    mybuzzer.start(400, 8);
-                    delay(500);
+                    mypixel.rainbow();
+                    if (millis() - lastbuzzer > 200) {
+                        mybuzzer.start(400, 50);
+                        lastbuzzer = millis();
+                    }
                 }
                 break;
         }
     }
     mypixel.brightness(999);
+    mypixel.clear();
+    mypixel.shows();
+    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
 }
 
 int General::get_run() {
