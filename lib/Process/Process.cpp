@@ -1,5 +1,5 @@
 #include <Process.h>
-
+#include <Defense.h>
 Attack attack;
-// Defence defence;
+Defense defense;
 Test test;

@@ -9,6 +9,19 @@
 #include <Arduino.h>
 #include <math.h>
 
+
+void DEFENCE::setup() {
+    //初期設定
+    Dline.deg = 0;
+    Dline.dist = 0;
+    Dline.detect = false;
+    Dball.deg = 0;
+    Dball.dist = 0;
+    Dball.flag = 999;
+    Dball.detect = false;
+    go_ang = 0; //初期値
+}
+
 void DEFENCE::defense_(void) {
     Dline.deg = line.get_azimuth();
     Dline.dist = line.get_dist();
