@@ -1,4 +1,4 @@
-#include <Defence.h>
+#include <Defense.h>
 #include <Input.h>
 #include <Output.h>
 #include <Process.h>
@@ -9,13 +9,13 @@
 #include <Arduino.h>
 #include <math.h>
 
-void DEFENCE::defence_() {
+void DEFENCE::defense_(void) {
     Dline.deg = line.get_azimuth();
     Dline.dist = line.get_dist();
     Dline.detect = line.read();
     if(Dline.dist>linedist)
     {
-        motor.run(azimuth, distance,0);
+        //motor.run(azimuth, distance,0);
     }
     else
     {

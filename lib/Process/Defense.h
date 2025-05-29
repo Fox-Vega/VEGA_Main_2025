@@ -11,23 +11,23 @@
 
 #define linedist 10
 #define linecentor 0.1
-class LINE {
+class DEFENCE {
 public:
     void setup();
-    void defence_();
-    struct Dline
+    void defense_();
+private:
+struct Dline
     {
-        int linne_deg=0;
-        int line_dist=0;
-        bool line_detect=false;
+        int deg=0;
+        int dist=0;
+        bool detect=false;
     };
     struct Dball
     {
-        int ball_deg=0;
-        int ball_dist=0;
-        int ball_flag=0; // 0:左, 1:真ん中, 2:右, 3:後ろ
-        bool ball_detect=false;
+        int deg=0;
+        int dist=0;
+        int flag=0; // 0:左, 1:真ん中, 2:右, 3:後ろ
+        bool detect=false;
     };
-private:
     int go_ang=0;
 };

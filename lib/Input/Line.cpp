@@ -62,7 +62,12 @@ int LINE::get_dist() {
 }
 
 int LINE::read(){ //読み取りを24かいを三回繰り返して当たっていたら配列に１足して　２以上でboolをtrue
-    int line_value [24]={0};
+    for(int i=0; i<NUMLines; i++){ //初期化
+        line_status[i] = false;
+        line_detect[i] = 999;
+        line_value [i] = 0;
+    }
+
     int progress = 0;
     for(int j=0; j<3; j++){ // 3回繰り返し
         for(int k=0; k<3; k++){ // k: 0=readPin1, 1=readPin2, 2=readPin3
@@ -158,7 +163,7 @@ int LINE::get_linedeg() {
 int LINE::get_line_dist(int linedeg ,int linedeg2){
     int dist = 0;
     int linedist = 0;
-    int theata=line.calculate_deg('s',linedeg2, linedeg);
+    int theata=calculate_deg('s',linedeg2, linedeg);
     linedist=cos(radians(theata))*sensordist;
     return linedist;
 }
