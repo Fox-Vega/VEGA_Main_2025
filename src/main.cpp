@@ -14,7 +14,7 @@ void loop() {
     if (general.get_mode() == 1) {
         // attack.attack_();
     } else if (general.get_mode() == 2) {
-        //defence
+        defence.defence();
     } else {
         //test
     }

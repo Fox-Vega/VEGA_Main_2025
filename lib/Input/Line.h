@@ -22,7 +22,7 @@ public:
         A:加算（slow）[num1+num2] ex) 240+230=10
         a:加算（fast）[num1+num2] ex) 240+230=10
         S:減算（slow）[num1-num2] ex) 30-45=345
-        s:減算（fast）[num1-num2] ex) 30-45=345                        ＜＜＜むずい、先に反転やって後で頑張る！
+        s:減算（fast）[num1-num2] ex) 30-45=345
         r:反転（fast only）[reverse num1] ex)30→150  [-180]
         */
     int cal_deg(char mode, int num1, int num2);//上の略、結果や引数は同じ
