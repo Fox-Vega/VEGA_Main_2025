@@ -202,12 +202,12 @@ int LINE::calculate_deg(char mode, int num1, int num2) {//角度計算
             r = num1;
         }
     }
-    else if(mode='r')//反転（fast only）
+    else if(mode=='r')//反転（fast only）
     {//num1を180度回転　　180にnum1を引いた絶対値を返す
         r=abs(180 - num1);
         r = num1;
     }
-    else if(mode='s')//減算（fast）
+    else if(mode=='s')//減算（fast）
     {//一気に減算して0以下になってたら360で割った余りを返す（間違ってたら勝手に書いといていいよ）
         num1 = num1 - num2;
         if(num1<0){

@@ -4,7 +4,7 @@
 #include <Defense.h>
 
 extern Attack attack;
-extern Defense defence;
+extern defense defense;
 // #include <Defense.h>
 #include "Test.h"
 
