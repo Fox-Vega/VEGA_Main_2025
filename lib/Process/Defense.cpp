@@ -45,7 +45,7 @@ void DEFENCE::defense_(void) {
         } else {
             ballflag1 = 3; //後ろ
         }
-        if(ballflag1 == 0) {
+        if(ballflag1 == 0) {//左に動くとき
             if(linedist<linecentor)//左に動くだけ
             {
                 motor.run(azimuth, distance, 0);
