@@ -14,6 +14,9 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
+    if (power_limit == 1) {
+        power_ *= power_limiter;
+    }
     if (movement_azimuth >= 360) {
         movement_azimuth -= 360;
     }
@@ -68,4 +71,8 @@ void MyMOTOR::brake() {
         analogWrite(motor_PIN1[i], 255);
         analogWrite(motor_PIN2[i], 255);
     }
+}
+
+void MyMOTOR::limiter(int stat) {
+    power_limit = stat;
 }
