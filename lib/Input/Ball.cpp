@@ -13,11 +13,7 @@ void Ball::read() {
     int magnitude = 0;
     for (int i = 0; i < 2; i++) {
         ball.read_();
-        int azimuth_ = ball.get_azimuth_ + gam.get_azimuth()
-        if (azimuth_ >= 360) {
-            azimuth_ -= 360;
-        }
-        azimuth += azimuth_;
+        azimuth += ball.get_azimuth_;
         magnitude += ball.get_magnitude_();
     }
     myvector.get_cord(azimuth / 2, magnitude / 2);
