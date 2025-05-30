@@ -17,6 +17,7 @@ class MyMOTOR {
         float ki = 0.5; //積分 を大きくすると誤差が蓄積されにくくなるが、過剰補正のリスク
         float kd = 1.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
         float pwmscale = 0.71; //補正速度
+        float power_limiter = 140 / 255;
 
         bool PoMi; //正・負判断用
         bool difix_PoMi; //姿勢制御値の正・負判断用
