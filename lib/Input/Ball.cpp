@@ -41,7 +41,7 @@ void BALL::read() {
     }
 
     // 座標計算
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         int ballNUM = (ballNUMstart + i) % NUMball; // 自動循環処理
 
         myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
@@ -54,6 +54,7 @@ int BALL::get_value(short ballNUM) {
     if (ballvalues[ballNUM] < detection_border) {
         ballvalues[ballNUM] = 0;
     }
+    Serial.println(ballvalues[ballNUM]);
     return ballvalues[ballNUM] * ballvalue_offset;
 }
 
