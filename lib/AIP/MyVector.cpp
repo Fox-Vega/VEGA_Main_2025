@@ -47,29 +47,26 @@ void MyVECTOR::get_tarcord(int tar_azimuth, int tar_magnitude) {
     tarcord_y = (int)myvector.get_y() + pl_y;
 }
 
-void MyVECTOR::get_svec(int tar_azimuth, int tar_magnitude) {
+void MyVECTOR::get_tarsvec(int old_tar_azimuth, int old_tar_magnitude, int tar_azimuth, int tar_magnitude, int old_cord_x, int old_cord_y, int lastupdatetime) {
     cord_x = gam.get_x();
     cord_y = gam.get_y();
+    myvector.get_tarcord(old_tar_azimuth, old_tar_magnitude);
+    old_tarcord_x = myvector.get_tar_x();
+    old_tarcord_y = myvector.get_tar_y();
     myvector.get_tarcord(tar_azimuth, tar_magnitude);
     tarcord_x = myvector.get_tar_x();
     tarcord_y = myvector.get_tar_y();
     dt = millis() - lastupdatetime;
 
     //ズレを計算して秒間速度ベクトルに変換
-    svec_x = (int)((cord_x - lastcord_x) / dt) * 1000; //自機の速度ベクトル
-    svec_y = (int)((cord_y - lastcord_y) / dt) * 1000; //自機の速度ベクトル
-    tarsvec_x = (int)(((tarcord_x - lasttar_x) / dt) * 1000) - svec_x; //ターゲットの速度ベクトル
-    tarsvec_y = (int)(((tarcord_y - lasttar_y) / dt) * 1000) - svec_y; //ターゲットの速度ベクトル
+    svec_x = (int)((cord_x - old_cord_x) / dt) * 1000; //自機の速度ベクトル
+    svec_y = (int)((cord_y - old_cord_y) / dt) * 1000; //自機の速度ベクトル
+    tarsvec_x = (int)(((tarcord_x - old_tarcord_x) / dt) * 1000) - svec_x; //ターゲットの速度ベクトル
+    tarsvec_y = (int)(((tarcord_y - old_tarcord_y) / dt) * 1000) - svec_y; //ターゲットの速度ベクトル
 
     //ターゲットのベクトルから進行角(°)とマグニチュードを計算
     tarsvec_magnitude = myvector.get_magnitude(tarsvec_x, tarsvec_y);
     tarsvec_azimuth = myvector.get_azimuth(tarsvec_x, tarsvec_y);
-
-    //値の更新
-    lasttar_x = tarcord_x;
-    lasttar_y = tarcord_y;
-    lastcord_x = cord_x;
-    lastcord_y = cord_y;
 }
 
 int MyVECTOR::get_azimuth(int x, int y) {
