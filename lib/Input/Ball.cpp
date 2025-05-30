@@ -37,14 +37,6 @@ int Ball::get_magnitude() {
     return myvector.get_magnitude(x , y);
 }
 
-int Ball::get_x() {
-    return x;
-}
-
-int Ball::get_y() {
-    return y;
-}
-
 void BALL::read_() {
     x_ = 0;
     y_ = 0;
