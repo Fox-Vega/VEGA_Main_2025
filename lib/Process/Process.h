@@ -9,5 +9,5 @@ extern Defense Defense;
 #include "Test.h"
 
 extern Attack attack;
-// Defence defence;
+// extern Defense defense;
 extern Test test;

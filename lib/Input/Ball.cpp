@@ -8,12 +8,12 @@ void BALL::setup() {
     }
 }
 
-void Ball::read() {
+void BALL::read() {
     int azimuth = 0;
     int magnitude = 0;
     for (int i = 0; i < 2; i++) {
         ball.read_();
-        azimuth += ball.get_azimuth_;
+        azimuth += ball.get_azimuth_();
         magnitude += ball.get_magnitude_();
     }
     myvector.get_cord(azimuth / 2, magnitude / 2);
@@ -21,11 +21,11 @@ void Ball::read() {
     y = myvector.get_y();
 }
 
-int Ball::get_azimuth() {
+int BALL::get_azimuth() {
     return myvector.get_azimuth(x, y);
 }
 
-int Ball::get_worldazimuth() {
+int BALL::get_worldazimuth() {
     float worldazimuth = ball.get_azimuth() + gam.get_azimuth();
     if (worldazimuth >= 360) {
         worldazimuth -= 360;
@@ -33,7 +33,7 @@ int Ball::get_worldazimuth() {
     return worldazimuth;
 }
 
-int Ball::get_magnitude() {
+int BALL::get_magnitude() {
     return myvector.get_magnitude(x , y);
 }
 
