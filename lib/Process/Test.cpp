@@ -44,7 +44,13 @@ void Test::test_() {
 void Test::input() {
     ball.read();
     mypixel.multi(0, 15, 255, 255, 255);
-    if (myswitch.check_tact() == 2){
+    if (myswitch.check_tact() == 1) {
+        if (stabilize == 0) {
+            stabilize = 1;
+        } else {
+            stabilize = 0;
+        }
+    } else if (myswitch.check_tact() == 2){
         gam.dir_reset();
         mybuzzer.start(400, 50);
         delay(300);
@@ -65,6 +71,11 @@ void Test::input() {
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
     mypixel.show();
+    if (stabilize == 1) {
+        mymotor.run(0, 0, 0);
+    } else {
+        mymotor.brake();
+    }
 }
 
 void Test::ir() {
