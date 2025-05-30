@@ -55,6 +55,21 @@
 //             }
 //         } else if(ballflag1 == 1) {
 
+//         } else if(ballflag1 == 2) {
+
+//         } else {
+//             ballflag1 = 3; //後ろ
+//         }
+//         if(ballflag1 == 0) {//左に動くとき
+//             if(linedist<linecentor)//左に動くだけ
+//             {
+//                 motor.run(azimuth, distance, 0);
+//             } else if(linedist>=linecentor) {
+//                 //左に動く
+//                 motor.run(azimuth, distance, -1);
+//             }
+//         } else if(ballflag1 == 1) {
+
 // //         } else if(ballflag1 == 2) {
 
 // //         } else {
