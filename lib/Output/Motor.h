@@ -10,6 +10,7 @@ class MyMOTOR {
         int difix(int setpoint); //PID姿勢制御用
         void free(); //自由回転
         void brake(); //ブレーキ
+        void limiter(int stat);
 
     private:
         //調整用
@@ -19,6 +20,7 @@ class MyMOTOR {
         float pwmscale = 0.71; //補正速度
         float power_limiter = 140 / 255;
 
+        bool power_limit = 1;
         bool PoMi; //正・負判断用
         bool difix_PoMi; //姿勢制御値の正・負判断用
         short motorPWM; //機体動作用入力値
