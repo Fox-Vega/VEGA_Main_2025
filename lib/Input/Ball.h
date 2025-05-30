@@ -17,7 +17,7 @@ public:
 private:
     // 調整用パラメータ
     const int ballvalue_offset = 13;
-    const int detection_border = 3; // 反応ボーダー
+    const int detection_border = 0; // 反応ボーダー
 
     int x = 0;
     int y = 0;
