@@ -8,9 +8,42 @@ void BALL::setup() {
     }
 }
 
-void BALL::read() {
-    total_x = 0;
-    total_y = 0;
+void Ball::read() {
+    int azimuth = 0;
+    int magnitude = 0;
+    for (int i = 0; i < 2; i++) {
+        ball.read();
+        azimuth += ball.get_azimuth();
+        magnitude += ball.get_magnitude();
+    }
+    myvector.get_cord(azimuth / 2, magnitude / 2);
+    x = myvector.get_x();
+    y = myvector.get_y();
+}
+
+int Ball::get_azimuth() {
+    return myvector.get_azimuth(x, y);
+}
+
+int Ball::get_worldazimuth() {
+    return ball.get_azimuth() + gam.get_azimuth();
+}
+
+int Ball::get_magnitude() {
+    return myvector.get_magnitude(x , y);
+}
+
+int Ball::get_x() {
+    return x;
+}
+
+int Ball::get_y() {
+    return y;
+}
+
+void BALL::read_() {
+    x_ = 0;
+    y_ = 0;
     max_ballvalue = 0;
     // ballvalues の初期化
     for (int i = 0; i < NUMball; i++) {
@@ -42,11 +75,11 @@ void BALL::read() {
 
     // 座標計算
     for (int i = 0; i < 4; i++) {
-        int ballNUM = (ballNUMstart + i) % NUMball; // 自動循環処理
+        int ballNUM = (ballNUMstart + i) % NUMball; // 自動循環
 
         myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
-        total_x += myvector.get_x();
-        total_y += myvector.get_y();
+        x_ += myvector.get_x();
+        y_ += myvector.get_y();
     }
 }
 
@@ -57,10 +90,10 @@ int BALL::get_value(short ballNUM) {
     return ballvalues[ballNUM] * ballvalue_offset;
 }
 
-int BALL::get_magnitude() {
-    return ballvalues[max_ballNUM] * ballvalue_offset;
+int BALL::get_azimuth_() {
+    return myvector.get_azimuth(x_, y_);
 }
 
-int BALL::get_azimuth() {
-    return myvector.get_azimuth(total_x, total_y);
+int BALL::get_magnitude_() {
+    return ballvalues[max_ballNUM] * ballvalue_offset;
 }
