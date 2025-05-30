@@ -11,5 +11,5 @@ class Test {
         // void ln();
     private:
         int t_mode = 1;
-        int lastbuzzer = 0;
+        float lastbuzzer;
 };

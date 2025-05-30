@@ -85,28 +85,32 @@ void MyBUZZER::setup() {
 }
 
 void MyBUZZER::start(int BUZZERnote, int BUZZERduration) {
-    if (BUZZERduration != 999) {
-        tone(BUZZER_PIN, BUZZERnote, BUZZERduration);
-        delay(BUZZERduration * 1.5);
-        noTone(BUZZER_PIN);
-        delay(10);
-    } else {
-        tone(BUZZER_PIN, BUZZERnote);
+    if (usebuzzer == 1) {
+        if (BUZZERduration != 999) {
+            tone(BUZZER_PIN, BUZZERnote, BUZZERduration);
+            delay(BUZZERduration * 1.5);
+            noTone(BUZZER_PIN);
+            delay(10);
+        } else {
+            tone(BUZZER_PIN, BUZZERnote);
+        }
     }
 }
 
 void MyBUZZER::preset(int BUZZERpresetNUM) {
-    if (BUZZERpresetNUM == 1) {
-        int Melody_Preset1[] = {260, 260, 260, 255, 0, 300, 250, 330};
-            int NoteDurs[] = {7, 7, 7, 7, 14, 4, 5, 3};
-            int Size_Melody_Preset1 = sizeof(Melody_Preset1)/sizeof(Melody_Preset1[0]);
-            for (int playing_Note = 0; playing_Note < Size_Melody_Preset1; playing_Note++) {
-                    int noteDur = 1000 / NoteDurs[playing_Note];
-                    tone(BUZZER_PIN, Melody_Preset1[playing_Note], noteDur);
-                    int PBTWNotes = noteDur * 1.4;
-                    delay(PBTWNotes);
-                    noTone(BUZZER_PIN);
-            }
-            delay(100);
+    if (usebuzzer == 1) {
+        if (BUZZERpresetNUM == 1) {
+            int Melody_Preset1[] = {260, 260, 260, 255, 0, 300, 250, 330};
+                int NoteDurs[] = {7, 7, 7, 7, 14, 4, 5, 3};
+                int Size_Melody_Preset1 = sizeof(Melody_Preset1)/sizeof(Melody_Preset1[0]);
+                for (int playing_Note = 0; playing_Note < Size_Melody_Preset1; playing_Note++) {
+                        int noteDur = 1000 / NoteDurs[playing_Note];
+                        tone(BUZZER_PIN, Melody_Preset1[playing_Note], noteDur);
+                        int PBTWNotes = noteDur * 1.4;
+                        delay(PBTWNotes);
+                        noTone(BUZZER_PIN);
+                }
+                delay(100);
+        }
     }
 }

@@ -45,5 +45,6 @@ class MyBUZZER {
         void preset(int BUZZERpresetNUM); //既定の音を鳴らす
 
     private:
+        const bool usebuzzer = 0;
         const byte BUZZER_PIN = 47;
 };
