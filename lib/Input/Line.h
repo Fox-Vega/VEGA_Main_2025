@@ -56,6 +56,7 @@ private:
     int Line_memory[NUMLines][2] = {0};
     bool line_status[NUMLines] = {0};
     int line_detect[NUMLines] = {0};
+    int line_value[NUMLines] = {0};
     int count = 0;
     int progress = 0;
     // 内部処理関数

@@ -1,4 +1,4 @@
-#include<Defence.h>
+#include <Defense.h>
 #include <Input.h>
 #include <Output.h>
 #include <Process.h>
@@ -9,15 +9,13 @@
 #include <Arduino.h>
 #include <math.h>
 
-void Defence::defence() {
-    // LINEセンサの角度を取得
-    int azimuth = line.get_azimuth();
-    // LINEセンサの距離を取得
-    int distance = line.get_dist();
-    if(distance>linedist)
+void DEFENCE::defense_(void) {
+    Dline.deg = line.get_azimuth();
+    Dline.dist = line.get_dist();
+    Dline.detect = line.read();
+    if(Dline.dist>linedist)
     {
-        //戻る
-        motor.run(azimuth, distance,0);
+        //motor.run(azimuth, distance,0);
     }
     else
     {
@@ -50,4 +48,5 @@ void Defence::defence() {
             MyPIXEL.set_color(255, 0, 0); //後ろは赤色
             MyPIXEL.show();
         }
+}
 }
