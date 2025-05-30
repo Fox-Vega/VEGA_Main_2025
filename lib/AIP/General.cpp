@@ -127,7 +127,7 @@ int General::get_run() {
     if (myswitch.check_toggle() == 0) {
         Run = false;
     } else {
-        Run = true; 
+        Run = true;
     }
     return Run;
 }

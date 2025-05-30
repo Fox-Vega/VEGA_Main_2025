@@ -161,7 +161,6 @@ int LINE::get_linedeg() {
 }
 
 int LINE::get_line_dist(int linedeg ,int linedeg2){
-    int dist = 0;
     int linedist = 0;
     int theata=calculate_deg('s',linedeg2, linedeg);
     linedist=cos(radians(theata))*sensordist;
