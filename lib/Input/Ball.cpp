@@ -61,9 +61,11 @@ int BALL::get_value(short ballNUM) {
 }
 
 int BALL::get_magnitude() {
+    Serial.println(ballvalues[max_ballNUM] * ballvalue_offset);
     return ballvalues[max_ballNUM] * ballvalue_offset;
 }
 
 int BALL::get_azimuth() {
+    Serial.println(myvector.get_azimuth(total_x, total_y));
     return myvector.get_azimuth(total_x, total_y);
 }

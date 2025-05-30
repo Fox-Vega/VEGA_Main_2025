@@ -5,18 +5,20 @@
 #include "AIP.h"
 
 void Test::test_() {
+    if (myswitch.check_tact() == 1) {
+        t_mode -= 1;
+        if (t_mode <= 0) {
+            t_mode = 5;
+        }
+        delay(300);
+    } else if (myswitch.check_tact() == 3) {
+        t_mode += 1;
+        if (t_mode >= 6) {
+            t_mode = 1;
+        }
+        delay(300);
+    }
     if (myswitch.check_toggle() == 1) {
-        if (millis() - lastbuzzer > 1000) {
-            mybuzzer.start(300, 50);
-            lastbuzzer = millis();
-        }
-        if (myswitch.check_tact() == 3) {
-            t_mode += 1;
-            if (t_mode >= 3) {
-                t_mode = 1;
-            }
-            delay(300);
-        }
         switch(t_mode) {
             case 1:
                 mypixel.multi(0, 15, 255, 0, 0);
@@ -27,6 +29,10 @@ void Test::test_() {
                 mypixel.multi(0, 15, 255, 0, 0);
                 mypixel.show();
                 break;
+        }
+        if ((millis() - lastbuzzer) > 500) {
+            mybuzzer.start(400, 50);
+            lastbuzzer = millis();
         }
     } else {
         switch(t_mode) {
@@ -44,13 +50,7 @@ void Test::test_() {
 void Test::input() {
     ball.read();
     mypixel.multi(0, 15, 255, 255, 255);
-    if (myswitch.check_tact() == 1) {
-        if (stabilize == 0) {
-            stabilize = 1;
-        } else {
-            stabilize = 0;
-        }
-    } else if (myswitch.check_tact() == 2){
+    if (myswitch.check_tact() == 2){
         gam.dir_reset();
         mybuzzer.start(400, 50);
         delay(300);
@@ -59,8 +59,7 @@ void Test::input() {
         if (goal_azimuth < 0) {
             goal_azimuth += 360;
         }
-        mypixel.closest(goal_azimuth, 255, 100, 100, 5);
-        mypixel.closest(goal_azimuth, 255, 0, 100, 1);
+        mypixel.closest(goal_azimuth, 255, 0, 100, 3); //7
     }
     if (ball.get_magnitude() != 0) {
         int value = constrain(ball.get_magnitude(), 0, 255); //入力値を0~255の範囲に制限
@@ -71,11 +70,6 @@ void Test::input() {
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
     mypixel.show();
-    if (stabilize == 1) {
-        mymotor.run(0, 0, 0);
-    } else {
-        mymotor.brake();
-    }
 }
 
 void Test::ir() {
