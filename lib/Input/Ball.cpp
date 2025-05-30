@@ -12,10 +12,12 @@ void BALL::read() {
     float azimuth = 0.0;
     float magnitude = 0.0;
     for (int i = 0; i < 2; i++) {
-        ball.read_();
-        azimuth += ball.get_azimuth_();
-        magnitude += ball.get_magnitude_();
+        // 現在のオブジェクトの関数を呼び出す（グローバルな ball ではなく）
+        this->read_();
+        azimuth += this->get_azimuth_();
+        magnitude += this->get_magnitude_();
     }
+    // 平均値から座標計算
     myvector.get_cord(azimuth / 2, magnitude / 2);
     x = myvector.get_x();
     y = myvector.get_y();
@@ -26,7 +28,8 @@ int BALL::get_azimuth() {
 }
 
 int BALL::get_worldazimuth() {
-    float worldazimuth = ball.get_azimuth() + gam.get_azimuth();
+    // 現在のオブジェクトの get_azimuth() を呼び出す
+    float worldazimuth = this->get_azimuth() + gam.get_azimuth();
     if (worldazimuth >= 360) {
         worldazimuth -= 360;
     }
@@ -34,7 +37,7 @@ int BALL::get_worldazimuth() {
 }
 
 int BALL::get_magnitude() {
-    return myvector.get_magnitude(x , y);
+    return myvector.get_magnitude(x, y);
 }
 
 void BALL::read_() {
@@ -72,8 +75,8 @@ void BALL::read_() {
     // 座標計算
     for (int i = 0; i < 4; i++) {
         int ballNUM = (ballNUMstart + i) % NUMball; // 自動循環
-
-        myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
+        // このオブジェクトの get_value() を使う
+        myvector.get_cord(balldirs[ballNUM], this->get_value(ballNUM));
         x_ += myvector.get_x();
         y_ += myvector.get_y();
     }
