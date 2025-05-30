@@ -23,7 +23,7 @@ void GAM::setup() {
     int sampleNUM[2] = {0, 0};
     float total_noise[2] = {0.0f, 0.0f};
     int a = millis();
-    while (millis() - a < 3000) {
+    while (millis() - a < 1000) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};

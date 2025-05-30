@@ -40,7 +40,8 @@ void General::startup() {
             if (d < 0) {
                 d += 360;
             }
-            mypixel.closest(d, 255, 0, 100, 3);
+            mypixel.closest(d, 255, 50, 50, 3);
+            mypixel.closest(d, 255, 0, 100, 1);
             if (startPIXELs[startcord] == 99) {
                 mypixel.uni(2, 255, 255, 255);
                 mypixel.uni(6, 255, 255, 255);
@@ -51,7 +52,7 @@ void General::startup() {
             }
             ball.read();
             if (ball.get_magnitude() != 0) {
-                mypixel.closest(ball.get_azimuth(), 80, 0, 255, 1);
+                mypixel.closest(ball.get_azimuth(), 255, 50, 255, 1);
             }
             mypixel.shows();
         }
