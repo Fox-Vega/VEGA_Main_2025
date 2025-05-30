@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Arduino.h>
-#include <Adafruit_NeoPixel.h>
 
 
 // 色の参考
@@ -29,13 +28,10 @@ class MyPIXEL {
     private:
         //調整用
         const byte usePIXEL = 1; //ネオピクセルの使用有無
-        const float PIXELbrightness = 255; //最大で255
+        const float PIXELbrightness = 150; //最大で255
         
         int step_num = 0;
         int PIXELNUMstart;
-        const byte PIXELPIN = 45; // Pin where the NeoPixel ring is connected
-        const byte NUMPIXEL = 16; // NUMber of pixels in the strip
-        Adafruit_NeoPixel PIXEL = Adafruit_NeoPixel(NUMPIXEL, PIXELPIN, NEO_GRB + NEO_KHZ800);
 };
 
 class MyBUZZER {

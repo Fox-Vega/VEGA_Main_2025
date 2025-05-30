@@ -1,5 +1,12 @@
 #include "Other.h"
 #include "Output.h"
+#include "process.h"
+#include <Adafruit_NeoPixel.h>
+
+const byte PIXELPIN = 45; // Pin where the NeoPixel ring is connected
+const byte NUMPIXEL = 16; // NUMber of pixels in the strip
+
+Adafruit_NeoPixel PIXEL = Adafruit_NeoPixel(NUMPIXEL, PIXELPIN, NEO_GRB + NEO_KHZ800);
 
 
 void MyPIXEL::setup() {

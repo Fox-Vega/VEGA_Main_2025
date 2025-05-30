@@ -9,8 +9,8 @@ void BALL::setup() {
 }
 
 void BALL::read() {
-    int azimuth = 0;
-    int magnitude = 0;
+    float azimuth = 0.0;
+    float magnitude = 0.0;
     for (int i = 0; i < 2; i++) {
         ball.read_();
         azimuth += ball.get_azimuth_();
