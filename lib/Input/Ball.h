@@ -6,9 +6,15 @@ class BALL {
     public:
         void setup(); //初期設定
         void read(); //センサーデータ取得
+        int get_azimuth(); //ボールの方向を取得する関数　安定化済み
+        int get_worldazimuth(); //固定0度軸を使ったボールの方向を取得する関数　安定化済み
+        int get_magnitude(); //ボールの距離を取得する関数　安定化済み
+        int get_x(); //ボールの位置を取得する関数　安定化済み
+        int get_y(); //ボールの位置を取得する関数　安定化済み
+        void read_(); //ボールセンサーの値を読む関数
         int get_value(short ballNUM); //ボール値を取得する関数
-        int get_magnitude(); //ボールの距離を取得する関数
         int get_azimuth(); //ボールの方向を取得する関数
+        int get_magnitude(); //ボールの距離を取得する関数
 
     private:
         //調整用
