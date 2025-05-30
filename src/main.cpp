@@ -15,7 +15,7 @@ void loop() {
         ball.read();
         // attack.attack_();
     } else if (general.get_mode() == 2) {
-        defence.defence_();
+        // defence.defence_();
     } else {
         test.test_();
     }

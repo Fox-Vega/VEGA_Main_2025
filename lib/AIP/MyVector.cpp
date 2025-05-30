@@ -48,8 +48,8 @@ void MyVECTOR::get_tarsvec(int tar_azimuth, int tar_magnitude, int memoryNUM) {
     cord_x = gam.get_x();
     cord_y = gam.get_y();
     myvector.get_tarcord(tar_azimuth, tar_magnitude);
-    tarcord_x = myvector.get_tar_x();
-    tarcord_y = myvector.get_tar_y();
+    tarcord_x = myvector.get_x();
+    tarcord_y = myvector.get_y();
     dt = millis() - lastupdatetime;
 
     //ズレを計算して秒間速度ベクトルに変換
@@ -60,8 +60,8 @@ void MyVECTOR::get_tarsvec(int tar_azimuth, int tar_magnitude, int memoryNUM) {
 
     old_tarcord_x[memoryNUM] = tarcord_x;
     old_tarcord_y[memoryNUM] = tarcord_y;
-    oldcord_x[memoryNUM] = cord_x;
-    oldcord_y[memoryNUM] = cord_y;
+    old_cord_x[memoryNUM] = cord_x;
+    old_cord_y[memoryNUM] = cord_y;
 
     x = tarcord_x;
     y = tarcord_y;
