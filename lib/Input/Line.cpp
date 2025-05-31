@@ -49,9 +49,7 @@ int LINE::get_azimuth() {
 int LINE::get_dist() {
     read();
     get_linedeg();
-    if(count==0){
-        return 999;
-    }else if(count==1){
+    if(count==1){
         return sensordist;
     }else if(count==2){
         return get_line_dist(line_detect[0], line_detect[1]);
@@ -60,9 +58,10 @@ int LINE::get_dist() {
     }else if(count==4){
         return get_line_dist(line_detect[1], line_detect[2]);
     };
+    return 999; // エラー用
 }
 
-int LINE::read(){ //読み取りを24かいを三回繰り返して当たっていたら配列に１足して　２以上でboolをtrue
+bool LINE::read(){ //読み取りを24かいを三回繰り返して当たっていたら配列に１足して　２以上でboolをtrue
     for(int i=0; i<NUMLines; i++){ //初期化
         line_status[i] = false;
         line_detect[i] = 999;

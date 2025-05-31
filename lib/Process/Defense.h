@@ -9,6 +9,7 @@
 #include <AIP.h>
 #include <math.h>
 #include <string.h>
+#include <Line.h>
 
 #define linedist 10
 #define linecentor 0.1

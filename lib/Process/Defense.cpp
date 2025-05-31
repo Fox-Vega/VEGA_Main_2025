@@ -1,4 +1,5 @@
-#include "Defense.h"
+#include <Defense.h>
+#include <Line.h>
 #include <Input.h>
 #include <Output.h>
 #include <Process.h>
@@ -9,8 +10,10 @@
 #include <Arduino.h>
 #include <math.h>
 
+// 追加: LINE型の外部変数宣言
+extern LINE line;
 
-void DEFENSE::setup(void) {
+void Defense::setup(void) {
     //初期設定
     Dline.deg = 0;
     Dline.dist = 0;
@@ -19,10 +22,9 @@ void DEFENSE::setup(void) {
     Dball.dist = 0;
     Dball.flag = 999;
     Dball.detect = false;
-    int go_ang = 0; //初期値
 }
 
-void DEFENSE::defense_(void) {
+void Defense::defense_(void) {
     Dline.deg = line.get_azimuth();
     Dline.dist = line.get_dist();
     Dline.detect = line.read();
@@ -33,57 +35,49 @@ void DEFENSE::defense_(void) {
     else
     {
         //ディフェンスする
-        int ballDeg = ball.get_azimuth();
-        int ballDist = ball.get_magnitude();
-        int ballflag1 =1; //ボールの位置　０左　１真ん中　２右 ３後ろ（詰み☆）
-        if(ballDeg < 90 || ballDeg > 270) {
+        Dball.deg = ball.get_azimuth();
+        Dball.dist = ball.get_magnitude();
+        int ballflag1 = 1; //ボールの位置　０左　１真ん中　２右 ３後ろ（詰み☆）
+        if(Dball.deg < 90 || Dball.deg > 270) {
             ballflag1 = 0; //左
-        } else if(ballDeg >= 90 && ballDeg <= 270) {
+        } else if(Dball.deg >= 90 && Dball.deg <= 270) {
             ballflag1 = 1; //真ん中
-        } else if(ballDeg > 270 && ballDeg < 360) {
+        } else if(Dball.deg > 270 && Dball.deg < 360) {
             ballflag1 = 2; //右
         } else {
             ballflag1 = 3; //後ろ
         }
-        if(ballflag1 == 0) {//左に動くとき
+        Dball.flag = ballflag1;
+        if(Dball.flag == 0) {//左に動くとき
             if(linedist<linecentor)//左に動くだけ
             {
-                motor.run(azimuth, distance, 0);
+                //motor.run(azimuth, distance, 0);
             } else if(linedist>=linecentor) {
                 //左に動く
-                motor.run(azimuth, distance, -1);
+                //motor.run(azimuth, distance, -1);
             }
-        } else if(ballflag1 == 1) {
+        } else if(Dball.flag == 1) {
 
-        } else if(ballflag1 == 2) {
+        } else if(Dball.flag == 2) {
 
-<<<<<<< HEAD
         } else {
-            MyPIXEL.set_color(255, 0, 0); //後ろは赤色
-            MyPIXEL.show();
+            Dball.flag = 3; //後ろ
         }
-}
-}
-=======
-//         } else {
-//             ballflag1 = 3; //後ろ
-//         }
-//         if(ballflag1 == 0) {//左に動くとき
-//             if(linedist<linecentor)//左に動くだけ
-//             {
-//                 motor.run(azimuth, distance, 0);
-//             } else if(linedist>=linecentor) {
-//                 //左に動く
-//                 motor.run(azimuth, distance, -1);
-//             }
-//         } else if(ballflag1 == 1) {
+        if(Dball.flag == 0) {//左に動くとき
+            if(linedist<linecentor)//左に動くだけ
+            {
+                //motor.run(azimuth, distance, 0);
+            } else if(linedist>=linecentor) {
+                //左に動く
+                //motor.run(azimuth, distance, -1);
+            }
+        } else if(Dball.flag == 1) {
 
-// //         } else if(ballflag1 == 2) {
+        } else if(Dball.flag == 2) {
 
-// //         } else {
-// //             MyPIXEL.set_color(255, 0, 0); //後ろは赤色
-// //             MyPIXEL.show();
-// //         }
-// // }
-// // }
->>>>>>> 4d4dd1d10c6ef58d1cb42516c301a5dfd5ff5f3d
+        } else {
+            //MyPIXEL.set_color(255, 0, 0); //後ろは赤色
+            //MyPIXEL.show();
+        }
+    }
+}

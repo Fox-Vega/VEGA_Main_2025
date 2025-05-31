@@ -29,6 +29,7 @@ public:
         /*
         関数の中で関数呼び出してるから速度が必要なときにはわざわざ上を入力した方が良いかも
         */
+    bool read();
 private:
     // --- ピン定義 ---
     struct Pins {
@@ -60,7 +61,6 @@ private:
     int count = 0;
     int progress = 0;
     // 内部処理関数
-    int read();
     int get_linedeg();
     int get_line_dist(int deg1, int deg2);
     void print_pizel();
