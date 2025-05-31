@@ -51,7 +51,7 @@ int MyMOTOR::difix(int setpoint) {
     double angularVelocity = kp * error + ki * integral + kd * derivative;
     difix_PoMi = angularVelocity >= 0;
 
-    return motorPWM = (int)constrain(abs(angularVelocity) * pwmscale, 0, 255);
+    return motorPWM = (int)constrain(angularVelocity * pwmscale, -255, 255);
 }
 
 void MyMOTOR::free() {
