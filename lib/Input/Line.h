@@ -45,7 +45,7 @@ private:
 
         #define NUMLines 24
         const int sensordist = 10; // センサの距離（cm）
-        const int LINEDETECT = 5; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
+        const int LINEDETECT = 1500; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
 
 
     // バイナリ配列（縦3列）
