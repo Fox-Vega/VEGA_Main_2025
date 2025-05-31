@@ -6,16 +6,20 @@
 #include <stdlib.h>
 #include <math.h>
 
+//調整
 #define NUMLines 24
 #define sensordist 10
 #define LINEDETECT 5
+//===
 
 class LINE {
 public:
     // 呼び出し関数
-    void setup();
-    int get_azimuth();
-    int get_dist();
+    //==============================
+    void setup();//初期設定（必ずやってね☆）
+    int get_azimuth();//センサの角度を取得　
+    int get_dist();//センサの距離を取得
+    bool read();//センサの状態を読み取る（true:ラインあり, false:ラインなし
     int calculate_deg(char mode, int num1, int num2);//角度計算
         /*
         使い方
@@ -29,7 +33,8 @@ public:
         /*
         関数の中で関数呼び出してるから速度が必要なときにはわざわざ上を入力した方が良いかも
         */
-    bool read();
+    //==============================
+
 private:
     // --- ピン定義 ---
     struct Pins {

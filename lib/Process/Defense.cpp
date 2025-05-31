@@ -10,7 +10,7 @@
 #include <Arduino.h>
 #include <math.h>
 
-// 追加: LINE型の外部変数宣言
+
 extern LINE line;
 
 void Defense::setup(void) {
