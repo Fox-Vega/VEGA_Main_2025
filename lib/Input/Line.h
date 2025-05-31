@@ -7,9 +7,7 @@
 #include <math.h>
 
 
-const int NUMLines =24;
-const int sonsordist = 10; // センサの距離（cm）
-const int LINEDETECT = 5; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
+
 
 
 
@@ -37,17 +35,19 @@ public:
     //==============================
 
 private:
-    // --- ピン定義 ---
-    struct Pins {
-        // セレクトピン
         const int selectA = 22;
         const int selectB = 24;
         const int selectC = 26;
-        // リードピン
-        const int readPin1 = A13;
-        const int readPin2 = A11;
-        const int readPin3 = A9;
-    } pins;
+
+        #define readPin1 A13
+        #define readPin2 A11
+        #define readPin3 A9
+
+        const int NUMLines =24;
+        const int sonsordist = 10; // センサの距離（cm）
+        const int LINEDETECT = 5; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
+
+
     // バイナリ配列（縦3列）
     const int BinaryNum[24][3] = {
         {0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1},

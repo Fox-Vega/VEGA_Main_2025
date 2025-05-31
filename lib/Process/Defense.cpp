@@ -48,36 +48,36 @@ void Defense::defense_(void) {
             ballflag1 = 3; //後ろ
         }
         Dball.flag = ballflag1;
-        if(Dball.flag == 0) {//左に動くとき
-            if(linedist<linecentor)//左に動くだけ
-            {
-                //motor.run(azimuth, distance, 0);
-            } else if(linedist>=linecentor) {
-                //左に動く
-                //motor.run(azimuth, distance, -1);
-            }
-        } else if(Dball.flag == 1) {
+    //     if(Dball.flag == 0) {//左に動くとき
+    //         if(linedist<linecentor)//左に動くだけ
+    //         {
+    //             //motor.run(azimuth, distance, 0);
+    //         } else if(linedist>=linecentor) {
+    //             //左に動く
+    //             //motor.run(azimuth, distance, -1);
+    //         }
+    //     } else if(Dball.flag == 1) {
 
-        } else if(Dball.flag == 2) {
+    //     } else if(Dball.flag == 2) {
 
-        } else {
-            Dball.flag = 3; //後ろ
-        }
-        if(Dball.flag == 0) {//左に動くとき
-            if(linedist<linecentor)//左に動くだけ
-            {
-                //motor.run(azimuth, distance, 0);
-            } else if(linedist>=linecentor) {
-                //左に動く
-                //motor.run(azimuth, distance, -1);
-            }
-        } else if(Dball.flag == 1) {
+    //     } else {
+    //         Dball.flag = 3; //後ろ
+    //     }
+    //     if(Dball.flag == 0) {//左に動くとき
+    //         if(linedist<linecentor)//左に動くだけ
+    //         {
+    //             //motor.run(azimuth, distance, 0);
+    //         } else if(linedist>=linecentor) {
+    //             //左に動く
+    //             //motor.run(azimuth, distance, -1);
+    //         }
+    //     } else if(Dball.flag == 1) {
 
-        } else if(Dball.flag == 2) {
+    //     } else if(Dball.flag == 2) {
 
-        } else {
-            //MyPIXEL.set_color(255, 0, 0); //後ろは赤色
-            //MyPIXEL.show();
-        }
-    }
+    //     } else {
+    //         //MyPIXEL.set_color(255, 0, 0); //後ろは赤色
+    //         //MyPIXEL.show();
+    //     }
+    // }
 }

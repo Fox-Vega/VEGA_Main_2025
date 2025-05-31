@@ -33,12 +33,12 @@ neopixel 24個円型
 // これから「無駄に」関与しないで
 
 void LINE::setup() {
-    pinMode(pins.selectA, OUTPUT);
-    pinMode(pins.selectB, OUTPUT);
-    pinMode(pins.selectC, OUTPUT);
-    pinMode(pins.readPin1, INPUT);
-    pinMode(pins.readPin2, INPUT);
-    pinMode(pins.readPin3, INPUT);
+    pinMode(selectA, OUTPUT);
+    pinMode(selectB, OUTPUT);
+    pinMode(selectC, OUTPUT);
+    pinMode(readPin1, INPUT);
+    pinMode(readPin2, INPUT);
+    pinMode(readPin3, INPUT);
 }
 
 int LINE::get_azimuth() {
@@ -72,14 +72,14 @@ bool LINE::read(){ //読み取りを24かいを三回繰り返して当たって
     for(int j=0; j<3; j++){ // 3回繰り返し
         for(int k=0; k<3; k++){ // k: 0=readPin1, 1=readPin2, 2=readPin3
             int pin;//ピン処理
-            if(k==0) pin = pins.readPin1;
-            else if(k==1) pin = pins.readPin2;
-            else pin = pins.readPin3;
+            if(k==0) pin = readPin1;
+            else if(k==1) pin = readPin2;
+            else pin = readPin3;
             for(int i=0; i<8; i++){
                 int idx = k*8 + i;//idk=インデックス
-                digitalWrite(pins.selectA, BinaryNum[idx][0]);
-                digitalWrite(pins.selectB, BinaryNum[idx][1]);
-                digitalWrite(pins.selectC, BinaryNum[idx][2]);
+                digitalWrite(selectA, BinaryNum[idx][0]);
+                digitalWrite(selectB, BinaryNum[idx][1]);
+                digitalWrite(selectC, BinaryNum[idx][2]);
                 delay(1);
                 if(analogRead(pin) > lineDetect){
                     line_value[idx]++;
