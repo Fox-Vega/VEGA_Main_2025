@@ -1,6 +1,6 @@
 #include "Defense.h"
 
-extern LINE line;
+// extern LINE line;
 
 data Dball;
 data Dline;

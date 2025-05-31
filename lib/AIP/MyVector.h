@@ -12,14 +12,6 @@ class MyVECTOR {
         int get_magnitude(int x, int y); //距離を計算する関数
         int get_x(); //取得したx座標を返す関数
         int get_y(); //取得したy座標を返す関数
-        int get_plpo_x(); //posの自機基準x座標を返す関数
-        int get_plpo_y(); //posの自機基準y座標を返す関数
-        int get_tar_x(); //targetのコート基準x座標を返す関数
-        int get_tar_y(); //targetのコート基準y座標を返す関数
-        int get_tarsvec_x(); //targetのコート基準速度ベクトルのx座標を返す関数
-        int get_tarsvec_y(); //targetのコート基準速度ベクトルのy座標を返す関数
-        int get_tarsvecazimuth(); //targetのコート基準速度ベクトルの方位角を返す関数
-        int get_tarsvecmagnitude(); //targetのコート基準速度ベクトルの方位角を返す関数
 
     private:
         int x, y;
