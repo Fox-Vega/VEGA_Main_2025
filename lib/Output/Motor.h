@@ -10,7 +10,7 @@ class MyMOTOR {
         int difix(int setpoint); //PID姿勢制御用
         void free(); //自由回転
         void brake(); //ブレーキ
-        void limiter(bool stat);
+        void limiter(bool stat); //0にすると制限なし移動速度が出る　モーター摩耗が激しくなるため、OOBを防ぐときにのみ解除するように。
 
     private:
         //調整用
@@ -22,7 +22,6 @@ class MyMOTOR {
         const float power_limiter = 140 / 255; //移動速度　姿勢補正速度には影響しない
 
         bool PoMi; //正・負判断用
-        bool difix_PoMi; //姿勢制御値の正・負判断用
         bool power_limit = 1; //モーターリミッターを掛けるか
         short power; //進行方向を参考した場合のモーター出力
         short motorPWM; //機体動作用入力値

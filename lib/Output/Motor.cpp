@@ -9,6 +9,7 @@ void MyMOTOR::setup() {
         pinMode(motor_PIN1[i], OUTPUT);
         pinMode(motor_PIN2[i], OUTPUT);
     }
+    power_limit = 0;
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
@@ -49,7 +50,6 @@ int MyMOTOR::difix(int setpoint) {
     prev_error = error;
 
     double angularVelocity = kp * error + ki * integral + kd * derivative;
-    difix_PoMi = angularVelocity >= 0;
 
     return motorPWM = (int)constrain(angularVelocity * pwmscale, -255, 255);
 }
