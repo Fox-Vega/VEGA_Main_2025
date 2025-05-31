@@ -55,8 +55,8 @@ void MyVECTOR::get_svec(int tar_azimuth, int tar_magnitude) {
     cord_x = gam.get_x();
     cord_y = gam.get_y();
     myvector.get_tarcord(tar_azimuth, tar_magnitude);
-    tarcord_x = myvector.get_tar_x();
-    tarcord_y = myvector.get_tar_y();
+    tarcord_x = myvector.get_x();
+    tarcord_y = myvector.get_y();
     dt = millis() - lastupdatetime;
 
     //ズレを計算して秒間速度ベクトルに変換
