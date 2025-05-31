@@ -68,6 +68,6 @@ void MyMOTOR::brake() {
     }
 }
 
-void MyMOTOR::limiter(int stat) {
+void MyMOTOR::limiter(bool stat) {
     power_limit = stat;
 }

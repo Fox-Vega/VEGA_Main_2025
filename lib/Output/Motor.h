@@ -10,23 +10,23 @@ class MyMOTOR {
         int difix(int setpoint); //PID姿勢制御用
         void free(); //自由回転
         void brake(); //ブレーキ
-        void limiter(int stat);
+        void limiter(bool stat);
 
     private:
         //調整用
-        float kp = 2.0; //比例 を大きくすると応答が速くなるが、振動しやすくなる
-        float ki = 0.5; //積分 を大きくすると誤差が蓄積されにくくなるが、過剰補正のリスク
-        float kd = 1.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
-        float pwmscale = 0.71; //補正速度
-        float power_limiter = 140 / 255;
-        const int MAX_INTEGRAL = 1000;  //積分項制限
+        const float kp = 2.0; //比例 を大きくすると応答が速くなるが、振動しやすくなる
+        const float ki = 0.5; //積分 を大きくすると誤差が蓄積されにくくなるが、過剰補正のリスク
+        const float kd = 1.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
+        const float pwmscale = 30 / 255; //姿勢補正速度
+        const int MAX_INTEGRAL = 1000; //積分項制限（姿勢補正速度制限）
+        const float power_limiter = 140 / 255; //移動速度　姿勢補正速度には影響しない
 
-        bool power_limit = 1;
         bool PoMi; //正・負判断用
         bool difix_PoMi; //姿勢制御値の正・負判断用
+        bool power_limit = 1; //モーターリミッターを掛けるか
+        short power; //進行方向を参考した場合のモーター出力
         short motorPWM; //機体動作用入力値
         short difixPWM; //姿勢制御用入力値
-        short power; //進行方向を参考した場合のモーター出力
         short azimuth_motor; //モーターから見た進行方向の方位角
         double integral;
         double prev_error;
