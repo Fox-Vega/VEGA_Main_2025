@@ -6,11 +6,12 @@
 #include <stdlib.h>
 #include <math.h>
 
-//調整
-#define NUMLines 24
-#define sensordist 10
-#define LINEDETECT 5
-//===
+
+const int NUMLines =24;
+const int sonsordist = 10; // センサの距離（cm）
+const int LINEDETECT = 5; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
+
+
 
 class LINE {
 public:
