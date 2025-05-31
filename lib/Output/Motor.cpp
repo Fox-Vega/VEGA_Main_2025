@@ -14,9 +14,6 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
-    if (power_limit == 1) {
-        power_ *= power_limiter;
-    }
     
     movement_azimuth %= 360;
     dir_azimuth %= 360;
@@ -24,6 +21,10 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     difixPWM = mymotor.difix(dir_azimuth); // 姿勢制御の値
     int azimuth = gam.get_azimuth();
 
+    if (power_limit == 1) {
+        power_ *= power_limiter;
+    }
+ 
     for (int i = 0; i < 4; i++) {
         azimuth_motor = movement_azimuth - azimuth - motor_degrees[i]; // オムニの軸がy軸になるようにする
         myvector.get_cord(azimuth_motor, power_ - abs(difixPWM)); // 座標計算
@@ -32,11 +33,11 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         PoMi = power >= 0;
 
         if (PoMi == true) {
-            analogWrite(motor_PIN1[i], (int)(power - difixPWM));
+            analogWrite(motor_PIN1[i], (int)(power + difixPWM));
             analogWrite(motor_PIN2[i], 0);  
         } else {
             analogWrite(motor_PIN1[i], 0);
-            analogWrite(motor_PIN2[i], (int)(power + difixPWM));
+            analogWrite(motor_PIN2[i], (int)(power - difixPWM));
         }
     }
 }
