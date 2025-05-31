@@ -31,9 +31,9 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
 
         PoMi = power >= 0;
 
-        if (PoMi) {
+        if (PoMi == true) {
             analogWrite(motor_PIN1[i], (int)(power - difixPWM));
-            analogWrite(motor_PIN2[i], 0);
+            analogWrite(motor_PIN2[i], 0);  
         } else {
             analogWrite(motor_PIN1[i], 0);
             analogWrite(motor_PIN2[i], (int)(power + difixPWM));
