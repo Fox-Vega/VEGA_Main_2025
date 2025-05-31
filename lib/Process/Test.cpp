@@ -87,7 +87,7 @@ void Test::ir() {
     analogWrite(motor_PIN2[2], 0);  
     analogWrite(motor_PIN1[3], 255);
     analogWrite(motor_PIN2[3], 0); 
-    delay(100)
+    delay(100);
 }
 
 // void Test::goal() {
