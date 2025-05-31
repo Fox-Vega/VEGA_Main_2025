@@ -17,25 +17,21 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     if (power_limit == 1) {
         power_ *= power_limiter;
     }
-    if (movement_azimuth >= 360) {
-        movement_azimuth -= 360;
-    }
-    if (dir_azimuth >= 360) {
-        dir_azimuth -= 360;
-    }
-    difixPWM = mymotor.difix(dir_azimuth); //姿勢制御の値
+    
+    movement_azimuth %= 360;
+    dir_azimuth %= 360;
+
+    difixPWM = mymotor.difix(dir_azimuth); // 姿勢制御の値
     int azimuth = gam.get_azimuth();
+
     for (int i = 0; i < 4; i++) {
-        azimuth_motor = movement_azimuth - azimuth - motor_degrees[i]; //オムニの軸がy軸になるようにする
-        myvector.get_cord(azimuth_motor, power_ - abs(difixPWM)); //座標計算
-        power = myvector.get_x(); //x座標を取得(モーターの回転速度)
-        if (power >= 0) {   
-            PoMi = true;
-        } else {
-            PoMi = false;
-            power -= (power * 2);
-        }
-        if (PoMi == true) {
+        azimuth_motor = movement_azimuth - azimuth - motor_degrees[i]; // オムニの軸がy軸になるようにする
+        myvector.get_cord(azimuth_motor, power_ - abs(difixPWM)); // 座標計算
+        power = constrain(myvector.get_x(), 0, 255); // x座標を取得（モーターの回転速度）
+
+        PoMi = power >= 0;
+
+        if (PoMi) {
             analogWrite(motor_PIN1[i], (int)(power - difixPWM));
             analogWrite(motor_PIN2[i], 0);
         } else {
@@ -47,15 +43,13 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
 
 int MyMOTOR::difix(int setpoint) {
     double error = setpoint - gam.get_azimuth();
-    integral += error;
+    integral = constrain(integral + error, -MAX_INTEGRAL, MAX_INTEGRAL);
     derivative = error - prev_error;
     prev_error = error;
+
     double angularVelocity = kp * error + ki * integral + kd * derivative;
-    if (angularVelocity >= 0) {
-        difix_PoMi = true;
-    } else {
-        difix_PoMi = false;
-    }
+    difix_PoMi = angularVelocity >= 0;
+
     return motorPWM = (int)constrain(abs(angularVelocity) * pwmscale, 0, 255);
 }
 

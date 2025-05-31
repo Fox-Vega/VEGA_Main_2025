@@ -19,6 +19,7 @@ class MyMOTOR {
         float kd = 1.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
         float pwmscale = 0.71; //補正速度
         float power_limiter = 140 / 255;
+        const int MAX_INTEGRAL = 1000;  //積分項制限
 
         bool power_limit = 1;
         bool PoMi; //正・負判断用
