@@ -25,7 +25,39 @@ void BALL::read() {
             }
         }
     }
-
+    Serial.print(">Ball1:");
+    Serial.println(ballvalues[0]);
+    Serial.print(">Ball2:");
+    Serial.println(ballvalues[1]);
+    Serial.print(">Ball3:");
+    Serial.println(ballvalues[2]);
+    Serial.print(">Ball4:");
+    Serial.println(ballvalues[3]);
+    Serial.print(">Ball5:");
+    Serial.println(ballvalues[4]);
+    Serial.print(">Ball6:");
+    Serial.println(ballvalues[5]);
+    Serial.print(">Ball7:");
+    Serial.println(ballvalues[6]);
+    Serial.print(">Ball8:");
+    Serial.println(ballvalues[7]);
+    Serial.print(">Ball9:");
+    Serial.println(ballvalues[8]);
+    Serial.print(">Ball10:");
+    Serial.println(ballvalues[9]);
+    Serial.print(">Ball11:");
+    Serial.println(ballvalues[10]);
+    Serial.print(">Ball12:");
+    Serial.println(ballvalues[11]);
+    Serial.print(">Ball13:");
+    Serial.println(ballvalues[12]);
+    Serial.print(">Ball14:");
+    Serial.println(ballvalues[13]);
+    Serial.print(">Ball15:");
+    Serial.println(ballvalues[14]);
+    Serial.print(">Ball16:");
+    Serial.println(ballvalues[15]);
+    
     // 最大値の探索
     for (int i = 0; i < NUMball; i++) {
         if (ballvalues[i] > max_ballvalue) {
@@ -41,7 +73,7 @@ void BALL::read() {
     }
 
     // 座標計算
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         int ballNUM = (ballNUMstart + i) % NUMball; // 自動循環処理
 
         myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
