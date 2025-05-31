@@ -79,11 +79,7 @@ void Test::input() {
 }
 
 void Test::ir() {
-    // Serial.print(">Ball_mag:");
-    // Serial.println(ball.get_magnitude());
-    // mypixel.multi(0, 15, 255, 255, 255);
-    // mypixel.closest(ball.get_azimuth(), r, g, b, 1);
-    // mypixel.show();
+    mymotor.run(0, 255, 0);
 }
 
 // void Test::goal() {
