@@ -57,9 +57,33 @@ void DEFENSE::defense_(void) {
 
         } else if(ballflag1 == 2) {
 
+<<<<<<< HEAD
         } else {
             MyPIXEL.set_color(255, 0, 0); //後ろは赤色
             MyPIXEL.show();
         }
 }
 }
+=======
+//         } else {
+//             ballflag1 = 3; //後ろ
+//         }
+//         if(ballflag1 == 0) {//左に動くとき
+//             if(linedist<linecentor)//左に動くだけ
+//             {
+//                 motor.run(azimuth, distance, 0);
+//             } else if(linedist>=linecentor) {
+//                 //左に動く
+//                 motor.run(azimuth, distance, -1);
+//             }
+//         } else if(ballflag1 == 1) {
+
+// //         } else if(ballflag1 == 2) {
+
+// //         } else {
+// //             MyPIXEL.set_color(255, 0, 0); //後ろは赤色
+// //             MyPIXEL.show();
+// //         }
+// // }
+// // }
+>>>>>>> 4d4dd1d10c6ef58d1cb42516c301a5dfd5ff5f3d
