@@ -32,7 +32,7 @@ neopixel 24個円型
 
 // これから「無駄に」関与しないで
 
-void LINE::setup() {
+void LINE::setup(void) {
     pinMode(selectA, OUTPUT);
     pinMode(selectB, OUTPUT);
     pinMode(selectC, OUTPUT);
@@ -41,12 +41,12 @@ void LINE::setup() {
     pinMode(readPin3, INPUT);
 }
 
-int LINE::get_azimuth() {
+int LINE::get_azimuth(void) {
     read();
     return get_linedeg();
 }
 
-int LINE::get_dist() {
+int LINE::get_dist(void) {
     read();
     get_linedeg();
     if(count==1){
@@ -61,7 +61,7 @@ int LINE::get_dist() {
     return 999; // エラー用
 }
 
-bool LINE::read(){ //読み取りを24かいを三回繰り返して当たっていたら配列に１足して　２以上でboolをtrue
+bool LINE::read(void){ //読み取りを24かいを三回繰り返して当たっていたら配列に１足して　２以上でboolをtrue
     for(int i=0; i<NUMLines; i++){ //初期化
         line_status[i] = false;
         line_detect[i] = 999;
@@ -107,7 +107,7 @@ bool LINE::read(){ //読み取りを24かいを三回繰り返して当たって
     }
 }
 
-int LINE::get_linedeg() {
+int LINE::get_linedeg(void) {
     // line_detectの初期化
     for(int i = 0; i < NUMLines; i++) {
         line_detect[i] = 999;
