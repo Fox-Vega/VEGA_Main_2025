@@ -43,8 +43,8 @@ private:
         #define readPin2 A11
         #define readPin3 A9
 
-        const int NUMLines =24;
-        const int sonsordist = 10; // センサの距離（cm）
+        #define NUMLines 24
+        const int sensordist = 10; // センサの距離（cm）
         const int LINEDETECT = 5; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
 
 
