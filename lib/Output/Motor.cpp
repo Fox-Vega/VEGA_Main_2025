@@ -3,8 +3,6 @@
 #include "Output.h"
 #include "AIP.h"
 
- //TODO もし姿勢制御が反対向きになっていた場合、motor.move の中の　+　-　を変更すること。
- //TODO もしモーターが逆回転していた場合、PIN1とPIN2の内容を反転させること。
 
 void MyMOTOR::setup() {
     for (int i = 0; i < 4; i++) {
@@ -24,7 +22,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     if (power_limit == 1) {
         power_ *= power_limiter;
     }
- 
+
     for (int i = 0; i < 4; i++) {
         azimuth_motor = movement_azimuth - azimuth - motor_degrees[i]; // オムニの軸がy軸になるようにする
         myvector.get_cord(azimuth_motor, power_ - abs(difixPWM)); // 座標計算
@@ -32,12 +30,14 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
 
         PoMi = power >= 0;
 
+        //TODO もし姿勢制御が反対向きになっていた場合、motor.move の中の　+　-　を変更すること。
+        //TODO もしモーターが逆回転していた場合、PoMiをtrueからfalseにすること。
         if (PoMi == true) {
-            analogWrite(motor_PIN1[i], (int)(power + difixPWM));
+            analogWrite(motor_PIN1[i], (int)(power - difixPWM));
             analogWrite(motor_PIN2[i], 0);  
         } else {
             analogWrite(motor_PIN1[i], 0);
-            analogWrite(motor_PIN2[i], (int)(power - difixPWM));
+            analogWrite(motor_PIN2[i], (int)(power + difixPWM));
         }
     }
 }
