@@ -11,7 +11,7 @@ void General::setup() {
     mypixel.multi(0, 15, 255, 128, 0);
     mypixel.show();
     ball.setup();
-    // line.setup();
+    line.setup();
     mymotor.setup();
     mybuzzer.setup();
     myswitch.setup();

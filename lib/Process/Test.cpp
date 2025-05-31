@@ -54,13 +54,17 @@ void Test::input() {
         gam.dir_reset();
         mybuzzer.start(400, 50);
         delay(300);
-    } else { //ゴールを向き続けるように
-        int goal_azimuth = 0 - gam.get_azimuth();
-        if (goal_azimuth < 0) {
-            goal_azimuth += 360;
-        }
-        mypixel.closest(goal_azimuth, 255, 0, 100, 3); //7
     }
+    int goal_azimuth = 0 - gam.get_azimuth();
+    if (goal_azimuth < 0) {
+        goal_azimuth += 360;
+    }
+    mypixel.closest(goal_azimuth, 255, 0, 100, 3);
+    int line_azimuth = line.get_azimuth() + 180;
+    if (goal_azimuth >= 360) {
+        goal_azimuth -= 360;
+    }
+    mypixel.closest(line_azimuth, 50, 255, 50, 3);
     if (ball.get_magnitude() != 0) {
         int value = constrain(ball.get_magnitude(), 0, 255); //入力値を0~255の範囲に制限
         int r, g, b;
@@ -69,6 +73,8 @@ void Test::input() {
         b = 0;
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
+
+    mymotor.run(0, 0, 0);
     mypixel.show();
 }
 
