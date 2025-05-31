@@ -48,6 +48,7 @@ void Defense::defense_(void) {
             ballflag1 = 3; //後ろ
         }
         Dball.flag = ballflag1;
+    }}
     //     if(Dball.flag == 0) {//左に動くとき
     //         if(linedist<linecentor)//左に動くだけ
     //         {
@@ -80,4 +81,4 @@ void Defense::defense_(void) {
     //         //MyPIXEL.show();
     //     }
     // }
-}
+
