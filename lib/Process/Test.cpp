@@ -79,7 +79,15 @@ void Test::input() {
 }
 
 void Test::ir() {
-    mymotor.run(0, 255, 0);
+    analogWrite(motor_PIN1[0], 255);
+    analogWrite(motor_PIN2[0], 0);  
+    analogWrite(motor_PIN1[1], 255);
+    analogWrite(motor_PIN2[1], 0);  
+    analogWrite(motor_PIN1[2], 255);
+    analogWrite(motor_PIN2[2], 0);  
+    analogWrite(motor_PIN1[3], 255);
+    analogWrite(motor_PIN2[3], 0); 
+    delay(100)
 }
 
 // void Test::goal() {
