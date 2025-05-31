@@ -54,11 +54,6 @@ void GAM::get_cord() {
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
 
-    // Serial.print(">Accel_x:");
-    // Serial.println(event.acceleration.x);
-    // Serial.print(">Accel_y:");
-    // Serial.println(event.acceleration.y);
-
     for (int i = 0; i < 2; i++) {
         if (accel_data[i] > 0) {
             accel_data[i] *= accel_offsetp[robotNUM][i];
@@ -149,19 +144,19 @@ void GAM::get_cord() {
 
     // 最終情報更新
     old_cordtime = millis();
-    old_accel_data[0] = accel_data[0];
-    old_accel_data[1] = accel_data[1];
     old_speed[0] = speed[0];
     old_speed[1] = speed[1];
+    old_accel_data[0] = accel_data[0];
+    old_accel_data[1] = accel_data[1];
 
-    // Serial.print(">pos_x:");
-    // Serial.println(states[0]);
-    // Serial.print(">pos_y:");
-    // Serial.println(states[1]);
-    // Serial.print(">world_x:");
-    // Serial.println(world_x);
-    // Serial.print(">world_y:");
-    // Serial.println(world_y);
+    Serial.print(">x:");
+    Serial.println(states[0]);
+    Serial.print(">y:");
+    Serial.println(states[1]);
+    Serial.print(">world_x:");
+    Serial.println(world_x);
+    Serial.print(">world_y:");
+    Serial.println(world_y);
 }
 
 void GAM::get_speed(float dt, float accel, short i) {
