@@ -14,18 +14,20 @@ class MyMOTOR {
 
     private:
         //調整用
-        const float kp = 2.0; //比例 を大きくすると応答が速くなるが、振動しやすくなる
-        const float ki = 0.5; //積分 を大きくすると誤差が蓄積されにくくなるが、過剰補正のリスク
-        const float kd = 1.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
-        const float pwmscale = 0.3; //姿勢補正速度
-        const int pwmlimit = 170;
+        const float kp = 0.06; //比例 を大きくすると応答が速くなるが、振動しやすくなる
+        const float ki = 0.1; //積分 を大きくすると誤差が蓄積されにくくなるが、過剰補正のリスク
+        const float kd = 0.2; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
+        const float pwmscale = 10.0; //姿勢補正速度
+        const int pwmlimit = 140;
+        const int difixlimit = 60;
+        const float integrallimit = 20;
 
         bool PoMi; //正・負判断用
-        bool power_limit = 1; //モーターリミッターを掛けるか 6/1変更しても意味なし
         short power; //進行方向を参考した場合のモーター出力
         short motorPWM; //機体動作用入力値
         short difixPWM; //姿勢制御用入力値
         short azimuth_motor; //モーターから見た進行方向の方位角
+        float lastupdate;
         double integral;
         double prev_error;
         double derivative;

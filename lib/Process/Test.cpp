@@ -83,23 +83,23 @@ void Test::input() {
 }
 
 void Test::ir() {
-    analogWrite(motor_PIN1[0], 40);
+    analogWrite(motor_PIN1[0], 100);
     analogWrite(motor_PIN2[0], 0);  
-    analogWrite(motor_PIN1[1], 40);
+    analogWrite(motor_PIN1[1], 100);
     analogWrite(motor_PIN2[1], 0);  
-    analogWrite(motor_PIN1[2], 40);
+    analogWrite(motor_PIN1[2], 100);
     analogWrite(motor_PIN2[2], 0);  
-    analogWrite(motor_PIN1[3], 40);
+    analogWrite(motor_PIN1[3], 100);
     analogWrite(motor_PIN2[3], 0); 
     delay(2000);
     analogWrite(motor_PIN1[0], 0);
-    analogWrite(motor_PIN2[0], 40);  
+    analogWrite(motor_PIN2[0], 100);  
     analogWrite(motor_PIN1[1], 0);
-    analogWrite(motor_PIN2[1], 40);  
+    analogWrite(motor_PIN2[1], 100);  
     analogWrite(motor_PIN1[2], 0);
-    analogWrite(motor_PIN2[2], 40);  
+    analogWrite(motor_PIN2[2], 100);  
     analogWrite(motor_PIN1[3], 0);
-    analogWrite(motor_PIN2[3], 40); 
+    analogWrite(motor_PIN2[3], 100); 
     delay(2000);
 }
 
