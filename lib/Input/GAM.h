@@ -23,7 +23,7 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         const float adaptive_noise = 0.3f; //動作判断時に使用するフィルタ
         const float accel_noise = 0.15f; //静止判断時に使用するフィルタ
         const float accel_sparknoise = 10.0f; //スパークノイズ（個人的な呼び名）の判定基準（衝突にも流用）
-        const float reset_border = 100; //加速度変化無しが何回続いたら速度をリセットするか
+        const float reset_border = 2; //加速度変化無しが何回続いたら速度をリセットするか
         const float accel_offsetp[2][2] = {{1.0, 1.0}, {1.0, 1.0}}; //+出力の倍率 x,y
         const float accel_offsetm[2][2] = {{1.0, 1.0}, {1.0, 1.0}}; //-出力の倍率 x,y
         const float accel_offset[2][2] = {{-0.263f, -0.025f}, {0.0f, 0.0f}}; //ノイズ出力の補正 x,y
