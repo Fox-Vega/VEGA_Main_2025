@@ -4,23 +4,21 @@
 
 void MyVECTOR::get_cord(int azimuth, int magnitude) {
     if (magnitude < 0) {
-        azimuth += 180;
+        azimuth = (azimuth + 180) % 360;
+        magnitude = -magnitude;
     }
-    theta = 90 - azimuth; //方位角をy軸基準の角度に変換(+-180度)
+    
+    theta = 90 - azimuth; // 方位角をy軸基準の角度に変換
+    
+    // thetaの範囲を[-180, 180]に正規化
+    theta = fmod(theta + 180 + 360, 360) - 180;
 
-    //値を調整
-    if (theta < -180) {
-        theta += 360;
-    } else if (theta > 540) {
-        theta -= 720;
-    } else if (theta > 180) {
-        theta -= 360;
-    }
-
-    //座標を計算
-    x = static_cast<int>(round(cos(radians(theta)) * abs(magnitude)));
-    y = static_cast<int>(round(sin(radians(theta)) * abs(magnitude)));
+    // 座標を計算
+    double radian_theta = theta * M_PI / 180.0;
+    x = (int)round(cos(radian_theta) * magnitude);
+    y = (int)round(sin(radian_theta) * magnitude);
 }
+
 
 void MyVECTOR::get_plpocord(int po_x, int po_y) {
     int pl_x = gam.get_x();

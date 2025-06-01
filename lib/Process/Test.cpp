@@ -5,20 +5,24 @@
 #include "AIP.h"
 
 void Test::test_() {
-    if (myswitch.check_tact() == 1) {
-        t_mode -= 1;
-        if (t_mode <= 0) {
-            t_mode = 5;
-        }
-        delay(300);
-    } else if (myswitch.check_tact() == 3) {
-        t_mode += 1;
-        if (t_mode >= 6) {
-            t_mode = 1;
-        }
-        delay(300);
-    }
     if (myswitch.check_toggle() == 1) {
+        for (int i = 0; i < 4; i++) {
+            analogWrite(motor_PIN1[i], 255);
+            analogWrite(motor_PIN2[i], 255);  
+        }
+        if (myswitch.check_tact() == 1) {
+            t_mode -= 1;
+            if (t_mode <= 0) {
+                t_mode = 5;
+            }
+            delay(300);
+        } else if (myswitch.check_tact() == 3) {
+            t_mode += 1;
+            if (t_mode >= 6) {
+                t_mode = 1;
+            }
+            delay(300);
+        }
         switch(t_mode) {
             case 1:
                 mypixel.multi(0, 15, 255, 0, 0);
@@ -30,8 +34,8 @@ void Test::test_() {
                 mypixel.show();
                 break;
         }
-        if ((millis() - lastbuzzer) > 500) {
-            mybuzzer.start(400, 50);
+        if ((millis() - lastbuzzer) > 1000) {
+            mybuzzer.start(300, 30);
             lastbuzzer = millis();
         }
     } else {
@@ -79,15 +83,24 @@ void Test::input() {
 }
 
 void Test::ir() {
-    analogWrite(motor_PIN1[0], 255);
+    analogWrite(motor_PIN1[0], 40);
     analogWrite(motor_PIN2[0], 0);  
-    analogWrite(motor_PIN1[1], 255);
+    analogWrite(motor_PIN1[1], 40);
     analogWrite(motor_PIN2[1], 0);  
-    analogWrite(motor_PIN1[2], 255);
+    analogWrite(motor_PIN1[2], 40);
     analogWrite(motor_PIN2[2], 0);  
-    analogWrite(motor_PIN1[3], 255);
+    analogWrite(motor_PIN1[3], 40);
     analogWrite(motor_PIN2[3], 0); 
-    delay(100);
+    delay(2000);
+    analogWrite(motor_PIN1[0], 0);
+    analogWrite(motor_PIN2[0], 40);  
+    analogWrite(motor_PIN1[1], 0);
+    analogWrite(motor_PIN2[1], 40);  
+    analogWrite(motor_PIN1[2], 0);
+    analogWrite(motor_PIN2[2], 40);  
+    analogWrite(motor_PIN1[3], 0);
+    analogWrite(motor_PIN2[3], 40); 
+    delay(2000);
 }
 
 // void Test::goal() {

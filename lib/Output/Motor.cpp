@@ -3,56 +3,63 @@
 #include "Output.h"
 #include "AIP.h"
 
+ //TODO もし姿勢制御が反対向きになっていた場合、motor.move の中の　+　-　を変更すること。
+ //TODO もしモーターが逆回転していた場合、PIN1とPIN2の内容を反転させること。
 
 void MyMOTOR::setup() {
     for (int i = 0; i < 4; i++) {
         pinMode(motor_PIN1[i], OUTPUT);
         pinMode(motor_PIN2[i], OUTPUT);
     }
-    power_limit = 0;
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
-    
-    movement_azimuth %= 360;
+    // 方向制御の処理（今回は使っていません）
     dir_azimuth %= 360;
-
-    difixPWM = mymotor.difix(dir_azimuth); // 姿勢制御の値
-    int azimuth = gam.get_azimuth();
-
-    if (power_limit == 1) {
-        power_ *= power_limiter;
-    }
-
+    
     for (int i = 0; i < 4; i++) {
-        azimuth_motor = movement_azimuth - azimuth - motor_degrees[i]; // オムニの軸がy軸になるようにする
-        myvector.get_cord(azimuth_motor, power_ - abs(difixPWM)); // 座標計算
-        power = constrain(myvector.get_x(), 0, 255); // x座標を取得（モーターの回転速度）
+        int raw = movement_azimuth - motor_degrees[i];
+        int azimuth_motor = ((raw % 360) + 360) % 360;
+        
+        // 座標計算
+        myvector.get_cord(azimuth_motor, power_);
+        int power = myvector.get_x();
 
-        PoMi = power >= 0;
-
-        //TODO もし姿勢制御が反対向きになっていた場合、motor.move の中の　+　-　を変更すること。
-        //TODO もしモーターが逆回転していた場合、PoMiをtrueからfalseにすること。
-        if (PoMi == true) {
-            analogWrite(motor_PIN1[i], (int)(power - difixPWM));
-            analogWrite(motor_PIN2[i], 0);  
-        } else {
+        if (power >= 0) {
+            if (abs(power - mymotor.difix(dir_azimuth)) > pwmlimit) {
+                power = pwmlimit;
+            } else {
+                abs(power) - mymotor.difix(dir_azimuth);
+            }
             analogWrite(motor_PIN1[i], 0);
-            analogWrite(motor_PIN2[i], (int)(power + difixPWM));
+            analogWrite(motor_PIN2[i], abs(power) - mymotor.difix(dir_azimuth)); 
+        } else {
+            if (abs(power + mymotor.difix(dir_azimuth)) > pwmlimit) {
+                power = pwmlimit;
+            } else {
+                abs(power) - mymotor.difix(dir_azimuth);
+            }
+            analogWrite(motor_PIN1[i], abs(power) + mymotor.difix(dir_azimuth));
+            analogWrite(motor_PIN2[i], 0); 
         }
     }
 }
 
-int MyMOTOR::difix(int setpoint) {
-    double error = setpoint - gam.get_azimuth();
-    integral = constrain(integral + error, -MAX_INTEGRAL, MAX_INTEGRAL);
-    derivative = error - prev_error;
+int MyMOTOR::difix(int target_azimuth) {
+    int current_azimuth = gam.get_azimuth();
+    int error = (target_azimuth - current_azimuth + 360) % 360;
+    if (error > 180) error -= 360;  // 短い角度方向で調整
+
+    integral += error;
+    float derivative = error - prev_error;
     prev_error = error;
 
-    double angularVelocity = kp * error + ki * integral + kd * derivative;
-
-    return motorPWM = (int)constrain(angularVelocity * pwmscale, -255, 255);
+    int pwm = kp * error + ki * integral + kd * derivative;
+    pwm *= pwmscale;
+    pwm = constrain(pwm, -150, 150);  // PWMの範囲制限
+    return pwm;
 }
+
 
 void MyMOTOR::free() {
     for (int i = 0; i < 4; i++) {
@@ -66,8 +73,4 @@ void MyMOTOR::brake() {
         analogWrite(motor_PIN1[i], 255);
         analogWrite(motor_PIN2[i], 255);
     }
-}
-
-void MyMOTOR::limiter(bool stat) {
-    power_limit = stat;
 }
