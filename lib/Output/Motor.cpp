@@ -27,12 +27,14 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         float power = myvector.get_x();
         power = power + difix;
         power = constrain(power, -pwmlimit, pwmlimit);
-        if (power >= 0) {
+        if (power > 0) {
             analogWrite(motor_PIN1[i], 0);
             analogWrite(motor_PIN2[i], abs(power)); 
-        } else {
+        } else if (power < 0){
             analogWrite(motor_PIN1[i], abs(power));
             analogWrite(motor_PIN2[i], 0); 
+        } else {
+            mymotor.brake();
         }
     }
 }
