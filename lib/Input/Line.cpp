@@ -4,33 +4,8 @@
 
 
 #define lineDetect 5
-/*
-AI学習用↓　　　（一部はちゃんと学習できてるそう　でもリンクから内容取得はできないみたい）
-RCJJのロボットのラインセンサ（エンジェルリング（円型））の角度を出したりするプログラム
-センサの数は24個
-基本時計回りで処理
-https://note.com/shiokara_rcj/n/n44bbd2454c07　←参考
-999はエラー用
-neopixel 24個円型
-*/
 
-// TODO
-// twitter（旧X）の垢復活させる
-//距離を返す
-//
-//
-//
-//
-//
-// aa9
-
-// 伝言
-// りくはTODO書くな　邪魔だし紛らわしい　
-// ARDUINOに入れるときに消すから勝手に消さないで　めっちゃ困る
-// 勝手に変えたところ全部戻して
-// ふざけんな　迷惑
-
-// これから「無駄に」関与しないで
+//TODO消した　あいつはいいやつだったよ…（？）
 
 void LINE::setup(void) {
     pinMode(selectA, OUTPUT);
@@ -46,19 +21,22 @@ int LINE::get_azimuth(void) {
     return get_linedeg();
 }
 
-int LINE::get_dist(void) {
+int LINE::get_magnitude(void){
     read();
+    if(read()== false){ //ラインが検出されていない場合
+        return 999; //エラー値を返す
+    }
     get_linedeg();
     if(count==1){
-        return sensordist;
+        get_line_dist(line_detect[0],999);
     }else if(count==2){
-        return get_line_dist(line_detect[0], line_detect[1]);
+        get_line_dist(line_detect[0], line_detect[1]);
     }else if(count==3){
-        return get_line_dist(line_detect[0], line_detect[2]);
+        get_line_dist(line_detect[0], line_detect[2]);
     }else if(count==4){
-        return get_line_dist(line_detect[1], line_detect[2]);
-    };
-    return 999; // エラー用
+        get_line_dist(line_detect[1], line_detect[2]);
+}
+return (myvector.get_magnitude(returnX,returnY)); // 座標から距離を取得
 }
 
 bool LINE::read(void){ //読み取りを24かいを三回繰り返して当たっていたら配列に１足して　２以上でboolをtrue
@@ -113,58 +91,76 @@ int LINE::get_linedeg(void) {
         line_detect[i] = 999;
     }
     count = 0;
-    int i = 0;
-    while (i < NUMLines) {
-        if (line_status[i] == true) {
-            int sum = 0;
-            int n = 0;
-            int max_idx = i;
-            int max_val = line_value[i];
-            int end = i;
+    int sensorIndex = 0;
+    while (sensorIndex < NUMLines) {
+        if (line_status[sensorIndex] == true) {
+            int degreeSum = 0; // クラスタ内の角度合計
+            int clusterCount = 0; // クラスタ内の要素数
+            int maxValueIndex = sensorIndex; // 最大値のインデックス
+            int maxSensorValue = line_value[sensorIndex]; // クラスタ内の最大センサ値
+            int clusterEndIndex = sensorIndex;
             // クラスタの終端を探す
-            for(int k = i; k < NUMLines && line_status[k] == true; k++) {
-                sum += Line_deg_list_24[k];
-                n++;
-                if(line_value[k] > max_val) {
-                    max_val = line_value[k];
-                    max_idx = k;
+            for(int k = sensorIndex; k < NUMLines && line_status[k] == true; k++) {
+                degreeSum += Line_deg_list_24[k];
+                clusterCount++;
+                if(line_value[k] > maxSensorValue) {
+                    maxSensorValue = line_value[k];
+                    maxValueIndex = k;
                 }
-                end = k;
+                clusterEndIndex = k;
             }
-            if (n > 0) {
-                int avg = sum / n;
-                int max_deg = Line_deg_list_24[max_idx];
-                int diff = max_deg - avg;
-                // 5度だけmax_idx方向に寄せる
-                if(diff > 0) {
-                    avg += (diff > 5 ? 5 : diff);
-                } else if(diff < 0) {
-                    avg += (diff < -5 ? -5 : diff);
+            if (clusterCount > 0) {
+                int clusterAverageDegree = degreeSum / clusterCount;
+                int maxDegree = Line_deg_list_24[maxValueIndex];
+                int diff = maxDegree - clusterAverageDegree;
+                // 最大値方向に5度だけ寄せる
+                if(diff > 5) {
+                    clusterAverageDegree += 5;
+                } else if(diff < -5) {
+                    clusterAverageDegree -= 5;
+                } else {
+                    clusterAverageDegree += diff;
                 }
-                line_detect[count] = avg;
+                line_detect[count] = clusterAverageDegree;
                 count++;
             }
-            i = end + 1; // 次のクラスタへ
+            sensorIndex = clusterEndIndex + 1; // 次のクラスタへ
         } else {
-            i++;
+            sensorIndex++;
         }
     }
     if(count == 0) {
         return 999;
     }
-    int sum = 0;
+    int totalDegree = 0;
     for(int j = 0; j < count; j++) {
-        sum += line_detect[j];
+        totalDegree += line_detect[j];
     }
-    return sum / count; // 複数クラスタならその平均
+    // 複数クラスタならその平均
+    return totalDegree / count;
+    /*
+      概要:
+      - line_status配列から連続したtrueの範囲（クラスタ）を検出し、その範囲の角度平均を算出
+      - クラスタ内で最も強いセンサ値方向に最大5度寄せて代表角度を決定
+      - 複数クラスタがある場合はその平均値を返す
+      - クラスタがなければ999（エラー値）を返す
+    */
 }
 
 
-int LINE::get_line_dist(int linedeg ,int linedeg2){
+void LINE::get_line_dist(int linedeg ,int linedeg2){
     int linedist = 0;
     int theata=calculate_deg('s',linedeg2, linedeg);
+    if(linedeg2 == 999)
+    {
+        linedist = sensordist;
+    }
+    else{
     linedist=cos(radians(theata))*sensordist;
-    return linedist;
+    }
+    myvector.get_cord(linedeg, linedist);
+    returnX = myvector.get_x();
+    returnY = myvector.get_y();
 }
 
 int LINE::calculate_deg(char mode, int num1, int num2) {//角度計算

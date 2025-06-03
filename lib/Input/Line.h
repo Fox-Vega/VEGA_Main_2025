@@ -15,10 +15,10 @@ class LINE {
 public:
     // 呼び出し関数
     //==============================
-    void setup(void);//初期設定（必ずやってね☆）
-    int get_azimuth(void);//センサの角度を取得　
-    int get_dist(void);//センサの距離を取得
-    bool read(void);//センサの状態を読み取る（true:ラインあり, false:ラインなし
+    void setup();//初期設定（必ずやってね☆）
+    int get_azimuth();//センサの角度を取得　
+    int get_magnitude();//センサの距離を取得
+    bool read();//センサの状態を読み取る（true:ラインあり, false:ラインなし
     int calculate_deg(char mode, int num1, int num2);//角度計算
         /*
         使い方
@@ -66,8 +66,10 @@ private:
     int line_value[NUMLines] = {0};
     int count = 0;
     int progress = 0;
+    int returnX = 0; // 角度計算用の戻り値
+    int returnY = 0; // 角度計算用の戻り値
     // 内部処理関数
-    int get_linedeg(void);
-    int get_line_dist(int deg1, int deg2);
-    void print_pizel(void);
+    int get_linedeg();
+    void get_line_dist(int deg1, int deg2);
+    void print_pizel();
 };

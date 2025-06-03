@@ -35,5 +35,9 @@ class Defense {
         void defense_(void);
         void get_vector_Ball(void);
         void get_vector_Line(void);
+        void get_vector(void) {
+            get_vector_Ball();
+            get_vector_Line();
+        }
     private:
 };
