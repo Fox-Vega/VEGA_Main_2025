@@ -7,7 +7,7 @@ class Test {
         void test_();
         void input();
         // void goal();
-        void ir();
+        void motor();
         // void ln();
     private:
         int t_mode = 1;
