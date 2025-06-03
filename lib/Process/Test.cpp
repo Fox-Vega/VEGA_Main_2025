@@ -44,7 +44,7 @@ void Test::test_() {
                 test.input();
                 break;
             case 2:
-                test.ir();
+                test.motor();
                 break;
         }
     }
@@ -82,15 +82,23 @@ void Test::input() {
     mypixel.shows();
 }
 
-void Test::ir() {
-    analogWrite(motor_PIN1[0], 40);
-    analogWrite(motor_PIN2[0], 0);  
-    analogWrite(motor_PIN1[1], 40);
-    analogWrite(motor_PIN2[1], 0);  
-    analogWrite(motor_PIN1[2], 40);
-    analogWrite(motor_PIN2[2], 0);  
-    analogWrite(motor_PIN1[3], 40);
-    analogWrite(motor_PIN2[3], 0); 
+void Test::motor() {
+    while (myswitch.check_toggle() == 1) {
+        for (int i = 0; i <= pwmlimiter; i++) {
+            for (int j = 0; j < 4; j++) {
+                analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
+                analogWrite(motor_PIN2[j], 0);  // PWM出力値を255から0まで徐々に減らす
+                delay(5);
+            }
+        }
+        for (int i = pwmlimiter; i >= 0; i--) {
+            for (int j = 0; j < 4; j++) {
+                analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
+                analogWrite(motor_PIN2[j], 0);
+                delay(5);
+            }
+        }
+    }
 }
 
 // void Test::goal() {
