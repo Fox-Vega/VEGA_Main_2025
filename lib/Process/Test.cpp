@@ -83,36 +83,49 @@ void Test::input() {
 }
 
 void Test::motor() {
-    while (myswitch.check_toggle() == 1) {
-        for (int i = 0; i <= 140; i++) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
-                analogWrite(motor_PIN2[j], 0);  // PWM出力値を255から0まで徐々に減らす
-                delay(5);
-            }
-        }
-        for (int i = 140; i >= 0; i--) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
-                analogWrite(motor_PIN2[j], 0);
-                delay(5);
-            }
-        }
-        for (int i = 0; i <= 140; i++) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], 0);  // PWM出力値を255から0まで徐々に減らす
-                analogWrite(motor_PIN2[j], i);  // PWM出力値を255から0まで徐々に減らす
-                delay(5);
-            }
-        }
-        for (int i = 140; i >= 0; i--) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], 0);  // PWM出力値を255から0まで徐々に減らす
-                analogWrite(motor_PIN2[j], i);
-                delay(5);
-            }
-        }
-    }
+    // while (myswitch.check_toggle() == 0) {
+    //     for (int i = 0; i <= 140; i++) {
+    //         for (int j = 0; j < 4; j++) {
+    //             analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
+    //             analogWrite(motor_PIN2[j], 0);  // PWM出力値を255から0まで徐々に減らす
+    //         }
+    //     }
+    //     for (int i = 140; i >= 0; i--) {
+    //         for (int j = 0; j < 4; j++) {
+    //             analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
+    //             analogWrite(motor_PIN2[j], 0);
+    //         }
+    //     }
+    //     for (int i = 0; i <= 140; i++) {
+    //         for (int j = 0; j < 4; j++) {
+    //             analogWrite(motor_PIN1[j], 0);  // PWM出力値を255から0まで徐々に減らす
+    //             analogWrite(motor_PIN2[j], i);  // PWM出力値を255から0まで徐々に減らす
+    //         }
+    //     }
+    //     for (int i = 140; i >= 0; i--) {
+    //         for (int j = 0; j < 4; j++) {
+    //             analogWrite(motor_PIN1[j], 0);  // PWM出力値を255から0まで徐々に減らす
+    //             analogWrite(motor_PIN2[j], i);
+    //         }
+    //     }
+    // }
+    analogWrite(motor_PIN1[0], 0);  // PWM出力値を255から0まで徐々に減らす
+    analogWrite(motor_PIN2[0], 100);  // PWM出力値を255から0まで徐々に減らす
+    analogWrite(motor_PIN1[1], 0);  // PWM出力値を255から0まで徐々に減らす
+    analogWrite(motor_PIN2[1], 100);  // PWM出力値を255から0まで徐々に減らす
+    analogWrite(motor_PIN1[2], 0);  // PWM出力値を255から0まで徐々に減らす
+    analogWrite(motor_PIN2[2], 100);  // PWM出力値を255から0まで徐々に減らす
+    analogWrite(motor_PIN1[3], 0);  // PWM出力値を255から0まで徐々に減らす
+    analogWrite(motor_PIN2[3], 100);  // PWM出力値を255から0まで徐々に減らす
+
+    // analogWrite(motor_PIN1[0], 100);  // PWM出力値を255から0まで徐々に減らす
+    // analogWrite(motor_PIN2[0], 0);  // PWM出力値を255から0まで徐々に減らす
+    // analogWrite(motor_PIN1[1], 100);  // PWM出力値を255から0まで徐々に減らす
+    // analogWrite(motor_PIN2[1], 0);  // PWM出力値を255から0まで徐々に減らす
+    // analogWrite(motor_PIN1[2], 100);  // PWM出力値を255から0まで徐々に減らす
+    // analogWrite(motor_PIN2[2], 0);  // PWM出力値を255から0まで徐々に減らす
+    // analogWrite(motor_PIN1[3], 100);  // PWM出力値を255から0まで徐々に減らす
+    // analogWrite(motor_PIN2[3], 0);  // PWM出力値を255から0まで徐々に減らす
 }
 
 // void Test::goal() {
