@@ -25,8 +25,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         // 座標計算
         myvector.get_cord(azimuth_motor, power_);
         float power = myvector.get_x();
-        // power = power + difix; TODO
-        power = power;
+        power += difix;
         power = constrain(power, -255, 255);
         if (power >= 0) {
             analogWrite(motor_PIN1[i], 0);
