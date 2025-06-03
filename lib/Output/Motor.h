@@ -17,7 +17,7 @@ class MyMOTOR {
         const float kp = 0.06; //比例 を大きくすると応答が速くなるが、振動しやすくなる
         const float ki = 0.1; //積分 を大きくすると誤差が蓄積されにくくなるが、過剰補正のリスク
         const float kd = 0.2; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
-        const float pwmscale = 10.0; //姿勢補正速度
+        const float pwmscale = 1.0; //姿勢補正速度
         const int pwmlimit = 140;
         const int difixlimit = 60;
         const float integrallimit = 20;

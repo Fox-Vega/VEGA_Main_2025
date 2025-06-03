@@ -64,11 +64,11 @@ void Test::input() {
         goal_azimuth += 360;
     }
     mypixel.closest(goal_azimuth, 255, 0, 100, 3);
-    int line_azimuth = line.get_azimuth() + 180;
-    if (goal_azimuth >= 360) {
-        goal_azimuth -= 360;
+    if (line.read() == 1) {
+        int line_azimuth = line.get_azimuth() + 180;
+        line_azimuth %= 360;
+        mypixel.closest(line_azimuth, 50, 255, 50, 3);
     }
-    mypixel.closest(line_azimuth, 50, 255, 50, 3);
     if (ball.get_magnitude() != 0) {
         int value = constrain(ball.get_magnitude(), 0, 255); //入力値を0~255の範囲に制限
         int r, g, b;
