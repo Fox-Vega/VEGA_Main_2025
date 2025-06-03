@@ -84,28 +84,28 @@ void Test::input() {
 
 void Test::motor() {
     while (myswitch.check_toggle() == 1) {
-        for (int i = 0; i <= pwmlimiter; i++) {
+        for (int i = 0; i <= 140; i++) {
             for (int j = 0; j < 4; j++) {
                 analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
                 analogWrite(motor_PIN2[j], 0);  // PWM出力値を255から0まで徐々に減らす
                 delay(5);
             }
         }
-        for (int i = pwmlimiter; i >= 0; i--) {
+        for (int i = 140; i >= 0; i--) {
             for (int j = 0; j < 4; j++) {
                 analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
                 analogWrite(motor_PIN2[j], 0);
                 delay(5);
             }
         }
-        for (int i = 0; i <= pwmlimiter; i++) {
+        for (int i = 0; i <= 140; i++) {
             for (int j = 0; j < 4; j++) {
                 analogWrite(motor_PIN1[j], 0);  // PWM出力値を255から0まで徐々に減らす
                 analogWrite(motor_PIN2[j], i);  // PWM出力値を255から0まで徐々に減らす
                 delay(5);
             }
         }
-        for (int i = pwmlimiter; i >= 0; i--) {
+        for (int i = 140; i >= 0; i--) {
             for (int j = 0; j < 4; j++) {
                 analogWrite(motor_PIN1[j], 0);  // PWM出力値を255から0まで徐々に減らす
                 analogWrite(motor_PIN2[j], i);
