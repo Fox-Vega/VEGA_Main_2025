@@ -13,14 +13,14 @@ class MyMOTOR {
         void limiter(bool stat); //0にすると制限なし移動速度が出る　モーター摩耗が激しくなるため、OOBを防ぐときにのみ解除するように。
 
     private:
-         //調整用
+        //調整用
         const float kp = 0.06; //比例 を大きくすると応答が速くなるが、振動しやすくなる
         const float ki = 0.1; //積分 を大きくすると誤差が蓄積されにくくなるが、過剰補正のリスク
         const float kd = 0.2; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
-        const int pwmlimit = 140; //モーターのPWM制限
-        const int difixlimit = 60; //姿勢補正PWMの制限
         const float pwmscale = 10.0; //姿勢補正速度
-        const float integrallimit = 20; //積分の制限　暴走防止
+        const int pwmlimit = 140;
+        const int difixlimit = 60;
+        const float integrallimit = 20;
 
         bool PoMi; //正・負判断用
         short power; //進行方向を参考した場合のモーター出力

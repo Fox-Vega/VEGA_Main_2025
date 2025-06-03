@@ -26,17 +26,35 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         myvector.get_cord(azimuth_motor, power_);
         float power = myvector.get_x();
         power = power + difix;
-        power = constrain(power, -pwmlimit, pwmlimit);
-        if (power > 0) {
+        power = constrain(power, -255, 255);
+        if (power >= 0) {
             analogWrite(motor_PIN1[i], 0);
             analogWrite(motor_PIN2[i], abs(power)); 
-        } else if (power < 0){
+        } else {
             analogWrite(motor_PIN1[i], abs(power));
             analogWrite(motor_PIN2[i], 0); 
-        } else {
-            mymotor.brake();
         }
     }
+}
+
+int MyMOTOR::difix(int target_azimuth) {
+    float dt = millis() - lastupdate;
+    int current_azimuth = gam.get_azimuth();
+    int error = (target_azimuth - current_azimuth + 360) % 360;
+    if (error > 180) error -= 360;  // 短い角度方向で調整
+
+    // 積分の制限を追加
+    integral += error * dt;
+    integral = constrain(integral, -integrallimit, integrallimit);
+
+    float derivative = (error - prev_error) / dt;
+    prev_error = error;
+
+    int pwm = kp * error + ki * integral + kd * derivative;
+    pwm *= pwmscale;
+    pwm = constrain(pwm, -difixlimit, difixlimit);  // PWMの範囲制限
+    lastupdate = millis();
+    return pwm;
 }
 
 int MyMOTOR::difix(int target_azimuth) {
