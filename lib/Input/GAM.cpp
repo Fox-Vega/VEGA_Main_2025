@@ -34,6 +34,10 @@ void GAM::setup() {
     }
     accel_bias[0] = total_noise[0] / sampleNUM[0]; // 平均値を計算
     accel_bias[1] = total_noise[1] / sampleNUM[1]; // 平均値を計算
+    Serial.print(">bias_x:");
+    Serial.println(accel_bias[0]);
+    Serial.print(">bias_y:");
+    Serial.println(accel_bias[1]);
 }
 
 
@@ -54,6 +58,11 @@ void GAM::get_cord() {
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
 
+    Serial.print(">accel_x:");
+    Serial.println(accel_data[0]);
+    Serial.print(">accel_y:");
+    Serial.println(accel_data[1]);
+
     for (int i = 0; i < 2; i++) {
         if (accel_data[i] > 0) {
             accel_data[i] *= accel_offsetp[robotNUM][i];
@@ -64,14 +73,11 @@ void GAM::get_cord() {
         int j = (i == 0) ? 1 : 0;
 
         if (accel_data[j] > accel_noise || PoMi[j] != 10) {
-            if (accel_data[j] > accel_noise + 0.05 || accel_data[i] < accel_noise + 0.3) {
-                accel_data[i] += accel_offset[robotNUM][i];
-            }
-            if (fabs(accel_data[i]) < adaptive_noise) {
+            if (fabs(accel_data[i] - old_accel_data[i]) < adaptive_noise) {
                 accel_data[i] = 0;
             }
         } else {
-            if (fabs(accel_data[i]) < accel_noise) {
+            if (fabs(accel_data[i] - old_accel_data[i]) < accel_noise) {
                 accel_data[i] = 0;
             }
         }
@@ -153,10 +159,14 @@ void GAM::get_cord() {
     Serial.println(states[0]);
     Serial.print(">y:");
     Serial.println(states[1]);
-    Serial.print(">world_x:");
-    Serial.println(world_x);
-    Serial.print(">world_y:");
-    Serial.println(world_y);
+    Serial.print(">speed_x:");
+    Serial.println(speed[0]);
+    Serial.print(">speed_y:");
+    Serial.println(speed[1]);
+    // Serial.print(">world_x:");
+    // Serial.println(world_x);
+    // Serial.print(">world_y:");
+    // Serial.println(world_y);
 }
 
 void GAM::get_speed(float dt, float accel, short i) {

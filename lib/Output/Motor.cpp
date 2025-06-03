@@ -14,43 +14,49 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
-    if (power_limit == 1) {
-        power_ *= power_limiter;
-    }
-    
-    movement_azimuth %= 360;
+    // 方向制御の処理（今回は使っていません）
     dir_azimuth %= 360;
-
-    difixPWM = mymotor.difix(dir_azimuth); // 姿勢制御の値
-    int azimuth = gam.get_azimuth();
+    int difix = mymotor.difix(dir_azimuth);
 
     for (int i = 0; i < 4; i++) {
-        azimuth_motor = movement_azimuth - azimuth - motor_degrees[i]; // オムニの軸がy軸になるようにする
-        myvector.get_cord(azimuth_motor, power_ - abs(difixPWM)); // 座標計算
-        power = constrain(myvector.get_x(), 0, 255); // x座標を取得（モーターの回転速度）
-
-        PoMi = power >= 0;
-
-        if (PoMi) {
-            analogWrite(motor_PIN1[i], (int)(power - difixPWM));
-            analogWrite(motor_PIN2[i], 0);
-        } else {
+        int raw = movement_azimuth - motor_degrees[i];
+        int azimuth_motor = ((raw % 360) + 360) % 360;
+        
+        // 座標計算
+        myvector.get_cord(azimuth_motor, power_);
+        float power = myvector.get_x();
+        power = power + difix;
+        power = constrain(power, -255, 255);
+        if (power >= 0) {
             analogWrite(motor_PIN1[i], 0);
-            analogWrite(motor_PIN2[i], (int)(power + difixPWM));
+            analogWrite(motor_PIN2[i], abs(power)); 
+        } else {
+            analogWrite(motor_PIN1[i], abs(power));
+            analogWrite(motor_PIN2[i], 0); 
         }
     }
 }
 
-int MyMOTOR::difix(int setpoint) {
-    double error = setpoint - gam.get_azimuth();
-    integral = constrain(integral + error, -MAX_INTEGRAL, MAX_INTEGRAL);
-    derivative = error - prev_error;
+int MyMOTOR::difix(int target_azimuth) {
+    float dt = millis() - lastupdate;
+    int current_azimuth = gam.get_azimuth();
+    int error = (target_azimuth - current_azimuth + 360) % 360;
+    if (error > 180) error -= 360;  // 短い角度方向で調整
+
+    // 積分の制限を追加
+    integral += error * dt;
+    integral = constrain(integral, -60, 60);
+
+    float derivative = (error - prev_error) / dt;
     prev_error = error;
 
-    double angularVelocity = kp * error + ki * integral + kd * derivative;
-    difix_PoMi = angularVelocity >= 0;
-
-    return motorPWM = (int)constrain(abs(angularVelocity) * pwmscale, 0, 255);
+    int pwm = kp * error + ki * integral + kd * derivative;
+    pwm *= pwmscale;
+    pwm = constrain(pwm, -difixlimit, difixlimit);  // PWMの範囲制限
+    lastupdate = millis();
+    Serial.print("difix: ");
+    Serial.println(pwm);
+    return pwm;
 }
 
 void MyMOTOR::free() {
@@ -65,8 +71,4 @@ void MyMOTOR::brake() {
         analogWrite(motor_PIN1[i], 255);
         analogWrite(motor_PIN2[i], 255);
     }
-}
-
-void MyMOTOR::limiter(int stat) {
-    power_limit = stat;
 }

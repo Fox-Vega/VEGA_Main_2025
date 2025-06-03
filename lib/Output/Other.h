@@ -28,7 +28,7 @@ class MyPIXEL {
 
     private:
         //調整用
-        const byte usePIXEL = 1; //ネオピクセルの使用有無
+        const byte usePIXEL = 0; //ネオピクセルの使用有無
         const float PIXELbrightness = 255; //最大で255
         
         int step_num = 0;
@@ -45,5 +45,6 @@ class MyBUZZER {
         void preset(int BUZZERpresetNUM); //既定の音を鳴らす
 
     private:
+        const bool useBUZZER = 1;
         const byte BUZZER_PIN = 47;
 };

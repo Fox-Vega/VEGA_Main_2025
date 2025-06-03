@@ -12,7 +12,7 @@ void loop() {
     if (general.get_mode() == 1) {
         gam.get_cord();
         ball.read();
-        // attack.attack_();
+        attack.attack_();
     } else if (general.get_mode() == 2) {
         // defence.defence_();
     } else {
