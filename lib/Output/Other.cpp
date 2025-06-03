@@ -55,7 +55,6 @@ void MyPIXEL::rainbow() {
             //ColorHSV関数に色相(0 to 65535)を渡し、その結果をgamma32()でガンマ補正します。
             PIXEL.setPixelColor(i, PIXEL.gamma32(PIXEL.ColorHSV(pixelHue)));
         }
-        PIXEL.show();
         step_num += 256;
         if (step_num == 65536) {
             step_num = 0;

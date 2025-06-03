@@ -107,7 +107,13 @@ void General::startup() {
                     Run = true;
                     phase = 4;
                 } else {
-                    mypixel.rainbow();
+                    if (mode == 3) {
+                        mypixel.rainbow();
+                        mypixel.shows();
+                    } else {
+                        mypixel.rainbow();
+                        mypixel.show();
+                    }
                     if (millis() - lastbuzzer > 500) {
                         mybuzzer.start(400, 50);
                         lastbuzzer = millis();
