@@ -32,6 +32,7 @@ class MyPIXEL {
         
         int step_num = 0;
         int PIXELNUMstart;
+        bool usePIXEL;
         const byte PIXELPIN = 45; // Pin where the NeoPixel ring is connected
         const byte NUMPIXEL = 16; // NUMber of pixels in the strip
         Adafruit_NeoPixel PIXEL = Adafruit_NeoPixel(NUMPIXEL, PIXELPIN, NEO_GRB + NEO_KHZ800);

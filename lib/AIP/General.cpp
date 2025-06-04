@@ -25,7 +25,7 @@ void General::startup() {
     phase = 1;
     mypixel.brightness(150);
     while (phase < 4) {
-        switch_pressed = myswitch.check_tact();
+        tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
         if (phase < 3) {
             mypixel.clear();
@@ -57,15 +57,15 @@ void General::startup() {
         }
         switch (phase) {
             case 1:
-                if (switch_pressed == 1){
+                if (tact_pressed == 1){
                     mode = 1;
                     phase = 2;
                     mybuzzer.start(500, 200);
-                } else if (switch_pressed == 2) {
+                } else if (tact_pressed == 2) {
                     mode = 2;
                     phase = 2;
                     mybuzzer.start(500, 200);
-                } else if (switch_pressed == 3) {
+                } else if (tact_pressed == 3) {
                     mode = 3;
                     phase = 2;
                     mybuzzer.start(500, 200);
@@ -73,12 +73,12 @@ void General::startup() {
                 delay(100);
                 break;
             case 2:
-                if (switch_pressed == 1){
+                if (tact_pressed == 1){
                     phase = 1;
                     startcord = 0;
                     mode = 0;
                     mybuzzer.start(100, 500);
-                } else if (switch_pressed == 2) {
+                } else if (tact_pressed == 2) {
                     if (startcord < 4) {
                         startcord += 1;
                     } else {
@@ -87,7 +87,7 @@ void General::startup() {
                     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mybuzzer.start(500, 50);
                     mybuzzer.start(500, 50);
-                } else if (switch_pressed == 3) {
+                } else if (tact_pressed == 3) {
                     phase = 3;
                     mybuzzer.start(500, 500);
                     mypixel.clear();
@@ -95,16 +95,15 @@ void General::startup() {
                 }
                 break;
             case 3:
-                if (switch_pressed == 1){
+                if (tact_pressed == 1){
                     phase = 2;
                     mybuzzer.start(100, 500);
-                } else if (switch_pressed == 2) {
+                } else if (tact_pressed == 2) {
                     gam.dir_reset();
                     mybuzzer.start(300, 500);
-                } else if (switch_pressed == 3) {
+                } else if (tact_pressed == 3) {
                     //機能無し
                 } else if (toggle_stat == 1) {
-                    Run = true;
                     phase = 4;
                 } else {
                     if (mode == 3) {
@@ -126,15 +125,6 @@ void General::startup() {
     mypixel.clear();
     mypixel.shows();
     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
-}
-
-int General::get_run() {
-    if (myswitch.check_toggle() == 0) {
-        Run = false;
-    } else {
-        Run = true; 
-    }
-    return Run;
 }
 
 int General::get_mode() {
