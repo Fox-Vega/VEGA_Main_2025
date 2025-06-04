@@ -14,7 +14,7 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
-    // 方向制御の処理（今回は使っていません）
+    motor_stat = false;
     dir_azimuth %= 360;
     int difix = mymotor.difix(dir_azimuth);
 
@@ -25,8 +25,10 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         // 座標計算
         myvector.get_cord(azimuth_motor, power_);
         float power = myvector.get_x();
-        power += difix;
-        power = constrain(power, -255, 255);
+        if (old_motor_stat == 1) {
+            power += difix;
+        }
+        power = constrain(power, -pwmlimit, pwmlimit);
         if (power >= 0) {
             analogWrite(motor_PIN1[i], 0);
             analogWrite(motor_PIN2[i], abs(power)); 
@@ -34,28 +36,30 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
             analogWrite(motor_PIN1[i], abs(power));
             analogWrite(motor_PIN2[i], 0); 
         }
+        if (power < 40) {
+            motor_stat = false;
+        }
     }
+    old_motor_stat = motor_stat;
 }
 
 int MyMOTOR::difix(int target_azimuth) {
-    float dt = millis() - lastupdate;
+    float dt = (millis() - lastupdate) * 1.0f;
+    dt = max(dt, 1.0f); // dtが極端に小さくならないように制限
+
     int current_azimuth = gam.get_azimuth();
-    int error = (target_azimuth - current_azimuth + 360) % 360;
-    if (error > 180) error -= 360;  // 短い角度方向で調整
+    int error = (target_azimuth - current_azimuth + 540) % 360 - 180;
 
-    // 積分の制限を追加
-    integral += error * dt;
-    integral = constrain(integral, -60, 60);
+    // 微分項の計算（測定値の変化量ベース）
+    float derivative = (current_azimuth - prev_azimuth) / dt;
+    prev_azimuth = current_azimuth;
 
-    float derivative = (error - prev_error) / dt;
-    prev_error = error;
-
-    int pwm = kp * error + ki * integral + kd * derivative;
+    // 微分先行型PD制御：積分項を削除
+    int pwm = kd * derivative + kp * error;  // 順序：微分項が先行
     pwm *= pwmscale;
-    pwm = constrain(pwm, -difixlimit, difixlimit);  // PWMの範囲制限
+
     lastupdate = millis();
-    Serial.print("difix: ");
-    Serial.println(pwm);
+    
     return pwm;
 }
 
