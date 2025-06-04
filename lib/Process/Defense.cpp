@@ -22,7 +22,7 @@ void Defense::get_vector_Line(void)
 {
     Dline.theata = line.get_azimuth();
     Dline.dist = line.get_magnitude();
-    Dline.detect = line.read();
+    Dline.detect = (Dline.dist) ? false : true; // ラインが検出されていない場合はfalse
     Dline.x = Dline.dist * cos(radians(Dline.theata));
     Dline.y = Dline.dist * sin(radians(Dline.theata));
 }

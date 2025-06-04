@@ -17,8 +17,12 @@ void LINE::setup(void) {
 }
 
 int LINE::get_azimuth(void) {
-    bool linebool = read();
+    read();
     return get_linedeg();
+}
+int LINE::get_reverse_azimuth(void){
+    int azimuth = get_azimuth();
+    return cal_deg('r',azimuth,999);
 }
 
 int LINE::get_magnitude(void){
@@ -40,112 +44,167 @@ return (myvector.get_magnitude(returnX,returnY)); // 座標から距離を取得
 }
 
 bool LINE::read(void){ //読み取りを24かいを三回繰り返して当たっていたら配列に１足して　２以上でboolをtrue
+//     for(int i=0; i<NUMLines; i++){ //初期化
+//         line_status[i] = false;
+//         line_detect[i] = 999;
+//         line_value [i] = 0;
+//     }
+
+//     int progress = 0;
+//     for(uint8_t  j=0; j<3; j++){ // 3回繰り返し
+//         for(uint8_t k=0; k<3; k++){ // k: 0=readPin1, 1=readPin2, 2=readPin3
+//             uint8_t  pin;//ピン処理
+//             if(k==0) pin = readPin1;
+//             else if(k==1) pin = readPin2;
+//             else pin = readPin3;
+//             for(int i=0; i<8; i++){
+//                 int idx = k*8 + i;//idk=インデックス
+//                 digitalWrite(selectA, BinaryNum[idx][0]);
+//                 digitalWrite(selectB, BinaryNum[idx][1]);
+//                 digitalWrite(selectC, BinaryNum[idx][2]);
+//                 delay(1);
+//                 if(analogRead(pin) > lineDetect){
+//                     line_value[idx]++;
+//                 }
+//                 progress++;
+//             }
+//         }
+//     }
+//     bool line_bool =0;
+//     for(int i = 0; i < 24; i++){
+//         if(line_value[i] >= 2){
+//             line_status[i] = true;
+//             line_bool = 1;
+//         }
+//         else{
+//             line_status[i] = false;
+//         }
+//         progress++;
+//     }
+//     if(line_bool == 1){
+//         return true;
+//     }
+//     else{
+//         return false;
+//     }
+// }
+
+
     for(int i=0; i<NUMLines; i++){ //初期化
         line_status[i] = false;
-        line_detect[i] = 999;
         line_value [i] = 0;
     }
 
-    int progress = 0;
-    for(uint8_t  j=0; j<3; j++){ // 3回繰り返し
-        for(uint8_t k=0; k<3; k++){ // k: 0=readPin1, 1=readPin2, 2=readPin3
-            uint8_t  pin;//ピン処理
-            if(k==0) pin = readPin1;
-            else if(k==1) pin = readPin2;
-            else pin = readPin3;
-            for(int i=0; i<8; i++){
-                int idx = k*8 + i;//idk=インデックス
-                digitalWrite(selectA, BinaryNum[idx][0]);
-                digitalWrite(selectB, BinaryNum[idx][1]);
-                digitalWrite(selectC, BinaryNum[idx][2]);
-                delay(1);
-                if(analogRead(pin) > lineDetect){
-                    line_value[idx]++;
-                }
-                progress++;
+    for (uint8_t i =0 ; i<3;i++){
+        for(uint8_t j=0; j<NUMLines; j++){
+            uint8_t pin =0;//ピン変数
+            switch (j%3) {//ピン処理
+                case 0: pin = readPin1; break;
+                case 1: pin = readPin2; break;
+                case 2: pin = readPin3; break;
+            }
+            // バイナリ配列の値を選択ピンに出力
+            digitalWrite(selectA, BinaryNum[j][0]);
+            digitalWrite(selectB, BinaryNum[j][1]);
+            digitalWrite(selectC, BinaryNum[j][2]);
+            //少し待つ（安定化）
+            delay(1);
+            if(analogRead(pin) > lineDetect){//アナログ読み取ってしきい値でふるいにかける
+                line_value[j]++;
             }
         }
     }
-    bool line_bool =0;
-    for(int i = 0; i < 24; i++){
-        if(line_value[i] >= 2){
+    for (uint8_t i = 0; i < NUMLines; i++) {
+        if (line_value[i] >= 2) { // 2回以上検出されたらラインあり
             line_status[i] = true;
-            line_bool = 1;
-        }
-        else{
+        } else {
             line_status[i] = false;
         }
-        progress++;
-    }
-    if(line_bool == 1){
-        return true;
-    }
-    else{
-        return false;
     }
 }
 
-int LINE::get_linedeg(void) {
-    // line_detectの初期化
-    for(int i = 0; i < NUMLines; i++) {
-        line_detect[i] = 999;
-    }
-    count = 0;
-    int sensorIndex = 0;
-    while (sensorIndex < NUMLines) {
-        if (line_status[sensorIndex] == true) {
-            int degreeSum = 0; // クラスタ内の角度合計
-            int clusterCount = 0; // クラスタ内の要素数
-            int maxValueIndex = sensorIndex; // 最大値のインデックス
-            int maxSensorValue = line_value[sensorIndex]; // クラスタ内の最大センサ値
-            int clusterEndIndex = sensorIndex;
-            // クラスタの終端を探す
-            for(int k = sensorIndex; k < NUMLines && line_status[k] == true; k++) {
-                degreeSum += Line_deg_list_24[k];
-                clusterCount++;
-                if(line_value[k] > maxSensorValue) {
-                    maxSensorValue = line_value[k];
-                    maxValueIndex = k;
+int LINE::get_linedeg(void){
+    count = 0; // ライン検出数の初期化
+    for(uint8_t i = 0; i<NUMLines; i++){
+        if(line_status[i]==true)
+        {
+            int first = i;
+            int last = i;
+            for(uint8_t j = i; j < NUMLines; j++) {
+                last = j; // ラインが続いている限りlastを更新
+                if(line_status[j] == false) {
+                    int degreeSum = 0; // クラスタ内の角度合計
+                    for(uint8_t k = first; k <= last; k++) {
+                        degreeSum += Line_deg_list_24[k];
+                    }
+                    int clusterAverageDegree = degreeSum / (last - first + 1); // クラスタの平均角度
+                    line_detect[count] = clusterAverageDegree; // 平均角度をライン検出配列に格納
+                    count++; // ライン検出数を増やす
+                    break; // ラインが途切れたらループを抜ける
                 }
-                clusterEndIndex = k;
             }
-            if (clusterCount > 0) {
-                int clusterAverageDegree = degreeSum / clusterCount;
-                int maxDegree = Line_deg_list_24[maxValueIndex];
-                int diff = maxDegree - clusterAverageDegree;
-                // 最大値方向に5度だけ寄せる
-                if(diff > 5) {
-                    clusterAverageDegree += 5;
-                } else if(diff < -5) {
-                    clusterAverageDegree -= 5;
-                } else {
-                    clusterAverageDegree += diff;
-                }
-                line_detect[count] = clusterAverageDegree;
-                count++;
-            }
-            sensorIndex = clusterEndIndex + 1; // 次のクラスタへ
-        } else {
-            sensorIndex++;
         }
     }
-    if(count == 0) {
-        return 999;
-    }
-    int totalDegree = 0;
-    for(int j = 0; j < count; j++) {
-        totalDegree += line_detect[j];
-    }
-    // 複数クラスタならその平均
-    return totalDegree / count;
-    /*
-      概要:
-      - line_status配列から連続したtrueの範囲（クラスタ）を検出し、その範囲の角度平均を算出
-      - クラスタ内で最も強いセンサ値方向に最大5度寄せて代表角度を決定
-      - 複数クラスタがある場合はその平均値を返す
-      - クラスタがなければ999（エラー値）を返す
-    */
 }
+//     // line_detectの初期化
+//     for(int i = 0; i < NUMLines; i++) {
+//         line_detect[i] = 999;
+//     }
+//     count = 0;
+//     int sensorIndex = 0;
+//     while (sensorIndex < NUMLines) {
+//         if (line_status[sensorIndex] == true) {
+//             int degreeSum = 0; // クラスタ内の角度合計
+//             int clusterCount = 0; // クラスタ内の要素数
+//             int maxValueIndex = sensorIndex; // 最大値のインデックス
+//             int maxSensorValue = line_value[sensorIndex]; // クラスタ内の最大センサ値
+//             int clusterEndIndex = sensorIndex;
+//             // クラスタの終端を探す
+//             for(int k = sensorIndex; k < NUMLines && line_status[k] == true; k++) {
+//                 degreeSum += Line_deg_list_24[k];
+//                 clusterCount++;
+//                 if(line_value[k] > maxSensorValue) {
+//                     maxSensorValue = line_value[k];
+//                     maxValueIndex = k;
+//                 }
+//                 clusterEndIndex = k;
+//             }
+//             if (clusterCount > 0) {
+//                 int clusterAverageDegree = degreeSum / clusterCount;
+//                 int maxDegree = Line_deg_list_24[maxValueIndex];
+//                 int diff = maxDegree - clusterAverageDegree;
+//                 // 最大値方向に5度だけ寄せる
+//                 if(diff > 5) {
+//                     clusterAverageDegree += 5;
+//                 } else if(diff < -5) {
+//                     clusterAverageDegree -= 5;
+//                 } else {
+//                     clusterAverageDegree += diff;
+//                 }
+//                 line_detect[count] = clusterAverageDegree;
+//                 count++;
+//             }
+//             sensorIndex = clusterEndIndex + 1; // 次のクラスタへ
+//         } else {
+//             sensorIndex++;
+//         }
+//     }
+//     if(count == 0) {
+//         return 999;
+//     }
+//     int totalDegree = 0;
+//     for(int j = 0; j < count; j++) {
+//         totalDegree += line_detect[j];
+//     }
+//     // 複数クラスタならその平均
+//     return totalDegree / count;
+//     /*
+//       概要:
+//       - line_status配列から連続したtrueの範囲（クラスタ）を検出し、その範囲の角度平均を算出
+//       - クラスタ内で最も強いセンサ値方向に最大5度寄せて代表角度を決定
+//       - 複数クラスタがある場合はその平均値を返す
+//       - クラスタがなければ999（エラー値）を返す
+//     */
 
 
 void LINE::get_line_dist(int linedeg ,int linedeg2){
@@ -163,57 +222,7 @@ void LINE::get_line_dist(int linedeg ,int linedeg2){
     returnY = myvector.get_y();
 }
 
-int LINE::calculate_deg(char mode, int num1, int num2) {//角度計算
-    int r=999;//リターン（初期値はエラー用）
-    if(mode == 'A')//加算（slow）
-    {//1度ずつ加算してそのたびに360以上になってないか確認
-        for(int i=0;i<num2;i++){
-            if(num1 == 360){
-                num1 = 0;
-            }
-            else{
-                num1++;
-            }
-            r = num1;
-        }
-    }
-    else if(mode == 'a')//加算（fast）
-    {//一気に加算して360以上になってたら360で割った余りを返す（間違ってたら勝手に書いといていいよ）
-        num1 = num1 + num2;
-        if(num1>360){
-            num1 = num1%360;
-        }
-        r = num1;
-    }
-    else if(mode == 's')//減算（slow）
-    {//1度ずつ減算してそのたびに0以下になってないか確認
-        for(int i=0;i<num2;i++){
-            if(num1 == 0){
-                num1 = 360;
-            }
-            else{
-                num1--;
-            }
-            r = num1;
-        }
-    }
-    else if(mode=='r')//反転（fast only）
-    {//num1を180度回転　　180にnum1を引いた絶対値を返す
-        r=abs(180 - num1);
-        r = num1;
-    }
-    else if(mode=='s')//減算（fast）
-    {//一気に減算して0以下になってたら360で割った余りを返す（間違ってたら勝手に書いといていいよ）
-        num1 = num1 - num2;
-        if(num1<0){
-            num1 = (num1+360)%360;
-        }
-        r = num1;
-    }
-    return r;
-}
-
-int LINE::cal_deg(char mode, int num1, int num2)
-{
-    return calculate_deg(mode, num1, num2);
-}
+int LINE::calculate_deg(char mode, int num1, int num2){
+    short r=999;if(mode == 'a'){num1 = num1 + num2;if(num1>360){num1 = num1%360;}r = num1;}
+    else if(mode=='r'){r=abs(180 - num1);r = num1;}
+    else if(mode=='s'){num1 = num1 - num2;if(num1<0){num1 = (num1+360)%360;}r = num1;}return (int)r;}
