@@ -114,17 +114,20 @@ bool LINE::read(void){ //読み取りを24かいを三回繰り返して当た�
             }
         }
     }
+    bool line_bool = false; // ライン検出フラグの初期化
     for (uint8_t i = 0; i < NUMLines; i++) {
         if (line_value[i] >= 2) { // 2回以上検出されたらラインあり
             line_status[i] = true;
+            line_bool = true; // ラインが検出された
         } else {
             line_status[i] = false;
         }
     }
+    return line_bool; // ラインが検出されたかどうかを返す
 }
 
-int LINE::get_linedeg(void){
-    count = 0; // ライン検出数の初期化
+void LINE::get_claster(void){
+        count = 0; // ライン検出数の初期化
     for(uint8_t i = 0; i<NUMLines; i++){
         if(line_status[i]==true)
         {
@@ -143,7 +146,22 @@ int LINE::get_linedeg(void){
                     break; // ラインが途切れたらループを抜ける
                 }
             }
+            i = last; // 次のライン検出の開始位置を更新
         }
+    }
+}
+
+int LINE::get_linedeg(void){
+    for(uint8_t i = 0; i < 4; i++) {
+        line_detect[i] = 999; // ライン検出配列の初期化
+    }
+    get_claster();
+    switch(count) {
+        case 0:linesituation = 0; // ラインなし
+        case 1:linesituation = 1;
+        case 2:linesituation = 2;
+        case 3:linesituation = 3;
+        case 4:linesituation = 4;
     }
 }
 //     // line_detectの初期化
@@ -223,6 +241,11 @@ void LINE::get_line_dist(int linedeg ,int linedeg2){
 }
 
 int LINE::calculate_deg(char mode, int num1, int num2){
-    short r=999;if(mode == 'a'){num1 = num1 + num2;if(num1>360){num1 = num1%360;}r = num1;}
-    else if(mode=='r'){r=abs(180 - num1);r = num1;}
-    else if(mode=='s'){num1 = num1 - num2;if(num1<0){num1 = (num1+360)%360;}r = num1;}return (int)r;}
+    switch(mode){
+        case 'a': return (num1+num2>=360)?(num1+num2)%360:(num1+num2);
+        case 'r': return (num1+180)%360;
+        case 's': return (num1-num2<0)?(num1-num2+360)%360:(num1-num2);
+        case 'A': return ((num1+num2)/2>=360)?((num1+num2)/2)%360:((num1+num2)/2);
+        default: return 999;
+    }
+}

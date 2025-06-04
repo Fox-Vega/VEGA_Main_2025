@@ -26,6 +26,7 @@ public:
         a:加算[num1+num2] ex) 240+230=10
         s:減算[num1-num2] ex) 30-45=345
         r:反転[reverse num1] ex)30→150  [-180]
+        A:平均[num1+num2/2] ex) 240+30=135
         ※文字は''で囲ってね
         */
     int cal_deg(char mode, int num1, int num2){return calculate_deg(mode, num1, num2);}//角度計算（関数の中で関数呼び出してるから速度が必要なときにはわざわざ上を入力した方が良いかも）
@@ -62,13 +63,21 @@ private:
     // 内部変数;
     bool line_status[NUMLines] = {0};
     int line_value[NUMLines] = {0};
-    int line_detect[NUMLines] = {999}; // ライン検出角度リスト
+    int line_detect[4] = {999}; // ライン検出角度リスト
     int count = 0;
     int progress = 0;
     int returnX = 0; // 角度計算用の戻り値
     int returnY = 0; // 角度計算用の戻り値
+    int linesituation = 0;/*
+        linesituationの値
+        0:ラインなし
+        1:直線
+        2:曲線
+        3:角
+        */
     // 内部処理関数
     int get_linedeg();
     void get_line_dist(int deg1, int deg2);
     void print_pizel();
+    void get_claster();
 };
