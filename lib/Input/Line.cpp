@@ -17,7 +17,7 @@ void LINE::setup(void) {
 }
 
 int LINE::get_azimuth(void) {
-    read();
+    bool linebool = read();
     return get_linedeg();
 }
 
@@ -47,9 +47,9 @@ bool LINE::read(void){ //読み取りを24かいを三回繰り返して当た�
     }
 
     int progress = 0;
-    for(int j=0; j<3; j++){ // 3回繰り返し
-        for(int k=0; k<3; k++){ // k: 0=readPin1, 1=readPin2, 2=readPin3
-            int pin;//ピン処理
+    for(uint8_t  j=0; j<3; j++){ // 3回繰り返し
+        for(uint8_t k=0; k<3; k++){ // k: 0=readPin1, 1=readPin2, 2=readPin3
+            uint8_t  pin;//ピン処理
             if(k==0) pin = readPin1;
             else if(k==1) pin = readPin2;
             else pin = readPin3;
