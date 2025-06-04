@@ -16,14 +16,16 @@ void GAM::setup() {
     }
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
-    delay(1000);
+    delay(2000);
+    mybuzzer.start(200, 200);
+    delay(50);
+    mybuzzer.start(200, 200);
     azimuth = 0;
     gam.cord_custom(0, 0);
-    delay(500);
     int sampleNUM[2] = {0, 0};
     float total_noise[2] = {0.0f, 0.0f};
-    int a = millis();
-    while (millis() - a < 3000) {
+    float a = millis();
+    while (millis() - a < 1000) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};

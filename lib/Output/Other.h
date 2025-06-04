@@ -28,7 +28,6 @@ class MyPIXEL {
 
     private:
         //調整用
-        const byte usePIXEL = 0; //ネオピクセルの使用有無
         const float PIXELbrightness = 255; //最大で255
         
         int step_num = 0;

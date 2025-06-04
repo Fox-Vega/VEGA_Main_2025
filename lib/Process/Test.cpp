@@ -64,7 +64,7 @@ void Test::input() {
         goal_azimuth += 360;
     }
     mypixel.closest(goal_azimuth, 255, 0, 100, 3);
-    if (line.read() == 1) {
+    if (line.get_magnitude() != 999) {
         int line_azimuth = line.get_azimuth() + 180;
         line_azimuth %= 360;
         mypixel.closest(line_azimuth, 50, 255, 50, 3);
