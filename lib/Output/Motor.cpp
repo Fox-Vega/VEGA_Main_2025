@@ -36,7 +36,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
             analogWrite(motor_PIN1[i], abs(power));
             analogWrite(motor_PIN2[i], 0); 
         }
-        if (power < 40) {
+        if (power < motor_border) {
             motor_stat = false;
         }
     }
