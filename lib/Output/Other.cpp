@@ -7,9 +7,9 @@ void MyPIXEL::setup() {
         PIXEL.begin();
         PIXEL.setBrightness(PIXELbrightness);
         if (myswitch.check_tact() != 0) {
-            const byte usePIXEL = 0; //ネオピクセルの使用有無
-        } else {
             const byte usePIXEL = 1; //ネオピクセルの使用有無
+        } else {
+            const byte usePIXEL = 0; //ネオピクセルの使用有無
         }
 }
 
