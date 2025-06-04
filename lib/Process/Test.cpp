@@ -46,6 +46,9 @@ void Test::test_() {
             case 2:
                 test.motor();
                 break;
+            case 3:
+                test.cord();
+                break;
         }
     }
 }
@@ -83,51 +86,88 @@ void Test::input() {
 }
 
 void Test::motor() {
-    // while (myswitch.check_toggle() == 0) {
-    //     for (int i = 0; i <= 140; i++) {
-    //         for (int j = 0; j < 4; j++) {
-    //             analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
-    //             analogWrite(motor_PIN2[j], 0);  // PWM出力値を255から0まで徐々に減らす
-    //         }
-    //     }
-    //     for (int i = 140; i >= 0; i--) {
-    //         for (int j = 0; j < 4; j++) {
-    //             analogWrite(motor_PIN1[j], i);  // PWM出力値を255から0まで徐々に減らす
-    //             analogWrite(motor_PIN2[j], 0);
-    //         }
-    //     }
-    //     for (int i = 0; i <= 140; i++) {
-    //         for (int j = 0; j < 4; j++) {
-    //             analogWrite(motor_PIN1[j], 0);  // PWM出力値を255から0まで徐々に減らす
-    //             analogWrite(motor_PIN2[j], i);  // PWM出力値を255から0まで徐々に減らす
-    //         }
-    //     }
-    //     for (int i = 140; i >= 0; i--) {
-    //         for (int j = 0; j < 4; j++) {
-    //             analogWrite(motor_PIN1[j], 0);  // PWM出力値を255から0まで徐々に減らす
-    //             analogWrite(motor_PIN2[j], i);
-    //         }
-    //     }
-    // }
-    analogWrite(motor_PIN1[0], 0);  // PWM出力値を255から0まで徐々に減らす
-    analogWrite(motor_PIN2[0], 100);  // PWM出力値を255から0まで徐々に減らす
-    analogWrite(motor_PIN1[1], 0);  // PWM出力値を255から0まで徐々に減らす
-    analogWrite(motor_PIN2[1], 100);  // PWM出力値を255から0まで徐々に減らす
-    analogWrite(motor_PIN1[2], 0);  // PWM出力値を255から0まで徐々に減らす
-    analogWrite(motor_PIN2[2], 100);  // PWM出力値を255から0まで徐々に減らす
-    analogWrite(motor_PIN1[3], 0);  // PWM出力値を255から0まで徐々に減らす
-    analogWrite(motor_PIN2[3], 100);  // PWM出力値を255から0まで徐々に減らす
+    while (myswitch.check_toggle() == 0) {
+        for (int i = 0; i <= 140; i++) {
+            for (int j = 0; j < 4; j++) {
+                analogWrite(motor_PIN1[j], i);
+                analogWrite(motor_PIN2[j], 0);
+            }
+        }
+        for (int i = 140; i >= 0; i--) {
+            for (int j = 0; j < 4; j++) {
+                analogWrite(motor_PIN1[j], i);
+                analogWrite(motor_PIN2[j], 0);
+            }
+        }
+        for (int i = 0; i <= 140; i++) {
+            for (int j = 0; j < 4; j++) {
+                analogWrite(motor_PIN1[j], 0);
+                analogWrite(motor_PIN2[j], i);
+            }
+        }
+        for (int i = 140; i >= 0; i--) {
+            for (int j = 0; j < 4; j++) {
+                analogWrite(motor_PIN1[j], 0);
+                analogWrite(motor_PIN2[j], i);
+            }
+        }
+    }
+    
+    //全正転
+    // analogWrite(motor_PIN1[0], 0);
+    // analogWrite(motor_PIN2[0], 100);
+    // analogWrite(motor_PIN1[1], 0);
+    // analogWrite(motor_PIN2[1], 100);
+    // analogWrite(motor_PIN1[2], 0);
+    // analogWrite(motor_PIN2[2], 100);
+    // analogWrite(motor_PIN1[3], 0);
+    // analogWrite(motor_PIN2[3], 100);
 
-    // analogWrite(motor_PIN1[0], 100);  // PWM出力値を255から0まで徐々に減らす
-    // analogWrite(motor_PIN2[0], 0);  // PWM出力値を255から0まで徐々に減らす
-    // analogWrite(motor_PIN1[1], 100);  // PWM出力値を255から0まで徐々に減らす
-    // analogWrite(motor_PIN2[1], 0);  // PWM出力値を255から0まで徐々に減らす
-    // analogWrite(motor_PIN1[2], 100);  // PWM出力値を255から0まで徐々に減らす
-    // analogWrite(motor_PIN2[2], 0);  // PWM出力値を255から0まで徐々に減らす
-    // analogWrite(motor_PIN1[3], 100);  // PWM出力値を255から0まで徐々に減らす
-    // analogWrite(motor_PIN2[3], 0);  // PWM出力値を255から0まで徐々に減らす
+    //全逆転
+    // analogWrite(motor_PIN1[0], 100);
+    // analogWrite(motor_PIN2[0], 0);
+    // analogWrite(motor_PIN1[1], 100);
+    // analogWrite(motor_PIN2[1], 0);
+    // analogWrite(motor_PIN1[2], 100);
+    // analogWrite(motor_PIN2[2], 0);
+    // analogWrite(motor_PIN1[3], 100);
+    // analogWrite(motor_PIN2[3], 0);
 }
 
-// void Test::goal() {
-    
-// }
+void Test::cord() {
+    void setup();
+    Serial.begin(9600);
+}
+
+void Test::cord() {
+    if (ready == 0) {
+        Serial.println("READY");  // Processingに開始信号を送信
+        ready = 1;
+    }
+    Serial.print(5);  // 最初にデータの個数を送信
+    Serial.print(",");
+
+    Serial.print(gam.get_azimuth());  // 改行を追加して1行ずつ送信
+    Serial.print(",");
+
+    gam.get_cord();
+    Serial.print(gam.get_x());
+    Serial.print(",");
+    Serial.print(gam.get_y());
+    Serial.print(",");
+
+    ball.read();
+    myvector.get_cord((ball.get_azimuth() + gam.get_azimuth()) % 360, ball.get_magnitude());
+    if (ball.get_magnitude() == 0) {
+        Serial.print(9999);
+        Serial.print(",");
+        Serial.print(9999);
+        Serial.println(",");
+    } else {
+        Serial.print(myvector.get_x() + gam.get_x());
+        Serial.print(",");
+        Serial.print(myvector.get_y() + gam.get_y());
+        Serial.println(",");
+    }
+    delay(10);
+}

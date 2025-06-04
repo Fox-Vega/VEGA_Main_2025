@@ -36,10 +36,6 @@ void GAM::setup() {
     }
     accel_bias[0] = total_noise[0] / sampleNUM[0]; // 平均値を計算
     accel_bias[1] = total_noise[1] / sampleNUM[1]; // 平均値を計算
-    Serial.print(">bias_x:");
-    Serial.println(accel_bias[0]);
-    Serial.print(">bias_y:");
-    Serial.println(accel_bias[1]);
 }
 
 
@@ -59,11 +55,6 @@ void GAM::get_cord() {
     sensors_event_t event;
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
-
-    Serial.print(">accel_x:");
-    Serial.println(accel_data[0]);
-    Serial.print(">accel_y:");
-    Serial.println(accel_data[1]);
 
     for (int i = 0; i < 2; i++) {
         if (accel_data[i] > 0) {
@@ -156,19 +147,6 @@ void GAM::get_cord() {
     old_speed[1] = speed[1];
     old_accel_data[0] = accel_data[0];
     old_accel_data[1] = accel_data[1];
-
-    Serial.print(">x:");
-    Serial.println(states[0]);
-    Serial.print(">y:");
-    Serial.println(states[1]);
-    Serial.print(">speed_x:");
-    Serial.println(speed[0]);
-    Serial.print(">speed_y:");
-    Serial.println(speed[1]);
-    // Serial.print(">world_x:");
-    // Serial.println(world_x);
-    // Serial.print(">world_y:");
-    // Serial.println(world_y);
 }
 
 void GAM::get_speed(float dt, float accel, short i) {
