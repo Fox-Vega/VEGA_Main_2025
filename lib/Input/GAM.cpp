@@ -50,13 +50,13 @@ int GAM::get_azimuth() {
 }
 
 void GAM::get_cord() {
-    float dt = (millis() - old_cordtime) / 1000.0; // 秒単位に変換
+    float dt = millis() - old_cordtime; // 秒単位に変換
 
     sensors_event_t event;
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2; i++) {  
         if (accel_data[i] > 0) {
             accel_data[i] *= accel_offsetp[robotNUM][i];
         } else if (accel_data[i] < 0) {
@@ -64,7 +64,6 @@ void GAM::get_cord() {
         }
         
         int j = (i == 0) ? 1 : 0;
-
         if (accel_data[j] > accel_noise || PoMi[j] != 10) {
             if (fabs(accel_data[i] - old_accel_data[i]) < adaptive_noise) {
                 accel_data[i] = 0;
@@ -77,10 +76,7 @@ void GAM::get_cord() {
         if (accel_data[i] > accel_sparknoise) {
             accel_data[i] = 0;
         }
-    }
 
-    // **線分加速度の使用**
-    for (int i = 0; i < 2; i++) {  
         float accel_dif = old_accel_data[i] - accel_data[i];
         if (fabs(accel_dif) == 0.0f) { // 静止時処理
             ten_count++;
@@ -94,46 +90,22 @@ void GAM::get_cord() {
             }
         } else if (accel_data[i] > 0) { // +方向動作時処理
             ten_count = 0;
-            if (first_PoMi[i] == 10) {
-                zero_pro = true;
-                first_PoMi[i] = 1;
-            }
-            PoMi[i] = 1;
         } else { // -方向動作時処理
             ten_count = 0;
-            if (first_PoMi[i] == 10) {
-                zero_pro = true;
-                first_PoMi[i] = 0;
-            }
-            PoMi[i] = 0;
         }
-
-        // 初回動作検知方向と現在の動きが異なる場合は速度計算
-        if (first_PoMi[i] != PoMi[i] && zero_pro) {
-            float a = fabs(old_accel_data[i]);
-            float b = fabs(accel_data[i]);
-            float a_dt = (a == 0 || b == 0) ? 0.0 : dt * (a / (a + b));
-            float b_dt = (a == 0 || b == 0) ? 0.0 : dt * (b / (a + b));
-
-            gam.get_speed(a_dt, 0, i);
-            gam.get_speed(b_dt, accel_data[i], i);
-        } else {
-            gam.get_speed(dt, accel_data[i], i);
-        }
+        lowpassValue[i] = lowpassValue[i] * filterCoefficient + accel_data[i] * (1 - filterCoefficient);
+        highpassValue[i] = accel_data[i] - lowpassValue[i];
+        speed[i] += accel_data[i] * dt;
     }
 
-    // 台形積分で変位算出
+    // 台形積分で座標算出　座標軸固定無し（機体基準）
     states[0] += ((speed[0] + old_speed[0]) * dt) / 2 * 100;
     states[1] += ((speed[1] + old_speed[1]) * dt) / 2 * 100;
 
+    // 台形積分で座標算出　座標軸固定有（コート基準）
     int azimuth_y = 0 - gam.get_azimuth();
-    if (azimuth_y < 0) {
-        azimuth_y += 360;
-    }
-    int azimuth_x = azimuth_y + 90;
-    if (azimuth_x >= 360) {
-        azimuth -= 360;
-    }
+    if (azimuth_y < 0) {azimuth_y += 360;}
+    int azimuth_x = (azimuth_y + 90) % 360;
     myvector.get_cord(azimuth_x, ((speed[0] + old_speed[0]) * dt) / 2 * 100);
     world_x += get_x();
     world_y += get_y();
@@ -147,16 +119,6 @@ void GAM::get_cord() {
     old_speed[1] = speed[1];
     old_accel_data[0] = accel_data[0];
     old_accel_data[1] = accel_data[1];
-}
-
-void GAM::get_speed(float dt, float accel, short i) {
-    lowpassValue[i] = lowpassValue[i] * filterCoefficient + accel * (1 - filterCoefficient);
-    highpassValue[i] = accel - lowpassValue[i];
-
-    // 線形加速度を用いて速度を更新
-    speed[i] += accel * dt;
-
-    old_accel_data[i] = accel;
 }
 
 void GAM::dir_reset() {
@@ -190,9 +152,9 @@ void GAM::restart() { //瞬間的にモードを変えることで初期化
 }
 
 int GAM::get_x() {
-    return states[0];
+    return (int)states[0];
 }
 
 int GAM::get_y() {
-    return states[1];
+    return (int)states[1];
 }

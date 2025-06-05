@@ -7,7 +7,6 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         void setup(); //初期設定
         int get_azimuth(); //方位角取得
         void get_cord(); //自己位置取得
-        void get_speed(float dt, float accel,short i); //半自動計算関数
         void dir_reset(); //方向初期化
         // void cord_reset(); //位置情報初期化
         void cord_custom(int x, int y); //自由座標に設定可能
