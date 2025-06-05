@@ -57,42 +57,41 @@ void GAM::get_cord() {
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
 
     for (int i = 0; i < 2; i++) {  
-        if (accel_data[i] > 0) {
+        if (accel_data[i] > 0) { //倍率調整
             accel_data[i] *= accel_offsetp[robotNUM][i];
         } else if (accel_data[i] < 0) {
             accel_data[i] *= accel_offsetm[robotNUM][i];
         }
         
         int j = (i == 0) ? 1 : 0;
-        if (accel_data[j] > accel_noise || PoMi[j] != 10) {
+        if (accel_data[j] > accel_noise) { //他軸が動いているなら
             if (fabs(accel_data[i] - old_accel_data[i]) < adaptive_noise) {
                 accel_data[i] = 0;
+                ten_count++;
             }
-        } else {
-            if (fabs(accel_data[i] - old_accel_data[i]) < accel_noise) {
+            if (accel_data[i] > accel_sparknoise) { //スパークノイズをフィルタ
+                accel_data[i] = 0;
+                ten_count++;
+            }
+        } else if (fabs(accel_data[i] - old_accel_data[i]) < accel_noise) { //ノイズ判定なら０にする
+            accel_data[i] = 0;
+            ten_count++;
+            if (accel_data[i] > accel_sparknoise) { //スパークノイズをフィルタ
                 accel_data[i] = 0;
             }
         }
-        if (accel_data[i] > accel_sparknoise) {
-            accel_data[i] = 0;
+        if (fabs(accel_data[i]) > 0) {
+            ten_count = 0;
+        }
+        if (ten_count >= reset_border) {
+            first_PoMi[i] = 10;
+            PoMi[i] = 10;
+            speed[0] = 0;
+            speed[1] = 0;
+            accel_data[0] = 0;
+            accel_data[1] = 0;
         }
 
-        float accel_dif = old_accel_data[i] - accel_data[i];
-        if (fabs(accel_dif) == 0.0f) { // 静止時処理
-            ten_count++;
-            if (ten_count >= reset_border) {
-                first_PoMi[i] = 10;
-                PoMi[i] = 10;
-                speed[0] = 0;
-                speed[1] = 0;
-                accel_data[0] = 0;
-                accel_data[1] = 0;
-            }
-        } else if (accel_data[i] > 0) { // +方向動作時処理
-            ten_count = 0;
-        } else { // -方向動作時処理
-            ten_count = 0;
-        }
         lowpassValue[i] = lowpassValue[i] * filterCoefficient + accel_data[i] * (1 - filterCoefficient);
         highpassValue[i] = accel_data[i] - lowpassValue[i];
         speed[i] += accel_data[i] * dt;
