@@ -13,11 +13,11 @@ Madgwick filter;
 void GAM::setup() {
     Wire.begin();
     if (!bno.begin()) {
-        while (1); // センサー未検出時は停止
+        while (1); //センサー未検出時は停止
     }
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
-    filter.begin(100);  // サンプリングレートを設定
+    filter.begin(100);  //サンプリングレートを設定
     delay(2000);
 
     mybuzzer.start(200, 200);
@@ -28,13 +28,21 @@ void GAM::setup() {
     gam.cord_custom(0, 0);
 }
 
+//void GAM::update_quaternion() {
+//    sensors_event_t gyro, accel, mag;
+//    bno.getEvent(&gyro, Adafruit_BNO055::VECTOR_GYROSCOPE);
+//    bno.getEvent(&accel, Adafruit_BNO055::VECTOR_ACCELEROMETER);
+
+//    filter.updateIMU(gyro.gyro.x, gyro.gyro.y, gyro.gyro.z, accel.acceleration.x, accel.acceleration.y, accel.acceleration.z);
+//}
+
 void GAM::update_quaternion() {
     sensors_event_t gyro, accel, mag;
     bno.getEvent(&gyro, Adafruit_BNO055::VECTOR_GYROSCOPE);
     bno.getEvent(&accel, Adafruit_BNO055::VECTOR_ACCELEROMETER);
     bno.getEvent(&mag, Adafruit_BNO055::VECTOR_MAGNETOMETER);
 
-    filter.updateIMU(gyro.gyro.x, gyro.gyro.y, gyro.gyro.z, accel.acceleration.x, accel.acceleration.y, accel.acceleration.z);
+    filter.update(gyro.gyro.x, gyro.gyro.y, gyro.gyro.z, accel.acceleration.x, accel.acceleration.y, accel.acceleration.z, mag.magnetic.x, mag.magnetic.y, mag.magnetic.z);
 }
 
 int GAM::get_azimuth() {
@@ -56,27 +64,31 @@ void GAM::get_cord() {
     float accelX = event.acceleration.x;
     float accelY = event.acceleration.y;
 
-    // クオータニオンを用いた座標変換
+    //座標変換 (クオータニオンベース)
     float worldAccelX = (1 - 2 * (q2 * q2 + q3 * q3)) * accelX + (2 * (q1 * q2 - q0 * q3)) * accelY;
     float worldAccelY = (2 * (q1 * q3 + q0 * q2)) * accelX + (1 - 2 * (q1 * q1 + q2 * q2)) * accelY;
 
-    float dt = (millis() - old_cordtime) / 1000.0;
+    float dt = millis() - old_cordtime;
 
-    speed[0] += worldAccelX * dt;
-    speed[1] += worldAccelY * dt;
+    //台形積分による速度更新
+    speed[0] += ((old_accel_data[0] + worldAccelX) / 2.0) * dt;
+    speed[1] += ((old_accel_data[1] + worldAccelY) / 2.0) * dt;
 
-    // 台形積分による座標計算
-    states[0] += ((speed[0] + old_speed[0]) * dt) / 2 * 100;
-    states[1] += ((speed[1] + old_speed[1]) * dt) / 2 * 100;
+    //台形積分による座標計算
+    states[0] += ((speed[0] + old_speed[0]) / 2.0) * dt * 100;
+    states[1] += ((speed[1] + old_speed[1]) / 2.0) * dt * 100;
 
-    // 最終情報更新
+    //最終情報更新
     old_cordtime = millis();
     old_speed[0] = speed[0];
     old_speed[1] = speed[1];
+
+    old_accel_data[0] = worldAccelX;
+    old_accel_data[1] = worldAccelY;
 }
 
 void GAM::dir_reset() {
-    filter.begin(100); // フィルタをリセット
+    filter.begin(100); //フィルタをリセット
     azimuth = 0;
 }
 
