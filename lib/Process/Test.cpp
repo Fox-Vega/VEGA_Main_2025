@@ -25,15 +25,25 @@ void Test::test_() {
         }
         switch(t_mode) {
             case 1:
-                mypixel.multi(0, 15, 255, 0, 0);
-                mypixel.multi(4, 12, 255, 255, 255);
-                mypixel.shows();
+                mypixel.clear();
+                mypixel.uni(0, 255, 0, 0);
+                mypixel.multi(7, 9, 255, 0, 0);
                 break;
             case 2:
                 mypixel.multi(0, 15, 255, 0, 0);
-                mypixel.shows();
+                break;
+            case 3:
+                mypixel.clear();
+                mypixel.uni(0, 0, 0, 255);
+                mypixel.uni(4, 255, 0, 0);
+                mypixel.uni(8, 0, 0, 255);
+                mypixel.uni(12, 255, 0, 0);
+                break;
+            default:
+                mypixel.clear();
                 break;
         }
+        mypixel.shows();
         if ((millis() - lastbuzzer) > 1000) {
             mybuzzer.start(300, 30);
             lastbuzzer = millis();
@@ -132,16 +142,7 @@ void Test::motor() {
     // analogWrite(motor_PIN2[3], 0);
 }
 
-// void Test::cord() {
-//     void setup();
-//     Serial.begin(9600);
-// }
-
 void Test::cord() {
-    if (ready == 0) {
-        Serial.println("READY");  // Processingに開始信号を送信
-        ready = 1;
-    }
     Serial.print(5);  // 最初にデータの個数を送信
     Serial.print(",");
 
@@ -149,22 +150,22 @@ void Test::cord() {
     Serial.print(",");
 
     gam.get_cord();
-    Serial.print(0);
+    Serial.print(582 - gam.get_x());
     Serial.print(",");
-    Serial.print(0);
+    Serial.print(430 - gam.get_y());
     Serial.print(",");
 
     ball.read();
     myvector.get_cord((ball.get_azimuth() + gam.get_azimuth()) % 360, ball.get_magnitude());
     if (ball.get_magnitude() == 0) {
-        Serial.print(9999);
+        Serial.print(0);
         Serial.print(",");
-        Serial.print(9999);
+        Serial.print(0);
         Serial.println(",");
     } else {
-        Serial.print(myvector.get_x() + gam.get_x());
+        Serial.print(myvector.get_x() + (582 - gam.get_x()));
         Serial.print(",");
-        Serial.print(myvector.get_y() + gam.get_y());
+        Serial.print(myvector.get_y() + (430 - gam.get_y()));
         Serial.println(",");
     }
     delay(10);
