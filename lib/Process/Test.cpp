@@ -80,8 +80,6 @@ void Test::input() {
         b = 0;
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
-
-    mymotor.run(0, 0, 0);
     mypixel.shows();
 }
 
