@@ -18,8 +18,8 @@ class General {
         // short pNUM = 0;
         short phase = 0; //設定フェーズ
         //スタート座標　通常　左奥　右奥　右前　左前　
-        int startcords_x[5] = {582, 325, 325, 840, 840}; //スタート位置のx座標
-        int startcords_y[5] = {430, 575, 275, 275, 575}; //スタート位置のy座標
+        int startcords_x[5] = {0, -145, 145, 145, -145}; //スタート位置のx座標
+        int startcords_y[5] = {0, 257, 257, -257, -257}; //スタート位置のy座標
         short startPIXELs[5] = {99, 14, 2, 6, 10};
         float lastbuzzer;
 };
