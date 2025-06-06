@@ -14,7 +14,11 @@ void Defense::defense_(void)
     general.setup();
     while(true)
     {
-        get_vector();
+        line.serial_print();
+        delay(1);
+        for (int i = 0; i < 50; i++) {
+        Serial.println();
+        }
     }
 }
 
