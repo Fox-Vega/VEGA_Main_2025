@@ -3,9 +3,6 @@
 #include "Output.h"
 #include "AIP.h"
 
- //TODO もし姿勢制御が反対向きになっていた場合、motor.move の中の　+　-　を変更すること。
- //TODO もしモーターが逆回転していた場合、PIN1とPIN2の内容を反転させること。
-
 void MyMOTOR::setup() {
     for (int i = 0; i < 4; i++) {
         pinMode(motor_PIN1[i], OUTPUT);
