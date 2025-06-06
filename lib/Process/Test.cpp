@@ -67,11 +67,11 @@ void Test::input() {
         goal_azimuth += 360;
     }
     mypixel.closest(goal_azimuth, 255, 0, 100, 3);
-    if (line.get_magnitude() != 999) {
-        int line_azimuth = line.get_azimuth() + 180;
-        line_azimuth %= 360;
-        mypixel.closest(line_azimuth, 50, 255, 50, 3);
-    }
+    // if (line.get_magnitude() != 999) {
+    //     int line_azimuth = line.get_azimuth() + 180;
+    //     line_azimuth %= 360;
+    //     mypixel.closest(line_azimuth, 50, 255, 50, 3);
+    // }
     if (ball.get_magnitude() != 0) {
         int value = constrain(ball.get_magnitude(), 0, 255); //入力値を0~255の範囲に制限
         int r, g, b;
@@ -80,8 +80,6 @@ void Test::input() {
         b = 0;
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
-
-    mymotor.run(0, 0, 0);
     mypixel.shows();
 }
 
@@ -134,10 +132,10 @@ void Test::motor() {
     // analogWrite(motor_PIN2[3], 0);
 }
 
-void Test::cord() {
-    void setup();
-    Serial.begin(9600);
-}
+// void Test::cord() {
+//     void setup();
+//     Serial.begin(9600);
+// }
 
 void Test::cord() {
     if (ready == 0) {
