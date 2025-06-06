@@ -16,6 +16,20 @@ void LINE::setup(void) {
     pinMode(readPin3, INPUT);
 }
 
+int LINE::serial_print(void) {
+    read();
+    for(uint8_t i = 0; i < NUMLines; i++) {
+        Serial.print("line_status[");
+        Serial.print(i);
+        Serial.print("]: ");
+        Serial.print(line_status[i]);
+        Serial.print(", line_value[");
+        Serial.print(i);
+        Serial.print("]: ");
+        Serial.println(line_value[i]);
+    }
+}
+
 int LINE::get_azimuth(void) {
     read();
     return get_linedeg();
@@ -158,12 +172,44 @@ int LINE::get_linedeg(void){
     get_claster();
     switch(count) {
         case 0:linesituation = 0; // ラインなし
-        case 1:linesituation = 1;
-        case 2:linesituation = 2;
-        case 3:linesituation = 3;
-        case 4:linesituation = 4;
+        case 1:linesituation = 1;//点
+        case 2:linesituation = 2; // 直線
+        case 3:linesituation = 3;// 曲線
+        case 4:linesituation = 4;// 角
+        default: linesituation = count;//それ以上
     }
-}
+    if(linesituation==0)
+    {return 999; // ラインなしの場合は999を返す
+    } else if(linesituation==1) {
+        return line_detect[0]; // 点の場合はその角度を返す
+    } else if(linesituation==2) {
+        return cal_deg('A', line_detect[0], line_detect[1]); // 直線の場合は平均角度を返す
+    } else if(linesituation==3) {
+        int line1 =0;
+        int line2 =0;
+        line1 = cal_deg('s', line_detect[0], line_detect[1]);
+        line2 = cal_deg('s', line_detect[1], line_detect[2]);
+        return cal_deg('A', line1, line2);
+    } else if(linesituation==4) {
+        int line1 =0;
+        int line2 =0;
+        int line3 =0;
+        line1 = cal_deg('s', line_detect[0], line_detect[1]);
+        line2 = cal_deg('s', line_detect[1], line_detect[2]);
+        line3 = cal_deg('s', line_detect[2], line_detect[3]);
+        return cal_deg('A', line1, cal_deg('A', line2, line3)); // 角の場合は平均角度を返す
+    } else if(count%2==0)
+        {
+            int lined1 =linesituation/2;
+            int lined2 =linesituation/2+1;
+            return cal_deg('A', line_detect[lined1], line_detect[lined2]);
+        }
+        else
+        {
+            int lined1 =(linesituation+1)/2;
+            return line_detect[lined1];
+        };
+    };
 //     // line_detectの初期化
 //     for(int i = 0; i < NUMLines; i++) {
 //         line_detect[i] = 999;
@@ -225,7 +271,7 @@ int LINE::get_linedeg(void){
 //     */
 
 
-void LINE::get_line_dist(int linedeg ,int linedeg2){
+/*void LINE::get_line_dist(int linedeg ,int linedeg2){
     int linedist = 0;
     int theata=calculate_deg('s',linedeg2, linedeg);
     if(linedeg2 == 999)
@@ -239,7 +285,7 @@ void LINE::get_line_dist(int linedeg ,int linedeg2){
     returnX = myvector.get_x();
     returnY = myvector.get_y();
 }
-
+*/
 int LINE::calculate_deg(char mode, int num1, int num2){
     switch(mode){
         case 'a': return (num1+num2>=360)?(num1+num2)%360:(num1+num2);
