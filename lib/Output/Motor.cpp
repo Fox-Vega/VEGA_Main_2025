@@ -48,7 +48,6 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
 
 int MyMOTOR::difix(int target_azimuth) {
     float dt = (millis() - lastupdate) * 1.0f;
-    dt = max(dt, 1.0f); // dtが極端に小さくならないように制限
 
     int current_azimuth = gam.get_azimuth();
     int error = (target_azimuth - current_azimuth + 540) % 360 - 180;
