@@ -149,9 +149,9 @@ void Test::cord() {
     Serial.print(",");
 
     gam.get_cord();
-    Serial.print(gam.get_x());
+    Serial.print(0);
     Serial.print(",");
-    Serial.print(gam.get_y());
+    Serial.print(0);
     Serial.print(",");
 
     ball.read();

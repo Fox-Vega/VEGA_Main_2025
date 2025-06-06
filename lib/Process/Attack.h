@@ -12,7 +12,7 @@ class Attack {
         // 調整
         float appraoch_value = 1.5; //ボールの回り込みパターン１の際の角度増加値
         const int brr = 100; //回り込み半径
-        const int b_r1_deg = 10; //ボールの回り込みパターン１を行う範囲(片側)
+        const int b_r1_deg = 30; //ボールの回り込みパターン１を行う範囲(片側)
         const short b_r1speed = 100; //ボールの回り込みパターン１の速度
         const short b_r2speed = 100; //ボールの回り込みパターン２の速度
         const short b_r3speed = 100; //ボールの回り込みパターン３の速度
@@ -22,5 +22,5 @@ class Attack {
 
         short ball_dir;
         short face;
-        float movedir;
+        int movedir;
 };
