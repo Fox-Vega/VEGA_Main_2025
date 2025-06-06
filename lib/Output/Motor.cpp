@@ -30,6 +30,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         if (old_motor_stat == 1) {
             power += difix;
         }
+        power *= pwmscale;
         power = constrain(power, -pwmlimit, pwmlimit);
         if (power >= 0) {
             analogWrite(motor_PIN1[i], 0);
@@ -58,7 +59,6 @@ int MyMOTOR::difix(int target_azimuth) {
 
     // 微分先行型PD制御：積分項を削除
     int pwm = kd * derivative + kp * error;  // 順序：微分項が先行
-    pwm *= pwmscale;
 
     lastupdate = millis();
     
