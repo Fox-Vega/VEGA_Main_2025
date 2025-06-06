@@ -3,9 +3,6 @@
 #include "Output.h"
 #include "AIP.h"
 
- //TODO もし姿勢制御が反対向きになっていた場合、motor.move の中の　+　-　を変更すること。
- //TODO もしモーターが逆回転していた場合、PIN1とPIN2の内容を反転させること。
-
 void MyMOTOR::setup() {
     for (int i = 0; i < 4; i++) {
         pinMode(motor_PIN1[i], OUTPUT);
@@ -30,6 +27,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         if (old_motor_stat == 1) {
             power += difix;
         }
+        power *= pwmscale;
         power = constrain(power, -pwmlimit, pwmlimit);
         if (power >= 0) {
             analogWrite(motor_PIN1[i], 0);
@@ -47,7 +45,6 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
 
 int MyMOTOR::difix(int target_azimuth) {
     float dt = (millis() - lastupdate) * 1.0f;
-    dt = max(dt, 1.0f); // dtが極端に小さくならないように制限
 
     int current_azimuth = gam.get_azimuth();
     int error = (target_azimuth - current_azimuth + 540) % 360 - 180;
@@ -58,7 +55,6 @@ int MyMOTOR::difix(int target_azimuth) {
 
     // 微分先行型PD制御：積分項を削除
     int pwm = kd * derivative + kp * error;  // 順序：微分項が先行
-    pwm *= pwmscale;
 
     lastupdate = millis();
     
