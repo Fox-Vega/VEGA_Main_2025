@@ -1,4 +1,3 @@
-#include "MadgwickAHRS.h"
 #include "GAM.h"
 #include "Input.h"
 #include "Output.h"
@@ -8,88 +7,167 @@
 #include <utility/imumaths.h>
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
-Madgwick filter;
 
 void GAM::setup() {
     Wire.begin();
     if (!bno.begin()) {
-        while (1); //センサー未検出時は停止
+        Serial.println("BNO055 not detected.");
+        while (1);  //センサー未検出時は停止
     }
     bno.setExtCrystalUse(true);
+    bno.setMode(OPERATION_MODE_CONFIG);
+    delay(25);
     bno.setMode(OPERATION_MODE_AMG);
-    filter.begin(100);  //サンプリングレートを設定
-    delay(2000);
-
-    mybuzzer.start(200, 200);
-    delay(50);
-    mybuzzer.start(200, 200);
-
+    delay(3000);
     azimuth = 0;
-    gam.cord_custom(0, 0);
-}
-
-//void GAM::update_quaternion() {
-//    sensors_event_t gyro, accel, mag;
-//    bno.getEvent(&gyro, Adafruit_BNO055::VECTOR_GYROSCOPE);
-//    bno.getEvent(&accel, Adafruit_BNO055::VECTOR_ACCELEROMETER);
-
-//    filter.updateIMU(gyro.gyro.x, gyro.gyro.y, gyro.gyro.z, accel.acceleration.x, accel.acceleration.y, accel.acceleration.z);
-//}
-
-void GAM::update_quaternion() {
-    sensors_event_t gyro, accel, mag;
-    bno.getEvent(&gyro, Adafruit_BNO055::VECTOR_GYROSCOPE);
-    bno.getEvent(&accel, Adafruit_BNO055::VECTOR_ACCELEROMETER);
-    bno.getEvent(&mag, Adafruit_BNO055::VECTOR_MAGNETOMETER);
-
-    filter.update(gyro.gyro.x, gyro.gyro.y, gyro.gyro.z, accel.acceleration.x, accel.acceleration.y, accel.acceleration.z, mag.magnetic.x, mag.magnetic.y, mag.magnetic.z);
+    while (millis() < 8000) {
+        sensors_event_t accel_event;
+        bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
+        float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
+        for (int i = 0; i < 2; i++) {
+            accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
+        }
+    }
 }
 
 int GAM::get_azimuth() {
-    update_quaternion();
-    float yaw = atan2(2.0f * (filter.getQ1() * filter.getQ2() + filter.getQ0() * filter.getQ3()),
-                      1.0f - 2.0f * (filter.getQ2() * filter.getQ2() + filter.getQ3() * filter.getQ3())) * 180.0f / M_PI;
-    return (yaw < 0) ? yaw + 360 : yaw;
+    sensors_event_t euler_event;
+    bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
+
+    return (int)(euler_event.orientation.x);
 }
 
 void GAM::get_cord() {
-    float q0 = filter.getQ0();
-    float q1 = filter.getQ1();
-    float q2 = filter.getQ2();
-    float q3 = filter.getQ3();
+    //BNO055から加速度データを取得（単位：m/s^2）
+    float dt = (millis() - old_cordtime) / 1000.0; //秒単位に変換
 
     sensors_event_t event;
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
+    float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
+    
+    for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
+        if (accel_data[i] > 0) {
+            accel_data[i] *= accel_offsetp[robotNUM][i];
+        } else if (accel_data[i] < 0) {
+            accel_data[i] *= accel_offsetm[robotNUM][i];
+        }
+        if (i == 0) {
+            j = 1;
+        } else {
+            j = 0;
+        }
+        if (accel_data[j] > accel_noise && first_PoMi[i] != 10) {
+            if (fabs(accel_data[i]) < adaptive_noise) {
+                accel_data[i] = 0;
+            }
+        } else {
+            if (fabs(accel_data[i]) < accel_noise) {
+                accel_data[i] = 0;
+            }
+        }
+        if (accel_data[i] > accel_sparknoise) {
+            accel_data[i] = 0;
+        }
+    }
 
-    float accelX = event.acceleration.x;
-    float accelY = event.acceleration.y;
+    //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
+    for (int i = 0; i < 2; i++) { 
+        float accel_dif = old_accel_data[i] - accel_data[i];
+        if(fabs(accel_dif) == 0.0f) { //静止時処理
+            ten_count += 1;
+            if (ten_count >= reset_border) {
+                first_PoMi[i] = 10;
+                PoMi[i] = 10;
+                speed[0] = 0;
+                speed[1] = 0;
+                accel_data[0] = 0;
+                accel_data[1] = 0;
+            }
+        } else if(accel_data[i] > 0) { //+方向動作時処理
+            ten_count = 0;
+            if (first_PoMi[i] == 10) {
+                zero_pro = true;
+                first_PoMi[i] = 1;
+            }
+            PoMi[i] = 1;
+        } else { //-方向動作時処理
+            ten_count = 0;
+            if (first_PoMi[i] == 10) {
+                zero_pro = true;
+                first_PoMi[i] = 0;
+            }
+            PoMi[i] = 0;
+        }
+        if (first_PoMi[i] != PoMi[i] && zero_pro) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算
+            a = fabs(old_accel_data[i]);
+            b = fabs(accel_data[i]);
+            if (a == 0 ||  b == 0) {
+                a_dt = 0.0;
+                b_dt = 0.0;
+            } else {
+                a_dt = dt * (a / (a + b));
+                b_dt = dt * (b / (a + b));
+            }
+            gam.get_speed(a_dt, 0, i);
+            gam.get_speed(b_dt, accel_data[i], i);
+        } else {
+            gam.get_speed(dt, accel_data[i], i);
+        }
+    }
 
-    //座標変換 (クオータニオンベース)
-    float worldAccelX = (1 - 2 * (q2 * q2 + q3 * q3)) * accelX + (2 * (q1 * q2 - q0 * q3)) * accelY;
-    float worldAccelY = (2 * (q1 * q3 + q0 * q2)) * accelX + (1 - 2 * (q1 * q1 + q2 * q2)) * accelY;
+    //台形積分で速度算出(TelePlot用)
+    states[0] += ((speed[0] + old_speed[0]) * dt) / 2 * 100;
+    states[1] += ((speed[1] + old_speed[1]) * dt) / 2 * 100;
 
-    float dt = millis() - old_cordtime;
-
-    //台形積分による速度更新
-    speed[0] += ((old_accel_data[0] + worldAccelX) / 2.0) * dt;
-    speed[1] += ((old_accel_data[1] + worldAccelY) / 2.0) * dt;
-
-    //台形積分による座標計算
-    states[0] += ((speed[0] + old_speed[0]) / 2.0) * dt * 100;
-    states[1] += ((speed[1] + old_speed[1]) / 2.0) * dt * 100;
-
+    //座標をコート座標に変換
+    float yaw_rad = radians(gam.get_azimuth());
+    int x = ((speed[0] + old_speed[0]) * dt) / 2 * 100;
+    int y = ((speed[1] + old_speed[1]) * dt) / 2 * 100;
+    world_x += x * cos(yaw_rad) - y * sin(yaw_rad);
+    world_y += x * sin(yaw_rad) + y * cos(yaw_rad);
+    
     //最終情報更新
     old_cordtime = millis();
+    oold_accel_data[0] = old_accel_data[0];
+    oold_accel_data[1] = old_accel_data[1];
+    old_accel_data[0] = accel_data[0];
+    old_accel_data[1] = accel_data[1];
     old_speed[0] = speed[0];
     old_speed[1] = speed[1];
 
-    old_accel_data[0] = worldAccelX;
-    old_accel_data[1] = worldAccelY;
+    // Serial.print(">Speed_x:");
+    // Serial.println(speed[0]);
+    // Serial.print(">Speed_y:");
+    // Serial.println(speed[1]);
+    // Serial.print(">Accel_x:");
+    // Serial.println(accel_data[0]);
+    // Serial.print(">Accel_y:");
+    // Serial.println(accel_data[1]);
+    // Serial.print(">pos_x:");
+    // Serial.println(states[0]);
+    // Serial.print(">pos_y:");
+    // Serial.println(states[1]);
+    // Serial.print(">Azimuth:");
+    // Serial.println(gam.get_azimuth());
+    // Serial.print(">DT:");
+    // Serial.println(dt);
+    Serial.print("pos");
+    Serial.print(states[0]);
+    Serial.print("  ");
+    Serial.println(states[1]);
+    Serial.println("  ");
+}
+
+void GAM::get_speed(float dt, float accel,short i) {
+    // https://qiita.com/mzk1644/items/ea621cc872acd996a6e8 こちらのコードを使わせていただきました。
+    lowpassValue[i] = lowpassValue[i] * filterCoefficient + accel * (1 - filterCoefficient);
+    highpassValue[i] = accel - lowpassValue[i];
+    speed[i] = (float)((highpassValue[i] + old_accel_data[i]) * dt) / 2 + speed[i];
+    old_accel_data[i] = highpassValue[i];
 }
 
 void GAM::dir_reset() {
-    filter.begin(100); //フィルタをリセット
-    azimuth = 0;
+    yawtweak = gam.get_azimuth();
 }
 
 void GAM::cord_custom(int x, int y) {
@@ -100,10 +178,38 @@ void GAM::cord_custom(int x, int y) {
     old_cordtime = millis();
 }
 
+void GAM::accel_reset() {
+    int s = millis();
+    while ((millis() - s) < 2000) {
+        sensors_event_t event;
+        bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
+        float accel_data[3] = { event.acceleration.x, event.acceleration.y};
+        for (int i = 0; i < 2; i++) {
+            accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
+        }
+    }
+}
+
+void GAM::restart() { //瞬間的にモードを変えることで初期化
+    int s = millis();
+    bno.setMode(OPERATION_MODE_CONFIG);
+    delay(25);
+    bno.setMode(OPERATION_MODE_AMG);
+    delay(1000);
+    while ((millis() - s) < 2000) {
+        sensors_event_t event;
+        bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
+        float accel_data[3] = { event.acceleration.x, event.acceleration.y};
+        for (int i = 0; i < 2; i++) {
+            accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
+        }
+    }
+}
+
 int GAM::get_x() {
-    return (int)states[0];
+    return states[0];
 }
 
 int GAM::get_y() {
-    return (int)states[1];
+    return states[1];
 }

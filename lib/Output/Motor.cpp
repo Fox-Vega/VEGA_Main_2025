@@ -17,7 +17,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     motor_stat = false;
     dir_azimuth %= 360;
     int difix = mymotor.difix(dir_azimuth);
-    int azimuth = gam.get_azimuth();
+    // int azimuth = gam.get_azimuth();
     
     for (int i = 0; i < 4; i++) {
         // int raw = movement_azimuth + azimuth - motor_degrees[i]; //方向に関わらず同じ方向に進むようにする場合はこの行を使って、下の行を消す

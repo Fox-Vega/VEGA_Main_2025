@@ -5,25 +5,27 @@
 
 void General::setup() {
     Serial.begin(9600);
+    myswitch.setup();
+    mybuzzer.setup();
     mypixel.setup();
-    mypixel.multi(0, 15, 255, 255, 255);
+    mypixel.clear();
     mypixel.shows();
     mypixel.multi(0, 15, 255, 128, 0);
     mypixel.show();
     ball.setup();
     line.setup();
     mymotor.setup();
-    mybuzzer.setup();
-    myswitch.setup();
     gam.setup();
-    mypixel.multi(0, 15, 255, 255, 255);
+    mypixel.clear();
     mypixel.shows();
+    mypixel.multi(0, 15, 255, 255, 255);
+    mypixel.show();
     mybuzzer.preset(1);
 }
 
 void General::startup() {
+    mypixel.brightness(999);
     phase = 1;
-    mypixel.brightness(150);
     while (phase < 4) {
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
@@ -53,7 +55,7 @@ void General::startup() {
             if (ball.get_magnitude() != 0) {
                 mypixel.closest(ball.get_azimuth(), 80, 0, 255, 1);
             }
-            mypixel.shows();
+            mypixel.show();
         }
         switch (phase) {
             case 1:
@@ -91,7 +93,7 @@ void General::startup() {
                     phase = 3;
                     mybuzzer.start(500, 500);
                     mypixel.clear();
-                    mypixel.shows();
+                    mypixel.show();
                 }
                 break;
             case 3:
@@ -108,7 +110,7 @@ void General::startup() {
                 } else {
                     if (mode == 3) {
                         mypixel.rainbow();
-                        mypixel.shows();
+                        mypixel.show();
                     } else {
                         mypixel.rainbow();
                         mypixel.show();
