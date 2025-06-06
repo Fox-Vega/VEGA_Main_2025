@@ -16,7 +16,7 @@ void LINE::setup(void) {
     pinMode(readPin3, INPUT);
 }
 
-int LINE::serial_print(void) {
+void LINE::serial_print(void) {
     read();
     for(uint8_t i = 0; i < NUMLines; i++) {
         Serial.print("line_status[");

@@ -20,7 +20,7 @@ public:
     int get_reverse_azimuth();
     int get_magnitude();//センサの距離を取得
     bool read();//センサの状態を読み取る（true:ラインあり, false:ラインなし
-    int serial_print(void);
+    void serial_print(void);
     int calculate_deg(char mode, int num1, int num2);//角度計算
         /*
         使い方
