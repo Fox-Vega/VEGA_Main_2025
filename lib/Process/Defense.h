@@ -19,14 +19,14 @@
 #define linecentor 0.1
 
 
-    struct data
-    {
-        int theata;
-        int dist;
-        float x;
-        float y;
-        bool detect;
-    };
+struct data
+{
+    int theata;
+    int dist;
+    float x;
+    float y;
+    bool detect;
+};
 
 
 class Defense {

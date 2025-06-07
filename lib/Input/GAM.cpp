@@ -22,7 +22,7 @@ void GAM::setup() {
     mybuzzer.start(200, 999);
     while (timer.read_milli() < 1500) {
         sensors_event_t accel_event;
-        bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
+        bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
         for (int i = 0; i < 2; i++) {
             accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算

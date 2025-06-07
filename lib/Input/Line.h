@@ -20,7 +20,7 @@ public:
     int get_reverse_azimuth();
     int get_magnitude();//センサの距離を取得
     bool read();//センサの状態を読み取る（true:ラインあり, false:ラインなし
-    int serial_print(void);
+    void serial_print(void);
     int calculate_deg(char mode, int num1, int num2);//角度計算
         /*
         使い方
@@ -46,7 +46,7 @@ private:
         #define readPin3 A9
 
         #define NUMLines 24
-        const int sensordist = 10; // センサの距離（cm）
+        const int sensordist = 1000; // センサの距離（cm）
         const int LINEDETECT = 1500; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
 
 
@@ -64,6 +64,7 @@ private:
     // 内部変数;
     bool line_status[NUMLines] = {0};
     int line_value[NUMLines] = {0};
+    int line_memory[NUMLines] = {0}; // ライン検出の履歴
     int line_detect[4] = {999}; // ライン検出角度リスト
     int count = 0;
     int progress = 0;
@@ -78,7 +79,7 @@ private:
         */
     // 内部処理関数
     int get_linedeg();
-    void get_line_dist(int deg1, int deg2);
+    int get_line_dist(int deg1, int deg2);
     void print_pizel();
     void get_claster();
 };

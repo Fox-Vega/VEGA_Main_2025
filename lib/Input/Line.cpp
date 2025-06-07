@@ -3,7 +3,7 @@
 #include <Output.h>
 
 
-#define lineDetect 5
+#define lineDetect 500
 
 //TODO消した　あいつはいいやつだったよ…（？）
 
@@ -16,19 +16,33 @@ void LINE::setup(void) {
     pinMode(readPin3, INPUT);
 }
 
-int LINE::serial_print(void) {
+void LINE::serial_print(void) {
     read();
-    for(uint8_t i = 0; i < NUMLines; i++) {
-        Serial.print("line_status[");
-        Serial.print(i);
-        Serial.print("]: ");
-        Serial.print(line_status[i]);
-        Serial.print(", line_value[");
-        Serial.print(i);
-        Serial.print("]: ");
-        Serial.println(line_value[i]);
-    }
-}
+    Serial.print(line_memory[1]);
+    Serial.print(line_memory[2]);
+    Serial.print(line_memory[3]);
+    Serial.print(line_memory[4]);
+    Serial.print(line_memory[5]);
+    Serial.print(line_memory[6]);
+    Serial.print(line_memory[7]);
+    Serial.print(line_memory[8]);
+    Serial.print(line_memory[9]);
+    Serial.print(line_memory[10]);
+    Serial.print(line_memory[11]);
+    Serial.print(line_memory[12]);
+    Serial.print(line_memory[13]);
+    Serial.print(line_memory[14]);
+    Serial.print(line_memory[15]);
+    Serial.print(line_memory[16]);
+    Serial.print(line_memory[17]);
+    Serial.print(line_memory[18]);
+    Serial.print(line_memory[19]);
+    Serial.print(line_memory[20]);
+    Serial.print(line_memory[21]);
+    Serial.print(line_memory[22]);
+    Serial.print(line_memory[23]);
+    Serial.println(line_memory[0]);
+    Serial.println(get_azimuth());}
 
 int LINE::get_azimuth(void) {
     read();
@@ -107,6 +121,7 @@ bool LINE::read(void){ //読み取りを24かいを三回繰り返して当た�
     for(int i=0; i<NUMLines; i++){ //初期化
         line_status[i] = false;
         line_value [i] = 0;
+        line_memory[i] = 0; // ライン検出の履歴
     }
 
     for (uint8_t i =0 ; i<3;i++){
@@ -126,6 +141,7 @@ bool LINE::read(void){ //読み取りを24かいを三回繰り返して当た�
             if(analogRead(pin) > lineDetect){//アナログ読み取ってしきい値でふるいにかける
                 line_value[j]++;
             }
+            line_memory[j] = analogRead(pin); // ライン検出の履歴を保存
         }
     }
     bool line_bool = false; // ライン検出フラグの初期化
@@ -178,7 +194,7 @@ int LINE::get_linedeg(void){
         case 4:linesituation = 4;// 角
         default: linesituation = count;//それ以上
     }
-    if(linesituation==0)
+    if(linesituation==23456789)
     {return 999; // ラインなしの場合は999を返す
     } else if(linesituation==1) {
         return line_detect[0]; // 点の場合はその角度を返す
@@ -271,7 +287,7 @@ int LINE::get_linedeg(void){
 //     */
 
 
-/*void LINE::get_line_dist(int linedeg ,int linedeg2){
+int LINE::get_line_dist(int linedeg ,int linedeg2){
     int linedist = 0;
     int theata=calculate_deg('s',linedeg2, linedeg);
     if(linedeg2 == 999)
@@ -284,8 +300,9 @@ int LINE::get_linedeg(void){
     myvector.get_cord(linedeg, linedist);
     returnX = myvector.get_x();
     returnY = myvector.get_y();
+    return linedist; // 座標から距離を取得
 }
-*/
+
 int LINE::calculate_deg(char mode, int num1, int num2){
     switch(mode){
         case 'a': return (num1+num2>=360)?(num1+num2)%360:(num1+num2);
