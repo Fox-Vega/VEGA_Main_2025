@@ -16,6 +16,11 @@ void Defense::defense_(void)
     {
         line.serial_print();
         delay(10);
+        void clearSerialMonitor() {
+    for (int i = 0; i < 50; i++) {
+        Serial.println();
+    }
+}
     }
 }
 
