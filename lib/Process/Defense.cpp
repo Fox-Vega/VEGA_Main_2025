@@ -15,7 +15,7 @@ void Defense::defense_(void)
     while(true)
     {
         line.serial_print();
-        delay(1);
+        delay(10);
         for (int i = 0; i < 50; i++) {
         Serial.println();
         }
