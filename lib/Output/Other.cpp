@@ -26,11 +26,13 @@ void MyPIXEL::brightness(int brightness) {
 }
 
 void MyPIXEL::uni(int PIXELNUM, int red, int green, int blue) {
+    PIXELNUM %= 15;
     PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red, green, blue));
 }
 
 void MyPIXEL::multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue) {
     for (int i = PIXELNUMstart; i <= PIXELNUMend; i++) {
+        i %= 15;
         mypixel.uni(i, red, green, blue);
     }
 }
