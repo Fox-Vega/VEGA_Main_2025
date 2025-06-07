@@ -14,8 +14,9 @@ void loop() {
         ball.read();
         attack.attack_();
     } else if (general.get_mode() == 2) {
-        while(1){
-        defence.defense_();}
+        Serial.println("defence selected");
+        defence.defense_();
+        Serial.println("defence end");
     } else {
         test.test_();
     }

@@ -4,6 +4,7 @@
 
 
 void MyPIXEL::setup() {
+    Serial.println("MyPIXEL:setting up");
         PIXEL.begin();
         PIXEL.setBrightness(PIXELbrightness);
         if (myswitch.check_tact() != 0) {
@@ -17,6 +18,8 @@ void MyPIXEL::setup() {
             delay(300);
             mybuzzer.start(200, 100);
         }
+        if(usePIXEL==1)Serial.println("pixel:on");
+        else Serial.println("pixel off");
 }
 
 void MyPIXEL::brightness(int brightness) {
