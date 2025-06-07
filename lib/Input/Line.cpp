@@ -19,48 +19,48 @@ void LINE::serial_print(void){}
 
 int LINE::get_azimuth(void) {
     read();
-    for(uint8_t i = 0; i < 4; i++)line_detect[i] = 999; // ライン検出配列の初期化
+    for(size_t i = 0; i < 4; i++)line_detect[i] = 999; // ライン検出配列の初期化
     int linecount =0;
     int linemem[NUMLines] = {0};
     int linemem2[NUMLines] = {0};
-    for(uint8_t i = 0; i < NUMLines; i++) if(line_status[i] == true) linecount++;
-    for(uint8_t i = 0; i < NUMLines; i++) linemem[i] = line_memory[i];
-    for(uint8_t i = 0; i < NUMLines; i++){
-            for(uint8_t j =0; j<(linecount-1); j++) linemem2[j]=calculate_deg('A',linemem[j],linemem[j+1]);
-            for(uint8_t j =0; j<NUMLines; j++)linemem[j]=linemem2[j];
+    for(size_t i = 0; i < NUMLines; i++) if(line_status[i] == true) linecount++;
+    for(size_t i = 0; i < NUMLines; i++) linemem[i] = line_memory[i];
+    for(size_t i = 0; i < NUMLines; i++){
+            for(size_t j =0; j<(linecount-1); j++) linemem2[j]=calculate_deg('A',linemem[j],linemem[j+1]);
+            for(size_t j =0; j<NUMLines; j++)linemem[j]=linemem2[j];
             linecount--;
     }
     return linemem[0];
 }
 
 int LINE::get_magnitude(void){
+    int cluster =0;
     read();
     if(read()== false){ //ラインが検出されていない場合
         return 999; //エラー値を返す
     }
-    get_linedeg();
-    if(count==1){
-        get_line_dist(line_detect[0],999);
-    }else if(count==2){
-        get_line_dist(line_detect[0], line_detect[1]);
-    }else if(count==3){
-        get_line_dist(line_detect[0], line_detect[2]);
-    }else if(count==4){
-        get_line_dist(line_detect[1], line_detect[2]);
-}
+    for (size_t i = 0; i < NUMLines; i++){
+        if(line_status[i])
+        for(size_t j=i; j<NUMLines; j++){
+            if(line_status[j+1]){
+            }
+            else
+            break;
+        }
+    }
 return (myvector.get_magnitude(returnX,returnY)); // 座標から距離を取得
 }
 
 bool LINE::read(void){
 
-    for(int i=0; i<NUMLines; i++){//初期化
+    for(size_t i=0; i<NUMLines; i++){//初期化
         line_status[i] = false;
         line_value [i] = 0;
         line_memory[i] = 0;
     }
 
-    for (uint8_t i =0 ; i<3;i++){
-        for(uint8_t j=0; j<NUMLines; j++){
+    for (size_t i =0 ; i<3;i++){
+        for(size_t j=0; j<NUMLines; j++){
 
             uint8_t pin =0;//ピン保存用
                 switch (j%3) {//ピン選択
@@ -79,7 +79,7 @@ bool LINE::read(void){
         }
     }
     bool line_bool = false; // ライン検出フラグの初期化
-        for (uint8_t i = 0; i < NUMLines; i++) {
+        for (size_t i = 0; i < NUMLines; i++) {
             if (line_value[i] >= 2) { // 2回以上検出されたらラインあり
                 line_status[i] = true;
                 line_bool = true;
