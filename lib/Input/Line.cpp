@@ -19,14 +19,15 @@ void LINE::setup(void) {
 void LINE::serial_print(void) {
     read();
     for(uint8_t i = 0; i < NUMLines; i++) {
-        Serial.print("line_status[");
-        Serial.print(i);
-        Serial.print("]: ");
-        Serial.print(line_status[i]);
-        Serial.print(", line[");
-        Serial.print(i);
-        Serial.print("]: ");
-        Serial.println(line_memory[i]);
+        // Serial.print("line_status[");
+        // Serial.print(i);
+        // Serial.print("]: ");
+        // Serial.print(line_status[i]);
+        // Serial.print(", line[");
+        // Serial.print(i);
+        // Serial.print("]: ");
+        // Serial.println(line_memory[i]);
+        mypixel.closest(get_azimuth, 255, 0, 0, 1);
     }
 }
 
