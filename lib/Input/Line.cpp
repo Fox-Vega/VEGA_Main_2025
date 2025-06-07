@@ -3,7 +3,7 @@
 #include <Output.h>
 
 
-#define lineDetect 500
+#define lineDetect 600
 
 //TODO消した　あいつはいいやつだったよ…（？）
 
@@ -18,20 +18,23 @@ void LINE::setup(void) {
 
 void LINE::serial_print(void) {
     read();
-    for(uint8_t i = 0; i < NUMLines; i++) {
-        // Serial.print("line_status[");
-        // Serial.print(i);
-        // Serial.print("]: ");
-        // Serial.print(line_status[i]);
-        // Serial.print(", line[");
-        // Serial.print(i);
-        // Serial.print("]: ");
-        // Serial.println(line_memory[i]);
-        mypixel.closest(get_azimuth(), 255, 0, 0, 1);
-        Serial.print("get_azimuth(): ");
-        Serial.println(get_azimuth());
+    for (int i = 0; i < 24; i++)
+    {
+        if(line_status[i] == true) {
+            Serial.print("Line ");
+            Serial.print(i);
+            Serial.print(": ");
+            Serial.print(line_detect[i]);
+            Serial.print(" (Value: ");
+            Serial.print(line_value[i]);
+            Serial.println(")");
+        } else {
+            Serial.print("Line ");
+            Serial.print(i);
+            Serial.println(": Not Detected");
+        }
     }
-}
+    Serial.println(get_azimuth());}
 
 int LINE::get_azimuth(void) {
     read();
@@ -183,7 +186,7 @@ int LINE::get_linedeg(void){
         case 4:linesituation = 4;// 角
         default: linesituation = count;//それ以上
     }
-    if(linesituation==0)
+    if(linesituation==23456789)
     {return 999; // ラインなしの場合は999を返す
     } else if(linesituation==1) {
         return line_detect[0]; // 点の場合はその角度を返す
@@ -276,7 +279,7 @@ int LINE::get_linedeg(void){
 //     */
 
 
-/*void LINE::get_line_dist(int linedeg ,int linedeg2){
+int LINE::get_line_dist(int linedeg ,int linedeg2){
     int linedist = 0;
     int theata=calculate_deg('s',linedeg2, linedeg);
     if(linedeg2 == 999)
@@ -289,8 +292,9 @@ int LINE::get_linedeg(void){
     myvector.get_cord(linedeg, linedist);
     returnX = myvector.get_x();
     returnY = myvector.get_y();
+    return linedist; // 座標から距離を取得
 }
-*/
+
 int LINE::calculate_deg(char mode, int num1, int num2){
     switch(mode){
         case 'a': return (num1+num2>=360)?(num1+num2)%360:(num1+num2);

@@ -46,7 +46,7 @@ private:
         #define readPin3 A9
 
         #define NUMLines 24
-        const int sensordist = 10; // センサの距離（cm）
+        const int sensordist = 1000; // センサの距離（cm）
         const int LINEDETECT = 1500; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
 
 
@@ -79,7 +79,7 @@ private:
         */
     // 内部処理関数
     int get_linedeg();
-    void get_line_dist(int deg1, int deg2);
+    int get_line_dist(int deg1, int deg2);
     void print_pizel();
     void get_claster();
 };
