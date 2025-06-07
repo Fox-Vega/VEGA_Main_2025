@@ -9,14 +9,9 @@ void MyPIXEL::setup() {
         PIXEL.setBrightness(PIXELbrightness);
         if (myswitch.check_tact() != 0) {
             usePIXEL = 1; //ネオピクセルの使用有無
-            mybuzzer.start(500, 100);
-            delay(300);
-            mybuzzer.start(500, 100);
         } else {
             usePIXEL = 0; //ネオピクセルの使用有無
-            mybuzzer.start(200, 100);
-            delay(300);
-            mybuzzer.start(200, 100);
+            mybuzzer.start(300, 800);
         }
         if(usePIXEL==1)Serial.println("pixel:on");
         else Serial.println("pixel off");
@@ -107,8 +102,14 @@ void MyBUZZER::start(int BUZZERnote, int BUZZERduration) {
             delay(10);
         } else {
             tone(BUZZER_PIN, BUZZERnote);
+            delay(10);
         }
     }
+}
+
+void MyBUZZER::stop() {
+    noTone(BUZZER_PIN);
+    delay(10);
 }
 
 void MyBUZZER::preset(int BUZZERpresetNUM) {

@@ -15,12 +15,12 @@ void GAM::setup() {
         while (1);  //センサー未検出時は停止
     }
     bno.setExtCrystalUse(true);
-    bno.setMode(OPERATION_MODE_CONFIG);
-    delay(25);
     bno.setMode(OPERATION_MODE_AMG);
-    delay(3000);
+    delay(1000);
     azimuth = 0;
-    while (millis() < 8000) {
+    timer.reset();
+    mybuzzer.start(200, 999);
+    while (timer.read_milli() < 1500) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
@@ -28,6 +28,7 @@ void GAM::setup() {
             accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
         }
     }
+    mybuzzer.stop();
 }
 
 int GAM::get_azimuth() {
