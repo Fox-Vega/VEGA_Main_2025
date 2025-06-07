@@ -27,7 +27,7 @@ void LINE::serial_print(void) {
         // Serial.print(i);
         // Serial.print("]: ");
         // Serial.println(line_memory[i]);
-        mypixel.closest(get_azimuth, 255, 0, 0, 1);
+        mypixel.closest(get_azimuth(), 255, 0, 0, 1);
     }
 }
 
