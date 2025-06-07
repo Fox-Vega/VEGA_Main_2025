@@ -3,7 +3,7 @@
 #include <Output.h>
 
 
-#define lineDetect 600
+#define lineDetect 500
 
 //TODO消した　あいつはいいやつだったよ…（？）
 
@@ -18,22 +18,30 @@ void LINE::setup(void) {
 
 void LINE::serial_print(void) {
     read();
-    for (int i = 0; i < 24; i++)
-    {
-        if(line_status[i] == true) {
-            Serial.print("Line ");
-            Serial.print(i);
-            Serial.print(": ");
-            Serial.print(line_detect[i]);
-            Serial.print(" (Value: ");
-            Serial.print(line_value[i]);
-            Serial.println(")");
-        } else {
-            Serial.print("Line ");
-            Serial.print(i);
-            Serial.println(": Not Detected");
-        }
-    }
+    Serial.print(line_memory[1]);
+    Serial.print(line_memory[2]);
+    Serial.print(line_memory[3]);
+    Serial.print(line_memory[4]);
+    Serial.print(line_memory[5]);
+    Serial.print(line_memory[6]);
+    Serial.print(line_memory[7]);
+    Serial.print(line_memory[8]);
+    Serial.print(line_memory[9]);
+    Serial.print(line_memory[10]);
+    Serial.print(line_memory[11]);
+    Serial.print(line_memory[12]);
+    Serial.print(line_memory[13]);
+    Serial.print(line_memory[14]);
+    Serial.print(line_memory[15]);
+    Serial.print(line_memory[16]);
+    Serial.print(line_memory[17]);
+    Serial.print(line_memory[18]);
+    Serial.print(line_memory[19]);
+    Serial.print(line_memory[20]);
+    Serial.print(line_memory[21]);
+    Serial.print(line_memory[22]);
+    Serial.print(line_memory[23]);
+    Serial.println(line_memory[0]);
     Serial.println(get_azimuth());}
 
 int LINE::get_azimuth(void) {

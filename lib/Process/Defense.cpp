@@ -11,22 +11,21 @@ void Defense::setup(void)
 
 void Defense::defense_(void)
 {
+    Serial.println("Defense Process Start");
     general.setup();
     while(true)
     {
+        for (int i = 0; i < 2; i++) {
+        Serial.println();
+    };
         while (Serial.available() == 0) {
-        // 何も入力がなければ待つ
         delay(10);
     }
-    // 入力があれば1文字読む
-    char c = Serial.read();
+    char command = Serial.read();
     line.read();
     line.serial_print();
-    for (int i = 0; i < 50; i++) {
-        Serial.println();
-    }
 }
-    }
+}
 
 
 void Defense::get_vector_Line(void)
