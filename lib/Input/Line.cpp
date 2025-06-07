@@ -3,7 +3,7 @@
 #include <Output.h>
 
 
-#define lineDetect 700
+#define lineDetect 500
 
 //TODO消した　あいつはいいやつだったよ…（？）
 
