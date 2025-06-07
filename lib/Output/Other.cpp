@@ -4,6 +4,7 @@
 
 
 void MyPIXEL::setup() {
+    Serial.println("MyPIXEL:setting up");
         PIXEL.begin();
         PIXEL.setBrightness(PIXELbrightness);
         if (myswitch.check_tact() != 0) {
@@ -12,6 +13,8 @@ void MyPIXEL::setup() {
             usePIXEL = 0; //ネオピクセルの使用有無
             mybuzzer.start(300, 800);
         }
+        if(usePIXEL==1)Serial.println("pixel:on");
+        else Serial.println("pixel off");
 }
 
 void MyPIXEL::brightness(int brightness) {
