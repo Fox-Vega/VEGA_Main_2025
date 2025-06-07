@@ -79,7 +79,7 @@ void Defense::MyUI(int mode){
                 switch(mode){//0 ball 1 line 2 pixel
                     case 0:
                         get_vector_Ball();
-                        printf_s("Ball Vector: Theta: %d, Dist: %d, X: %.2f, Y: %.2f, Detect: %s\n"
+                        printf_s("Ball Vector: Theta: %d\nDist: %d\nX: %.2f\nY: %.2f\nDetect: %s\n"
                             ,Dball.theata, Dball.dist, Dball.x, Dball.y, Dball.detect ? "true" : "false");
                         break;
                 }
