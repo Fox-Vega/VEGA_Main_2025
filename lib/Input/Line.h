@@ -64,6 +64,7 @@ private:
     // 内部変数;
     bool line_status[NUMLines] = {0};
     int line_value[NUMLines] = {0};
+    int line_memory[NUMLines] = {0}; // ライン検出の履歴
     int line_detect[4] = {999}; // ライン検出角度リスト
     int count = 0;
     int progress = 0;

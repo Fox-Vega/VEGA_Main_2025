@@ -23,10 +23,10 @@ void LINE::serial_print(void) {
         Serial.print(i);
         Serial.print("]: ");
         Serial.print(line_status[i]);
-        Serial.print(", line_value[");
+        Serial.print(", line[");
         Serial.print(i);
         Serial.print("]: ");
-        Serial.println(line_value[i]);
+        Serial.println(line_memory[i]);
     }
 }
 
@@ -107,6 +107,7 @@ bool LINE::read(void){ //読み取りを24かいを三回繰り返して当た�
     for(int i=0; i<NUMLines; i++){ //初期化
         line_status[i] = false;
         line_value [i] = 0;
+        line_memory[i] = 0; // ライン検出の履歴
     }
 
     for (uint8_t i =0 ; i<3;i++){
@@ -126,6 +127,7 @@ bool LINE::read(void){ //読み取りを24かいを三回繰り返して当た�
             if(analogRead(pin) > lineDetect){//アナログ読み取ってしきい値でふるいにかける
                 line_value[j]++;
             }
+            line_memory[j] = analogRead(pin); // ライン検出の履歴を保存
         }
     }
     bool line_bool = false; // ライン検出フラグの初期化
