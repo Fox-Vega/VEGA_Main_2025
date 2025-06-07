@@ -13,7 +13,8 @@ void Defense::defense_(void)
 {
     general.setup();
     while(true)
-    {
+    {line.read();
+
         line.serial_print();
         delay(10);
     for (int i = 0; i < 50; i++) {
