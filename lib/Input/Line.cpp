@@ -26,7 +26,7 @@ int LINE::get_azimuth(void) {
     for(uint8_t i = 0; i < NUMLines; i++) if(line_status[i] == true) linecount++;
     for(uint8_t i = 0; i < NUMLines; i++) linemem[i] = line_memory[i];
     for(uint8_t i = 0; i < NUMLines; i++){
-            for(uint8_t j =0; j<(linecount-1); j++) linemem2[j]==calculate_deg('A',linemem[j],linemem[j+1]);
+            for(uint8_t j =0; j<(linecount-1); j++) linemem2[j]=calculate_deg('A',linemem[j],linemem[j+1]);
             for(uint8_t j =0; j<NUMLines; j++)linemem[j]=linemem2[j];
             linecount--;
     }

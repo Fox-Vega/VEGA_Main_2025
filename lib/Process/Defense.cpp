@@ -5,6 +5,10 @@
 data Dball;
 data Dline;
 
+//printf
+#define printf_s SERIAL_PRINTF
+#define SERIAL_PRINTF(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+
 void Defense::setup(void)
 {
 }
@@ -15,16 +19,78 @@ void Defense::defense_(void)
     general.setup();
     while(true)
     {
-        for (int i = 0; i < 2; i++) {
-        Serial.println();
-    };
-        while (Serial.available() == 0) {
-        delay(10);
+        if(myswitch.check_toggle()==0) // タクトスイッチが押されたら
+        {
+            mybuzzer.start(1000, 200);
+            MyUI(1);
+        }
+        }
     }
-    char command = Serial.read();
-    line.read();
-    line.serial_print();
-}
+
+
+void Defense::MyUI(int mode){
+    int mode=0;
+    int tact=0;
+    int toggle=0;
+    while (true) {
+        tact = myswitch.check_tact();
+        toggle = myswitch.check_toggle();
+        if(toggle==1)
+        {
+            mybuzzer.start(500, 200);
+            while(toggle==1)
+            {
+                if(tact != 0) // タクトスイッチが押されたら
+                {
+                    mybuzzer.start(500, 200);
+                    tact = myswitch.check_tact();
+                    if(tact == 1) // タクトスイッチが押されたら
+                    {
+                        mode++;
+                        if(mode > 2) mode = 0; // モードを0~2の範囲に制限
+                    }
+                    else if(tact == 2) // タクトスイッチが押されたら
+                    {
+                        mode--;
+                        if(mode < 0) mode = 2; // モードを0~2の範囲に制限
+                    }
+                }
+                printf_s("select mode...\n");
+                switch(mode)
+                {
+                    case 0:
+                        printf_s("ball <<  line  >>  pixel\n");
+                        break;
+                    case 1:
+                        printf_s("line <<  ball  >>  pixel\n");
+                        break;
+                    case 2:
+                        printf_s("line <<  pixel  >>  ball\n");
+                        break;
+                }
+                for(uint8_t i = 0; i < 10; i++) {
+                    printf_s("\n");
+                }
+                printf_s("left  switch  left   debug\n");
+            }
+            }
+            else
+            {
+                switch(mode){//0 ball 1 line 2 pixel
+                    case 0:
+                        get_vector_Ball();
+                        printf_s("Ball Vector: Theta: %d, Dist: %d, X: %.2f, Y: %.2f, Detect: %s\n"
+                            ,Dball.theata, Dball.dist, Dball.x, Dball.y, Dball.detect ? "true" : "false");
+                        break;
+                }
+            }
+        }
+    }
+
+void MyUI_clear() {
+    for (uint8_t i = 0; i < 50; i++) {
+        printf_s("\n");
+    }
 }
 
 

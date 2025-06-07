@@ -40,4 +40,6 @@ class Defense {
             get_vector_Line();
         }
     private:
+    void MyUI(int mode);
+    void MyUI_clear()
 };
