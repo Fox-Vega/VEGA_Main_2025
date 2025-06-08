@@ -9,7 +9,7 @@ void General::setup() {
     mybuzzer.setup();
     mypixel.setup();
     mypixel.clear();
-    mypixel.shows();
+    mypixel.show();
     mypixel.multi(0, 15, 255, 128, 0);
     mypixel.show();
     ball.setup();
@@ -17,7 +17,7 @@ void General::setup() {
     mymotor.setup();
     gam.setup();
     mypixel.clear();
-    mypixel.shows();
+    mypixel.show();
     mypixel.multi(0, 15, 255, 255, 255);
     mypixel.show();
     mybuzzer.preset(1);
@@ -114,8 +114,9 @@ void General::startup() {
                     mybuzzer.start(100, 500);
                     Serial.println("back to phase 2");
                     Serial.println("phase 2");
-                } else if (tact_pressed == 2) {
+                } else if (tact_pressed == 2) { //方向と座標をリセット
                     gam.dir_reset();
+                    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mybuzzer.start(300, 500);
                 } else if (tact_pressed == 3) {
                     //機能無し
@@ -140,7 +141,7 @@ void General::startup() {
     }
     mypixel.brightness(999);
     mypixel.clear();
-    mypixel.shows();
+    mypixel.show();
     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
 }
 

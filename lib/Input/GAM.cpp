@@ -129,10 +129,6 @@ void GAM::get_cord() {
     
     //最終情報更新
     old_cordtime = millis();
-    oold_accel_data[0] = old_accel_data[0];
-    oold_accel_data[1] = old_accel_data[1];
-    old_accel_data[0] = accel_data[0];
-    old_accel_data[1] = accel_data[1];
     old_speed[0] = speed[0];
     old_speed[1] = speed[1];
 
@@ -180,31 +176,17 @@ void GAM::cord_custom(int x, int y) {
 }
 
 void GAM::accel_reset() {
-    int s = millis();
-    while ((millis() - s) < 2000) {
-        sensors_event_t event;
-        bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
-        float accel_data[3] = { event.acceleration.x, event.acceleration.y};
+    timer.reset();
+    mybuzzer.start(200, 999);
+    while (timer.read_milli() < 1500) {
+        sensors_event_t accel_event;
+        bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
+        float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
         for (int i = 0; i < 2; i++) {
             accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
         }
     }
-}
-
-void GAM::restart() { //瞬間的にモードを変えることで初期化
-    int s = millis();
-    bno.setMode(OPERATION_MODE_CONFIG);
-    delay(25);
-    bno.setMode(OPERATION_MODE_AMG);
-    delay(1000);
-    while ((millis() - s) < 2000) {
-        sensors_event_t event;
-        bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
-        float accel_data[3] = { event.acceleration.x, event.acceleration.y};
-        for (int i = 0; i < 2; i++) {
-            accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
-        }
-    }
+    mybuzzer.stop();
 }
 
 int GAM::get_x() {
