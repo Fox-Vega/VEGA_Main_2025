@@ -34,12 +34,19 @@ int LINE::get_azimuth(void) {
 }
 
 int LINE::get_magnitude(void){
-    int cluster_deg=0;
-    count = 0;
     read();
     if(read()== false){ //ラインが検出されていない場合
         return 999; //エラー値を返す
     }
+    get_claster(); // ライン検出角度リストを取得
+    if(count == 0) return 999; // ラインが検出されていない場合
+    switch(count){}
+}
+
+void LINE::get_claster(void)
+{
+    int cluster_deg=0;
+    count = 0;
     for (size_t i = 0; i < NUMLines; i++){
         if(line_status[i])
         for(size_t j=i; j<NUMLines; j++){
@@ -54,7 +61,6 @@ int LINE::get_magnitude(void){
             }
         }
     }
-return (myvector.get_magnitude(returnX,returnY)); // 座標から距離を取得
 }
 
 bool LINE::read(void){
