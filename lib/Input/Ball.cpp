@@ -53,12 +53,15 @@ void BALL::read() {
 int BALL::get_value(short ballNUM) { 
     if (ballvalues[ballNUM] < detection_border) {
         ballvalues[ballNUM] = 0;
+    } else {
+        value[ballNUM] = filterCoefficient * (ballvalues[ballNUM] * ballvalue_offset) + (1 - filterCoefficient) * old_value[ballNUM];
+        old_value[ballNUM] = value[ballNUM];
     }
-    return ballvalues[ballNUM] * ballvalue_offset;
+    return value[ballNUM];
 }
 
 int BALL::get_magnitude() {
-    return ballvalues[max_ballNUM] * ballvalue_offset;
+    return value[max_ballNUM];
 }
 
 int BALL::get_azimuth() {
