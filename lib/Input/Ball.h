@@ -14,7 +14,7 @@ class BALL {
         //調整用
         const int ballvalue_offset = 13;
         const int detection_border = 3; //反応ボーダー
-        const float filterCoefficient = 0.2;
+        const float filterCoefficient = 0.2; //ボールセンサーの値の平滑度
 
         int value[16];
         int total_x = 0;
