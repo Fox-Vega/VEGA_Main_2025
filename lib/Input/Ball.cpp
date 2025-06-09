@@ -22,27 +22,20 @@ void BALL::read() {
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
+                if (ballvalues[i] > max_ballvalue) { //最大値の記録
+                    max_ballvalue = ballvalues[i];
+                    max_ballNUM = i;
+                }
             }
         }
     }
 
-    // 最大値の探索
-    for (int i = 0; i < NUMball; i++) {
-        if (ballvalues[i] > max_ballvalue) {
-            max_ballvalue = ballvalues[i];
-            max_ballNUM = i;
-        }
-    }
-
     // ballNUMstart の補正
-    int ballNUMstart = max_ballNUM - 2;
-    if (ballNUMstart < 0) {
-        ballNUMstart += NUMball;
-    }
-
+    int ballNUMstart = (max_ballNUM + 14) % 16;
+    
     // 座標計算
-    for (int i = 0; i < 4; i++) {
-        int ballNUM = (ballNUMstart + i) % NUMball; // 自動循環処理
+    for (int i = 0; i < 5; i++) {
+        int ballNUM = (ballNUMstart + i) % NUMball;
 
         myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
         total_x += myvector.get_x();
