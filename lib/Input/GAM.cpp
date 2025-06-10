@@ -18,9 +18,8 @@ void GAM::setup() {
     bno.setMode(OPERATION_MODE_AMG);
     delay(1000);
     azimuth = 0;
-    timer.reset();
     mybuzzer.start(200, 999);
-    while (timer.read_milli() < 1500) {
+    while (millis() < 2000) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
@@ -175,9 +174,9 @@ void GAM::cord_custom(int x, int y) {
 }
 
 void GAM::accel_reset() {
-    timer.reset();
     mybuzzer.start(200, 999);
-    while (timer.read_milli() < 1500) {
+    a = millis();
+    while (millis() - a < 1500) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};

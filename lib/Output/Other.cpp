@@ -12,8 +12,8 @@ void MyPIXEL::setup() {
         usePIXEL = 0; //ネオピクセルの使用有無
         mybuzzer.start(300, 800);
     }
-    PIXEL.setPixelColor(i, PIXEL.Color(0, 0, 0));
-    PIXEL.show();
+    PIXEL.setPixelColor(15, PIXEL.Color(255, 255, 255));
+    delay(1000);
 }
 
 void MyPIXEL::brightness(int brightness) {
@@ -25,14 +25,15 @@ void MyPIXEL::brightness(int brightness) {
 }
 
 void MyPIXEL::uni(int PIXELNUM, int red, int green, int blue) {
-    PIXELNUM %= 15;
+    PIXELNUM %= 16;
     PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red, green, blue));
 }
 
 void MyPIXEL::multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue) {
     for (int i = PIXELNUMstart; i <= PIXELNUMend; i++) {
-        i %= 15;
-        mypixel.uni(i, red, green, blue);
+        int a = i;
+        a %= 16;
+        mypixel.uni(a, red, green, blue);
     }
 }
 
@@ -52,7 +53,7 @@ void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
     }
 
     for (int i = 0; i < num; i++) {
-        int j = (PIXELNUMstart + i) % NUMPIXEL; //インデックス補正を動的に処理
+        int j = (PIXELNUMstart + i) % 16; //インデックス補正を動的に処理
 
         mypixel.uni(j, red, green, blue);
     }

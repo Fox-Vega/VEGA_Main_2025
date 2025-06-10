@@ -43,7 +43,7 @@ void Test::test_() {
                 mypixel.clear();
                 break;
         }
-        mypixel.shows();
+        mypixel.show();
         if ((millis() - lastbuzzer) > 1000) {
             mybuzzer.start(300, 30);
             lastbuzzer = millis();
@@ -90,34 +90,32 @@ void Test::input() {
         b = 0;
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
-    mypixel.shows();
+    mypixel.show();
 }
 
 void Test::motor() {
-    while (myswitch.check_toggle() == 0) {
-        for (int i = 0; i <= 140; i++) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], i);
-                analogWrite(motor_PIN2[j], 0);
-            }
+    for (int i = 0; i <= 140; i++) {
+        for (int j = 0; j < 4; j++) {
+            analogWrite(motor_PIN1[j], i);
+            analogWrite(motor_PIN2[j], 0);
         }
-        for (int i = 140; i >= 0; i--) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], i);
-                analogWrite(motor_PIN2[j], 0);
-            }
+    }
+    for (int i = 140; i >= 0; i--) {
+        for (int j = 0; j < 4; j++) {
+            analogWrite(motor_PIN1[j], i);
+            analogWrite(motor_PIN2[j], 0);
         }
-        for (int i = 0; i <= 140; i++) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], 0);
-                analogWrite(motor_PIN2[j], i);
-            }
+    }
+    for (int i = 0; i <= 140; i++) {
+        for (int j = 0; j < 4; j++) {
+            analogWrite(motor_PIN1[j], 0);
+            analogWrite(motor_PIN2[j], i);
         }
-        for (int i = 140; i >= 0; i--) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], 0);
-                analogWrite(motor_PIN2[j], i);
-            }
+    }
+    for (int i = 140; i >= 0; i--) {
+        for (int j = 0; j < 4; j++) {
+            analogWrite(motor_PIN1[j], 0);
+            analogWrite(motor_PIN2[j], i);
         }
     }
     
