@@ -24,7 +24,7 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         const float accel_sparknoise = 10.0f; //スパークノイズ（個人的な呼び名）の判定基準（衝突にも流用）
         const float reset_border = 2; //加速度変化無しが何回続いたら速度をリセットするか
 
-        const float accel_offsetp[2][2] = {{1.1, 1.0}, {1.0, 1.0}}; //+出力の倍率 x,y
+        const float accel_offsetp[2][2] = {{1.1, 1.0}, {1.0, 1.0}}; //+出力の倍率 x,y 1つ目がアタッカー用
         const float accel_offsetm[2][2] = {{1.0, 1.2}, {1.0, 1.0}}; //-出力の倍率 x,y
 
         int j;
@@ -45,11 +45,11 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         float speed[2];
         float difcord_x;
         float difcord_y;
-        float old_cordtime;
         float old_speed[2];
         float lowpassValue[2];
         float highpassValue[2];
         float old_accel_data[2];
         float states[2] = {0.0, 0.0};
         float accel_bias[2] = {0.0, 0.0};
+        unsigned long old_cordtime;
 };
