@@ -82,6 +82,10 @@ void MyPIXEL::show() {
     }
 }
 
+void MyPIXEL::shows() {
+    PIXEL.show();
+}
+
 void MyPIXEL::clear() {
     for (int i = 0; i < NUMPIXEL; i++) {
         PIXEL.setPixelColor(i, PIXEL.Color(0, 0, 0));
