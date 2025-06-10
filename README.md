@@ -3,3 +3,8 @@
 ラインセンサー3回測定からの最終算出じゃなくて、2回測定でいいことに気づいた
 2回なら反応あり
 1回以下なら反応無し
+
+調整項目は全て　.h > private に配置すること。
+
+自作ファイルをincludeする際は　#include "example.h"
+ライブラリをincludeする際は　　#include <example.h>
