@@ -87,19 +87,17 @@ void GAM::get_cord() {
         } else if(accel_data[i] > 0) { //+方向動作時処理
             ten_count = 0;
             if (first_PoMi[i] == 10) {
-                zero_pro = true;
                 first_PoMi[i] = 1;
             }
             PoMi[i] = 1;
         } else { //-方向動作時処理
             ten_count = 0;
             if (first_PoMi[i] == 10) {
-                zero_pro = true;
                 first_PoMi[i] = 0;
             }
             PoMi[i] = 0;
         }
-        if (first_PoMi[i] != PoMi[i] && zero_pro) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算
+        if (first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算　111〜112を無効化したら減速時加速度を除外できる
             a = fabs(old_accel_data[i]);
             b = fabs(accel_data[i]);
             if (a == 0 ||  b == 0) {
@@ -111,6 +109,7 @@ void GAM::get_cord() {
             }
             gam.get_speed(a_dt, 0, i);
             gam.get_speed(b_dt, accel_data[i], i);
+            first_PoMi[i] = PoMi[i];
         } else {
             gam.get_speed(dt, accel_data[i], i);
         }
@@ -148,11 +147,11 @@ void GAM::get_cord() {
     // Serial.println(gam.get_azimuth());
     // Serial.print(">DT:");
     // Serial.println(dt);
-    Serial.print("pos");
-    Serial.print(states[0]);
-    Serial.print("  ");
-    Serial.println(states[1]);
-    Serial.println("  ");
+    // Serial.print("pos");
+    // Serial.print(states[0]);
+    // Serial.print("  ");
+    // Serial.println(states[1]);
+    // Serial.println("  ");
 }
 
 void GAM::get_speed(float dt, float accel,short i) {
