@@ -43,12 +43,12 @@ void Test::test_() {
                 mypixel.clear();
                 break;
         }
-        mypixel.show();
         if ((millis() - lastbuzzer) > 1000) {
             mybuzzer.start(300, 30);
             lastbuzzer = millis();
         }
     } else {
+        mypixel.clear();
         switch(t_mode) {
             case 1:
                 test.input();
@@ -61,6 +61,7 @@ void Test::test_() {
                 break;
         }
     }
+    mypixel.shows();
 }
 
 
@@ -90,7 +91,6 @@ void Test::input() {
         b = 0;
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
-    mypixel.show();
 }
 
 void Test::motor() {
