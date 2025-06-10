@@ -116,7 +116,6 @@ void General::startup() {
                     Serial.println("phase 2");
                 } else if (tact_pressed == 2) { //方向と座標をリセット
                     gam.dir_reset();
-                    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mybuzzer.start(300, 500);
                 } else if (tact_pressed == 3) {
                     //機能無し
