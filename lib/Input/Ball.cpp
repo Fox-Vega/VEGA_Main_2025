@@ -48,7 +48,7 @@ int BALL::get_value(short ballNUM) {
         ballvalues[ballNUM] = 0;
     } else {
         value[ballNUM] = filterCoefficient * ballvalues[ballNUM] + (1 - filterCoefficient) * old_value[ballNUM];
-        value[ballNUM] = (25 / value[ballNUM]) * ballvalue_offset
+        value[ballNUM] = (25 / value[ballNUM]) * ballvalue_offset;
         old_value[ballNUM] = value[ballNUM];
     }
     return value[ballNUM];
