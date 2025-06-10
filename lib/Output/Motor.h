@@ -28,11 +28,11 @@ class MyMOTOR {
         short motorPWM; //機体動作用入力値
         short difixPWM; //姿勢制御用入力値
         short azimuth_motor; //モーターから見た進行方向の方位角
-        float lastupdate;
         double integral;
         double prev_error;
         double derivative;
         const byte motor_PIN1[4] = {9, 7, 5, 3};
         const byte motor_PIN2[4] = {8, 6, 4, 2};
         const short motor_degrees[4] = {45, 135, 225, 315};
+        unsigned long  lastupdate;
 };
