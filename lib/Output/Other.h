@@ -23,6 +23,7 @@ class MyPIXEL {
         void closest(int azimuth, int red, int green, int blue, int num);
         void rainbow();
         void show();
+        void shows();
         void clear(); //全消灯
 
     private:
