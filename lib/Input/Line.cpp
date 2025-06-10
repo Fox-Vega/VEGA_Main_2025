@@ -3,6 +3,8 @@
 #include <Output.h>
 
 #define lineDetect 500
+#define printf_s SERIAL_PRINTF
+#define SERIAL_PRINTF(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
 
 //TODO消した　あいつはいいやつだったよ…（？）
 
@@ -15,7 +17,7 @@ void LINE::setup(void) {
     pinMode(readPin3, INPUT);
 }
 
-void LINE::serial_print(void){}
+void LINE::serial_print(void){Serial.println(get_azimuth());}
 
 int LINE::get_azimuth(void) {
     read();
