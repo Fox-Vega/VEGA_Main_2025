@@ -12,10 +12,10 @@ class BALL {
 
     private:
         //調整用
-        const int ballvalue_offset = 17;
+        const int ballvalue_offset = 20;
         const int detection_border = 3; //反応ボーダー
-        const float filterCoefficient = 0.8; //ボールセンサーの値の平滑度
-        int max_value = 55 * ballvalue_offset;
+        const float filterCoefficient = 0.95; //ボールセンサーの値の平滑度
+        int max_value = 45 * ballvalue_offset;
 
         int value[16];
         int total_x = 0;
