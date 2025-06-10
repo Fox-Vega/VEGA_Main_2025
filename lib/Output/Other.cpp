@@ -5,16 +5,16 @@
 
 void MyPIXEL::setup() {
     Serial.println("MyPIXEL:setting up");
-        PIXEL.begin();
-        PIXEL.setBrightness(PIXELbrightness);
-        if (myswitch.check_tact() != 0) {
-            usePIXEL = 1; //ネオピクセルの使用有無
-        } else {
-            usePIXEL = 0; //ネオピクセルの使用有無
-            mybuzzer.start(300, 800);
-        }
-        if(usePIXEL==1)Serial.println("pixel:on");
-        else Serial.println("pixel off");
+    PIXEL.begin();
+    PIXEL.setBrightness(PIXELbrightness);
+    if (myswitch.check_tact() != 0) {
+        usePIXEL = 1; //ネオピクセルの使用有無
+    } else {
+        usePIXEL = 0; //ネオピクセルの使用有無
+        mybuzzer.start(300, 800);
+    }
+    PIXEL.setPixelColor(i, PIXEL.Color(0, 0, 0));
+    PIXEL.show();
 }
 
 void MyPIXEL::brightness(int brightness) {
