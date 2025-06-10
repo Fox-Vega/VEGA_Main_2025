@@ -87,19 +87,17 @@ void GAM::get_cord() {
         } else if(accel_data[i] > 0) { //+方向動作時処理
             ten_count = 0;
             if (first_PoMi[i] == 10) {
-                zero_pro = true;
                 first_PoMi[i] = 1;
             }
             PoMi[i] = 1;
         } else { //-方向動作時処理
             ten_count = 0;
             if (first_PoMi[i] == 10) {
-                zero_pro = true;
                 first_PoMi[i] = 0;
             }
             PoMi[i] = 0;
         }
-        if (first_PoMi[i] != PoMi[i] && zero_pro) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算
+        if (first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算　111〜112を無効化したら減速時加速度を除外できる
             a = fabs(old_accel_data[i]);
             b = fabs(accel_data[i]);
             if (a == 0 ||  b == 0) {
@@ -111,6 +109,7 @@ void GAM::get_cord() {
             }
             gam.get_speed(a_dt, 0, i);
             gam.get_speed(b_dt, accel_data[i], i);
+            first_PoMi[i] = PoMi[i];
         } else {
             gam.get_speed(dt, accel_data[i], i);
         }
@@ -129,10 +128,6 @@ void GAM::get_cord() {
     
     //最終情報更新
     old_cordtime = millis();
-    oold_accel_data[0] = old_accel_data[0];
-    oold_accel_data[1] = old_accel_data[1];
-    old_accel_data[0] = accel_data[0];
-    old_accel_data[1] = accel_data[1];
     old_speed[0] = speed[0];
     old_speed[1] = speed[1];
 
@@ -152,11 +147,11 @@ void GAM::get_cord() {
     // Serial.println(gam.get_azimuth());
     // Serial.print(">DT:");
     // Serial.println(dt);
-    Serial.print("pos");
-    Serial.print(states[0]);
-    Serial.print("  ");
-    Serial.println(states[1]);
-    Serial.println("  ");
+    // Serial.print("pos");
+    // Serial.print(states[0]);
+    // Serial.print("  ");
+    // Serial.println(states[1]);
+    // Serial.println("  ");
 }
 
 void GAM::get_speed(float dt, float accel,short i) {
@@ -180,31 +175,17 @@ void GAM::cord_custom(int x, int y) {
 }
 
 void GAM::accel_reset() {
-    int s = millis();
-    while ((millis() - s) < 2000) {
-        sensors_event_t event;
-        bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
-        float accel_data[3] = { event.acceleration.x, event.acceleration.y};
+    timer.reset();
+    mybuzzer.start(200, 999);
+    while (timer.read_milli() < 1500) {
+        sensors_event_t accel_event;
+        bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
+        float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
         for (int i = 0; i < 2; i++) {
             accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
         }
     }
-}
-
-void GAM::restart() { //瞬間的にモードを変えることで初期化
-    int s = millis();
-    bno.setMode(OPERATION_MODE_CONFIG);
-    delay(25);
-    bno.setMode(OPERATION_MODE_AMG);
-    delay(1000);
-    while ((millis() - s) < 2000) {
-        sensors_event_t event;
-        bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);  
-        float accel_data[3] = { event.acceleration.x, event.acceleration.y};
-        for (int i = 0; i < 2; i++) {
-            accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
-        }
-    }
+    mybuzzer.stop();
 }
 
 int GAM::get_x() {
