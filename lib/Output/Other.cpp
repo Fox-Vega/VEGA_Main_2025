@@ -8,12 +8,13 @@ void MyPIXEL::setup() {
     PIXEL.setBrightness(PIXELbrightness);
     if (myswitch.check_tact() != 0) {
         usePIXEL = 1; //ネオピクセルの使用有無
+        delay(400);
     } else {
         usePIXEL = 0; //ネオピクセルの使用有無
-        mybuzzer.start(300, 800);
+        mybuzzer.start(400, 400);
     }
-    PIXEL.setPixelColor(15, PIXEL.Color(255, 255, 255));
-    delay(1000);
+    mypixel.clear();
+    PIXEL.show();
 }
 
 void MyPIXEL::brightness(int brightness) {

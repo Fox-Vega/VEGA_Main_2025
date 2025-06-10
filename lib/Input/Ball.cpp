@@ -18,7 +18,7 @@ void BALL::read() {
     }
 
     // センサー値の取得
-    for (int j = 0; j < 25; j++) {
+    for (int j = 0; j < 60; j++) { //25だった
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
@@ -29,6 +29,7 @@ void BALL::read() {
             }
         }
     }
+    // Serial.println(max_ballvalue);
 
     // ballNUMstart の補正
     int ballNUMstart = (max_ballNUM + 14) % 16;
@@ -40,6 +41,7 @@ void BALL::read() {
         myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
         total_x += myvector.get_x();
         total_y += myvector.get_y();
+        ball_azimuth = myvector.get_azimuth(-total_x, total_y);
     }
 }
 
@@ -47,17 +49,18 @@ int BALL::get_value(short ballNUM) {
     if (ballvalues[ballNUM] < detection_border) {
         ballvalues[ballNUM] = 0;
     } else {
-        value[ballNUM] = filterCoefficient * ballvalues[ballNUM] + (1 - filterCoefficient) * old_value[ballNUM];
-        value[ballNUM] = (25 / value[ballNUM]) * ballvalue_offset;
-        old_value[ballNUM] = value[ballNUM];
+        value[ballNUM] = ballvalues[ballNUM] * ballvalue_offset;
     }
     return value[ballNUM];
 }
 
 int BALL::get_magnitude() {
-    return value[max_ballNUM];
+    int magnitude = (1 - filterCoefficient) * value[max_ballNUM] + filterCoefficient * value[max_ballNUM];
+    magnitude = max_value - magnitude;
+    old_magnitude = magnitude; // 過去の値を更新
+    return magnitude;
 }
 
 int BALL::get_azimuth() {
-    return myvector.get_azimuth(total_x, total_y);
+    return ball_azimuth;
 }

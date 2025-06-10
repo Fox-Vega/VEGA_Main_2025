@@ -12,15 +12,17 @@ class BALL {
 
     private:
         //調整用
-        const int ballvalue_offset = 13;
+        const int ballvalue_offset = 17;
         const int detection_border = 3; //反応ボーダー
-        const float filterCoefficient = 0.2; //ボールセンサーの値の平滑度
+        const float filterCoefficient = 0.8; //ボールセンサーの値の平滑度
+        int max_value = 55 * ballvalue_offset;
 
         int value[16];
         int total_x = 0;
         int total_y = 0;
         int ballvalue;
-        int old_value[16];
+        int ball_azimuth;
+        int old_magnitude;
         int ballvalues[16]; //ボールの値を格納する配列
         int total_magnitude = 0;
         byte ballNUMstart;

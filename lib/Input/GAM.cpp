@@ -16,17 +16,20 @@ void GAM::setup() {
     }
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
-    delay(1000);
+    delay(3000);
     azimuth = 0;
-    mybuzzer.start(200, 999);
-    while (millis() < 2000) {
+    mybuzzer.start(350, 999);
+    while (millis() < 5500) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
         for (int i = 0; i < 2; i++) {
-            accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
+            sample[i] += accel_data[i];
         }
+        sampleNUM += 1;
     }
+    accel_bias[0] = sample[0] / sampleNUM;
+    accel_bias[1] = sample[1] / sampleNUM;
     mybuzzer.stop();
 }
 
@@ -115,13 +118,13 @@ void GAM::get_cord() {
     }
 
     //台形積分で速度算出(TelePlot用)
-    states[0] += ((speed[0] + old_speed[0]) * dt) / 2 * 100;
-    states[1] += ((speed[1] + old_speed[1]) * dt) / 2 * 100;
+    states[0] += ((speed[0] + old_speed[0]) * dt) / 2 * 100 * cord_offset;
+    states[1] += ((speed[1] + old_speed[1]) * dt) / 2 * 100 * cord_offset;
 
     //座標をコート座標に変換
     float yaw_rad = radians(gam.get_azimuth());
-    int x = ((speed[0] + old_speed[0]) * dt) / 2 * 100;
-    int y = ((speed[1] + old_speed[1]) * dt) / 2 * 100;
+    int x = ((speed[0] + old_speed[0]) * dt) / 2 * 100  * cord_offset;
+    int y = ((speed[1] + old_speed[1]) * dt) / 2 * 100  * cord_offset;
     world_x += x * cos(yaw_rad) - y * sin(yaw_rad);
     world_y += x * sin(yaw_rad) + y * cos(yaw_rad);
     

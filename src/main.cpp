@@ -18,9 +18,9 @@ void loop() {
             // Serial.println("defence selected");
             // defence.defense_();
             // Serial.println("defence end");
-        } else {
-            test.test_();
         }
+    } else if (general.get_mode() == 3) {
+        test.test_();
     } else {
         general.startup();
     }

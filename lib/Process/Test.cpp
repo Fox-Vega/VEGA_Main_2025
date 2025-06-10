@@ -144,27 +144,33 @@ void Test::cord() {
     Serial.print(5);  // 最初にデータの個数を送信
     Serial.print(",");
 
-    Serial.print(gam.get_azimuth());  // 改行を追加して1行ずつ送信
+    Serial.print((gam.get_azimuth() + 180) % 360);  // 改行を追加して1行ずつ送信
     Serial.print(",");
 
-    gam.get_cord();
-    Serial.print(582 - gam.get_x());
+    // gam.get_cord();
+    // Serial.print(582 - gam.get_x());
+    // Serial.print(",");
+    // Serial.print(430 - gam.get_y());
+    // Serial.print(",");
+    Serial.print(582);
     Serial.print(",");
-    Serial.print(430 - gam.get_y());
+    Serial.print(430);
     Serial.print(",");
 
     ball.read();
-    myvector.get_cord((ball.get_azimuth() + gam.get_azimuth()) % 360, ball.get_magnitude());
+    int ball_azimuth = ball.get_azimuth() + gam.get_azimuth() % 360;
+    myvector.get_cord(ball_azimuth , ball.get_magnitude());
+    // Serial.print(ball.get_magnitude());
+    // Serial.print(",");
     if (ball.get_magnitude() == 0) {
         Serial.print(0);
         Serial.print(",");
-        Serial.print(0);
-        Serial.println(",");
+        Serial.println(0);
     } else {
-        Serial.print(myvector.get_x() + (582 - gam.get_x()));
+        Serial.print(myvector.get_x());
         Serial.print(",");
-        Serial.print(myvector.get_y() + (430 - gam.get_y()));
-        Serial.println(",");
+        Serial.println(myvector.get_y());
+        // Serial.println(",");
     }
     delay(10);
 }
