@@ -4,7 +4,6 @@
 
 
 void MyPIXEL::setup() {
-    Serial.println("MyPIXEL:setting up");
     PIXEL.begin();
     PIXEL.setBrightness(PIXELbrightness);
     if (myswitch.check_tact() != 0) {
