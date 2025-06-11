@@ -18,7 +18,7 @@ public:
     void setup();//初期設定（必ずやってね☆）
     int get_azimuth();//センサの角度を取得　
     int get_reverse_azimuth();
-    int get_magnitude();//センサの距離を取得
+    int get_magnitude();//センサの距離を取る
     bool read();//センサの状態を読み取る（true:ラインあり, false:ラインなし
     void serial_print(void);
     int calculate_deg(char mode, int num1, int num2);//角度計算
@@ -82,7 +82,7 @@ private:
         */
     // 内部処理関数
     int get_linedeg();
-    int get_line_dist(int deg1, int deg2);
+    int get_dist(int deg1, int deg2);
     void print_pizel();
     void get_claster();
 };
