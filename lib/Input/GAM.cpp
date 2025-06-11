@@ -55,9 +55,9 @@ void GAM::get_cord() {
             accel_data[i] *= accel_offsetm[robotNUM][i];
         }
         if (i == 0) {
-            j = 1;
+            bool j = 1;
         } else {
-            j = 0;
+            bool j = 0;
         }
         if (accel_data[j] > accel_noise && first_PoMi[i] != 10) {
             if (fabs(accel_data[i]) < adaptive_noise) {
@@ -100,14 +100,14 @@ void GAM::get_cord() {
             PoMi[i] = 0;
         }
         if (first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算　111〜112を無効化したら減速時加速度を除外できる
-            a = fabs(old_accel_data[i]);
-            b = fabs(accel_data[i]);
+            float a = fabs(old_accel_data[i]);
+            float b = fabs(accel_data[i]);
             if (a == 0 ||  b == 0) {
-                a_dt = 0.0;
-                b_dt = 0.0;
+                float a_dt = 0.0;
+                float b_dt = 0.0;
             } else {
-                a_dt = dt * (a / (a + b));
-                b_dt = dt * (b / (a + b));
+                float a_dt = dt * (a / (a + b));
+                float b_dt = dt * (b / (a + b));
             }
             gam.get_speed(a_dt, 0, i);
             gam.get_speed(b_dt, accel_data[i], i);
