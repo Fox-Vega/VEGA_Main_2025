@@ -2,10 +2,6 @@
 #include <Input.h>
 #include <Output.h>
 
-#define lineDetect 500
-#define printf_s SERIAL_PRINTF
-#define SERIAL_PRINTF(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-
 //TODO消した　あいつはいいやつだったよ…（？）
 
 void LINE::setup(void) {
@@ -73,7 +69,7 @@ bool LINE::read(void){
         line_memory[i] = 0;
     }
 
-    for (size_t i =0 ; i<3;i++){
+    for (size_t i =0 ; i<2;i++){
         for(size_t j=0; j<NUMLines; j++){
 
             uint8_t pin =0;//ピン保存用
@@ -94,7 +90,7 @@ bool LINE::read(void){
     }
     bool line_bool = false; // ライン検出フラグの初期化
         for (size_t i = 0; i < NUMLines; i++) {
-            if (line_value[i] >= 2) { // 2回以上検出されたらラインあり
+            if (line_value[i] = 2) { // 2回以上検出されたらラインあり
                 line_status[i] = true;
                 line_bool = true;
             }else{line_status[i] = false;}
