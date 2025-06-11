@@ -28,7 +28,6 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         const float accel_offsetm[2][2] = {{1.0, 1.0}, {1.0, 1.0}}; //-出力の倍率 x,y
         const int cord_offset = 10; //座標倍率
 
-        int j;
         int stable;
         int world_x;
         int world_y;
@@ -38,12 +37,7 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         int sampleNUM;
         int PoMi[2] = {1, 1}; //値の正負を保存する変数　1は1~、0は~-1、10は0
         int first_PoMi[2] = {10, 10}; //最初に検出された値の正負を保存する変数
-        bool zero_pro = true;
         bool move[2] = {false, false};
-        float a;
-        float b;
-        float a_dt;
-        float b_dt;
         float speed[2];
         float sample[2];
         float difcord_x;
