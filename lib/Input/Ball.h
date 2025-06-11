@@ -15,7 +15,9 @@ class BALL {
         const int ballvalue_offset = 20;
         const int detection_border = 3; //反応ボーダー
         const float filterCoefficient = 0.95; //ボールセンサーの値の平滑度
-        int max_value = 45 * ballvalue_offset;
+        const int max_value = 45 * ballvalue_offset;
+        const int filter_size = 5;
+
 
         int value[16];
         int total_x = 0;
@@ -25,6 +27,7 @@ class BALL {
         int old_magnitude;
         int ballvalues[16]; //ボールの値を格納する配列
         int total_magnitude = 0;
+        int history[FILTER_SIZE] = {0};
         byte ballNUMstart;
         byte max_ballNUM = 0;
         byte max_ballvalue = 0;
