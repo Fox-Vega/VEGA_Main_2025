@@ -11,6 +11,8 @@ class MyMOTOR {
         void free(); //自由回転
         void brake(); //ブレーキ
         void limiter(bool stat); //0にすると制限なし移動速度が出る　モーター摩耗が激しくなるため、OOBを防ぐときにのみ解除するように。
+        int get_azimuth();
+        int get_magnitude();
 
     private:
         //調整用
