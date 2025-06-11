@@ -36,9 +36,12 @@ int LINE::get_magnitude(void){
     if(read()== false){ //ラインが検出されていない場合
         return 999; //エラー値を返す
     }
-    get_claster(); // ライン検出角度リストを取得
+    get_claster(); // ライン検出角度リストを取得　line_detectにクラスタがある
     if(count == 0) return 999; // ラインが検出されていない場合
-    switch(count){}
+    switch(count){
+        case:1
+            
+    }
 }
 
 void LINE::get_claster(void)
