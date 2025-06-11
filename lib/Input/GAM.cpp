@@ -18,7 +18,9 @@ void GAM::setup() {
     bno.setMode(OPERATION_MODE_AMG);
     delay(3000);
     azimuth = 0;
-    mybuzzer.start(350, 999);
+    mybuzzer.start(400, 100);
+    delay(50);
+    mybuzzer.start(300, 100);
     while (millis() < 5500) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
@@ -30,7 +32,6 @@ void GAM::setup() {
     }
     accel_bias[0] = sample[0] / sampleNUM;
     accel_bias[1] = sample[1] / sampleNUM;
-    mybuzzer.stop();
 }
 
 int GAM::get_azimuth() {
