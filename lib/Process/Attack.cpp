@@ -13,10 +13,10 @@ void Attack::attack_() {
         ball_dir = ball.get_azimuth();
         mypixel.closest(ball_dir, 255, 0, 0, 0);
         if (ball_dir < b_r1_deg || ball_dir > (360 - b_r1_deg)) {
-            if ((ball.get_magnitude() > ball_catch[0] && ball.get_magnitude() < ball_catch[1]) || catch_stat == 1) {
-                catch_stat = 1;
-                attack.b_p4();
-            }
+            //if ((ball.get_magnitude() > ball_catch[0] && ball.get_magnitude() < ball_catch[1]) || catch_stat == 1) {
+            //    catch_stat = 1;
+            //    attack.b_p4();
+            //}
             attack.b_p1();
         } else if (ball.get_magnitude() > brr) {
             catch_stat = 0;
