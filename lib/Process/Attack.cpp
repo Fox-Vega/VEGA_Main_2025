@@ -6,13 +6,13 @@
 
 void Attack::attack_() {
     // mymotor.run(1, 200, 0);
-    if (line.read() == false) {
+    if (1 == false) {
         //pass
     } else if (ball.get_magnitude() != 0) {
         ball.read();
         ball_dir = ball.get_azimuth();
         mypixel.closest(ball_dir, 255, 0, 0, 0);
-        if (ball_dir < b_r1_deg || ball_dir > 360 - b_r1_deg) {
+        if (ball_dir < b_r1_deg || ball_dir > (360 - b_r1_deg)) {
             attack.b_p1();
         } else if (ball.get_magnitude() > brr) {
             attack.b_p2();

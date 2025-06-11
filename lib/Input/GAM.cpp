@@ -56,9 +56,9 @@ void GAM::get_cord() {
             accel_data[i] *= accel_offsetm[robotNUM][i];
         }
         if (i == 0) {
-            bool j = 1;
+            j = 1;
         } else {
-            bool j = 0;
+            j = 0;
         }
         if (accel_data[j] > accel_noise && first_PoMi[i] != 10) {
             if (fabs(accel_data[i]) < adaptive_noise) {
@@ -104,11 +104,11 @@ void GAM::get_cord() {
             float a = fabs(old_accel_data[i]);
             float b = fabs(accel_data[i]);
             if (a == 0 ||  b == 0) {
-                float a_dt = 0.0;
-                float b_dt = 0.0;
+                a_dt = 0.0;
+                b_dt = 0.0;
             } else {
-                float a_dt = dt * (a / (a + b));
-                float b_dt = dt * (b / (a + b));
+                a_dt = dt * (a / (a + b));
+                b_dt = dt * (b / (a + b));
             }
             gam.get_speed(a_dt, 0, i);
             gam.get_speed(b_dt, accel_data[i], i);
@@ -179,7 +179,7 @@ void GAM::cord_custom(int x, int y) {
 
 void GAM::accel_reset() {
     mybuzzer.start(200, 999);
-    a = millis();
+    unsigned long a = millis();
     while (millis() - a < 1500) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 

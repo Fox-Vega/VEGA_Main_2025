@@ -24,9 +24,9 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         // 座標計算
         myvector.get_cord(azimuth_motor, power_);
         float power = myvector.get_x();
-        if (old_motor_stat == 1) {
-            power += difix;
-        }
+        // if (old_motor_stat == 1) {
+        power += difix;
+        // }
         power *= pwmscale;
         power = constrain(power, -pwmlimit, pwmlimit);
         if (power >= 0) {

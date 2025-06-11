@@ -11,7 +11,7 @@ void General::setup() {
     mypixel.multi(0, 15, 255, 128, 0);
     mypixel.show();
     ball.setup();
-    line.setup();
+    // line.setup();
     mymotor.setup();
     gam.setup();
     mypixel.multi(0, 15, 255, 255, 255);
@@ -20,6 +20,7 @@ void General::setup() {
 }
 
 void General::startup() {
+    mymotor.brake();
     mypixel.brightness(999);
     phase = 1;
     while (phase < 4) {
@@ -119,7 +120,7 @@ void General::startup() {
                 break;
         }
     }
-    mypixel.brightness(999);
+    mypixel.brightness(100);
     mypixel.clear();
     mypixel.show();
     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);

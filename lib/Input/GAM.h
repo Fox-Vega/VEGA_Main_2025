@@ -37,7 +37,10 @@ class GAM { //いろいろエラーが出てたから弄った結果、GAMクラ
         int sampleNUM;
         int PoMi[2] = {1, 1}; //値の正負を保存する変数　1は1~、0は~-1、10は0
         int first_PoMi[2] = {10, 10}; //最初に検出された値の正負を保存する変数
+        bool j;
         bool move[2] = {false, false};
+        float a_dt;
+        float b_dt;
         float speed[2];
         float sample[2];
         float difcord_x;

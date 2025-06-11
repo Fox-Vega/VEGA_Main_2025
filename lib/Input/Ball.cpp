@@ -1,5 +1,6 @@
 #include "Ball.h"
 #include "Input.h"
+#include "Output.h"
 #include "AIP.h"
 
 void BALL::setup() {
@@ -18,7 +19,7 @@ void BALL::read() {
     }
 
     // センサー値の取得
-    for (int j = 0; j < 60; j++) { //25だった
+    for (int j = 0; j < 40; j++) { //25だった
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
@@ -42,7 +43,7 @@ void BALL::read() {
         total_x += myvector.get_x();
         total_y += myvector.get_y();
     }
-    ball_azimuth = myvector.get_azimuth(-total_x, total_y);
+    ball_azimuth = myvector.get_azimuth(total_x, total_y);
     mypixel.closest(ball_azimuth, 255, 100, 100, 1);
 
     //記録更新
@@ -66,7 +67,7 @@ int BALL::get_magnitude() {
     for (int i = 0; i < filter_size; i++) {
         sum += history[i];
     }
-    magnitude = sum / filter_size;
+    int magnitude = sum / filter_size;
     magnitude = max_value - magnitude;
     old_magnitude = magnitude; // 過去の値を更新
     return magnitude;
