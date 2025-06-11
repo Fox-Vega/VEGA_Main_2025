@@ -24,4 +24,5 @@ void loop() {
     } else {
         general.startup();
     }
+    mypixel.show();
 }
