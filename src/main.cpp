@@ -19,6 +19,7 @@ void loop() {
             // Serial.println("defence selected");
             // defence.defense_();
             // Serial.println("defence end");
+            mymotor.run(0, 100, 0);
         }
     } else if (general.get_mode() == 3) {
         test.test_();

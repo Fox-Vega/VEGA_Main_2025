@@ -18,12 +18,12 @@ class Attack {
         // 調整
         float appraoch_value = 1.4; //ボールの回り込みパターン１の際の角度増加値
         const int brr = 255; //回り込み半径
-        const int b_r1_deg = 15; //パターン１を行う範囲(片側)
-        const short b_r1speed = 0; //ボールの回り込みパターン１の速度
-        const short b_r2speed = 0; //ボールの回り込みパターン２の速度
-        const short b_r3speed = 0; //ボールの回り込みパターン３の速度
+        const int b_r1_deg = 30; //パターン１を行う範囲(片側)
+        const short b_r1speed = 120; //ボールの回り込みパターン１の速度
+        const short b_r2speed = 120; //ボールの回り込みパターン２の速度
+        const short b_r3speed = 120; //ボールの回り込みパターン３の速度
         const short b_r4speed = 0;
-        const short ball_catch[2] = {200, 260}; //１番目が最低値　２番目が最高値
+        const short ball_catch[2] = {1800, 260}; //１番目が最低値200　２番目が最高値260
 
         const int goalcord = 300;
 

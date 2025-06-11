@@ -42,6 +42,7 @@ void Test::test_() {
             default:
                 mypixel.clear();
                 break;
+            gam.dir_reset();
         }
         if ((millis() - lastbuzzer) > 1000) {
             mybuzzer.start(300, 30);
@@ -99,12 +100,14 @@ void Test::motor() {
     if (myswitch.check_tact() == 1) {
         motor_speed += 10;
         motor_mode = 1;
+        delay(50);
     } else if (myswitch.check_tact() == 2) {
         motor_speed = 0;
         motor_mode = 2;
     } else if (myswitch.check_tact() == 3) {
         motor_speed += 10;
         motor_mode = 3;
+        delay(50);
     }
     if (motor_mode == 1) {
         mymotor.run(0, motor_speed, 0);

@@ -34,18 +34,22 @@ void Attack::attack_() {
 }
 
 void Attack::b_p1() {
-    movedir = ball.get_azimuth() * appraoch_value;
+    int ball_azimuth = ball.get_azimuth() - 360; 
+    movedir = ball_azimuth * appraoch_value;
+    movedir = (movedir + 360) % 360;
     mymotor.run(movedir, b_r1speed, 0);
 }
 
 void Attack::b_p2() {
     movedir = ball.get_azimuth() + degrees(asin(brr / ball.get_magnitude()));
-    mymotor.run(movedir % 360, b_r2speed, 0);
+    movedir %= 360;
+    mymotor.run(movedir, b_r2speed, 0);
 }
 
 void Attack::b_p3() {
     movedir = ball.get_azimuth() + (90 + (brr - ball.get_magnitude()) * 90 / brr);
-    mymotor.run(movedir % 360, b_r3speed, 0);
+    movedir %= 360;
+    mymotor.run(movedir, b_r3speed, 0);
 }
 
 void Attack::b_p4() {
