@@ -17,3 +17,5 @@ __コードのルール__
 自作ファイルをincludeする際は　#include "example.h"
 
 ライブラリをincludeする際は　　#include <example.h>
+
+無駄を省き、綺麗なコードを書くこと。
