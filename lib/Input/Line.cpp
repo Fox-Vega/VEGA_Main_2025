@@ -44,8 +44,7 @@ int LINE::get_magnitude(void){
     }
 }
 
-void LINE::get_claster(void)
-{
+void LINE::get_claster(void){
     int cluster_deg=0;
     count = 0;
     for (size_t i = 0; i < NUMLines; i++){
@@ -62,6 +61,11 @@ void LINE::get_claster(void)
             }
         }
     }
+}
+
+int get_dist(int deg1,int deg2){
+    int theata=cal_deg('s',cal_deg('A',deg1,deg2),deg1);
+    return cos(radians(theata))*sensordist;
 }
 
 bool LINE::read(void){
