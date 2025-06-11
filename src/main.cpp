@@ -9,10 +9,9 @@ void setup() {
 }
 
 void loop() {
+    gam.get_cord();
     if (myswitch.check_toggle() == 1 && general.get_mode() != 3) {
         if (general.get_mode() == 1) {
-            gam.get_cord();
-            ball.read();
             attack.attack_();
         } else if (general.get_mode() == 2) {
             // Serial.println("defence selected");
