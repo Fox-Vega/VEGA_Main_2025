@@ -41,8 +41,15 @@ void BALL::read() {
         myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
         total_x += myvector.get_x();
         total_y += myvector.get_y();
-        ball_azimuth = myvector.get_azimuth(-total_x, total_y);
     }
+    ball_azimuth = myvector.get_azimuth(-total_x, total_y);
+    mypixel.closest(ball_azimuth, 255, 100, 100, 1);
+
+    //記録更新
+    for (int i = filter_size - 1; i > 0; i--) {
+        history[i] = history[i - 1];
+    }
+    history[0] = value[max_ballNUM];
 }
 
 int BALL::get_value(short ballNUM) { 
@@ -55,7 +62,11 @@ int BALL::get_value(short ballNUM) {
 }
 
 int BALL::get_magnitude() {
-    int magnitude = (1 - filterCoefficient) * value[max_ballNUM] + filterCoefficient * value[max_ballNUM];
+    int sum = 0;
+    for (int i = 0; i < filter_size; i++) {
+        sum += history[i];
+    }
+    magnitude = sum / filter_size;
     magnitude = max_value - magnitude;
     old_magnitude = magnitude; // 過去の値を更新
     return magnitude;

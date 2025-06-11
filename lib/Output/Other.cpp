@@ -11,7 +11,6 @@ void MyPIXEL::setup() {
         delay(400);
     } else {
         usePIXEL = 0; //ネオピクセルの使用有無
-        mybuzzer.start(400, 400);
     }
     mypixel.clear();
     PIXEL.show();
@@ -80,6 +79,10 @@ void MyPIXEL::show() {
     if (usePIXEL == 1) {
         PIXEL.show();
     }
+}
+
+void MyPIXEL::shows() {
+    PIXEL.show();
 }
 
 void MyPIXEL::clear() {
