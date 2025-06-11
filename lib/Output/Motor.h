@@ -23,6 +23,8 @@ class MyMOTOR {
         const int motor_border = 90; //モーターが回っていると認識するボーダー
 
         int prev_azimuth;
+        int motor_azimuth;
+        int motor_magnitude;
         bool PoMi; //正・負判断用
         bool motor_stat;
         bool old_motor_stat;
