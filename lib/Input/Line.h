@@ -45,9 +45,12 @@ private:
         #define readPin2 A11
         #define readPin3 A9
 
+        //ラインの数(変えるか…？)
         #define NUMLines 24
         const int sensordist = 1000; // センサの距離（cm）
-        const int LINEDETECT = 1500; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
+        #define lineDetect 500
+        #define printf_s SERIAL_PRINTF
+        #define SERIAL_PRINTF(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
 
 
     // バイナリ配列（縦3列）
