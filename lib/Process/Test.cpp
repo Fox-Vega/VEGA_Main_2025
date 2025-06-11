@@ -47,6 +47,8 @@ void Test::test_() {
             mybuzzer.start(300, 30);
             lastbuzzer = millis();
         }
+        motor_mode = 0;
+        motor_speed = 0;
     } else {
         mypixel.clear();
         switch(t_mode) {
@@ -94,27 +96,26 @@ void Test::input() {
 }
 
 void Test::motor() {
-    mymotor.run(0, 100, 0);
-    
-    //全正転
-    // analogWrite(motor_PIN1[0], 0);
-    // analogWrite(motor_PIN2[0], 100);
-    // analogWrite(motor_PIN1[1], 0);
-    // analogWrite(motor_PIN2[1], 100);
-    // analogWrite(motor_PIN1[2], 0);
-    // analogWrite(motor_PIN2[2], 100);
-    // analogWrite(motor_PIN1[3], 0);
-    // analogWrite(motor_PIN2[3], 100);
-
-    //全逆転
-    // analogWrite(motor_PIN1[0], 100);
-    // analogWrite(motor_PIN2[0], 0);
-    // analogWrite(motor_PIN1[1], 100);
-    // analogWrite(motor_PIN2[1], 0);
-    // analogWrite(motor_PIN1[2], 100);
-    // analogWrite(motor_PIN2[2], 0);
-    // analogWrite(motor_PIN1[3], 100);
-    // analogWrite(motor_PIN2[3], 0);
+    if (myswitch.check_tact() == 1) {
+        motor_speed += 10;
+        motor_mode = 1;
+    } else if (myswitch.check_tact() == 2) {
+        motor_speed = 0;
+        motor_mode = 2;
+    } else if (myswitch.check_tact() == 3) {
+        motor_speed += 10;
+        motor_mode = 3;
+    }
+    if (motor_mode == 1) {
+        mymotor.run(0, motor_speed, 0);
+    } else if (motor_mode == 3) {
+        mymotor.run(180, motor_speed, 0);
+    } else {
+        mymotor.brake();
+    }
+    if (motor_mode != 2) {
+        mypixel.multi(0, motor_speed / 10, 0, 0, 255);
+    }
 }
 
 void Test::cord() {
