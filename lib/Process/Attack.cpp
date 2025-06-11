@@ -13,15 +13,24 @@ void Attack::attack_() {
         ball_dir = ball.get_azimuth();
         mypixel.closest(ball_dir, 255, 0, 0, 0);
         if (ball_dir < b_r1_deg || ball_dir > (360 - b_r1_deg)) {
+            if ((ball.get_magnitude() > ball_catch[0] && ball.get_magnitude() < ball_catch[1]) || catch_stat == 1) {
+                catch_stat = 1;
+                attack.b_p4();
+            }
             attack.b_p1();
         } else if (ball.get_magnitude() > brr) {
+            catch_stat = 0;
             attack.b_p2();
         } else {
+            catch_stat = 0;
             attack.b_p3();
         }
     } else {
+        catch_stat = 0;
         mymotor.run(0, 0, 0);
     }
+    Serial.println(catch_stat);
+    Serial.println(ball.get_magnitude());
 }
 
 void Attack::b_p1() {
@@ -37,4 +46,10 @@ void Attack::b_p2() {
 void Attack::b_p3() {
     movedir = ball.get_azimuth() + (90 + (brr - ball.get_magnitude()) * 90 / brr);
     mymotor.run(movedir % 360, b_r3speed, 0);
+}
+
+void Attack::b_p4() {
+    myvector.get_plpocord(0, goalcord);
+    int dir = myvector.get_azimuth(myvector.get_x(), myvector.get_y());
+    mymotor.run(0, b_r4speed, dir);
 }

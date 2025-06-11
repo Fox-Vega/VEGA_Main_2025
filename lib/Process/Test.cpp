@@ -94,30 +94,7 @@ void Test::input() {
 }
 
 void Test::motor() {
-    for (int i = 0; i <= 140; i++) {
-        for (int j = 0; j < 4; j++) {
-            analogWrite(motor_PIN1[j], i);
-            analogWrite(motor_PIN2[j], 0);
-        }
-    }
-    for (int i = 140; i >= 0; i--) {
-        for (int j = 0; j < 4; j++) {
-            analogWrite(motor_PIN1[j], i);
-            analogWrite(motor_PIN2[j], 0);
-        }
-    }
-    for (int i = 0; i <= 140; i++) {
-        for (int j = 0; j < 4; j++) {
-            analogWrite(motor_PIN1[j], 0);
-            analogWrite(motor_PIN2[j], i);
-        }
-    }
-    for (int i = 140; i >= 0; i--) {
-        for (int j = 0; j < 4; j++) {
-            analogWrite(motor_PIN1[j], 0);
-            analogWrite(motor_PIN2[j], i);
-        }
-    }
+    mymotor.run(0, 100, 0);
     
     //全正転
     // analogWrite(motor_PIN1[0], 0);
