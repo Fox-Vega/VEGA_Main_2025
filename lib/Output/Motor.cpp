@@ -11,6 +11,8 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
+    motor_azimuth = movement_azimuth;
+    motor_magnitude = power_;
     motor_stat = false;
     dir_azimuth %= 360;
     int difix = mymotor.difix(dir_azimuth);
@@ -74,4 +76,12 @@ void MyMOTOR::brake() {
         analogWrite(motor_PIN1[i], 255);
         analogWrite(motor_PIN2[i], 255);
     }
+}
+
+int MyMOTOR::get_azimuth() {
+    return motor_azimuth;
+}
+
+int MyMOTOR::get_magnitude() {
+    return motor_magnitude;
 }
