@@ -41,8 +41,12 @@ void BALL::read() {
         myvector.get_cord(balldirs[ballNUM], ball.get_value(ballNUM));
         total_x += myvector.get_x();
         total_y += myvector.get_y();
-        ball_azimuth = myvector.get_azimuth(-total_x, total_y);
     }
+    ball_azimuth = myvector.get_azimuth(-total_x, total_y);
+    for (int i = filter_size - 1; i > 0; i--) {
+        history[i] = history[i - 1];
+    }
+    history[0] = value[max_ballNUM];
 }
 
 int BALL::get_value(short ballNUM) { 
@@ -55,10 +59,6 @@ int BALL::get_value(short ballNUM) {
 }
 
 int BALL::get_magnitude() {
-    for (int i = filter_size - 1; i > 0; i--) {
-        history[i] = history[i - 1];
-    }
-    history[0] = value[max_ballNUM];
     int sum = 0;
     for (int i = 0; i < filter_size; i++) {
         sum += history[i];
