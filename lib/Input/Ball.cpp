@@ -43,6 +43,9 @@ void BALL::read() {
         total_y += myvector.get_y();
     }
     ball_azimuth = myvector.get_azimuth(-total_x, total_y);
+    mypixel.closest(ball_azimuth, 255, 100, 100, 1);
+
+    //記録更新
     for (int i = filter_size - 1; i > 0; i--) {
         history[i] = history[i - 1];
     }
