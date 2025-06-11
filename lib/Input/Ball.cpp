@@ -55,7 +55,15 @@ int BALL::get_value(short ballNUM) {
 }
 
 int BALL::get_magnitude() {
-    int magnitude = (1 - filterCoefficient) * value[max_ballNUM] + filterCoefficient * value[max_ballNUM];
+    for (int i = filter_size - 1; i > 0; i--) {
+        history[i] = history[i - 1];
+    }
+    history[0] = value[max_ballNUM];
+    int sum = 0;
+    for (int i = 0; i < filter_size; i++) {
+        sum += history[i];
+    }
+    magnitude = sum / filter_size;
     magnitude = max_value - magnitude;
     old_magnitude = magnitude; // 過去の値を更新
     return magnitude;
