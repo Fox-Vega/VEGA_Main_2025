@@ -148,7 +148,7 @@ void Test::cord() {
         Serial.print(",");
         Serial.println(0);
     } else {
-        Serial.print(myvector.get_x());
+        Serial.print(-myvector.get_x());
         Serial.print(",");
         Serial.println(myvector.get_y());
         // Serial.println(",");
