@@ -11,6 +11,7 @@ class Test {
         // void ln();
     private:
         byte t_mode = 1;
+        byte serial_mode = 0;
         byte motor_mode = 0;
         byte motor_speed = 0;
         byte ready = 0;
