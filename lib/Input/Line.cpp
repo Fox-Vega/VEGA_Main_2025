@@ -27,7 +27,7 @@ int LINE::get_azimuth(void) {
             for(size_t j =0; j<(linecount-1); j++) linemem2[j]=calculate_deg('A',linemem[j],linemem[j+1]);
             for(size_t j =0; j<NUMLines; j++)linemem[j]=linemem2[j];
             linecount--;
-    }
+        }
     return linemem[0];
 }
 
@@ -73,7 +73,7 @@ void LINE::get_claster(void){
     }
 }
 
-int LINE::get_dist(int deg1,int deg2){
+int LINE::get_dist(int deg1,int deg2,int dist){
     int theata=cal_deg('s',cal_deg('A',deg1,deg2),deg1);
     return cos(radians(theata))*sensordist;
 }
