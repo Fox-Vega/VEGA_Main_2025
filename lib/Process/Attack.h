@@ -22,7 +22,7 @@ class Attack {
         const short b_r1speed = 120; //ボールの回り込みパターン１の速度
         const short b_r2speed = 120; //ボールの回り込みパターン２の速度
         const short b_r3speed = 120; //ボールの回り込みパターン３の速度
-        const short b_r4speed = 0;
+        const short b_r4speed = 120;
         const short ball_catch[2] = {200, 260}; //１番目が最低値200　２番目が最高値260
 
         const int goalcord = 300;

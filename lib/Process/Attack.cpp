@@ -29,12 +29,15 @@ void Attack::attack_() {
         catch_stat = 0;
         mymotor.run(0, 0, 0);
     }
-    Serial.println(catch_stat);
-    Serial.println(ball.get_magnitude());
+    // Serial.println(catch_stat);
+    // Serial.println(ball.get_magnitude());
 }
 
 void Attack::b_p1() {
-    int ball_azimuth = ball.get_azimuth() - 360; 
+    int ball_azimuth = ball.get_azimuth();
+    if (ball.get_azimuth() > 180) {
+        ball_azimuth = ball.get_azimuth() - 360;
+    }
     movedir = ball_azimuth * appraoch_value;
     movedir = (movedir + 360) % 360;
     mymotor.run(movedir, b_r1speed, 0);

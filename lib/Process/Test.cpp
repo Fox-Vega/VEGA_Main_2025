@@ -60,7 +60,7 @@ void Test::test_() {
                 test.motor();
                 break;
             case 3:
-                test.cord();
+                test.processing();
                 break;
         }
     }
@@ -155,9 +155,9 @@ void Test::processing() {
         Serial.print(0);
         Serial.print(",");
     } else {
-        Serial.print(-myvector.get_x());
+        Serial.print(myvector.get_x());
         Serial.print(",");
-        Serial.print(myvector.get_y());
+        Serial.print(-myvector.get_y());
         Serial.print(",");
     }
     attack.attack_();

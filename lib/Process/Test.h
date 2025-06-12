@@ -6,7 +6,7 @@ class Test {
     public:
         void test_();
         void input();
-        void cord();
+        void processing();
         void motor();
         // void ln();
     private:
