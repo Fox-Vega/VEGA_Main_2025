@@ -5,5 +5,5 @@
 #include <Test.h>
 
 extern Attack attack;
-extern Defense defense;
+// extern Defense defense;
 extern Test test;

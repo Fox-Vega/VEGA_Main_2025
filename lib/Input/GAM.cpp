@@ -16,26 +16,29 @@ void GAM::setup() {
     }
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
-    delay(1000);
+    delay(3000);
     azimuth = 0;
-    timer.reset();
-    mybuzzer.start(200, 999);
-    while (timer.read_milli() < 1500) {
+    mybuzzer.start(400, 100);
+    delay(50);
+    mybuzzer.start(300, 100);
+    while (millis() < 5500) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
         for (int i = 0; i < 2; i++) {
-            accel_bias[i] = (accel_bias[i] + accel_data[i]) * 0.5; //平均値を計算
+            sample[i] += accel_data[i];
         }
+        sampleNUM += 1;
     }
-    mybuzzer.stop();
+    accel_bias[0] = sample[0] / sampleNUM;
+    accel_bias[1] = sample[1] / sampleNUM;
 }
 
 int GAM::get_azimuth() {
     sensors_event_t euler_event;
     bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
 
-    return (int)(euler_event.orientation.x);
+    return (int)(euler_event.orientation.x - yawtweak);
 }
 
 void GAM::get_cord() {
@@ -98,8 +101,8 @@ void GAM::get_cord() {
             PoMi[i] = 0;
         }
         if (first_PoMi[i] != PoMi[i]) { //初回動作検知方向と現在の動きが異なる場合は0の位置を求めて速度計算　111〜112を無効化したら減速時加速度を除外できる
-            a = fabs(old_accel_data[i]);
-            b = fabs(accel_data[i]);
+            float a = fabs(old_accel_data[i]);
+            float b = fabs(accel_data[i]);
             if (a == 0 ||  b == 0) {
                 a_dt = 0.0;
                 b_dt = 0.0;
@@ -116,13 +119,13 @@ void GAM::get_cord() {
     }
 
     //台形積分で速度算出(TelePlot用)
-    states[0] += ((speed[0] + old_speed[0]) * dt) / 2 * 100;
-    states[1] += ((speed[1] + old_speed[1]) * dt) / 2 * 100;
+    states[0] += ((speed[0] + old_speed[0]) * dt) / 2 * 100 * cord_offset;
+    states[1] += ((speed[1] + old_speed[1]) * dt) / 2 * 100 * cord_offset;
 
     //座標をコート座標に変換
     float yaw_rad = radians(gam.get_azimuth());
-    int x = ((speed[0] + old_speed[0]) * dt) / 2 * 100;
-    int y = ((speed[1] + old_speed[1]) * dt) / 2 * 100;
+    int x = ((speed[0] + old_speed[0]) * dt) / 2 * 100  * cord_offset;
+    int y = ((speed[1] + old_speed[1]) * dt) / 2 * 100  * cord_offset;
     world_x += x * cos(yaw_rad) - y * sin(yaw_rad);
     world_y += x * sin(yaw_rad) + y * cos(yaw_rad);
     
@@ -163,7 +166,10 @@ void GAM::get_speed(float dt, float accel,short i) {
 }
 
 void GAM::dir_reset() {
-    yawtweak = gam.get_azimuth();
+    sensors_event_t euler_event;
+    bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
+
+    yawtweak = euler_event.orientation.x;
 }
 
 void GAM::cord_custom(int x, int y) {
@@ -175,9 +181,9 @@ void GAM::cord_custom(int x, int y) {
 }
 
 void GAM::accel_reset() {
-    timer.reset();
     mybuzzer.start(200, 999);
-    while (timer.read_milli() < 1500) {
+    unsigned long a = millis();
+    while (millis() - a < 1500) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};

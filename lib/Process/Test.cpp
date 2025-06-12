@@ -5,6 +5,7 @@
 #include "AIP.h"
 
 void Test::test_() {
+    mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_toggle() == 1) {
         for (int i = 0; i < 4; i++) {
             analogWrite(motor_PIN1[i], 255);
@@ -25,7 +26,6 @@ void Test::test_() {
         }
         switch(t_mode) {
             case 1:
-                mypixel.clear();
                 mypixel.uni(0, 255, 0, 0);
                 mypixel.multi(7, 9, 255, 0, 0);
                 break;
@@ -33,22 +33,25 @@ void Test::test_() {
                 mypixel.multi(0, 15, 255, 0, 0);
                 break;
             case 3:
-                mypixel.clear();
                 mypixel.uni(0, 0, 0, 255);
                 mypixel.uni(4, 255, 0, 0);
                 mypixel.uni(8, 0, 0, 255);
                 mypixel.uni(12, 255, 0, 0);
                 break;
             default:
-                mypixel.clear();
                 break;
+            gam.dir_reset();
         }
-        mypixel.shows();
         if ((millis() - lastbuzzer) > 1000) {
             mybuzzer.start(300, 30);
             lastbuzzer = millis();
         }
+        motor_mode = 2;
+        motor_speed = 0;
+        mymotor.stabilization(1);
+        mymotor.move(1);
     } else {
+        mypixel.clear();
         switch(t_mode) {
             case 1:
                 test.input();
@@ -57,10 +60,11 @@ void Test::test_() {
                 test.motor();
                 break;
             case 3:
-                test.cord();
+                test.processing();
                 break;
         }
     }
+    mypixel.shows();
 }
 
 
@@ -82,91 +86,128 @@ void Test::input() {
     //     line_azimuth %= 360;
     //     mypixel.closest(line_azimuth, 50, 255, 50, 3);
     // }
-    if (ball.get_magnitude() != 0) {
-        int value = constrain(ball.get_magnitude(), 0, 255); //入力値を0~255の範囲に制限
+    if (ball.get_value(99) != 0) {
+        int value = constrain(ball.get_value(99) / 4, 0, 255); //入力値を0~255の範囲に制限
         int r, g, b;
         r = 255;
         g = 255 - value; //緑をよりゆるやかに減らす
         b = 0;
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
-    mypixel.shows();
 }
 
 void Test::motor() {
-    while (myswitch.check_toggle() == 0) {
-        for (int i = 0; i <= 140; i++) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], i);
-                analogWrite(motor_PIN2[j], 0);
-            }
+    mymotor.stabilization(0);
+    if (myswitch.check_tact() == 3) {
+        if (motor_mode != 1) {
+            motor_speed = 0;
+        } else {
+            motor_speed += 10;
         }
-        for (int i = 140; i >= 0; i--) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], i);
-                analogWrite(motor_PIN2[j], 0);
-            }
+        motor_mode = 1;
+        old_motor_mode = motor_mode;
+        old_motor_speed = motor_speed;
+        delay(200);
+    } else if (myswitch.check_tact() == 2) {
+        if (motor_speed != 0) {
+            motor_mode = 2;
+            motor_speed = 0;
+        } else {
+            motor_mode = old_motor_mode;
+            motor_speed = old_motor_speed;
         }
-        for (int i = 0; i <= 140; i++) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], 0);
-                analogWrite(motor_PIN2[j], i);
-            }
+        delay(200);
+    } else if (myswitch.check_tact() == 1) {
+        if (motor_mode != 3) {
+            motor_speed = 0;
+        } else {
+            motor_speed += 10;
         }
-        for (int i = 140; i >= 0; i--) {
-            for (int j = 0; j < 4; j++) {
-                analogWrite(motor_PIN1[j], 0);
-                analogWrite(motor_PIN2[j], i);
-            }
-        }
+        old_motor_mode = motor_mode;
+        old_motor_speed = motor_speed;
+        motor_mode = 3;
+        delay(200);
     }
-    
-    //全正転
-    // analogWrite(motor_PIN1[0], 0);
-    // analogWrite(motor_PIN2[0], 100);
-    // analogWrite(motor_PIN1[1], 0);
-    // analogWrite(motor_PIN2[1], 100);
-    // analogWrite(motor_PIN1[2], 0);
-    // analogWrite(motor_PIN2[2], 100);
-    // analogWrite(motor_PIN1[3], 0);
-    // analogWrite(motor_PIN2[3], 100);
-
-    //全逆転
-    // analogWrite(motor_PIN1[0], 100);
-    // analogWrite(motor_PIN2[0], 0);
-    // analogWrite(motor_PIN1[1], 100);
-    // analogWrite(motor_PIN2[1], 0);
-    // analogWrite(motor_PIN1[2], 100);
-    // analogWrite(motor_PIN2[2], 0);
-    // analogWrite(motor_PIN1[3], 100);
-    // analogWrite(motor_PIN2[3], 0);
+    if (motor_mode == 1) {
+        mymotor.run(0, motor_speed, 0);
+    } else if (motor_mode == 3) {
+        mymotor.run(180, motor_speed, 0);
+    } else {
+        mymotor.brake();
+    }
+    if (motor_mode != 2) {
+        if (motor_mode == 1) {
+            if (motor_speed == 0) {
+                mypixel.uni(0, 255, 100, 100);
+            } else {
+                mypixel.multi(0, motor_speed / 10, 255, 0, 0);
+            }
+        } else {
+            if (motor_speed == 0) {
+                mypixel.uni(0, 100, 100, 255);
+            } else {
+                byte startPIXEL = (16 - (motor_speed / 10)) % 16;
+                mypixel.uni(0, 0, 0, 255);
+                mypixel.multi(startPIXEL, 15, 0, 0, 255);
+            }
+        }
+    } else {
+        mypixel.uni(0, 255, 0, 255);
+        mypixel.uni(2, 255, 0, 255);
+        mypixel.uni(4, 255, 0, 255);
+        mypixel.uni(6, 255, 0, 255);
+        mypixel.uni(8, 255, 0, 255);
+        mypixel.uni(10, 255, 0, 255);
+        mypixel.uni(12, 255, 0, 255);
+        mypixel.uni(14, 255, 0, 255);
+    }
 }
 
-void Test::cord() {
-    Serial.print(5);  // 最初にデータの個数を送信
+void Test::processing() {
+    mymotor.move(0);
+    if (myswitch.check_tact() == 2) {
+        serial_mode += 1;
+        serial_mode %= 2; //モード個数
+        delay(200);
+    }
+    
+    Serial.print(8);  // 最初にデータの個数を送信
     Serial.print(",");
 
-    Serial.print(gam.get_azimuth());  // 改行を追加して1行ずつ送信
+    Serial.print(serial_mode);
+    Serial.print(",");
+    Serial.print((gam.get_azimuth() + 180) % 360);  // 改行を追加して1行ずつ送信
     Serial.print(",");
 
-    gam.get_cord();
-    Serial.print(582 - gam.get_x());
+    // gam.get_cord();
+    // Serial.print(582 - gam.get_x());
+    // Serial.print(",");
+    // Serial.print(430 - gam.get_y());
+    // Serial.print(",");
+    Serial.print(582);
     Serial.print(",");
-    Serial.print(430 - gam.get_y());
+    Serial.print(430);
     Serial.print(",");
 
     ball.read();
-    myvector.get_cord((ball.get_azimuth() + gam.get_azimuth()) % 360, ball.get_magnitude());
+    int ball_azimuth = (ball.get_azimuth() - gam.get_azimuth() + 90) % 360;
+    myvector.get_cord(ball_azimuth , ball.get_magnitude());
     if (ball.get_magnitude() == 0) {
         Serial.print(0);
         Serial.print(",");
         Serial.print(0);
-        Serial.println(",");
-    } else {
-        Serial.print(myvector.get_x() + (582 - gam.get_x()));
         Serial.print(",");
-        Serial.print(myvector.get_y() + (430 - gam.get_y()));
-        Serial.println(",");
+    } else {
+        Serial.print(myvector.get_x());
+        Serial.print(",");
+        Serial.print(-myvector.get_y());
+        Serial.print(",");
     }
+    attack.attack_();
+    Serial.print(mymotor.get_azimuth());
+    Serial.print(",");
+    Serial.println(mymotor.get_magnitude());
+    // Serial.print(",");
+    
     delay(10);
 }

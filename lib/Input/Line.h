@@ -6,11 +6,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-
-
-
-
-
 class LINE {
 public:
     // 呼び出し関数
@@ -18,7 +13,7 @@ public:
     void setup();//初期設定（必ずやってね☆）
     int get_azimuth();//センサの角度を取得　
     int get_reverse_azimuth();
-    int get_magnitude();//センサの距離を取得
+    int get_magnitude();//センサの距離を取る
     bool read();//センサの状態を読み取る（true:ラインあり, false:ラインなし
     void serial_print(void);
     int calculate_deg(char mode, int num1, int num2);//角度計算
@@ -45,9 +40,12 @@ private:
         #define readPin2 A11
         #define readPin3 A9
 
+        //ラインの数(変えるか…？)
         #define NUMLines 24
         const int sensordist = 1000; // センサの距離（cm）
-        const int LINEDETECT = 1500; // ライン検出のしきい値（センサの値がこの値以上ならラインありとする）
+        #define lineDetect 500
+        #define printf_s SERIAL_PRINTF
+        #define SERIAL_PRINTF(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
 
 
     // バイナリ配列（縦3列）
@@ -79,7 +77,7 @@ private:
         */
     // 内部処理関数
     int get_linedeg();
-    int get_line_dist(int deg1, int deg2);
+    int get_dist(int deg1, int deg2);
     void print_pizel();
     void get_claster();
 };

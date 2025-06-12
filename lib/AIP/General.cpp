@@ -8,25 +8,19 @@ void General::setup() {
     myswitch.setup();
     mybuzzer.setup();
     mypixel.setup();
-    mypixel.clear();
-    mypixel.show();
     mypixel.multi(0, 15, 255, 128, 0);
     mypixel.show();
     ball.setup();
-    line.setup();
+    // line.setup();
     mymotor.setup();
     gam.setup();
-    mypixel.clear();
-    mypixel.show();
     mypixel.multi(0, 15, 255, 255, 255);
     mypixel.show();
     mybuzzer.preset(1);
 }
 
 void General::startup() {
-    Serial.println("start up ==========");
-    Serial.println("Don't forget to turn on the toggle switch.");
-    Serial.println("phase 1");
+    mymotor.brake();
     mypixel.brightness(999);
     phase = 1;
     while (phase < 4) {
@@ -55,7 +49,7 @@ void General::startup() {
                 mypixel.uni(startPIXELs[startcord], 255, 255, 255);
             }
             ball.read();
-            if (ball.get_magnitude() != 0) {
+            if (ball.get_value(99) != 0) {
                 mypixel.closest(ball.get_azimuth(), 80, 0, 255, 1);
             }
             mypixel.show();
@@ -66,20 +60,14 @@ void General::startup() {
                     mode = 1;
                     phase = 2;
                     mybuzzer.start(500, 200);
-                    Serial.println("Attack selected");
-                    Serial.println("phase 2");
                 } else if (tact_pressed == 2) {//ディフェンス
                     mode = 2;
                     phase = 2;
                     mybuzzer.start(500, 200);
-                    Serial.println("Defense selected");
-                    Serial.println("phase 2");
                 } else if (tact_pressed == 3) {//テスト
                     mode = 3;
                     phase = 2;
                     mybuzzer.start(500, 200);
-                    Serial.println("Test mode selected");
-                    Serial.println("phase 2");
                 }
                 delay(100);
                 break;
@@ -89,8 +77,6 @@ void General::startup() {
                     startcord = 0;
                     mode = 0;
                     mybuzzer.start(100, 500);
-                    Serial.println("back to phase 1");
-                    Serial.println("phase 1");
                 } else if (tact_pressed == 2) {
                     if (startcord < 4) {
                         startcord += 1;
@@ -105,15 +91,12 @@ void General::startup() {
                     mybuzzer.start(500, 500);
                     mypixel.clear();
                     mypixel.show();
-                    Serial.println("phase 3");
                 }
                 break;
             case 3:
                 if (tact_pressed == 1){//一つ戻る　
                     phase = 2;
                     mybuzzer.start(100, 500);
-                    Serial.println("back to phase 2");
-                    Serial.println("phase 2");
                 } else if (tact_pressed == 2) { //方向と座標をリセット
                     gam.dir_reset();
                     mybuzzer.start(300, 500);
@@ -121,7 +104,6 @@ void General::startup() {
                     //機能無し
                 } else if (toggle_stat == 1) {//スタート！
                     phase = 4;
-                    Serial.println("start!");
                 } else {
                     if (mode == 3) {
                         mypixel.rainbow();
@@ -138,10 +120,11 @@ void General::startup() {
                 break;
         }
     }
-    mypixel.brightness(999);
+    mypixel.brightness(100);
     mypixel.clear();
     mypixel.show();
     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
+    mymotor.stabilization(1);
 }
 
 int General::get_mode() {
