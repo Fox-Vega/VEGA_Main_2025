@@ -13,7 +13,9 @@ class Test {
         byte t_mode = 1;
         byte serial_mode = 0;
         byte motor_mode = 0;
+        byte old_motor_mode = 0;
         byte motor_speed = 0;
+        byte old_motor_speed = 0;
         byte ready = 0;
         float lastbuzzer = 0;
         const byte motor_PIN1[4] = {9, 7, 5, 3};

@@ -10,15 +10,16 @@ class MyMOTOR {
         int difix(int target_azimuth); //PID姿勢制御用
         void free(); //自由回転
         void brake(); //ブレーキ
-        void limiter(bool stat); //0にすると制限なし移動速度が出る　モーター摩耗が激しくなるため、OOBを防ぐときにのみ解除するように。
         int get_azimuth();
         int get_magnitude();
+        void stabilization(bool stat);
+        void move(bool stat);
 
     private:
         //調整用
         const float kp = 0.2; //比例 を大きくすると応答が速くなるが、振動しやすくなる
         const float kd = 0.003; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
-        const int pwmlimit = 0;
+        const int pwmlimit = 120;
         const float pwmscale = 1.0;
         const int motor_border = 90; //モーターが回っていると認識するボーダー
 
@@ -26,7 +27,9 @@ class MyMOTOR {
         int motor_azimuth;
         int motor_magnitude;
         bool PoMi; //正・負判断用
+        bool motor_move = 1;
         bool motor_stat;
+        bool motor_stabilization;
         bool old_motor_stat;
         short power; //進行方向を参考した場合のモーター出力
         short motorPWM; //機体動作用入力値

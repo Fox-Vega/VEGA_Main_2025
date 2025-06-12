@@ -50,6 +50,8 @@ void Test::test_() {
         }
         motor_mode = 0;
         motor_speed = 0;
+        mymotor.stabilization(1);
+        mymotor.move(1);
     } else {
         mypixel.clear();
         switch(t_mode) {
@@ -86,8 +88,8 @@ void Test::input() {
     //     line_azimuth %= 360;
     //     mypixel.closest(line_azimuth, 50, 255, 50, 3);
     // }
-    if (ball.get_magnitude() != 0) {
-        int value = constrain(ball.get_magnitude(), 0, 255); //入力値を0~255の範囲に制限
+    if (ball.get_value(99) != 0) {
+        int value = constrain(ball.get_value(99) / 4, 0, 255); //入力値を0~255の範囲に制限
         int r, g, b;
         r = 255;
         g = 255 - value; //緑をよりゆるやかに減らす
@@ -97,17 +99,36 @@ void Test::input() {
 }
 
 void Test::motor() {
+    mymotor.stabilization(0);
     if (myswitch.check_tact() == 1) {
-        motor_speed += 10;
+        if (motor_mode != 1) {
+            motor_speed = 0;
+        } else {
+            motor_speed += 10;
+        }
         motor_mode = 1;
-        delay(50);
+        old_motor_mode = motor_mode;
+        old_motor_speed = motor_speed;
+        delay(200);
     } else if (myswitch.check_tact() == 2) {
-        motor_speed = 0;
-        motor_mode = 2;
+        if (motor_speed != 0) {
+            motor_mode = 2;
+            motor_speed = 0;
+        } else {
+            motor_mode = old_motor_mode;
+            motor_speed = old_motor_speed;
+        }
+        delay(200);
     } else if (myswitch.check_tact() == 3) {
-        motor_speed += 10;
+        if (motor_mode != 3) {
+            motor_speed = 0;
+        } else {
+            motor_speed += 10;
+        }
+        old_motor_mode = motor_mode;
+        old_motor_speed = motor_speed;
         motor_mode = 3;
-        delay(50);
+        delay(200);
     }
     if (motor_mode == 1) {
         mymotor.run(0, motor_speed, 0);
@@ -117,15 +138,29 @@ void Test::motor() {
         mymotor.brake();
     }
     if (motor_mode != 2) {
-        mypixel.multi(0, motor_speed / 10, 0, 0, 255);
+        if (motor_mode == 1) {
+            mypixel.multi(0, motor_speed / 10, 255, 0, 0);
+        } else {
+            mypixel.multi(0, motor_speed / 10, 0, 0, 255);
+        }
+    } else {
+        mypixel.uni(0, 255, 0, 255);
+        mypixel.uni(2, 255, 0, 255);
+        mypixel.uni(4, 255, 0, 255);
+        mypixel.uni(6, 255, 0, 255);
+        mypixel.uni(8, 255, 0, 255);
+        mypixel.uni(10, 255, 0, 255);
+        mypixel.uni(12, 255, 0, 255);
+        mypixel.uni(14, 255, 0, 255);
     }
 }
 
 void Test::processing() {
+    mymotor.move(0);
     if (myswitch.check_tact() == 2) {
         serial_mode += 1;
         serial_mode %= 2; //モード個数
-        delay(100);
+        delay(200);
     }
     
     Serial.print(8);  // 最初にデータの個数を送信

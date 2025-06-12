@@ -49,7 +49,7 @@ void General::startup() {
                 mypixel.uni(startPIXELs[startcord], 255, 255, 255);
             }
             ball.read();
-            if (ball.get_magnitude() != 0) {
+            if (ball.get_value(99) != 0) {
                 mypixel.closest(ball.get_azimuth(), 80, 0, 255, 1);
             }
             mypixel.show();
@@ -124,6 +124,7 @@ void General::startup() {
     mypixel.clear();
     mypixel.show();
     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
+    mymotor.stabilization(1);
 }
 
 int General::get_mode() {

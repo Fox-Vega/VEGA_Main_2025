@@ -44,7 +44,9 @@ void BALL::read() {
         total_y += myvector.get_y();
     }
     ball_azimuth = myvector.get_azimuth(total_x, total_y);
-    mypixel.closest(ball_azimuth, 255, 100, 100, 1);
+    if (value[max_ballNUM] != 0) {
+        mypixel.closest(ball_azimuth, 255, 50, 50, 1);
+    }
 
     //記録更新
     for (int i = filter_size - 1; i > 0; i--) {
@@ -54,12 +56,16 @@ void BALL::read() {
 }
 
 int BALL::get_value(short ballNUM) { 
-    if (ballvalues[ballNUM] < detection_border) {
-        ballvalues[ballNUM] = 0;
-    } else {
-        value[ballNUM] = ballvalues[ballNUM] * ballvalue_offset;
+    byte sensorNUM = ballNUM;
+    if (ballNUM == 99) {
+        sensorNUM = max_ballNUM;
     }
-    return value[ballNUM];
+    if (ballvalues[sensorNUM] < detection_border) {
+        ballvalues[sensorNUM] = 0;
+    } else {
+        value[sensorNUM] = ballvalues[sensorNUM] * ballvalue_offset;
+    }
+    return value[sensorNUM];
 }
 
 int BALL::get_magnitude() {

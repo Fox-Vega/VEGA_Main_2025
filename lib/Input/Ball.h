@@ -6,7 +6,7 @@ class BALL {
     public:
         void setup(); //初期設定
         void read(); //センサーデータ取得
-        int get_value(short ballNUM); //ボール値を取得する関数
+        int get_value(short ballNUM); //ボール値を取得する関数　99を使うと最大値を取得
         int get_magnitude(); //ボールの距離を取得する関数
         int get_azimuth(); //ボールの方向を取得する関数
 
