@@ -5,6 +5,7 @@
 #include "AIP.h"
 
 void Test::test_() {
+    mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_toggle() == 1) {
         for (int i = 0; i < 4; i++) {
             analogWrite(motor_PIN1[i], 255);
@@ -25,7 +26,6 @@ void Test::test_() {
         }
         switch(t_mode) {
             case 1:
-                mypixel.clear();
                 mypixel.uni(0, 255, 0, 0);
                 mypixel.multi(7, 9, 255, 0, 0);
                 break;
@@ -33,14 +33,12 @@ void Test::test_() {
                 mypixel.multi(0, 15, 255, 0, 0);
                 break;
             case 3:
-                mypixel.clear();
                 mypixel.uni(0, 0, 0, 255);
                 mypixel.uni(4, 255, 0, 0);
                 mypixel.uni(8, 0, 0, 255);
                 mypixel.uni(12, 255, 0, 0);
                 break;
             default:
-                mypixel.clear();
                 break;
             gam.dir_reset();
         }
@@ -48,7 +46,7 @@ void Test::test_() {
             mybuzzer.start(300, 30);
             lastbuzzer = millis();
         }
-        motor_mode = 0;
+        motor_mode = 2;
         motor_speed = 0;
         mymotor.stabilization(1);
         mymotor.move(1);
@@ -100,7 +98,7 @@ void Test::input() {
 
 void Test::motor() {
     mymotor.stabilization(0);
-    if (myswitch.check_tact() == 1) {
+    if (myswitch.check_tact() == 3) {
         if (motor_mode != 1) {
             motor_speed = 0;
         } else {
@@ -119,7 +117,7 @@ void Test::motor() {
             motor_speed = old_motor_speed;
         }
         delay(200);
-    } else if (myswitch.check_tact() == 3) {
+    } else if (myswitch.check_tact() == 1) {
         if (motor_mode != 3) {
             motor_speed = 0;
         } else {
@@ -139,9 +137,19 @@ void Test::motor() {
     }
     if (motor_mode != 2) {
         if (motor_mode == 1) {
-            mypixel.multi(0, motor_speed / 10, 255, 0, 0);
+            if (motor_speed == 0) {
+                mypixel.uni(0, 255, 100, 100);
+            } else {
+                mypixel.multi(0, motor_speed / 10, 255, 0, 0);
+            }
         } else {
-            mypixel.multi(0, motor_speed / 10, 0, 0, 255);
+            if (motor_speed == 0) {
+                mypixel.uni(0, 100, 100, 255);
+            } else {
+                byte startPIXEL = (16 - (motor_speed / 10)) % 16;
+                mypixel.uni(0, 0, 0, 255);
+                mypixel.multi(startPIXEL, 15, 0, 0, 255);
+            }
         }
     } else {
         mypixel.uni(0, 255, 0, 255);
