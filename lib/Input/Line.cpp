@@ -17,7 +17,7 @@ void LINE::setup(void) {
     pinMode(readPin3, INPUT);
 }
 
-void LINE::serial_print(void){Serial.println(get_azimuth());}
+void LINE::serial_print(void){printf_s("%d",get_azimuth());}
 
 int LINE::get_azimuth(void) {
     read();
