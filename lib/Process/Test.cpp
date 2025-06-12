@@ -121,10 +121,18 @@ void Test::motor() {
     }
 }
 
-void Test::cord() {
-    Serial.print(5);  // 最初にデータの個数を送信
+void Test::processing() {
+    if (myswitch.check_tact() == 2) {
+        serial_mode += 1;
+        serial_mode %= 2; //モード個数
+        delay(100);
+    }
+    
+    Serial.print(8);  // 最初にデータの個数を送信
     Serial.print(",");
 
+    Serial.print(serial_mode);
+    Serial.print(",");
     Serial.print((gam.get_azimuth() + 180) % 360);  // 改行を追加して1行ずつ送信
     Serial.print(",");
 
@@ -141,17 +149,22 @@ void Test::cord() {
     ball.read();
     int ball_azimuth = (ball.get_azimuth() - gam.get_azimuth() + 90) % 360;
     myvector.get_cord(ball_azimuth , ball.get_magnitude());
-    // Serial.print(ball.get_magnitude());
-    // Serial.print(",");
     if (ball.get_magnitude() == 0) {
         Serial.print(0);
         Serial.print(",");
-        Serial.println(0);
+        Serial.print(0);
+        Serial.print(",");
     } else {
         Serial.print(-myvector.get_x());
         Serial.print(",");
-        Serial.println(myvector.get_y());
-        // Serial.println(",");
+        Serial.print(myvector.get_y());
+        Serial.print(",");
     }
+    attack.attack_();
+    Serial.print(mymotor.get_azimuth());
+    Serial.print(",");
+    Serial.println(mymotor.get_magnitude());
+    // Serial.print(",");
+    
     delay(10);
 }
