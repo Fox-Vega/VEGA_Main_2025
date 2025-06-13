@@ -38,8 +38,8 @@ class Defense {
         void get_vector(void) {
             get_vector_Ball();
             get_vector_Line();
-        }
+        };
     private:
     void MyUI(int mode);
-    void MyUI_clear()
+    void MyUI_clear(void);
 };
