@@ -31,6 +31,7 @@ void Attack::attack_() {
     }
     // Serial.println(catch_stat);
     // Serial.println(ball.get_magnitude());
+    mypixel.closest(mymotor.get_azimuth(), 255, 50, 255, 3);
 }
 
 void Attack::b_p1() {

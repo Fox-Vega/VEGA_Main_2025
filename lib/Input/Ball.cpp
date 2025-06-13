@@ -53,6 +53,7 @@ void BALL::read() {
         history[i] = history[i - 1];
     }
     history[0] = value[max_ballNUM];
+    delay(10);
 }
 
 int BALL::get_value(short ballNUM) { 
