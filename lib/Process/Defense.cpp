@@ -1,27 +1,15 @@
-<<<<<<< HEAD
-// #include "Defense.h"
-
-// // extern LINE line;
-=======
 #include "Defense.h"
 #include "Input.h"
 #include "Output.h"
 
 extern LINE line;
->>>>>>> c1bb9ef91a6873f0426ff32145f431e7fab70254
 
-// data Dball;
-// data Dline;
+data Dball;
+data Dline;
 
-<<<<<<< HEAD
 // //printf
 // #define printf_s SERIAL_PRINTF
 // #define SERIAL_PRINTF(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-=======
-//printf
-#define printf_s SERIAL_PRINTF
-//#define SERIAL_PRINTF(fmt, ...) ({ char buf[128]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
->>>>>>> c1bb9ef91a6873f0426ff32145f431e7fab70254
 
 // void Defense::setup(void)
 // {
@@ -44,11 +32,7 @@ void Defense::defense_(void){
     }
 
 // void Defense::MyUI(int mode){
-<<<<<<< HEAD
-//     int mode=0;
-=======
 //     mode=0;
->>>>>>> c1bb9ef91a6873f0426ff32145f431e7fab70254
 //     int tact=0;
 //     int toggle=0;
 //     while (true) {

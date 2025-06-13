@@ -9,7 +9,7 @@ void Test::test_() {
     if (myswitch.check_toggle() == 1) {
         for (int i = 0; i < 4; i++) {
             analogWrite(motor_PIN1[i], 255);
-            analogWrite(motor_PIN2[i], 255);  
+            analogWrite(motor_PIN2[i], 255);
         }
         if (myswitch.check_tact() == 1) {
             t_mode -= 1;
@@ -170,7 +170,7 @@ void Test::processing() {
         serial_mode %= 2; //モード個数
         delay(200);
     }
-    
+
     Serial.print(8);  // 最初にデータの個数を送信
     Serial.print(",");
 
@@ -208,6 +208,6 @@ void Test::processing() {
     Serial.print(",");
     Serial.println(mymotor.get_magnitude());
     // Serial.print(",");
-    
+
     delay(10);
 }

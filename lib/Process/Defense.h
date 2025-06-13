@@ -1,48 +1,32 @@
-// #pragma once
+#pragma once
 
-// #include<stdio.h>
-// #include<stdlib.h>
-// #include <time.h>
-// #include <Arduino.h>
-// #include <Input.h>
-// #include <Output.h>
-// #include <AIP.h>
-// #include <math.h>
-// #include <string.h>
-// #include <Line.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include <time.h>
+#include <Arduino.h>
+#include <Input.h>
+#include <Output.h>
+#include <AIP.h>
+#include <math.h>
+#include <string.h>
+#include <Line.h>
 
 #define DEFENCE DEFENSE//作っておこうかと。
 
-// #define linedist 10
-// #define linecentor 0.1
+#define linedist 10
+#define linecentor 0.1
 
 
-// struct data
-// {
-//     int theata;
-//     int dist;
-//     float x;
-//     float y;
-//     bool detect;
-// };
+struct data
+{
+    int theata;
+    int dist;
+    float x;
+    float y;
+    bool detect;
+};
 
 
-<<<<<<< HEAD
-// class Defense {
-//     public:
-//         void setup(void);
-//         void defense_(void);
-//         void get_vector_Ball(void);
-//         void get_vector_Line(void);
-//         void get_vector(void) {
-//             get_vector_Ball();
-//             get_vector_Line();
-//         }
-//     private:
-//     void MyUI(int mode);
-//     void MyUI_clear()
-// };
-=======
 class Defense {
     public:
         void setup(void);
@@ -57,4 +41,3 @@ class Defense {
     void MyUI(int mode);
     void MyUI_clear(void);
 };
->>>>>>> c1bb9ef91a6873f0426ff32145f431e7fab70254

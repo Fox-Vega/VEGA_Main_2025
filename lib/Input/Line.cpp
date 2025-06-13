@@ -17,17 +17,21 @@ void LINE::serial_print(void){printf_s("%d",get_azimuth());}
 
 int LINE::get_azimuth(void) {
     read();
-    for(size_t i = 0; i < 4; i++)line_detect[i] = 999; // ライン検出配列の初期化
-    int linecount =0;
+    for(size_t i = 0; i < 4; i++) line_detect[i] = 999; // ライン検出配列の初期化
+    size_t linecount = 0;
     int linemem[NUMLines] = {0};
     int linemem2[NUMLines] = {0};
     for(size_t i = 0; i < NUMLines; i++) if(line_status[i] == true) linecount++;
     for(size_t i = 0; i < NUMLines; i++) linemem[i] = line_memory[i];
-        for(size_t i = 0; i < NUMLines; i++){
-            for(size_t j =0; j<(linecount-1); j++) linemem2[j]=calculate_deg('A',linemem[j],linemem[j+1]);
-            for(size_t j =0; j<NUMLines; j++)linemem[j]=linemem2[j];
-            linecount--;
-        }
+    for(size_t i = 0; i < NUMLines; i++) {
+        // linecountが1以下の場合はループしないようにする
+        size_t loop_count = (linecount > 1) ? (linecount - 1) : 0;
+        for(size_t j = 0; j < loop_count; j++)
+            linemem2[j] = calculate_deg('A', linemem[j], linemem[j+1]);
+        for(size_t j = 0; j < NUMLines; j++)
+            linemem[j] = linemem2[j];
+        if(linecount > 0) linecount--;
+    }
     return linemem[0];
 }
 

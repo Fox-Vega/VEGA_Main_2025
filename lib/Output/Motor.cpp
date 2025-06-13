@@ -21,13 +21,13 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     }
     // int difix = 0;
     // int azimuth = gam.get_azimuth();
-    
+
     for (int i = 0; i < 4; i++) {
         if (motor_move == 1) {
             // int raw = movement_azimuth + azimuth - motor_degrees[i]; //方向に関わらず同じ方向に進むようにする場合はこの行を使って、下の行を消す
             int raw = movement_azimuth - motor_degrees[i];
             int azimuth_motor = raw % 360;
-            
+
             // 座標計算
             myvector.get_cord(azimuth_motor, power_);
             float power = myvector.get_x();
@@ -65,7 +65,7 @@ int MyMOTOR::difix(int target_azimuth) {
     int pwm = kd * derivative + kp * error;  // 順序：微分項が先行
 
     lastupdate = millis();
-    
+
     return pwm;
 }
 
