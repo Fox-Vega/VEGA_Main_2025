@@ -15,20 +15,21 @@ void Defense::setup(void)
 {
 }
 
-// void Defense::defense_(void)
-// {
-//     Serial.println("Defense Process Start");
-//     general.setup();
-//     while(true)
-//     {
-//         if(myswitch.check_toggle()==0) // タクトスイッチが押されたら
-//         {
-//             mybuzzer.start(1000, 200);
-//             MyUI(1);
-//         }
-//         }
-//     }
-
+void Defense::defense_(void){
+    Serial.println("Defense Process Start");
+    general.setup();
+    while(true){
+        if(myswitch.check_toggle()==0){
+            mybuzzer.start(1000, 200);
+            while(true){
+                line.serial_print();
+                    for (uint8_t i = 0; i < 50; i++) {
+                        Serial.println();
+                    }
+                }
+            }
+        }
+    }
 
 // void Defense::MyUI(int mode){
 //     mode=0;
