@@ -29,6 +29,7 @@
 // };
 
 
+<<<<<<< HEAD
 // class Defense {
 //     public:
 //         void setup(void);
@@ -43,3 +44,19 @@
 //     void MyUI(int mode);
 //     void MyUI_clear()
 // };
+=======
+class Defense {
+    public:
+        void setup(void);
+        void defense_(void);
+        void get_vector_Ball(void);
+        void get_vector_Line(void);
+        void get_vector(void) {
+            get_vector_Ball();
+            get_vector_Line();
+        };
+    private:
+    void MyUI(int mode);
+    void MyUI_clear(void);
+};
+>>>>>>> c1bb9ef91a6873f0426ff32145f431e7fab70254
