@@ -5,8 +5,6 @@
 #include "Process.h"
 #include "Defense.h"
 
-LINE line; // ← これを追加
-
 void setup() {
     general.setup();
     general.startup();
