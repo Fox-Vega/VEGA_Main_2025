@@ -11,9 +11,7 @@
 // #include <string.h>
 // #include <Line.h>
 
-// #define defence defense//スペルミス多いのでね、
-// #define Defence Defense//一応、
-// #define DEFENCE DEFENSE//作っておこうかと。
+#define DEFENCE DEFENSE//作っておこうかと。
 
 // #define linedist 10
 // #define linecentor 0.1

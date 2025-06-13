@@ -3,6 +3,9 @@
 #include "Output.h"
 #include "AIP.h"
 #include "Process.h"
+#include "Defense.h"
+
+LINE line; // ← これを追加
 
 void setup() {
     general.setup();
@@ -16,10 +19,8 @@ void loop() {
         if (general.get_mode() == 1) {
             attack.attack_();
         } else if (general.get_mode() == 2) {
-            // Serial.println("defence selected");
-            // defence.defense_();
-            // Serial.println("defence end");
-            mymotor.run(0, 100, 0);
+            defense.defense_();
+            Serial.println("defense end");
         }
     } else if (general.get_mode() == 3) {
         test.test_();

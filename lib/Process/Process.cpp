@@ -2,5 +2,5 @@
 #include <Defense.h>
 
 Attack attack;
-// Defense defense;
+Defense defense;
 Test test;
