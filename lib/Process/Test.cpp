@@ -198,9 +198,9 @@ void Test::processing() {
         Serial.print(0);
         Serial.print(",");
     } else {
-        Serial.print(myvector.get_x());
+        Serial.print(myvector.get_x() * 0.5);
         Serial.print(",");
-        Serial.print(-myvector.get_y());
+        Serial.print(-myvector.get_y() * 0.5);
         Serial.print(",");
     }
     attack.attack_();
