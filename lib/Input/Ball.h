@@ -15,7 +15,7 @@ class BALL {
         const int ballvalue_offset = 30;
         const int detection_border = 3; //反応ボーダー
         const int max_value = 30 * ballvalue_offset;
-        const int filter_size = 7;
+        const int filter_size = 20;
         int history[5] = {0};
 
         int value[16];
