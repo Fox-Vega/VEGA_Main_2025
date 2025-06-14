@@ -11,8 +11,6 @@
 #include <string.h>
 #include <Line.h>
 
-#define DEFENCE DEFENSE//作っておこうかと。
-
 #define linedist 10
 #define linecentor 0.1
 

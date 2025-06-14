@@ -19,19 +19,6 @@ class LINE {
         int get_magnitude();//センサの距離を取る
         bool read();//センサの状態を読み取る（true:ラインあり, false:ラインなし
         void serial_print(void);
-        int calculate_deg(char mode, int num1, int num2);//角度計算
-            /*
-            使い方
-            a:加算[num1+num2] ex) 240+230=10
-            s:減算[num1-num2] ex) 30-45=345
-            r:反転[reverse num1] ex)30→150  [-180]
-            A:平均[num1+num2/2] ex) 240+30=135
-            ※文字は''で囲ってね
-            */
-        int cal_deg(char mode, int num1, int num2){return calculate_deg(mode, num1, num2);}//角度計算（関数の中で関数呼び出してるから速度が必要なときにはわざわざ上を入力した方が良いかも）
-            /*
-            関数の中で関数呼び出してるから速度が必要なときにはわざわざ上を入力した方が良いかも
-            */
         //==============================
     private:
             const int selectA = 22;
@@ -46,8 +33,6 @@ class LINE {
             #define NUMLines 24
             const int sensordist = 22;
             #define lineDetect 500
-            #define printf_s SERIAL_PRINTF
-            #define SERIAL_PRINTF(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
         // バイナリ配列（縦3列）
         const int BinaryNum[24][3] = {
             {0,0,0},{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1},

@@ -1,21 +1,20 @@
 #include "Defense.h"
 #include "Input.h"
 #include "Output.h"
-
+#include "okomeonigiri.h"
 extern LINE line;
 
 data Dball;
 data Dline;
 
-// //printf
-// #define printf_s SERIAL_PRINTF
-// #define SERIAL_PRINTF(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+//printf
 
 // void Defense::setup(void)
 // {
 // }
 
 void Defense::defense_(void){
+    mybuzzer.start(1000, 200);
     Serial.println("Defense Process Start");
     general.setup();
     while(true){
@@ -23,13 +22,13 @@ void Defense::defense_(void){
             mybuzzer.start(1000, 200);
             while(true){
                 line.serial_print();
-                    for (uint8_t i = 0; i < 50; i++) {
-                        Serial.println();
-                    }
+                for (uint8_t i = 0; i < 25; i++) {
+                    Serial.println();
                 }
             }
         }
     }
+}
 
 // void Defense::MyUI(int mode){
 //     mode=0;

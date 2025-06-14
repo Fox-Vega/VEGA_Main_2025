@@ -1,7 +1,7 @@
 #include <Line.h>
 #include <Input.h>
 #include <Output.h>
-
+#include "okomeonigiri.h"
 //TODO消した　あいつはいいやつだったよ…（？）
 
 void LINE::setup(void) {
@@ -13,10 +13,23 @@ void LINE::setup(void) {
     pinMode(readPin3, INPUT);
 }
 
-void LINE::serial_print(void){printf_s("%d",get_azimuth());}
+void LINE::serial_print(void){
+    printf_s("line          %d\n",read());
+    //printf_s("%d",get_azimuth());
+    // for(size_t i = 0; i < NUMLines; i++) {
+    //     if(line_status[i]) {
+    //         printf_s("Line %d: %d \n", i, line_memory[i]);
+    //     } else {
+    //         printf_s("Line %d: No Line \n", i);
+    //     }
+    // }
+}
 
 int LINE::get_azimuth(void) {
     read();
+    if(read() == false) { // ラインが検出されていない場合
+        return 999; // エラー値を返す
+    }
     for(size_t i = 0; i < 4; i++) line_detect[i] = 999; // ライン検出配列の初期化
     size_t linecount = 0;
     int linemem[NUMLines] = {0};
@@ -44,18 +57,27 @@ int LINE::get_magnitude(void){
     if(count == 0) return 999; // ラインが検出されていない場合
     switch(count){
         case 1:
+        return sensordist;
         break;
         case 2:
+        return get_dist(line_detect[0], line_detect[1], sensordist);
         break;
         case 3:
+        // int temp1[2];
+        // int temp2[2];
+        // temp1[0] = get_dist(line_detect[0], line_detect[1], sensordist);
+        // temp1[1] = get_dist(line_detect[1], line_detect[2], sensordist);
+        // temp2[0] = cal_deg('A', line_detect[0], line_detect[1]);
+        // temp2[1] = cal_deg('A', line_detect[1], line_detect[2]);
         break;
         case 4:
         break;
         case 5:
         break;
         default:
-            return 999; // ラインが検出されていない場合
+        return 999; // ラインが検出されていない場合
     }
+    return 999;
 }
 
 void LINE::get_claster(void){
@@ -79,7 +101,7 @@ void LINE::get_claster(void){
 
 int LINE::get_dist(int deg1,int deg2,int dist){
     int theata=cal_deg('s',cal_deg('A',deg1,deg2),deg1);
-    return cos(radians(theata))*sensordist;
+    return cos(radians(theata))*dist;
 }
 
 bool LINE::read(void){
@@ -90,7 +112,7 @@ bool LINE::read(void){
         line_memory[i] = 0;
     }
 
-    for (size_t i =0 ; i<2;i++){
+    for (size_t i =0 ; i<3;i++){
         for(size_t j=0; j<NUMLines; j++){
 
             uint8_t pin =0;//ピン保存用
@@ -111,17 +133,10 @@ bool LINE::read(void){
     }
     bool line_bool = false; // ライン検出フラグの初期化
         for (size_t i = 0; i < NUMLines; i++) {
-            if (line_value[i] = 2) { // 2回以上検出されたらラインあり
+            if (line_value[i] > 1) { // 2回以上検出されたらラインあり
                 line_status[i] = true;
                 line_bool = true;
             }else{line_status[i] = false;}
         }
     return line_bool; // ラインが検出されたかどうかを返す
 }
-
-int LINE::calculate_deg(char mode, int num1, int num2){switch(mode){
-        case 'a': return (num1+num2>=360)?(num1+num2)%360:(num1+num2);
-        case 'r': return (num1+180)%360;
-        case 's': return (num1-num2<0)?(num1-num2+360)%360:(num1-num2);
-        case 'A': return ((num1+num2)/2>=360)?((num1+num2)/2)%360:((num1+num2)/2);
-        default: return 999;}}
