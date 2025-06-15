@@ -11,30 +11,25 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
-    motor_azimuth = movement_azimuth;
-    motor_magnitude = power_;
-    motor_stat = false;
+    motor_magnitude = power_ * pwmscale;
+    motor_stat = true;
     dir_azimuth %= 360;
     int difix = 0;
     if (motor_stabilization) {
         difix = mymotor.difix(dir_azimuth);
     }
-    // int difix = 0;
-    // int azimuth = gam.get_azimuth();
 
     for (int i = 0; i < 4; i++) {
         if (motor_move == 1) {
-            // int raw = movement_azimuth + azimuth - motor_degrees[i]; //方向に関わらず同じ方向に進むようにする場合はこの行を使って、下の行を消す
             int raw = movement_azimuth - motor_degrees[i];
             int azimuth_motor = raw % 360;
 
             // 座標計算
             myvector.get_cord(azimuth_motor, power_);
             float power = myvector.get_x();
-            // if (old_motor_stat == 1) {
-            power += difix;
-            // }
-            power *= pwmscale;
+            if (old_motor_stat == 1) {
+                power += difix;
+            }
             power = constrain(power, -pwmlimit, pwmlimit);
             if (power >= 0) {
                 analogWrite(motor_PIN1[i], 0);
@@ -43,7 +38,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
                 analogWrite(motor_PIN1[i], abs(power));
                 analogWrite(motor_PIN2[i], 0); 
             }
-            if (power < motor_border) {
+            if (abs(power) < motor_border) {
                 motor_stat = false;
             }
         }
