@@ -1,11 +1,9 @@
 //line.h
 
 #pragma once
-
-#include <Output.h>
+#define RCJJ_VEGA 1
+#include"okomeonigiri.h"
 #include <Arduino.h>
-#include <AIP.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 

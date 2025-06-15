@@ -11,6 +11,7 @@
 #include <limits.h>
 
 #ifdef RCJJ_VEGA
+
 #include "AIP.h"
 #include "General.h"
 #include "MyVector.h"
@@ -26,10 +27,6 @@
 #include "Other.h"
 #include "Output.h"
 
-#include "Attack.h"
-#include "Defense.h"
-#include "Process.h"
-#include "Test.h"
 #endif
 
 
@@ -61,23 +58,7 @@
 #define get_min(a, b) ((a) < (b) ? (a) : (b))
 #define get_max(a, b) ((a) > (b) ? (a) : (b))
 
-int calculate_deg(char mode, int num1, int num2){
-    switch(mode){
-        case 'a': return (num1+num2>=360)?(num1+num2)%360:(num1+num2); // 加算
-        case 'r': return (num1+180)%360; // 180度回転
-        case 's': return (num1-num2<0)?(num1-num2+360)%360:(num1-num2); // 減算
-        case 'A': return ((num1+num2)/2>=360)?((num1+num2)/2)%360:((num1+num2)/2); // 平均
-        case 'm': return (num1<num2)?num1:num2; // 最小値
-        case 'M': return (num1>num2)?num1:num2; // 最大値
-        case 'd': return (num1-num2>=0)?(num1-num2):(num2-num1); // 差の絶対値
-        case 'n': return (num1%360+360)%360; // 正規化
-        case 'z': return (450-num1)%360; // azimuth→theta変換（num1のみ使用）
-        case 't': return (450-num1)%360; // theta→azimuth変換（num1のみ使用）
-        case 'q': return (num1+90)%360; // 90度回転（num1のみ使用）
-        case 'Q': return (num1+270)%360; // -90度回転（num1のみ使用）
-        default: return 999;
-    }
-}
+int calculate_deg(char mode, int num1, int num2);
 /*
 mode
 'a' : 加算[num1+num2] ex) 240+230=10
@@ -94,5 +75,5 @@ mode
 'Q' : -90度回転[num1のみ使用] ex) 45+270=315
 default: 999
 */
-int cal_deg(char mode, int num1, int num2){return calculate_deg(mode, num1, num2);}
+#define cal_deg calculate_deg
 #endif //OKOMEONIGIRI_H

@@ -30,6 +30,23 @@ void Defense::defense_(void){
     }
 }
 
+int calculate_deg(char mode, int num1, int num2){
+    switch(mode){
+        case 'a': return (num1+num2>=360)?(num1+num2)%360:(num1+num2); // 加算
+        case 'r': return (num1+180)%360; // 180度回転
+        case 's': return (num1-num2<0)?(num1-num2+360)%360:(num1-num2); // 減算
+        case 'A': return ((num1+num2)/2>=360)?((num1+num2)/2)%360:((num1+num2)/2); // 平均
+        case 'm': return (num1<num2)?num1:num2; // 最小値
+        case 'M': return (num1>num2)?num1:num2; // 最大値
+        case 'd': return (num1-num2>=0)?(num1-num2):(num2-num1); // 差の絶対値
+        case 'n': return (num1%360+360)%360; // 正規化0
+        case 'z': return (450-num1)%360; // azimuth→theta変換（num1のみ使用）
+        case 't': return (450-num1)%360; // theta→azimuth変換（num1のみ使用）
+        case 'q': return (num1+90)%360; // 90度回転（num1のみ使用）
+        case 'Q': return (num1+270)%360; // -90度回転（num1のみ使用）
+        default: return 999;
+}}
+
 // void Defense::MyUI(int mode){
 //     mode=0;
 //     int tact=0;
