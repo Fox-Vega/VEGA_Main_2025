@@ -45,7 +45,7 @@ void Attack::b_p1() {
 }
 
 void Attack::b_p2() {
-    movedir = ball.get_azimuth() + degrees(asin(brr / ball.get_magnitude()));
+    movedir = ball.get_azimuth() + degrees(asin(constrain(brr / ball.get_magnitude(), -1, 1)));
     movedir %= 360;
     mymotor.run(movedir, b_r2speed, 0);
 }
