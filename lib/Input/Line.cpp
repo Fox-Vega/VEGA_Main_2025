@@ -1,6 +1,5 @@
-#include <Line.h>
-#include <Input.h>
-#include <Output.h>
+#define RCJJ_VEGA
+#include "line.h"
 #include "okomeonigiri.h"
 //TODO消した　あいつはいいやつだったよ…（？）
 
@@ -34,15 +33,13 @@ int LINE::get_azimuth(void) {
     size_t linecount = 0;
     int linemem[NUMLines] = {0};
     int linemem2[NUMLines] = {0};
-    for(size_t i = 0; i < NUMLines; i++) if(line_status[i] == true) linecount++;
-    for(size_t i = 0; i < NUMLines; i++) linemem[i] = line_memory[i];
+    floop(NUMLines)if(line_status[i] == true) linecount++;
+    floop(NUMLines)linemem[i] = line_memory[i];
     for(size_t i = 0; i < NUMLines; i++) {
         // linecountが1以下の場合はループしないようにする
         size_t loop_count = (linecount > 1) ? (linecount - 1) : 0;
-        for(size_t j = 0; j < loop_count; j++)
-            linemem2[j] = calculate_deg('A', linemem[j], linemem[j+1]);
-        for(size_t j = 0; j < NUMLines; j++)
-            linemem[j] = linemem2[j];
+        for(size_t j = 0; j < loop_count; j++)inemem2[j] = calculate_deg('A', linemem[j], linemem[j+1]);
+        for(size_t j = 0; j < NUMLines; j++)linemem[j] = linemem2[j];
         if(linecount > 0) linecount--;
     }
     return linemem[0];

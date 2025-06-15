@@ -4,12 +4,34 @@
 //コピペ用
 //==================================================
 //==============================
-//#include "okomeonigiri.h"
 
 //  OKOMEONIGIRI.h
 //  Created by okomeonigiri
 #include <stdio.h>
 #include <limits.h>
+
+#ifdef RCJJ_VEGA
+#include "AIP/AIP.h"
+#include "AIP/General.h"
+#include "AIP/MyVector.h"
+#include "AIP/Timer.h"
+
+#include "Input/Ball.h"
+#include "Input/GAM.h"
+#include "Input/Input.h"
+#include "Input/Line.h"
+#include "Input/MySwitch.h"
+
+#include "Output/Motor.h"
+#include "Output/Other.h"
+#include "Output/Output.h"
+
+#include "Process/Attack.h"
+#include "Process/Defense.h"
+#include "Process/Process.h"
+#include "Process/Test.h"
+#endif
+
 
 
 //printf format for arudino Serial print
@@ -32,7 +54,7 @@
 //==================================================
 
 //A for loop that allows you to easily use a for loop with just a single number.
-#define floop(i) for(int i = 0; i < (i); ++i)
+#define floop(n) for(size_t i = 0; i < n; ++i)
 //A floop that allows you to use any variable name you like as the loop counter.
 #define floop_id(var, n) for(int var = 0; var < (n); ++var)
 
