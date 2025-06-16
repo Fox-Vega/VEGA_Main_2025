@@ -116,6 +116,8 @@ bool LINE::read(void){
         line_value [i] = 0;
         line_memory[i] = 0;
     }
+/*
+//反転
 // // readPin1 (0〜7)
 // digitalWrite(selectA, HIGH);
 // digitalWrite(selectB, HIGH);
@@ -190,133 +192,327 @@ bool LINE::read(void){
 // delay(1);
 
 // // readPin2 (8〜15)
-// digitalWrite(selectA, LOW);
-// digitalWrite(selectB, LOW);
-// digitalWrite(selectC, LOW);
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
 // delay(1);
 // line_memory[8] = analogRead(readPin2);
 
 // delay(1);
 
-// digitalWrite(selectA, HIGH);
-// digitalWrite(selectB, LOW);
-// digitalWrite(selectC, LOW);
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
 // delay(1);
 // line_memory[9] = analogRead(readPin2);
 
 // delay(1);
 
-// digitalWrite(selectA, LOW);
-// digitalWrite(selectB, HIGH);
-// digitalWrite(selectC, LOW);
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
 // delay(1);
 // line_memory[10] = analogRead(readPin2);
 
 // delay(1);
 
-// digitalWrite(selectA, HIGH);
-// digitalWrite(selectB, HIGH);
-// digitalWrite(selectC, LOW);
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
 // delay(1);
 // line_memory[11] = analogRead(readPin2);
 
 // delay(1);
 
-// digitalWrite(selectA, LOW);
-// digitalWrite(selectB, LOW);
-// digitalWrite(selectC, HIGH);
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
 // delay(1);
 // line_memory[12] = analogRead(readPin2);
 
 // delay(1);
 
-// digitalWrite(selectA, HIGH);
-// digitalWrite(selectB, LOW);
-// digitalWrite(selectC, HIGH);
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
 // delay(1);
 // line_memory[13] = analogRead(readPin2);
 
 // delay(1);
 
-// digitalWrite(selectA, LOW);
-// digitalWrite(selectB, HIGH);
-// digitalWrite(selectC, HIGH);
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
 // delay(1);
 // line_memory[14] = analogRead(readPin2);
 
 // delay(1);
 
-// digitalWrite(selectA, HIGH);
-// digitalWrite(selectB, HIGH);
-// digitalWrite(selectC, HIGH);
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
 // delay(1);
 // line_memory[15] = analogRead(readPin2);
 
 // delay(1);
 
 // // readPin3 (16〜23)
-// digitalWrite(selectA, LOW);
-// digitalWrite(selectB, LOW);
-// digitalWrite(selectC, LOW);
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
 // delay(1);
 // line_memory[16] = analogRead(readPin3);
 
 // delay(1);
 
-// digitalWrite(selectA, HIGH);
-// digitalWrite(selectB, LOW);
-// digitalWrite(selectC, LOW);
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
 // delay(1);
 // line_memory[17] = analogRead(readPin3);
 
 // delay(1);
 
-// digitalWrite(selectA, LOW);
-// digitalWrite(selectB, HIGH);
-// digitalWrite(selectC, LOW);
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
 // delay(1);
 // line_memory[18] = analogRead(readPin3);
 
 // delay(1);
 
-// digitalWrite(selectA, HIGH);
-// digitalWrite(selectB, HIGH);
-// digitalWrite(selectC, LOW);
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
 // delay(1);
 // line_memory[19] = analogRead(readPin3);
 
 // delay(1);
 
-// digitalWrite(selectA, LOW);
-// digitalWrite(selectB, LOW);
-// digitalWrite(selectC, HIGH);
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
 // delay(1);
 // line_memory[20] = analogRead(readPin3);
 
 // delay(1);
 
-// digitalWrite(selectA, HIGH);
-// digitalWrite(selectB, LOW);
-// digitalWrite(selectC, HIGH);
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
 // delay(1);
 // line_memory[21] = analogRead(readPin3);
 
 // delay(1);
 
-// digitalWrite(selectA, LOW);
-// digitalWrite(selectB, HIGH);
-// digitalWrite(selectC, HIGH);
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
 // delay(1);
 // line_memory[22] = analogRead(readPin3);
 
 // delay(1);
 
-// digitalWrite(selectA, HIGH);
-// digitalWrite(selectB, HIGH);
-// digitalWrite(selectC, HIGH);
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
 // delay(1);
 // line_memory[23] = analogRead(readPin3);
 
+// delay(1);
+*/
+// readPin1 (0〜7)
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[0] = analogRead(readPin1);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[1] = analogRead(readPin1);
+
+delay(1);
+
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[2] = analogRead(readPin1);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[3] = analogRead(readPin1);
+
+delay(1);
+
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[4] = analogRead(readPin1);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[5] = analogRead(readPin1);
+
+delay(1);
+
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[6] = analogRead(readPin1);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[7] = analogRead(readPin1);
+
+delay(1);
+
+// readPin2 (8〜15)
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[8] = analogRead(readPin2);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[9] = analogRead(readPin2);
+
+delay(1);
+
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[10] = analogRead(readPin2);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[11] = analogRead(readPin2);
+
+delay(1);
+
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[12] = analogRead(readPin2);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[13] = analogRead(readPin2);
+
+delay(1);
+
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[14] = analogRead(readPin2);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[15] = analogRead(readPin2);
+
+delay(1);
+
+// readPin3 (16〜23)
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[16] = analogRead(readPin3);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[17] = analogRead(readPin3);
+
+delay(1);
+
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[18] = analogRead(readPin3);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, LOW);
+delay(1);
+line_memory[19] = analogRead(readPin3);
+
+delay(1);
+
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[20] = analogRead(readPin3);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, LOW);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[21] = analogRead(readPin3);
+
+delay(1);
+
+digitalWrite(selectA, LOW);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[22] = analogRead(readPin3);
+
+delay(1);
+
+digitalWrite(selectA, HIGH);
+digitalWrite(selectB, HIGH);
+digitalWrite(selectC, HIGH);
+delay(1);
+line_memory[23] = analogRead(readPin3);
 floop(NUMLines)if(line_memory[i] >= 500) {
         line_value[i]++;
         line_status[i] = true; // ラインが検出された場合
