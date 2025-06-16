@@ -27,9 +27,9 @@ void LINE::read() {
                 digitalWrite(selectPIN[1], HIGH);
             }
             if (Reader[i][2] == 0) {
-                digitalWrite(selectPIN[3], LOW);
+                digitalWrite(selectPIN[2], LOW);
             } else {
-                digitalWrite(selectPIN[3], HIGH);
+                digitalWrite(selectPIN[2], HIGH);
             }
 
             if (analogRead(j) > detection_border) {
