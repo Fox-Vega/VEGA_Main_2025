@@ -5,8 +5,6 @@
 #include "Process.h"
 #include "Defense.h"
 
-LINE line;
-
 void setup() {
     general.setup();
     general.startup();
@@ -19,7 +17,8 @@ void loop() {
         if (general.get_mode() == 1) {
             attack.attack_();
         } else if (general.get_mode() == 2) {
-            defense.defense_();
+            while(1){
+            defense.defense_();}
             Serial.println("defense end");
         }
     } else if (general.get_mode() == 3) {
