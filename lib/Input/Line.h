@@ -3,6 +3,7 @@
 #pragma once
 #define RCJJ_VEGA 1
 #include"okomeonigiri.h"
+#include"Output.h"
 #include <Arduino.h>
 #include <stdlib.h>
 #include <math.h>

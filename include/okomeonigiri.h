@@ -10,27 +10,6 @@
 #include <stdio.h>
 #include <limits.h>
 
-#ifdef RCJJ_VEGA
-
-#include "AIP.h"
-#include "General.h"
-#include "MyVector.h"
-#include "Timer.h"
-
-#include "Ball.h"
-#include "GAM.h"
-#include "Input.h"
-#include "Line.h"
-#include "MySwitch.h"
-
-#include "Motor.h"
-#include "Other.h"
-#include "Output.h"
-
-#endif
-
-
-
 //printf format for arudino Serial print
 //==================================================
 
