@@ -12,7 +12,10 @@ void LINE::setup(void) {
 }
 
 void LINE::serial_print(void){
-    printf_s("line          %d\n",read());
+    read();
+    get_claster();
+    mypixel.closest(get_azimuth(),00,255,100,1);
+    printf_s("line%d          %d\n",read(),get_azimuth);
     //printf_s("%d",get_azimuth());
     // for(size_t i = 0; i < NUMLines; i++) {
     //     if(line_status[i]) {
@@ -59,12 +62,12 @@ int LINE::get_magnitude(void){
         return get_dist(line_detect[0], line_detect[1], sensordist);
         break;
         case 3:
-        // int temp1[2];
-        // int temp2[2];
-        // temp1[0] = get_dist(line_detect[0], line_detect[1], sensordist);
-        // temp1[1] = get_dist(line_detect[1], line_detect[2], sensordist);
-        // temp2[0] = cal_deg('A', line_detect[0], line_detect[1]);
-        // temp2[1] = cal_deg('A', line_detect[1], line_detect[2]);
+        int temp1[2];
+        int temp2[2];
+        temp1[0] = get_dist(line_detect[0], line_detect[1], sensordist);
+        temp1[1] = get_dist(line_detect[1], line_detect[2], sensordist);
+        temp2[0] = cal_deg('A', line_detect[0], line_detect[1]);
+        temp2[1] = cal_deg('A', line_detect[1], line_detect[2]);
         break;
         case 4:
         break;
@@ -80,7 +83,7 @@ void LINE::get_claster(void){
     int cluster_deg=0;
     count = 0;
     for (size_t i = 0; i < NUMLines; i++){
-        if(line_status[i])
+        if(line_status[i]){
         for(size_t j=i; j<NUMLines; j++){
             if(line_status[j+1]){
                 cluster_deg = calculate_deg('A', cluster_deg, Line_deg_list_24[j+1]);
@@ -92,6 +95,7 @@ void LINE::get_claster(void){
                 break;
             }
         }
+    }
     }
 }
 
@@ -129,7 +133,7 @@ bool LINE::read(void){
     }
     bool line_bool = false; // ライン検出フラグの初期化
         for (size_t i = 0; i < NUMLines; i++) {
-            if (line_value[i] > 1) { // 2回以上検出されたらラインあり
+            if (line_value[i] > 0) { // 2回以上検出されたらラインあり
                 line_status[i] = true;
                 line_bool = true;
             }else{line_status[i] = false;}
