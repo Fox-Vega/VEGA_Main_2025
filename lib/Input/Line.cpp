@@ -1,5 +1,6 @@
 #define RCJJ_VEGA 1
 #include "line.h"
+#include"okomeonigiri.h"
 //TODO消した　あいつはいいやつだったよ…（？）
 
 void LINE::setup(void) {
@@ -14,8 +15,8 @@ void LINE::setup(void) {
 void LINE::serial_print(void){
     read();
     get_claster();
-    mypixel.closest(get_azimuth(),00,255,100,1);
-    printf_s("line%d          %d\n",read(),get_azimuth);
+    mypixel.closest(get_azimuth(),0,255,100,1);
+    printf_s("line%d          %d\n",read(),get_azimuth());
     //printf_s("%d",get_azimuth());
     // for(size_t i = 0; i < NUMLines; i++) {
     //     if(line_status[i]) {
@@ -104,42 +105,239 @@ int LINE::get_dist(int deg1,int deg2,int dist){
     return cos(radians(theata))*dist;
 }
 
-bool LINE::read(void){
 
-    for(size_t i=0; i<NUMLines; i++){//初期化
+
+
+
+bool LINE::read(void){
+    // 初期化
+    for(size_t i=0; i<NUMLines; i++){
         line_status[i] = false;
         line_value [i] = 0;
         line_memory[i] = 0;
     }
+// // readPin1 (0〜7)
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[0] = analogRead(readPin1);
 
-    for (size_t i =0 ; i<3;i++){
-        for(size_t j=0; j<NUMLines; j++){
 
-            uint8_t pin =0;//ピン保存用
-                switch (j%3) {//ピン選択
-                    case 0: pin = readPin1; break;
-                    case 1: pin = readPin2; break;
-                    case 2: pin = readPin3; break;}
+// delay(1);
 
-            // 選択ピンに出力
-            digitalWrite(selectA, BinaryNum[j][0]);
-            digitalWrite(selectB, BinaryNum[j][1]);
-            digitalWrite(selectC, BinaryNum[j][2]);
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[1] = analogRead(readPin1);
 
-            if(analogRead(pin) > lineDetect)line_value[j]++;
 
-            line_memory[j] = analogRead(pin);//ラインの値をそのまま保存
-        }
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[2] = analogRead(readPin1);
+
+
+// delay(1);
+
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[3] = analogRead(readPin1);
+
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[4] = analogRead(readPin1);
+
+
+// delay(1);
+
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[5] = analogRead(readPin1);
+
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[6] = analogRead(readPin1);
+
+
+// delay(1);
+
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[7] = analogRead(readPin1);
+
+
+// delay(1);
+
+// // readPin2 (8〜15)
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[8] = analogRead(readPin2);
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[9] = analogRead(readPin2);
+
+// delay(1);
+
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[10] = analogRead(readPin2);
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[11] = analogRead(readPin2);
+
+// delay(1);
+
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[12] = analogRead(readPin2);
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[13] = analogRead(readPin2);
+
+// delay(1);
+
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[14] = analogRead(readPin2);
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[15] = analogRead(readPin2);
+
+// delay(1);
+
+// // readPin3 (16〜23)
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[16] = analogRead(readPin3);
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[17] = analogRead(readPin3);
+
+// delay(1);
+
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[18] = analogRead(readPin3);
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, LOW);
+// delay(1);
+// line_memory[19] = analogRead(readPin3);
+
+// delay(1);
+
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[20] = analogRead(readPin3);
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, LOW);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[21] = analogRead(readPin3);
+
+// delay(1);
+
+// digitalWrite(selectA, LOW);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[22] = analogRead(readPin3);
+
+// delay(1);
+
+// digitalWrite(selectA, HIGH);
+// digitalWrite(selectB, HIGH);
+// digitalWrite(selectC, HIGH);
+// delay(1);
+// line_memory[23] = analogRead(readPin3);
+
+floop(NUMLines)if(line_memory[i] >= 500) {
+        line_value[i]++;
+        line_status[i] = true; // ラインが検出された場合
+        mypixel.closest(Line_deg_list_24[i],0,0,255,1); // ラインの角度を表示
+    } else {
+        line_status[i] = false; // ラインが検出されなかった場合
     }
-    bool line_bool = false; // ライン検出フラグの初期化
-        for (size_t i = 0; i < NUMLines; i++) {
-            if (line_value[i] > 0) { // 2回以上検出されたらラインあり
-                line_status[i] = true;
-                line_bool = true;
-            }else{line_status[i] = false;}
-        }
-    return line_bool; // ラインが検出されたかどうかを返す
+
+
+    // 読み取りには関係ないゾーン
+    bool line_bool = false;
+    for(int i=0; i<NUMLines; i++) if(line_status[i]) line_bool = true;
+    for(int j=0; j<NUMLines; j++) { printf_s("%d  ",line_memory[j]); }
+    printf_s("\n");
+    for(int j=0; j<NUMLines; j++) { printf_s("%d  ",line_status[j]); }
+    printf_s("\n");
+    printf_s("\n");
+    return line_bool;
+    return 999;
 }
+
 int calculate_deg(char mode, int num1, int num2){
     switch(mode){
         case 'a': return (num1+num2>=360)?(num1+num2)%360:(num1+num2); // 加算

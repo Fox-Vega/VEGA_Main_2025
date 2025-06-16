@@ -70,7 +70,6 @@ void Test::test_() {
 
 void Test::input() {
     ball.read();
-    line.read();
     mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_tact() == 2){
         gam.dir_reset();
@@ -95,7 +94,7 @@ void Test::input() {
         b = 0;
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
-    mypixel.closest(line.get_azimuth(), 0, 255, 0, 1);
+    line.read();
 }
 
 void Test::motor() {

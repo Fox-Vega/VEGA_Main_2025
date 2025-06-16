@@ -1,8 +1,7 @@
 //line.h
 
 #pragma once
-#define RCJJ_VEGA 1
-#include"okomeonigiri.h"
+
 #include"Output.h"
 #include <Arduino.h>
 #include <stdlib.h>
@@ -24,8 +23,11 @@ class LINE {
             const int selectB = 24;
             const int selectC = 26;
 
-            #define readPin1 A13
-            #define readPin2 A11
+            // #define readPin1 A13
+            // #define readPin2 A11
+            // #define readPin3 A9
+            #define readPin1 A11
+            #define readPin2 A13
             #define readPin3 A9
 
             //ラインの数(変えるか…？)
