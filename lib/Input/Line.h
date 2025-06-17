@@ -20,6 +20,7 @@ class LINE {
         byte nerror[4];
         int pack_degs[4];
         const int line_r = 11;
+        int line_values[24];
         int line_stat_[24];
         int line_stat[24];
         const byte Reader[8][3] = {
