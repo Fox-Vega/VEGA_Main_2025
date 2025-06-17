@@ -11,10 +11,10 @@ void LINE::setup(void) {
 
 void LINE::read() {
     //リセット
-    if (byte i = 0; i < 3; i++) {
+    if (byte i = 0; i < 4; i++) {
         pack_degs[i] = 0;
     }
-    for (int i = 0; i < 23; i++) {
+    for (int i = 0; i < 24; i++) {
         line_stat_[i] = 0;
         line_stat[i] = 0;
     }
