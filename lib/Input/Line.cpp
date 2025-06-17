@@ -38,8 +38,6 @@ void LINE::read() {
 
                 line_values[(j * 8) + i] = analogRead(j);
                 if (line_values[(j * 8) + i] > detection_border) {
-                    byte j_ = j;
-                    byte i_ = i;
                     line_stat_[(j * 8) + i] += 1;
                     if (line_stat_[(j * 8) + i] == 2) {
                         line_stat[(j * 8) + i] = 1;
