@@ -12,12 +12,16 @@ class LINE {
         int get_type();
 
     private:
-        const int detection_border = 400;
+        const int detection_border = 300;
 
+        int line_azimuth;
+        int line_magnitude;
         const uint8_t selectPIN[3] = {22, 24, 26};
         const uint8_t outputPIN[3] = {A11, A13, A9};
+        int smallest = 0;
+        int smallest_pack = 999;
         int line_type;
-        byte nerror[4];
+        int nerror[4];
         int pack_degs[4];
         const int line_r = 11;
         int line_values[24];
