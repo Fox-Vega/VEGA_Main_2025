@@ -35,8 +35,9 @@ void LINE::read() {
                 } else {
                     digitalWrite(selectPIN[2], HIGH);
                 }
-  
-                if (analogRead(j) > detection_border) {
+
+                line_values[(j * 8) + i] = analogRead(j);
+                if (line_values[(j * 8) + i] > detection_border) {
                     byte j_ = j;
                     byte i_ = i;
                     line_stat_[(j * 8) + i] += 1;
@@ -156,9 +157,9 @@ void LINE::read() {
     }
 }
 
-//int LINE::get_value(byte lineNUM) {
-//    return 
-//}
+int LINE::get_value(byte lineNUM) {
+    return line_values[lineNUM];
+}
 
 int LINE::get_azimuth() {
     return line_azimuth;
