@@ -14,6 +14,9 @@ class LINE {
 
         const uint8_t selectPIN[3] = {22, 24, 26};
         const uint8_t outputPIN[3] = {A11, A13, A9};
+        int line_type;
+        byte nerror[4];
+        byte pack;
         int pack_degs[4];
         const int line_r = 11;
         int line_stat_[24];
