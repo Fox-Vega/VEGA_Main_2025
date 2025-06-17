@@ -106,6 +106,7 @@ void LINE::read() {
 
         int total_x = 0;
         int total_y = 0;
+        
         if (pack_NUM + 1 == 2) {
             line_azimuth = line_deg;
             line_magnitude = line_dist;
@@ -151,5 +152,22 @@ void LINE::read() {
     } else {
         line_azimuth = 0;
         line_magnitude = 999;
+        line_type = 0;
     }
+}
+
+//int LINE::get_value(byte lineNUM) {
+//    return 
+//}
+
+int LINE::get_azimuth() {
+    return line_azimuth;
+}
+
+int LINE::get_magnitude() {
+    return line_magnitude;
+}
+
+int LINE::get_type() {
+    return line_type;
 }
