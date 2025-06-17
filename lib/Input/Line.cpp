@@ -40,7 +40,8 @@ void LINE::read() {
                     digitalWrite(selectPIN[2], HIGH);
                 }
 
-                line_values[(j * 8) + i] = analogRead(j);
+                line_values[(j * 8) + i] = analogRead(Outputpin[j]
+                    );
                 Serial.print(line_values[(j * 8) + i]);
                 Serial.print("  ");
                 if (line_values[(j * 8) + i] > detection_border) {
