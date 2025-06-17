@@ -76,4 +76,69 @@ void LINE::read() {
             }
         }
     }
+    byte smallest = 0;
+    byte smallest_pack = 999;
+    for (byte i = 0; i < pack_NUM + 1; i++) {
+        nerror[i] = pack_degs[i] % 90;
+        if (nerror[i] > 45) {
+            nerror[i] -= 90;
+        }
+        if (smallest_pack > nerror) {
+            smallest = i;
+            smallest_pack = nerror;
+        }
+    }
+    int point1 = 999; 
+    int point2 = 999; 
+    for (byte i = 0; i < pack_NUM + 1; i++) {
+        if (i != smallest && point1 == 999) {
+            point1 = pack_degs[i];
+        } else if (i != smallest && point2 == 999 && pack_degs[i] != point1) {
+            point2 = pack_degs[i];
+        }
+    }
+    int line_deg = (point1 + point2) / 2;
+    int theta = line_deg - point1;
+    line_dist = degrees(cos(radians(theta * line_r)));
+
+    int total_x = 0;
+    int total_y = 0;
+    if (pack_NUM + 1 == 2) {
+        line_azimuth = line_deg;
+        line_magnitude = line_dist;
+        line_type = 1;
+    } else if (pack_NUM + 1 == 3) {
+        myvector.get_cord(line_deg, line_dist);
+        total_x += myvector.get_x();
+        total_y += myvector.get_y();
+        myvector.get_cord(pack_degs[smallest], line_r);
+        total_x += myvector.get_x();
+        total_y += myvector.get_y();
+
+        line_azimuth = myvector.get_azimuth(total_x, total_y);
+        line_magnitude = myvector.get_magnitude(total_x, total_y);
+    } else if (pack_NUM + 1 == 3) {
+        int point3 = 999; 
+        int point4 = 999; 
+        for (byte i = 0; i < pack_NUM + 1; i++) {
+            if (i != smallest && point3 == 999) {
+                point3 = pack_degs[i];
+            } else if (i != smallest && point4 == 999 && pack_degs[i] != point3) {
+                point4 = pack_degs[i];
+            }
+        }
+        int line2_deg = (point3 + point4) / 2;
+        int theta = line2_deg - point3;
+        line2_dist = degrees(cos(radians(theta * line_r)));
+        
+        myvector.get_cord(line_deg, line_dist);
+        total_x += myvector.get_x();
+        total_y += myvector.get_y();
+        myvector.get_cord(line_deg2, line_dist2);
+        total_x += myvector.get_x();
+        total_y += myvector.get_y();
+
+        line_azimuth = myvector.get_azimuth(total_x , total_y);
+        line_magnitude = myvector.get_magnitude(total_x, total_y);
+    } 
 }
