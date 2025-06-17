@@ -46,6 +46,7 @@ void LINE::read() {
     bool pack_NOW = 0;
     byte pach_NUM = 0;
 
+    //一旦反対周りに処理してグループの初めを見つける
     byte startNUM = 99;
     for (byte i = 23; i > 0; i--) {
         if (line_stat[i] == 0 && startNUM == 99) {
