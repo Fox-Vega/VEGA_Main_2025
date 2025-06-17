@@ -10,29 +10,37 @@ void LINE::setup(void) {
 }
 
 void LINE::read() {
-    if (byte i = 0; i < 4; i++) {
+    //リセット
+    if (byte i = 0; i < 3; i++) {
         pack_degs[i] = 0;
     }
-    for (int i = 0; i < 24; i++) {
+    for (int i = 0; i < 23; i++) {
         line_stat_[i] = 0;
         line_stat[i] = 0;
     }
+
+    //読み取り
     for (int k = 0; k < 2; k++) {
         for (int j = 0; j < 3; j++) { 
-            for (int i = 0; i < 8; i++) {
-                //セレクトピンに出力〜
-                if (Reader[i][0] == 0)digitalWrite(selectPIN[0], LOW)
-                else digitalWrite(selectPIN[0], HIGH);
-                
-                if (Reader[i][1] == 0) digitalWrite(selectPIN[1], LOW);
-                else digitalWrite(selectPIN[1], HIGH);
-                
-                if (Reader[i][2] == 0)digitalWrite(selectPIN[2], LOW);
-                else digitalWrite(selectPIN[2], HIGH);
+            for (int i = 0; i < 7; i++) {
+                if (Reader[i][0] == 0) {
+                    digitalWrite(selectPIN[0], LOW);
+                } else {
+                    digitalWrite(selectPIN[0], HIGH);
+                }
+                if (Reader[i][1] == 0) {
+                    digitalWrite(selectPIN[1], LOW);
+                } else {
+                    digitalWrite(selectPIN[1], HIGH);
+                }
+                if (Reader[i][2] == 0) {
+                    digitalWrite(selectPIN[2], LOW);
+                } else {
+                    digitalWrite(selectPIN[2], HIGH);
+                }
 
-                //アナログピンからリード
                 line_values[(j * 8) + i] = analogRead(j);
-                if (line_values[(j * 8) + i] > detection_border) {//閾値で振るいにかける
+                if (line_values[(j * 8) + i] > detection_border) {
                     line_stat_[(j * 8) + i] += 1;
                     if (line_stat_[(j * 8) + i] == 2) {
                         line_stat[(j * 8) + i] = 1;
@@ -41,11 +49,13 @@ void LINE::read() {
             }
         }
     }
+    
     int total_x = 0;
     int total_y = 0;
     bool pack_NOW = 0;
     byte pach_NUM = 0;
 
+    //グループ分けを始めるセンサー番号決定
     byte startNUM = 99;
     for (byte i = 23; i > 0; i--) {
         if (line_stat[i] == 0 && startNUM == 99) {
@@ -53,6 +63,8 @@ void LINE::read() {
             break;
         }
     }
+
+    //グループ分けをし、グループごとの角度を求める
     for (byte i = startNUM; i < startNUM + 23; i++) {
         byte pLine = i % 24;
         if (line_stat[pLine] == 1) {
@@ -72,19 +84,10 @@ void LINE::read() {
             }
         }
     }
-    if (pack_NUM != 0) {
-        byte smallest = 0;
-        byte smallest_pack = 999;
-        for (byte i = 0; i < pack_NUM + 1; i++) {
-            nerror[i] = pack_degs[i] % 90;
-            if (nerror[i] > 45) {
-                nerror[i] -= 90;
-            }
-            if (smallest_pack > nerror) {
-                smallest = i;
-                smallest_pack = nerror;
-            }
-        }
+
+    
+    if (pack_NUM != 0) { //検知しているしてるかを試す
+        
         int point1 = 999; 
         int point2 = 999; 
         for (byte i = 0; i < pack_NUM + 1; i++) {
@@ -106,6 +109,18 @@ void LINE::read() {
             line_magnitude = line_dist;
             line_type = 1;
         } else if (pack_NUM + 1 == 3) {
+            byte smallest = 0;
+            byte smallest_pack = 999;
+            for (byte i = 0; i < pack_NUM + 1; i++) {
+                nerror[i] = pack_degs[i] % 90;
+                if (nerror[i] > 45) {
+                    nerror[i] -= 90;
+                }
+                if (smallest_pack > nerror) {
+                    smallest = i;
+                    smallest_pack = nerror;
+                }
+            }
             myvector.get_cord(line_deg, line_dist);  
             total_x += myvector.get_x();
             total_y += myvector.get_y();         
@@ -117,7 +132,8 @@ void LINE::read() {
             line_magnitude = myvector.get_magnitude(total_x, total_y);
           
             line_type = 2;
-        } else if (pack_NUM + 1 == 3) {
+            
+        } else if (pack_NUM + 1 == 4) {
             int point3 = 999;   
             int point4 = 999; 
             for (byte i = 0; i < pack_NUM + 1; i++) {
