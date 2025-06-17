@@ -10,34 +10,29 @@ void LINE::setup(void) {
 }
 
 void LINE::read() {
-    if (byte i = 0; i < 3; i++) {
+    if (byte i = 0; i < 4; i++) {
         pack_degs[i] = 0;
     }
-    for (int i = 0; i < 23; i++) {
+    for (int i = 0; i < 24; i++) {
         line_stat_[i] = 0;
         line_stat[i] = 0;
     }
     for (int k = 0; k < 2; k++) {
         for (int j = 0; j < 3; j++) { 
-            for (int i = 0; i < 7; i++) {
-                if (Reader[i][0] == 0) {
-                    digitalWrite(selectPIN[0], LOW);
-                } else {
-                    digitalWrite(selectPIN[0], HIGH);
-                }
-                if (Reader[i][1] == 0) {
-                    digitalWrite(selectPIN[1], LOW);
-                } else {
-                    digitalWrite(selectPIN[1], HIGH);
-                }
-                if (Reader[i][2] == 0) {
-                    digitalWrite(selectPIN[2], LOW);
-                } else {
-                    digitalWrite(selectPIN[2], HIGH);
-                }
+            for (int i = 0; i < 8; i++) {
+                //セレクトピンに出力〜
+                if (Reader[i][0] == 0)digitalWrite(selectPIN[0], LOW)
+                else digitalWrite(selectPIN[0], HIGH);
+                
+                if (Reader[i][1] == 0) digitalWrite(selectPIN[1], LOW);
+                else digitalWrite(selectPIN[1], HIGH);
+                
+                if (Reader[i][2] == 0)digitalWrite(selectPIN[2], LOW);
+                else digitalWrite(selectPIN[2], HIGH);
 
+                //アナログピンからリード
                 line_values[(j * 8) + i] = analogRead(j);
-                if (line_values[(j * 8) + i] > detection_border) {
+                if (line_values[(j * 8) + i] > detection_border) {//閾値で振るいにかける
                     line_stat_[(j * 8) + i] += 1;
                     if (line_stat_[(j * 8) + i] == 2) {
                         line_stat[(j * 8) + i] = 1;
