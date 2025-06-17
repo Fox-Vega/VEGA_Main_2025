@@ -18,7 +18,7 @@ void LINE::read() {
         line_stat[i] = 0;
     }
     for (int k = 0; k < 2; k++) {
-        for (int j = 0; j < 2; j++) { 
+        for (int j = 0; j < 3; j++) { 
             for (int i = 0; i < 7; i++) {
                 if (Reader[i][0] == 0) {
                     digitalWrite(selectPIN[0], LOW);
