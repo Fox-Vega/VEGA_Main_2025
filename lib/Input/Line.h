@@ -6,7 +6,7 @@ class LINE {
     public:
         void setup();
         void read();
-        int get_value();
+        int get_value(byte lineNUM);
         int get_azimuth();
         int get_magnitude();
     private:
@@ -16,7 +16,6 @@ class LINE {
         const uint8_t outputPIN[3] = {A11, A13, A9};
         int line_type;
         byte nerror[4];
-        byte pack;
         int pack_degs[4];
         const int line_r = 11;
         int line_stat_[24];
