@@ -117,6 +117,8 @@ void LINE::read() {
 
         line_azimuth = myvector.get_azimuth(total_x, total_y);
         line_magnitude = myvector.get_magnitude(total_x, total_y);
+        
+        line_type = 2;
     } else if (pack_NUM + 1 == 3) {
         int point3 = 999; 
         int point4 = 999; 
@@ -140,5 +142,7 @@ void LINE::read() {
 
         line_azimuth = myvector.get_azimuth(total_x , total_y);
         line_magnitude = myvector.get_magnitude(total_x, total_y);
+
+        line_type = 3;
     } 
 }
