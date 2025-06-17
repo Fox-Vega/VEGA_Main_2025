@@ -9,6 +9,8 @@ class LINE {
         int get_value(byte lineNUM);
         int get_azimuth();
         int get_magnitude();
+        int get_type();
+
     private:
         const int detection_border = 400;
 
