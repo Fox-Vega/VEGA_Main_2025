@@ -95,6 +95,7 @@ void Test::input() {
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
     line.read();
+    mypixel.closest(line.get_azimuth(), 0, 255, 0, 5);
 }
 
 void Test::motor() {
