@@ -4,6 +4,8 @@
 #include "Process.h"
 #include "AIP.h"
 
+bool isPixelActive = false; // pixel() 実行中フラグ
+
 void Test::test_() {
     mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_toggle() == 1) {
@@ -194,7 +196,7 @@ void Test::processing() {
     ball.read();
     int ball_azimuth = (ball.get_azimuth() + gam.get_azimuth() + 90) % 360;
     myvector.get_cord(ball_azimuth , ball.get_magnitude());
-    if (ball.get_magnitude() == 0) {
+    if (ball.get_value(99) == 0) {
         Serial.print(0);
         Serial.print(",");
         Serial.print(0);
@@ -210,6 +212,7 @@ void Test::processing() {
     Serial.print(",");
     Serial.println(mymotor.get_magnitude());
     // Serial.print(",");
+    
 
     delay(10);
 }

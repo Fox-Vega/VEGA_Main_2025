@@ -2,12 +2,12 @@
 #include "AIP.h"
 
 void LINE::setup(void) {
-    pinMode(selectPIN[0], OUTPUT);
-    pinMode(selectPIN[1], OUTPUT);
-    pinMode(selectPIN[2], OUTPUT);
-    pinMode(outputPIN[0], INPUT);
-    pinMode(outputPIN[1], INPUT);
-    pinMode(outputPIN[2], INPUT);
+    pinMode(22, OUTPUT);
+    pinMode(24, OUTPUT);
+    pinMode(26, OUTPUT);
+    pinMode(9, INPUT);
+    pinMode(13, INPUT);
+    pinMode(11, INPUT);
 }
 
 void LINE::read() {
@@ -24,25 +24,30 @@ void LINE::read() {
     for (int k = 0; k < 2; k++) {
         for (int j = 0; j < 3; j++) { 
             for (int i = 0; i < 8; i++) {
-                if (Reader[i][0] == 0) {
-                    digitalWrite(selectPIN[0], LOW);
+                if (i == 0 || i == 1 || i == 2 || i == 3) {
+                    digitalWrite(22, LOW);
                 } else {
-                    digitalWrite(selectPIN[0], HIGH);
+                    digitalWrite(22, HIGH);
                 }
-                if (Reader[i][1] == 0) {
-                    digitalWrite(selectPIN[1], LOW);
+                if (i == 0 || i == 1 || i == 4 || i == 5) {
+                    digitalWrite(24, LOW);
                 } else {
-                    digitalWrite(selectPIN[1], HIGH);
+                    digitalWrite(24, HIGH);
                 }
-                if (Reader[i][2] == 0) {
-                    digitalWrite(selectPIN[2], LOW);
+                if (i == 0 || i == 2 || i == 4 || i == 6 || i == 8) {
+                    digitalWrite(26, LOW);
                 } else {
-                    digitalWrite(selectPIN[2], HIGH);
+                    digitalWrite(26, HIGH);
                 }
+                // digitalWrite(22, HIGH);
+                // digitalWrite(24, HIGH);
+                // digitalWrite(26, HIGH);
 
-                line_values[(j * 8) + i] = analogRead(j);
-                Serial.print(line_values[(j * 8) + i]);
-                Serial.print("  ");
+                // line_values[(j * 8) + i] = analogRead(9);
+                line_values[(j * 8) + i] = analogRead(outputPIN[j]);
+
+                Serial.print(analogRead(outputPIN[j]));
+                Serial.print(" / ");
                 if (line_values[(j * 8) + i] > detection_border) {
                     line_stat_[(j * 8) + i] += 1;
                     if (line_stat_[(j * 8) + i] == 2) {
@@ -51,8 +56,8 @@ void LINE::read() {
                 }
             }
         }
+        Serial.println();
     }
-    Serial.println();
     
     int total_x = 0;
     int total_y = 0;

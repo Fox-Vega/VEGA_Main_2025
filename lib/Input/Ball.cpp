@@ -52,7 +52,11 @@ void BALL::read() {
     for (int i = filter_size - 1; i > 0; i--) {
         history[i] = history[i - 1];
     }
-    history[0] = value[max_ballNUM];
+    if (value[max_ballNUM] != 0) {
+        history[0] = value[max_ballNUM];
+    } else {
+        history[0] = 0;
+    }
     delay(10);
 }
 

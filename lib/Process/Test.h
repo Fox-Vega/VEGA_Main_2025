@@ -8,7 +8,7 @@ class Test {
         void input();
         void processing();
         void motor();
-        // void ln();
+
     private:
         byte t_mode = 1;
         byte serial_mode = 0;

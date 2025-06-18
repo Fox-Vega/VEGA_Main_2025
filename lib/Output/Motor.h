@@ -17,11 +17,12 @@ class MyMOTOR {
 
     private:
         //調整用
-        const float kp = 0.15; //比例 を大きくすると応答が速くなるが、振動しやすくなる
-        const float kd = 0.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
-        const int pwmlimit = 120;
+        const float kp = 0.3; //比例 を大きくすると応答が速くなるが、振動しやすくなる
+        const float kd = 0.005; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
+        const int pwmlimit = 140;
         const float pwmscale = 1.0;
         const int motor_border = 100; //モーターが回っていると認識するボーダー
+        const float pwm_tweaker[4] = {1.0, 1.0, 1.0, 1.0};
 
         int prev_azimuth;
         int motor_azimuth;

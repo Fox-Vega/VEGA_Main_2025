@@ -11,6 +11,7 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
+    motor_azimuth = movement_azimuth;
     motor_magnitude = power_ * pwmscale;
     motor_stat = 1;
     dir_azimuth %= 360;
@@ -27,6 +28,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
             myvector.get_cord(azimuth_motor, power_);
             int power = myvector.get_x();
             power += difix;
+            power *= pwm_tweaker[i];
             power = constrain(power, -pwmlimit, pwmlimit);
             if (power >= 0) {
                 analogWrite(motor_PIN1[i], 0);

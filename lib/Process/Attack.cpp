@@ -8,7 +8,7 @@ void Attack::attack_() {
     // mymotor.run(1, 200, 0);
     if (1 == false) {
         //pass
-    } else if (ball.get_magnitude() != 0) {
+    } else if (ball.get_value(99) != 0) {
         ball.read();
         ball_dir = ball.get_azimuth();
         mypixel.closest(ball_dir, 255, 0, 0, 0);
@@ -45,7 +45,7 @@ void Attack::b_p1() {
 }
 
 void Attack::b_p2() {
-    movedir = ball.get_azimuth() + degrees(asin(constrain(brr / ball.get_magnitude(), -1, 1)));
+    movedir = ball.get_azimuth() + (degrees(asin(constrain(brr / ball.get_magnitude(), -1, 1))) * 3);
     movedir %= 360;
     mymotor.run(movedir, b_r2speed, 0);
 }
