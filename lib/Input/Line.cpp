@@ -96,24 +96,27 @@ void LINE::read() {
 
     
     if (pack_NUM != 0) { //検知しているしてるかを試す
-        
-        int point1 = 999; 
-        int point2 = 999; 
-        for (byte i = 0; i < pack_NUM + 1; i++) {
-            if (point1 == 999) {
-                point1 = pack_degs[i];
-            } else if (point2 == 999 && pack_degs[i] != point1) {
+        if (pack_NUM + 1 == 1) {
+            line_azimuth = pack_degs[0];
+            line_magnitude = line_r;
+            line_type = 0;
+        } else if (pack_NUM + 1 == 2) {
+            int point1 = 999; 
+            int point2 = 999; 
+            for (byte i = 0; i < pack_NUM + 1; i++) {
+                if (point1 == 999) {
+                    point1 = pack_degs[i];
+                } else if (point2 == 999 && pack_degs[i] != point1) {
                 point2 = pack_degs[i];
+                }
             }
-        }
-        int line_deg = (point1 + point2) / 2;
-        int theta = line_deg - point1;
-        int line_dist = degrees(cos(radians(theta * line_r)));
+            int line_deg = (point1 + point2) / 2;
+            int theta = line_deg - point1;
+            int line_dist = degrees(cos(radians(theta * line_r)));
 
-        int total_x = 0;
-        int total_y = 0;
+            int total_x = 0;   
+            int total_y = 0;
         
-        if (pack_NUM + 1 == 2) {
             line_azimuth = line_deg;
             line_magnitude = line_dist;
             line_type = 1;
