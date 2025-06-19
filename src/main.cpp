@@ -16,7 +16,6 @@ void loop() {
     if (myswitch.check_toggle() == 1 && general.get_mode() != 3) {
         if (general.get_mode() == 1) {
             attack.attack_();
-            // mymotor.run(0, 120, 0);
         } else if (general.get_mode() == 2) {
             while(1)
             // defense.defense_();}

@@ -52,7 +52,7 @@ int MyMOTOR::difix(int target_azimuth) {
     int error = (target_azimuth - current_azimuth + 540) % 360 - 180;
 
     // 微分項の計算（測定値の変化量ベース）
-    float derivative = (current_azimuth - prev_azimuth) / dt;
+    float derivative = ((current_azimuth - prev_azimuth + 540) % 360 - 180) / dt;
     prev_azimuth = current_azimuth;
 
     // 微分先行型PD制御：積分項を削除

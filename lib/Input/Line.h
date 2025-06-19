@@ -16,8 +16,8 @@ class LINE {
 
         int line_azimuth;
         int line_magnitude;
-        const byte selectPIN[3] = {22, 24, 26};
-        const uint8_t outputPIN[3] = {9, 11, 13};
+        const uint8_t selectPIN[3] = {22, 24, 26};
+        const uint8_t outputPIN[3] = {A11, A13, A9};
         int smallest = 0;
         int smallest_pack = 999;
         int line_type;

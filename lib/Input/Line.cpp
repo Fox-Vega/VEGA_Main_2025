@@ -2,12 +2,12 @@
 #include "AIP.h"
 
 void LINE::setup(void) {
-    pinMode(22, OUTPUT);
-    pinMode(24, OUTPUT);
-    pinMode(26, OUTPUT);
-    pinMode(9, INPUT);
-    pinMode(13, INPUT);
-    pinMode(11, INPUT);
+    pinMode(selectPIN[0], OUTPUT);
+    pinMode(selectPIN[1], OUTPUT);
+    pinMode(selectPIN[2], OUTPUT);
+    pinMode(outputPIN[0], INPUT);
+    pinMode(outputPIN[1], INPUT);
+    pinMode(outputPIN[2], INPUT);
 }
 
 void LINE::read() {
@@ -24,30 +24,25 @@ void LINE::read() {
     for (int k = 0; k < 2; k++) {
         for (int j = 0; j < 3; j++) { 
             for (int i = 0; i < 8; i++) {
-                if (i == 0 || i == 1 || i == 2 || i == 3) {
-                    digitalWrite(22, LOW);
+                if (Reader[i][0] == 0) {
+                    digitalWrite(selectPIN[0], LOW);
                 } else {
-                    digitalWrite(22, HIGH);
+                    digitalWrite(selectPIN[0], HIGH);
                 }
-                if (i == 0 || i == 1 || i == 4 || i == 5) {
-                    digitalWrite(24, LOW);
+                if (Reader[i][1] == 0) {
+                    digitalWrite(selectPIN[1], LOW);
                 } else {
-                    digitalWrite(24, HIGH);
+                    digitalWrite(selectPIN[1], HIGH);
                 }
-                if (i == 0 || i == 2 || i == 4 || i == 6 || i == 8) {
-                    digitalWrite(26, LOW);
+                if (Reader[i][2] == 0) {
+                    digitalWrite(selectPIN[2], LOW);
                 } else {
-                    digitalWrite(26, HIGH);
+                    digitalWrite(selectPIN[2], HIGH);
                 }
-                // digitalWrite(22, HIGH);
-                // digitalWrite(24, HIGH);
-                // digitalWrite(26, HIGH);
 
-                // line_values[(j * 8) + i] = analogRead(9);
-                line_values[(j * 8) + i] = analogRead(outputPIN[j]);
-
-                Serial.print(analogRead(outputPIN[j]));
-                Serial.print(" / ");
+                line_values[(j * 8) + i] = analogRead(j);
+                Serial.print(line_values[(j * 8) + i]);
+                Serial.print("  ");
                 if (line_values[(j * 8) + i] > detection_border) {
                     line_stat_[(j * 8) + i] += 1;
                     if (line_stat_[(j * 8) + i] == 2) {
@@ -56,8 +51,8 @@ void LINE::read() {
                 }
             }
         }
-        Serial.println();
     }
+    Serial.println();
     
     int total_x = 0;
     int total_y = 0;
@@ -96,27 +91,33 @@ void LINE::read() {
 
     
     if (pack_NUM != 0) { //検知しているしてるかを試す
+        
+        int point1 = 999; 
+        int point2 = 999; 
+        int line_deg = 999;
+        int theta = 999;
+        int line_dist = 999;
+        if (pack_NUM >= 1) {
+            for (byte i = 0; i < pack_NUM + 1; i++) {
+                if (point1 == 999) {
+                    point1 = pack_degs[i];
+                } else if (point2 == 999 && pack_degs[i] != point1) {
+                    point2 = pack_degs[i];
+                }
+            }
+            line_deg = (point1 + point2) / 2;
+            theta = line_deg - point1;
+            line_dist = degrees(cos(radians(theta * line_r)));
+        }
+
+        int total_x = 0;
+        int total_y = 0;
+        
         if (pack_NUM + 1 == 1) {
             line_azimuth = pack_degs[0];
             line_magnitude = line_r;
             line_type = 0;
         } else if (pack_NUM + 1 == 2) {
-            int point1 = 999; 
-            int point2 = 999; 
-            for (byte i = 0; i < pack_NUM + 1; i++) {
-                if (point1 == 999) {
-                    point1 = pack_degs[i];
-                } else if (point2 == 999 && pack_degs[i] != point1) {
-                point2 = pack_degs[i];
-                }
-            }
-            int line_deg = (point1 + point2) / 2;
-            int theta = line_deg - point1;
-            int line_dist = degrees(cos(radians(theta * line_r)));
-
-            int total_x = 0;   
-            int total_y = 0;
-        
             line_azimuth = line_deg;
             line_magnitude = line_dist;
             line_type = 1;
