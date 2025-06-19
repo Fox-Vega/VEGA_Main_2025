@@ -172,10 +172,14 @@ void LINE::read() {
 
             line_type = 2;
         } 
+        if (avoid_azimuth == 999) {
+            avoid_azimuth = (line_azimuth + 180) % 360;
+        }
     } else {
         line_azimuth = 0;
         line_magnitude = 999;
         line_type = 0;
+        avoid_azimuth = 999;
     }
 }
 
@@ -185,6 +189,10 @@ int LINE::get_value(byte lineNUM) {
 
 int LINE::get_azimuth() {
     return line_azimuth;
+}
+
+int LINE::get_avoid() {
+    return avoid_azimuth;
 }
 
 int LINE::get_magnitude() {
