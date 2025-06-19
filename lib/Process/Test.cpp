@@ -71,13 +71,17 @@ void Test::test_() {
 
 
 void Test::input() {
-    ball.read();
-    mypixel.multi(0, 15, 255, 255, 255);
-    if (myswitch.check_tact() == 2){
-        gam.dir_reset();
-        mybuzzer.start(400, 50);
-        delay(300);
+    if (myswitch.check_tact() == 1){
+        mybuzzer.start(200, 999);
+    } else if (myswitch.check_tact() == 2) {
+        mybuzzer.start(300, 999);
+    } else if (myswitch.check_tact() == 3) {
+        mybuzzer.start(400, 999);
+    } else {
+        mybuzzer.stop();
     }
+    mypixel.multi(0, 15, 255, 255, 255);
+    ball.read();
     int goal_azimuth = 0 - gam.get_azimuth();
     if (goal_azimuth < 0) {
         goal_azimuth += 360;

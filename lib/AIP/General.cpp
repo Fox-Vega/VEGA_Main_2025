@@ -11,7 +11,7 @@ void General::setup() {
     mypixel.multi(0, 15, 255, 128, 0);
     mypixel.show();
     ball.setup();
-    // line.setup();
+    line.setup();
     mymotor.setup();
     gam.setup();
     mypixel.multi(0, 15, 255, 255, 255);
@@ -107,7 +107,7 @@ void General::startup() {
                 } else {
                     if (mode == 3) {
                         mypixel.rainbow();
-                        mypixel.show();
+                        mypixel.shows();
                     } else {
                         mypixel.rainbow();
                         mypixel.show();

@@ -2,12 +2,10 @@
 #include "AIP.h"
 
 void LINE::setup(void) {
-    pinMode(selectPIN[0], OUTPUT);
-    pinMode(selectPIN[1], OUTPUT);
-    pinMode(selectPIN[2], OUTPUT);
-    pinMode(outputPIN[0], INPUT);
-    pinMode(outputPIN[1], INPUT);
-    pinMode(outputPIN[2], INPUT);
+    for (i = 0; i < 3; i++) {
+        pinMode(selectPIN[i], OUTPUT);
+        pinMode(outputPIN[i], INPUT);
+    }
 }
 
 void LINE::read() {
@@ -37,6 +35,13 @@ void LINE::read() {
                 if (Reader[i][2] == 0) {
                     digitalWrite(selectPIN[2], LOW);
                 } else {
+                    digitalWrite(26, HIGH);
+                }
+                line_values[(j * 8) + i] = analogRead(outputPIN[j]);
+
+                Serial.print(analogRead(outputPIN[j]));
+                Serial.print(" / ");
+                
                     digitalWrite(selectPIN[2], HIGH);
                 }
 
@@ -52,13 +57,7 @@ void LINE::read() {
             }
         }
     }
-    Serial.println();
     
-    int total_x = 0;
-    int total_y = 0;
-    bool pack_NOW = 0;
-    int pack_NUM = 0;
-
     //グループ分けを始めるセンサー番号決定
     byte startNUM = 99;
     for (byte i = 23; i > 0; i--) {
@@ -68,6 +67,10 @@ void LINE::read() {
         }
     }
 
+    bool pack_NOW = 0;
+    int pack_NUM = 0;
+    total_x = 0;
+    total_y = 0;
     //グループ分けをし、グループごとの角度を求める
     for (byte i = startNUM; i < startNUM + 23; i++) {
         byte pLine = i % 24;
@@ -75,9 +78,7 @@ void LINE::read() {
             myvector.get_cord(line_degs[pLine], line_r);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
-            if (pack_NOW == 0) {
-                pack_NOW = 1;
-            }
+            pack_NOW = 1;
         } else {
             if (pack_NOW == 1) {
                 pack_NOW = 0;
@@ -91,50 +92,73 @@ void LINE::read() {
 
     
     if (pack_NUM != 0) { //検知しているしてるかを試す
+        smallest = 0;
+        smallest_pack = 999;
+        for (byte i = 0; i < pack_NUM + 1; i++) {
+            nerror[i] = pack_degs[i] % 90;
+            if (nerror[i] > 45) {
+                nerror[i] -= 90;
+            }
+            if (smallest_pack > nerror[i]) {
+                smallest = i;
+                smallest_pack = nerror[i];
+            }
+        }
         
-        int point1 = 999; 
-        int point2 = 999; 
-        int line_deg = 999;
-        int theta = 999;
-        int line_dist = 999;
-        if (pack_NUM >= 1) {
-            for (byte i = 0; i < pack_NUM + 1; i++) {
-                if (point1 == 999) {
-                    point1 = pack_degs[i];
-                } else if (point2 == 999 && pack_degs[i] != point1) {
-                    point2 = pack_degs[i];
+        point1_ = 999; 
+        point2_ = 999; 
+        point3_ = 999;   
+        point4_ = 999; 
+        for (byte i = 0; i < pack_NUM + 1; i++) {
+            if (packNUM = 2 && i != smallest) {//3つの時、点反応と思われるグループを除外する
+                if (point1_ == 999) {
+                    point1_ = pack_degs[i];
+                } else if (point2_ == 999) {
+                    point2_ = pack_degs[i];
+                } else if (point3_ == 999) {
+                    point3_ = pack_degs[i];
+                } else if (point4_ == 999) {
+                    point4_ = pack_degs[i];
                 }
             }
-            line_deg = (point1 + point2) / 2;
-            theta = line_deg - point1;
-            line_dist = degrees(cos(radians(theta * line_r)));
         }
-
-        int total_x = 0;
-        int total_y = 0;
+        point1 = point1_;
+        point2 = point2_;
+        point3 = point3_;
+        point4 = point4_;
+        if ((360 - point1_ + point2_) % 360 > (360 - point2_ + point1_) % 360 && packNUM == 1) { //2か3つ反応している場合、一つ目を補正するため。
+            point1 = point2_;
+            point2 = point1_;
+        }
+        if ((360 - point4_) % 360 < point4_ - point3_ && packNUM == 3) { //4つ反応している場合、1つめを補正するため
+            point1 = point4_;
+            point2 = point1_;
+            point3 = point2_;
+            point4 = point3_;
+        }
+        //あとで.hで定義しまくる
+        line_dif = (360 - point1 + point2) % 360;
+        line2_dif = (360 - point3 + point4) % 360;
+        line_deg = (point1 + (line_dif / 2)) % 360;
+        line2_deg = (point3 + (line_dif / 2)) % 360;
+        line_theta = line_dif / 2;
+        line2_theta = line2_dif / 2;
+        line_dist = degrees(cos(radians(line_theta * line_r)));
+        line2_dist = degrees(cos(radians(line2_theta * line_r)));
         
         if (pack_NUM + 1 == 1) {
             line_azimuth = pack_degs[0];
             line_magnitude = line_r;
-            line_type = 0;
+            line_type = 1;
         } else if (pack_NUM + 1 == 2) {
             line_azimuth = line_deg;
             line_magnitude = line_dist;
             line_type = 1;
-        } else if (pack_NUM + 1 == 3) {
-            smallest = 0;
-            smallest_pack = 999;
-            for (byte i = 0; i < pack_NUM + 1; i++) {
-                nerror[i] = pack_degs[i] % 90;
-                if (nerror[i] > 45) {
-                    nerror[i] -= 90;
-                }
-                if (smallest_pack > nerror[i]) {
-                    smallest = i;
-                    smallest_pack = nerror[i];
-                }
-            }
-            myvector.get_cord(line_deg, line_dist);  
+        } else if (pack_NUM + 1 == 3) { 
+            total_x = 0;
+            total_y = 0;
+            
+            myvector.get_cord((line_deg, line_dist);  
             total_x += myvector.get_x();
             total_y += myvector.get_y();         
             myvector.get_cord(pack_degs[smallest], line_r);
@@ -145,21 +169,10 @@ void LINE::read() {
             line_magnitude = myvector.get_magnitude(total_x, total_y);
         
             line_type = 2;
-            
         } else if (pack_NUM + 1 == 4) {
-            int point3 = 999;   
-            int point4 = 999; 
-            for (byte i = 0; i < pack_NUM + 1; i++) {
-                if (i != smallest && point3 == 999) {
-                    point3 = pack_degs[i];
-                } else if (i != smallest && point4 == 999 && pack_degs[i] != point3) {
-                    point4 = pack_degs[i];
-                }
-            }
-            int line2_deg = (point3 + point4) / 2;
-            int theta = line2_deg - point3;
-            int line2_dist = degrees(cos(radians(theta * line_r)));
-        
+            total_x = 0;
+            total_y = 0;
+            
             myvector.get_cord(line_deg, line_dist);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
@@ -170,12 +183,16 @@ void LINE::read() {
             line_azimuth = myvector.get_azimuth(total_x , total_y);
             line_magnitude = myvector.get_magnitude(total_x, total_y);  
 
-            line_type = 3;
+            line_type = 2;
         } 
+        if (avoid_azimuth == 999) {
+            avoid_azimuth = (line_azimuth + 180) % 360;
+        }
     } else {
         line_azimuth = 0;
         line_magnitude = 999;
         line_type = 0;
+        avoid_azimuth = 999;
     }
 }
 
@@ -185,6 +202,10 @@ int LINE::get_value(byte lineNUM) {
 
 int LINE::get_azimuth() {
     return line_azimuth;
+}
+
+int LINE::get_avoid() {
+    return avoid_azimuth;
 }
 
 int LINE::get_magnitude() {
