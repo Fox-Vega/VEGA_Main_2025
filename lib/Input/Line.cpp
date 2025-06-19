@@ -79,9 +79,7 @@ void LINE::read() {
             myvector.get_cord(line_degs[pLine], line_r);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
-            if (pack_NOW == 0) {
-                pack_NOW = 1;
-            }
+            pack_NOW = 1;
         } else {
             if (pack_NOW == 1) {
                 pack_NOW = 0;
@@ -104,7 +102,7 @@ void LINE::read() {
             }
             if (smallest_pack > nerror[i]) {
                 smallest = i;
-                smallest_pack = nerror[i]; //使わないかも
+                smallest_pack = nerror[i];
             }
         }
         
@@ -113,7 +111,7 @@ void LINE::read() {
         point3 = 999;   
         point4 = 999; 
         for (byte i = 0; i < pack_NUM + 1; i++) {
-            if (i != smallest) {
+            if (packNUM = 2 && i != smallest) {//3つの時、点反応と思われるグループを除外する
                 if (point1 == 999) {
                     point1 = pack_degs[i];
                 } else if (point2 == 999) {
