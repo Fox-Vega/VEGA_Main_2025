@@ -2,12 +2,10 @@
 #include "AIP.h"
 
 void LINE::setup(void) {
-    pinMode(22, OUTPUT);
-    pinMode(24, OUTPUT);
-    pinMode(26, OUTPUT);
-    pinMode(9, INPUT);
-    pinMode(13, INPUT);
-    pinMode(11, INPUT);
+    for (i = 0; i < 3; i++) {
+        pinMode(selectPIN[i], OUTPUT);
+        pinMode(outputPIN[i], INPUT);
+    }
 }
 
 void LINE::read() {
