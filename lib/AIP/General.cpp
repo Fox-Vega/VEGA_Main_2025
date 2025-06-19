@@ -107,7 +107,7 @@ void General::startup() {
                 } else {
                     if (mode == 3) {
                         mypixel.rainbow();
-                        mypixel.show();
+                        mypixel.shows();
                     } else {
                         mypixel.rainbow();
                         mypixel.show();
