@@ -127,11 +127,11 @@ void LINE::read() {
         point2 = point2_;
         point3 = point3_;
         point4 = point4_;
-        if ((360 - point1_ + point2_) % 360 > (360 - point2_ + point1_) % 360 && packNUM >= 1) {
+        if ((360 - point1_ + point2_) % 360 > (360 - point2_ + point1_) % 360 && packNUM == 1) { //2か3つ反応している場合、一つ目を補正するため。
             point1 = point2_;
             point2 = point1_;
         }
-        if (((360 - point4_ + point1_) % 360) / 2 < point4_ - point3_ && packNUM == 3) {
+        if ((360 - point4_) % 360 < point4_ - point3_ && packNUM == 3) { //4つ反応している場合、1つめを補正するため
             point1 = point4_;
             point2 = point1_;
             point3 = point2_;
