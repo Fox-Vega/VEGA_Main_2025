@@ -2,7 +2,7 @@
 #include "AIP.h"
 
 void LINE::setup(void) {
-    for (i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
         pinMode(selectPIN[i], OUTPUT);
         pinMode(outputPIN[i], INPUT);
     }
@@ -60,7 +60,7 @@ void LINE::read() {
     
     //グループ分けを始めるセンサー番号決定
     byte startNUM = 99;
-    for (byte i = 23; i > 0; i--) {
+    for (int i = 23; i > 0; i--) {
         if (line_stat[i] == 0 && startNUM == 99) {
             startNUM = i + 1;
             break;
@@ -71,8 +71,9 @@ void LINE::read() {
     int pack_NUM = 0;
     total_x = 0;
     total_y = 0;
+    
     //グループ分けをし、グループごとの角度を求める
-    for (byte i = startNUM; i < startNUM + 23; i++) {
+    for (int i = startNUM; i < startNUM + 23; i++) {
         byte pLine = i % 24;
         if (line_stat[pLine] == 1) {
             myvector.get_cord(line_degs[pLine], line_r);
@@ -136,15 +137,15 @@ void LINE::read() {
             point3 = point2_;
             point4 = point3_;
         }
-        //あとで.hで定義しまくる
-        line_dif = (360 - point1 + point2) % 360;
-        line2_dif = (360 - point3 + point4) % 360;
-        line_deg = (point1 + (line_dif / 2)) % 360;
-        line2_deg = (point3 + (line_dif / 2)) % 360;
-        line_theta = line_dif / 2;
-        line2_theta = line2_dif / 2;
-        line_dist = degrees(cos(radians(line_theta * line_r)));
-        line2_dist = degrees(cos(radians(line2_theta * line_r)));
+
+        int line_dif = (360 - point1 + point2) % 360;
+        int line2_dif = (360 - point3 + point4) % 360;
+        int line_deg = (point1 + (line_dif / 2)) % 360;
+        int line2_deg = (point3 + (line_dif / 2)) % 360;
+        int line_theta = line_dif / 2;
+        int line2_theta = line2_dif / 2;
+        int line_dist = degrees(cos(radians(line_theta * line_r)));
+        int line2_dist = degrees(cos(radians(line2_theta * line_r)));
         
         if (pack_NUM + 1 == 1) {
             line_azimuth = pack_degs[0];

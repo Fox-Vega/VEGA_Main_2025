@@ -14,6 +14,12 @@ class LINE {
     private:
         const int detection_border = 300;
 
+        int total_x;
+        int total_y;
+        int point1;
+        int point2;
+        int point3;
+        int point4;
         int line_azimuth;
         int line_magnitude;
         const uint8_t selectPIN[3] = {22, 24, 26};
