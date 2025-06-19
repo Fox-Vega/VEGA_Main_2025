@@ -39,15 +39,11 @@ void LINE::read() {
                 } else {
                     digitalWrite(26, HIGH);
                 }
-                // digitalWrite(22, HIGH);
-                // digitalWrite(24, HIGH);
-                // digitalWrite(26, HIGH);
-
-                // line_values[(j * 8) + i] = analogRead(9);
                 line_values[(j * 8) + i] = analogRead(outputPIN[j]);
 
                 Serial.print(analogRead(outputPIN[j]));
                 Serial.print(" / ");
+                
                 if (line_values[(j * 8) + i] > detection_border) {
                     line_stat_[(j * 8) + i] += 1;
                     if (line_stat_[(j * 8) + i] == 2) {
