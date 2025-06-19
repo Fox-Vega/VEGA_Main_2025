@@ -106,22 +106,36 @@ void LINE::read() {
             }
         }
         
-        point1 = 999; 
-        point2 = 999; 
-        point3 = 999;   
-        point4 = 999; 
+        point1_ = 999; 
+        point2_ = 999; 
+        point3_ = 999;   
+        point4_ = 999; 
         for (byte i = 0; i < pack_NUM + 1; i++) {
             if (packNUM = 2 && i != smallest) {//3つの時、点反応と思われるグループを除外する
-                if (point1 == 999) {
-                    point1 = pack_degs[i];
-                } else if (point2 == 999) {
-                    point2 = pack_degs[i];
-                } else if (point3 == 999) {
-                    point3 = pack_degs[i];
-                } else if (point4 == 999) {
-                    point4 = pack_degs[i];
+                if (point1_ == 999) {
+                    point1_ = pack_degs[i];
+                } else if (point2_ == 999) {
+                    point2_ = pack_degs[i];
+                } else if (point3_ == 999) {
+                    point3_ = pack_degs[i];
+                } else if (point4_ == 999) {
+                    point4_ = pack_degs[i];
                 }
             }
+        }
+        point1 = point1_;
+        point2 = point2_;
+        point3 = point3_;
+        point4 = point4_;
+        if ((360 - point1_ + point2_) % 360 > (360 - point2_ + point1_) % 360 && packNUM >= 1) {
+            point1 = point2_;
+            point2 = point1_;
+        }
+        if (((360 - point4_ + point1_) % 360) / 2 < point4_ - point3_ && packNUM == 3) {
+            point1 = point4_;
+            point2 = point1_;
+            point3 = point2_;
+            point4 = point3_;
         }
         //あとで.hで定義しまくる
         line_dif = (360 - point1 + point2) % 360;
