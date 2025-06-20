@@ -1,116 +1,136 @@
-// #include "Defense.h"
-// #include "Input.h"
-// #include "Output.h"
-// // #include "okomeonigiri.h"
-// extern LINE line;
+#include "Defense.h"
+#include "Input.h"
+#include "Output.h"
+//#include "okomeonigiri.h"
 
-// data Dball;
-// data Dline;
+#define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+//buf size:128  short
+#define printf_s_short(fmt, ...) ({ char buf[128]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+//buf size:512  long
+#define printf_s_long(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+//buf size:custom  // Use a custom buffer size defined by the user
+#define printf_s_custom(bufsize,fmt, ...) ({ char buf[bufsize]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+//buf size:SIZE_MAX  // Use the maximum size of a buffer, which is defined by SIZE_MAX
+#define printf_s_max(fmt, ...) ({ char buf[SIZE_MAX]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
 
-// //printf
+//A for loop that allows you to easily use a for loop with just a single number.
+#define floop(n) for(size_t i = 0; i < n; ++i)
+//A floop that allows you to use any variable name you like as the loop counter.
+#define floop_id(var, n) for(int var = 0; var < (n); ++var)
 
-// // void Defense::setup(void)
-// // {
-// // }
+extern LINE line;
 
-// void Defense::defense_(void){
-//     mybuzzer.start(1000, 200);
-//     Serial.println("Defense Process Start");
-//     general.setup();
-//     while(true){
-//         if(myswitch.check_toggle()==0){
-//             mybuzzer.start(1000, 200);
-//             while(true){
-//                 line.serial_print();
-//                 for (uint8_t i = 0; i < 25; i++) {
-//                     Serial.println();
+data Dball;
+data Dline;
+
+void Defense::defense_(void){
+    mybuzzer.start(1000, 200);
+    Serial.println("Defense Process Start");
+    general.setup();
+    get_vector();
+    while(true){
+        if(line.get_type()==1&&Dline.detect==true)
+        {
+            if(Dline.dist>2)
+            {
+                int ang_fb=0;//foward/backward
+                if((Dline.azimuth>90&&Dline.azimuth<270))
+                {
+                    ang_fb=1;//backward
+                }
+                else
+                {
+                    ang_fb=-1;//forward
+                }
+                if(ang_fb==0) go_ang==180;
+                else go_ang==0;
+                mymotor.run(Dline.azimuth,50/Dline.dist, 0);
+            }
+        }
+    }
+}
+
+// void Defense::MyUI(int mode){
+//     mode=0;
+//     int tact=0;
+//     int toggle=0;
+//     while (true) {
+//         tact = myswitch.check_tact();
+//         toggle = myswitch.check_toggle();
+//         if(toggle==1)
+//         {
+//             mybuzzer.start(500, 200);
+//             while(toggle==1)
+//             {
+//                 if(tact != 0) // タクトスイッチが押されたら
+//                 {
+//                     mybuzzer.start(500, 200);
+//                     tact = myswitch.check_tact();
+//                     if(tact == 1) // タクトスイッチが押されたら
+//                     {
+//                         mode++;
+//                         if(mode > 2) mode = 0; // モードを0~2の範囲に制限
+//                     }
+//                     else if(tact == 2) // タクトスイッチが押されたら
+//                     {
+//                         mode--;
+//                         if(mode < 0) mode = 2; // モードを0~2の範囲に制限
+//                     }
+//                 }
+//                 printf_s("select mode...\n");
+//                 switch(mode)
+//                 {
+//                     case 0:
+//                         printf_s("ball <<  line  >>  pixel\n");
+//                         break;
+//                     case 1:
+//                         printf_s("line <<  ball  >>  pixel\n");
+//                         break;
+//                     case 2:
+//                         printf_s("line <<  pixel  >>  ball\n");
+//                         break;
+//                 }
+//                 for(uint8_t i = 0; i < 10; i++) {
+//                     printf_s("\n");
+//                 }
+//                 printf_s("left  switch  left   debug\n");
+//             }
+//             }
+//             else
+//             {
+//                 switch(mode){//0 ball 1 line 2 pixel
+//                     case 0:
+//                         get_vector_Ball();
+//                         printf_s("Ball Vector: Theta: %d\nDist: %d\nX: %.2f\nY: %.2f\nDetect: %s\n"
+//                             ,Dball.azimuth, Dball.dist, Dball.x, Dball.y, Dball.detect ? "true" : "false");
+//                         break;
 //                 }
 //             }
 //         }
 //     }
+
+// void MyUI_clear() {
+//     for (uint8_t i = 0; i < 50; i++) {
+//         printf_s("\n");
+//     }
 // }
 
-// // void Defense::MyUI(int mode){
-// //     mode=0;
-// //     int tact=0;
-// //     int toggle=0;
-// //     while (true) {
-// //         tact = myswitch.check_tact();
-// //         toggle = myswitch.check_toggle();
-// //         if(toggle==1)
-// //         {
-// //             mybuzzer.start(500, 200);
-// //             while(toggle==1)
-// //             {
-// //                 if(tact != 0) // タクトスイッチが押されたら
-// //                 {
-// //                     mybuzzer.start(500, 200);
-// //                     tact = myswitch.check_tact();
-// //                     if(tact == 1) // タクトスイッチが押されたら
-// //                     {
-// //                         mode++;
-// //                         if(mode > 2) mode = 0; // モードを0~2の範囲に制限
-// //                     }
-// //                     else if(tact == 2) // タクトスイッチが押されたら
-// //                     {
-// //                         mode--;
-// //                         if(mode < 0) mode = 2; // モードを0~2の範囲に制限
-// //                     }
-// //                 }
-// //                 printf_s("select mode...\n");
-// //                 switch(mode)
-// //                 {
-// //                     case 0:
-// //                         printf_s("ball <<  line  >>  pixel\n");
-// //                         break;
-// //                     case 1:
-// //                         printf_s("line <<  ball  >>  pixel\n");
-// //                         break;
-// //                     case 2:
-// //                         printf_s("line <<  pixel  >>  ball\n");
-// //                         break;
-// //                 }
-// //                 for(uint8_t i = 0; i < 10; i++) {
-// //                     printf_s("\n");
-// //                 }
-// //                 printf_s("left  switch  left   debug\n");
-// //             }
-// //             }
-// //             else
-// //             {
-// //                 switch(mode){//0 ball 1 line 2 pixel
-// //                     case 0:
-// //                         get_vector_Ball();
-// //                         printf_s("Ball Vector: Theta: %d\nDist: %d\nX: %.2f\nY: %.2f\nDetect: %s\n"
-// //                             ,Dball.theata, Dball.dist, Dball.x, Dball.y, Dball.detect ? "true" : "false");
-// //                         break;
-// //                 }
-// //             }
-// //         }
-// //     }
 
-// // void MyUI_clear() {
-// //     for (uint8_t i = 0; i < 50; i++) {
-// //         printf_s("\n");
-// //     }
-// // }
+void Defense::get_vector_Line(void)
+{
+    Dline.azimuth = line.get_azimuth();
+    Dline.dist = line.get_magnitude();
+    Dline.detect = (Dline.dist) ? false : true; // ラインが検出されていない場合はfalse
+    Dline.x = Dline.dist * cos(radians(Dline.azimuth));
+    Dline.y = Dline.dist * sin(radians(Dline.azimuth));
+}
 
-
-// // void Defense::get_vector_Line(void)
-// // {
-// //     Dline.theata = line.get_azimuth();
-// //     Dline.dist = line.get_magnitude();
-// //     Dline.detect = (Dline.dist) ? false : true; // ラインが検出されていない場合はfalse
-// //     Dline.x = Dline.dist * cos(radians(Dline.theata));
-// //     Dline.y = Dline.dist * sin(radians(Dline.theata));
-// // }
-
-// // void Defense::get_vector_Ball(void)
-// // {
-// //     Dball.theata = ball.get_azimuth();
-// //     Dball.dist = (int)ball.get_magnitude();
-// //     Dball.detect = ((int)ball.get_magnitude() > 0) ? true : false;
-// //     myvector.get_cord(Dball.theata, Dball.dist);
-// //     Dball.x = myvector.get_x();
-// //     Dball.y = myvector.get_y();
-// // }
+void Defense::get_vector_Ball(void)
+{
+    Dball.azimuth = ball.get_azimuth();
+    Dball.dist = (int)ball.get_magnitude();
+    Dball.detect = ((int)ball.get_magnitude() > 0) ? true : false;
+    myvector.get_cord(Dball.azimuth, Dball.dist);
+    Dball.x = myvector.get_x();
+    Dball.y = myvector.get_y();
+}

@@ -14,10 +14,9 @@
 #define linedist 10
 #define linecentor 0.1
 
-
 struct data
 {
-    int theata;
+    int azimuth;
     int dist;
     float x;
     float y;
@@ -36,6 +35,7 @@ class Defense {
             get_vector_Line();
         };
     private:
+    int go_ang;
     void MyUI(int mode);
     void MyUI_clear(void);
 };
