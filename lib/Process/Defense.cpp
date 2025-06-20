@@ -27,10 +27,13 @@ void Defense::defense_(void){
     mybuzzer.start(1000, 200);
     Serial.println("Defense Process Start");
     general.setup();
-    get_vector();
     while(true){
+        delay(10);
+        get_vector();
+        mypixel.closest(Dline.azimuth, 255, 0, 0, 1);
         if(line.get_type()==1&&Dline.detect==true)
         {
+            mybuzzer.start(1000, 200);
             if(Dline.dist>2)
             {
                 int ang_fb=0;//foward/backward
@@ -42,11 +45,12 @@ void Defense::defense_(void){
                 {
                     ang_fb=-1;//forward
                 }
-                if(ang_fb==0) go_ang==180;
-                else go_ang==0;
-                mymotor.run(Dline.azimuth,50/Dline.dist, 0);
+                if(ang_fb==0) {go_ang=180;}
+                else {go_ang=0;}
+                mymotor.run(Dline.azimuth,75/Dline.dist, 0);
             }
         }
+        else mymotor.run(180, 75, 0); //ラインが検出されていない場合は停止
     }
 }
 
