@@ -48,10 +48,10 @@ void Defense::defense_(void){
                 }
                 if(ang_fb==0) {go_ang=180;}
                 else {go_ang=0;}
-                mymotor.run(Dline.azimuth,130/Dline.dist, 0);
+                mymotor.run(Dline.azimuth,255/Dline.dist, 0);
             }
         }
-        else mymotor.run(180, 130, 0); //ラインが検出されていない場合は停止
+        else mymotor.run(255, 130, 0); //ラインが検出されていない場合は停止
     }
 }
 
