@@ -29,6 +29,7 @@ void Defense::defense_(void){
     general.setup();
     while(true){
         delay(10);
+        line.read();
         get_vector();
         mypixel.closest(Dline.azimuth, 255, 0, 0, 1);
         if(line.get_type()==1&&Dline.detect==true)
@@ -47,10 +48,10 @@ void Defense::defense_(void){
                 }
                 if(ang_fb==0) {go_ang=180;}
                 else {go_ang=0;}
-                mymotor.run(Dline.azimuth,75/Dline.dist, 0);
+                mymotor.run(Dline.azimuth,255/Dline.dist, 0);
             }
         }
-        else mymotor.run(180, 75, 0); //ラインが検出されていない場合は停止
+        else mymotor.run(255, 130, 0); //ラインが検出されていない場合は停止
     }
 }
 
