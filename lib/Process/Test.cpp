@@ -114,14 +114,20 @@ void Test::motor() {
         old_motor_speed = motor_speed;
         delay(200);
     } else if (myswitch.check_tact() == 5) {
-        if (motor_speed != 0) {
-            motor_mode = 2;
-            motor_speed = 0;
+        delay(400);
+        if (myswitch.check_tact() == 6 || myswitch.check_tact() == 14) {
+            stabilization += 1;
+            stabilization %= 2;
         } else {
-            motor_mode = old_motor_mode;
-            motor_speed = old_motor_speed;
+            if (motor_speed != 0) {
+                motor_mode = 2;
+                motor_speed = 0;
+            } else {
+                motor_mode = old_motor_mode;
+                motor_speed = old_motor_speed;
+            }
         }
-        delay(200);
+        delay(100);
     } else if (myswitch.check_tact() == 1) {
         if (motor_mode != 3) {
             motor_speed = 0;
@@ -132,12 +138,9 @@ void Test::motor() {
         old_motor_speed = motor_speed;
         motor_mode = 3;
         delay(200);
-    } else if (myswitch.check_tact() == 6 || myswitch.check_tact() == 14) {
-        stabilization += 1;
-        stabilization %= 2;
     }
 
-    if (stabilization == 1) {
+    if (stabilization == 1 && motor_mode != 2) {
         mymotor.stabilization(1);
     } else {
         mymotor.stabilization(0);
@@ -145,6 +148,8 @@ void Test::motor() {
 
     if (motor_mode == 1) {
         mymotor.run(0, motor_speed, 0);
+    } else if (motor_mode == 2) {
+        mymotor.run(0, 0, 0);
     } else if (motor_mode == 3) {
         mymotor.run(180, motor_speed, 0);
     }
@@ -185,6 +190,7 @@ void Test::motor() {
             mypixel.uni(14, 255, 255, 0);
         }
     }
+    delay(100);
 }
 
 void Test::processing() {
