@@ -113,12 +113,21 @@ void Test::motor() {
         old_motor_mode = motor_mode;
         old_motor_speed = motor_speed;
         delay(200);
-    } else if (myswitch.check_tact() == 5) {
-        delay(400);
-        if (myswitch.check_tact() == 6 || myswitch.check_tact() == 14) {
-            stabilization += 1;
-            stabilization %= 2;
-        } else {
+    } else if (myswitch.check_tact() == 5 || myswitch.check_tact() == 6 || myswitch.check_tact() == 14) {
+        bool switched = 0;
+        unsigned long a = millis();
+        while ((int)(millis() - a) < 400) {
+            if (myswitch.check_tact() == 6 || myswitch.check_tact() == 14) {
+                stabilization += 1;
+                stabilization %= 2;
+                if (motor_speed != 0) {
+                    motor_mode = 2;
+                    motor_speed = 0;
+                }
+                switched = 1;
+            }
+        }
+        if (switched == 0) {
             if (motor_speed != 0) {
                 motor_mode = 2;
                 motor_speed = 0;

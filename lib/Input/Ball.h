@@ -17,6 +17,10 @@ class BALL {
         const int max_value = 30 * ballvalue_offset;
         const int filter_size = 20;
         int history[5] = {0};
+        const int close = 300; //近くにある時の距離
+        const int close_start = 400; //近くなりすぎる前の距離
+        const int close_unlock = 500; //近くにある判定を解除するボーダー
+        const int close_dif = 100; //近くなりすぎた時の変化量
 
         int value[16];
         int total_x = 0;
