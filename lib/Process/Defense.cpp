@@ -29,6 +29,7 @@ void Defense::defense_(void){
     general.setup();
     while(true){
         delay(10);
+        line.read();
         get_vector();
         mypixel.closest(Dline.azimuth, 255, 0, 0, 1);
         if(line.get_type()==1&&Dline.detect==true)
