@@ -16,7 +16,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     motor_stat = 1;
     dir_azimuth %= 360;
     int difix = 0;
-    if (motor_stabilization && old_motor_stat == 1) {
+    if (motor_stabilization) {
         difix = mymotor.difix(dir_azimuth);
     }
 
@@ -27,9 +27,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
             // 座標計算
             myvector.get_cord(azimuth_motor, power_);
             int power = myvector.get_x();
-            power += difix;
-            power *= pwm_tweaker[i];
-            power = constrain(power, -pwmlimit, pwmlimit);
+            power = constrain(power + difix, -pwmlimit, pwmlimit);
             if (power >= 0) {
                 analogWrite(motor_PIN1[i], 0);
                 analogWrite(motor_PIN2[i], abs(power)); 
@@ -57,7 +55,11 @@ int MyMOTOR::difix(int target_azimuth) {
 
     // 微分先行型PD制御：積分項を削除
     int pwm = kd * derivative + kp * error;  // 順序：微分項が先行
-
+    if (pwm >= 0) {
+        pwm *= pwm_tweaker[0];
+    } else {
+        pwm *= pwm_tweaker[1];
+    }
     lastupdate = millis();
 
     return pwm;
