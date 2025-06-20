@@ -4,8 +4,6 @@
 #include "Process.h"
 #include "AIP.h"
 
-bool isPixelActive = false; // pixel() 実行中フラグ
-
 void Test::test_() {
     mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_toggle() == 1) {
@@ -105,7 +103,6 @@ void Test::input() {
 }
 
 void Test::motor() {
-    mymotor.stabilization(0);
     if (myswitch.check_tact() == 9) {
         if (motor_mode != 1) {
             motor_speed = 0;
@@ -135,7 +132,17 @@ void Test::motor() {
         old_motor_speed = motor_speed;
         motor_mode = 3;
         delay(200);
+    } else if (myswitch.check_tact() == 6 || myswitch.check_tact() == 14) {
+        stabilization += 1;
+        stabilization %= 2;
     }
+
+    if (stabilization == 1) {
+        mymotor.stabilization(1);
+    } else {
+        mymotor.stabilization(0);
+    }
+
     if (motor_mode == 1) {
         mymotor.run(0, motor_speed, 0);
     } else if (motor_mode == 3) {
@@ -158,14 +165,25 @@ void Test::motor() {
             }
         }
     } else {
-        mypixel.uni(0, 255, 0, 255);
-        mypixel.uni(2, 255, 0, 255);
-        mypixel.uni(4, 255, 0, 255);
-        mypixel.uni(6, 255, 0, 255);
-        mypixel.uni(8, 255, 0, 255);
-        mypixel.uni(10, 255, 0, 255);
-        mypixel.uni(12, 255, 0, 255);
-        mypixel.uni(14, 255, 0, 255);
+        if (stabilization == 0) {
+            mypixel.uni(0, 255, 0, 255);
+            mypixel.uni(2, 255, 0, 255);
+            mypixel.uni(4, 255, 0, 255);
+            mypixel.uni(6, 255, 0, 255);
+            mypixel.uni(8, 255, 0, 255);
+            mypixel.uni(10, 255, 0, 255);
+            mypixel.uni(12, 255, 0, 255);
+            mypixel.uni(14, 255, 0, 255);
+        } else {
+            mypixel.uni(0, 255, 255, 0);
+            mypixel.uni(2, 255, 255, 0);
+            mypixel.uni(4, 255, 255, 0);
+            mypixel.uni(6, 255, 255, 0);
+            mypixel.uni(8, 255, 255, 0);
+            mypixel.uni(10, 255, 255, 0);
+            mypixel.uni(12, 255, 255, 0);
+            mypixel.uni(14, 255, 255, 0);
+        }
     }
 }
 

@@ -11,6 +11,7 @@ class Test {
 
     private:
         byte t_mode = 1;
+        byte stabilization = 0;
         byte serial_mode = 0;
         byte motor_mode = 0;
         byte old_motor_mode = 0;
