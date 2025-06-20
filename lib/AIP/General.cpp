@@ -60,11 +60,11 @@ void General::startup() {
                     mode = 1;
                     phase = 2;
                     mybuzzer.start(500, 200);
-                } else if (tact_pressed == 2) {//ディフェンス
+                } else if (tact_pressed == 5) {//ディフェンス
                     mode = 2;
                     phase = 2;
                     mybuzzer.start(500, 200);
-                } else if (tact_pressed == 3) {//テスト
+                } else if (tact_pressed == 9) {//テスト
                     mode = 3;
                     phase = 2;
                     mybuzzer.start(500, 200);
@@ -77,7 +77,7 @@ void General::startup() {
                     startcord = 0;
                     mode = 0;
                     mybuzzer.start(100, 500);
-                } else if (tact_pressed == 2) {
+                } else if (tact_pressed == 5) {
                     if (startcord < 4) {
                         startcord += 1;
                     } else {
@@ -86,7 +86,7 @@ void General::startup() {
                     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mybuzzer.start(500, 50);
                     mybuzzer.start(500, 50);
-                } else if (tact_pressed == 3) {//確定　次のフェーズへ
+                } else if (tact_pressed == 9) {//確定　次のフェーズへ
                     phase = 3;
                     mybuzzer.start(500, 500);
                     mypixel.clear();
@@ -97,10 +97,10 @@ void General::startup() {
                 if (tact_pressed == 1){//一つ戻る　
                     phase = 2;
                     mybuzzer.start(100, 500);
-                } else if (tact_pressed == 2) { //方向と座標をリセット
+                } else if (tact_pressed == 5) { //方向と座標をリセット
                     gam.dir_reset();
                     mybuzzer.start(300, 500);
-                } else if (tact_pressed == 3) {
+                } else if (tact_pressed == 9) {
                     //機能無し
                 } else if (toggle_stat == 1) {//スタート！
                     phase = 4;

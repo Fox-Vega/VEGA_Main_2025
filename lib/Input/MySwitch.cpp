@@ -7,15 +7,22 @@ void MySWITCH::setup() {
     pinMode(toggleswitchPIN, INPUT);
 }
 
-int MySWITCH::check_tact() {
+int MySWITCH::check_tact() { //1 = 1  2= 5  3 = 9
     pushed_tact = 0;
     for (int i = 0; i < 3; i++) {
         if (digitalRead(tactswitchPIN[i]) == LOW) {
-            pushed_tact = i + 1;
+            if (i == 0) {
+                pushed_tact += 1;
+            } else if (i == 1) {
+                pushed_tact += 5;
+            } else {
+                pushed_tact += 9;
+            }
         }
     }
     return pushed_tact;
 }
+
 
 int MySWITCH::check_toggle() {
     toggle_stat = 0;

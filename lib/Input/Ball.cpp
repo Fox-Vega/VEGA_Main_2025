@@ -57,7 +57,7 @@ void BALL::read() {
     } else {
         history[0] = 0;
     }
-    delay(10);
+    delay(5);
 }
 
 int BALL::get_value(short ballNUM) { 
@@ -78,6 +78,8 @@ int BALL::get_magnitude() {
     for (int i = 0; i < filter_size; i++) {
         sum += history[i];
     }
+
+    
     int magnitude = sum / filter_size;
     magnitude = max_value - magnitude;
     old_magnitude = magnitude; // 過去の値を更新

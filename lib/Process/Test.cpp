@@ -19,7 +19,7 @@ void Test::test_() {
                 t_mode = 5;
             }
             delay(300);
-        } else if (myswitch.check_tact() == 3) {
+        } else if (myswitch.check_tact() == 9) {
             t_mode += 1;
             if (t_mode >= 6) {
                 t_mode = 1;
@@ -73,9 +73,9 @@ void Test::test_() {
 void Test::input() {
     if (myswitch.check_tact() == 1){
         mybuzzer.start(200, 999);
-    } else if (myswitch.check_tact() == 2) {
+    } else if (myswitch.check_tact() == 5) {
         mybuzzer.start(300, 999);
-    } else if (myswitch.check_tact() == 3) {
+    } else if (myswitch.check_tact() == 9) {
         mybuzzer.start(400, 999);
     } else {
         mybuzzer.stop();
@@ -106,7 +106,7 @@ void Test::input() {
 
 void Test::motor() {
     mymotor.stabilization(0);
-    if (myswitch.check_tact() == 3) {
+    if (myswitch.check_tact() == 9) {
         if (motor_mode != 1) {
             motor_speed = 0;
         } else {
@@ -116,7 +116,7 @@ void Test::motor() {
         old_motor_mode = motor_mode;
         old_motor_speed = motor_speed;
         delay(200);
-    } else if (myswitch.check_tact() == 2) {
+    } else if (myswitch.check_tact() == 5) {
         if (motor_speed != 0) {
             motor_mode = 2;
             motor_speed = 0;
@@ -140,8 +140,6 @@ void Test::motor() {
         mymotor.run(0, motor_speed, 0);
     } else if (motor_mode == 3) {
         mymotor.run(180, motor_speed, 0);
-    } else {
-        mymotor.brake();
     }
     if (motor_mode != 2) {
         if (motor_mode == 1) {
@@ -173,7 +171,7 @@ void Test::motor() {
 
 void Test::processing() {
     mymotor.move(0);
-    if (myswitch.check_tact() == 2) {
+    if (myswitch.check_tact() == 5) {
         serial_mode += 1;
         serial_mode %= 2; //モード個数
         delay(200);
