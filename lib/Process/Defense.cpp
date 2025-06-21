@@ -28,7 +28,6 @@ void Defense::defense_(void){
     Serial.println("Defense Process Start");
     general.setup();
     while(true){
-        delay(10);
         line.read();
         get_vector();
         mypixel.closest(Dline.azimuth, 255, 0, 0, 1);
@@ -48,12 +47,23 @@ void Defense::defense_(void){
                 }
                 if(ang_fb==0) {go_ang=180;}
                 else {go_ang=0;}
-                mymotor.run(Dline.azimuth,255/Dline.dist, 0);
+                mypixel.closest(go_ang,0,0,255,7);
+                mypixel.closest(Dline.azimuth,0,255, 0, 3);
+                mymotor.run(go_ang,255/(22-Dline.dist), 0);
             }
         }
-        else mymotor.run(255, 130, 0); //ラインが検出されていない場合は停止
+        else mymotor.run(180,75, 0); //ラインが検出されていない場合は停止
+
+        // if(line.read()!=true){
+        //     get_vector();
+        //     int go_ang = 999; //目標角度
+        //     int line_mod =
+        // }
+        // else Dline_not();
     }
 }
+
+
 
 // void Defense::MyUI(int mode){
 //     mode=0;
@@ -124,8 +134,8 @@ void Defense::defense_(void){
 void Defense::get_vector_Line(void)
 {
     Dline.azimuth = line.get_azimuth();
-    Dline.dist = line.get_magnitude();
-    Dline.detect = (Dline.dist) ? false : true; // ラインが検出されていない場合はfalse
+    Dline.dist = line.get_magnitude()*900/22;
+    Dline.detect = (line.read()) ? false : true; // ラインが検出されていない場合はfalse
     Dline.x = Dline.dist * cos(radians(Dline.azimuth));
     Dline.y = Dline.dist * sin(radians(Dline.azimuth));
 }

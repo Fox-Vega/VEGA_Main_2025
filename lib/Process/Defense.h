@@ -28,14 +28,15 @@ class Defense {
     public:
         void setup(void);
         void defense_(void);
-        void get_vector_Ball(void);
-        void get_vector_Line(void);
-        void get_vector(void) {
-            get_vector_Ball();
-            get_vector_Line();
-        };
+        void Dline_not(void);
     private:
     int go_ang;
     void MyUI(int mode);
     void MyUI_clear(void);
+    void get_vector_Ball(void);
+    void get_vector_Line(void);
+    void get_vector(void) {
+        get_vector_Ball();
+        get_vector_Line();
+    };
 };
