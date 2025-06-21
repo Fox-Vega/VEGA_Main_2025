@@ -28,30 +28,30 @@ void Defense::defense_(void){
     Serial.println("Defense Process Start");
     general.setup();
     while(true){
-        delay(10);
-        line.read();
-        get_vector();
-        mypixel.closest(Dline.azimuth, 255, 0, 0, 1);
-        if(line.get_type()==1&&Dline.detect==true)
-        {
-            mybuzzer.start(1000, 200);
-            if(Dline.dist>2)
-            {
-                int ang_fb=0;//foward/backward
-                if((Dline.azimuth>90&&Dline.azimuth<270))
-                {
-                    ang_fb=1;//backward
-                }
-                else
-                {
-                    ang_fb=-1;//forward
-                }
-                if(ang_fb==0) {go_ang=180;}
-                else {go_ang=0;}
-                mymotor.run(Dline.azimuth,75/Dline.dist, 0);
-            }
-        }
-        else mymotor.run(180, 75, 0); //ラインが検出されていない場合は停止
+        // delay(10);
+        // line.read();
+        // get_vector();
+        // mypixel.closest(Dline.azimuth, 255, 0, 0, 1);
+        // if(line.get_type()==1&&Dline.detect==true)
+        // {
+        //     mybuzzer.start(1000, 200);
+        //     if(Dline.dist>2)
+        //     {
+        //         int ang_fb=0;//foward/backward
+        //         if((Dline.azimuth>90&&Dline.azimuth<270))
+        //         {
+        //             ang_fb=1;//backward
+        //         }
+        //         else
+        //         {
+        //             ang_fb=-1;//forward
+        //         }
+        //         if(ang_fb==0) {go_ang=180;}
+        //         else {go_ang=0;}
+        //         mymotor.run(Dline.azimuth,75/Dline.dist, 0);
+        //     }
+        // }
+        // else mymotor.run(180, 75, 0); //ラインが検出されていない場合は停止
     }
 }
 

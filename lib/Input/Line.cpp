@@ -8,11 +8,9 @@ void LINE::setup(void) {
     }
 }
 
-void LINE::read() {
+bool LINE::read() {
     //リセット
-    for (int i = 0; i < 4; i++) {
-        pack_degs[i] = 0;
-    }
+    floop(4)pack_degs[i] = 0;
     for (int i = 0; i < 24; i++) {
         line_stat_[i] = 0;
         line_stat[i] = 0;
@@ -20,25 +18,10 @@ void LINE::read() {
 
     //読み取り
     for (int k = 0; k < 2; k++) {
-        for (int j = 0; j < 3; j++) { 
+        for (int j = 0; j < 3; j++) {
             for (int i = 0; i < 8; i++) {
-                if (Reader[i][0] == 0) {
-                    digitalWrite(selectPIN[0], LOW);
-                } else {
-                    digitalWrite(selectPIN[0], HIGH);
-                }
-                if (Reader[i][1] == 0) {
-                    digitalWrite(selectPIN[1], LOW);
-                } else {
-                    digitalWrite(selectPIN[1], HIGH);
-                }
-                if (Reader[i][2] == 0) {
-                    digitalWrite(selectPIN[2], LOW);
-                } else {
-                    digitalWrite(selectPIN[2], HIGH);
-                }
+                floop_id(l,3)(selectPIN[l],Reader[i][l]? HIGH:LOW);
                 line_values[(j * 8) + i] = analogRead(outputPIN[j]);
-                
                 if (line_values[(j * 8) + i] > detection_border) {
                     line_stat_[(j * 8) + i] += 1;
                     if (line_stat_[(j * 8) + i] == 2) {
@@ -52,7 +35,7 @@ void LINE::read() {
         Serial.print(line_stat[i]);
         Serial.print(" ");
     }
-    
+
     //グループ分けを始めるセンサー番号決定
     byte startNUM = 99;
     for (int i = 23; i > 0; i--) {
@@ -69,7 +52,7 @@ void LINE::read() {
     int pack_NUM = 0;
     total_x = 0;
     total_y = 0;
-    
+
     //グループ分けをし、グループごとの角度を求める
     for (int i = startNUM; i < startNUM + 24; i++) {
         byte pLine = i % 24;
@@ -88,13 +71,12 @@ void LINE::read() {
             }
         }
     }
-    
+
     for (int i = 0; i < 4; i++) {
         Serial.print(pack_degs[i]);
         Serial.print(" ");
     }
 
-    
     if (pack_NUM != 0) { //検知しているしてるかを試す
         smallest = 999;
         smallest_pack = 99;
@@ -111,10 +93,10 @@ void LINE::read() {
             }
         }
 
-        point1_ = 999; 
-        point2_ = 999; 
-        point3_ = 999;   
-        point4_ = 999; 
+        point1_ = 999;
+        point2_ = 999;
+        point3_ = 999;
+        point4_ = 999;
         for (byte i = 0; i < pack_NUM; i++) {
             if (i != smallest_pack) {
                 if (point1_ == 999) {
@@ -153,7 +135,7 @@ void LINE::read() {
         int line2_theta = line2_dif / 2;
         int line_dist = line_r * cos(radians(line_theta));
         int line2_dist = line_r * cos(radians(line2_theta));
-        
+
         if (pack_NUM == 1) {
             line_azimuth = pack_degs[0];
             line_magnitude = line_r;
@@ -162,26 +144,26 @@ void LINE::read() {
             line_azimuth = line_deg;
             line_magnitude = line_dist;
             line_type = 1;
-        } else if (pack_NUM == 3) { 
+        } else if (pack_NUM == 3) {
 
             total_x = 0;
             total_y = 0;
-            
-            myvector.get_cord(line_deg, line_dist);  
+
+            myvector.get_cord(line_deg, line_dist);
             total_x += myvector.get_x();
-            total_y += myvector.get_y();         
+            total_y += myvector.get_y();
             myvector.get_cord(pack_degs[smallest], line_r);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
 
             line_azimuth = myvector.get_azimuth(total_x, total_y);
             line_magnitude = myvector.get_magnitude(total_x, total_y);
-        
+
             line_type = 2;
         } else if (pack_NUM == 4) {
             total_x = 0;
             total_y = 0;
-            
+
             myvector.get_cord(line_deg, line_dist);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
@@ -190,10 +172,10 @@ void LINE::read() {
             total_y += myvector.get_y();
 
             line_azimuth = myvector.get_azimuth(total_x , total_y);
-            line_magnitude = myvector.get_magnitude(total_x, total_y);  
+            line_magnitude = myvector.get_magnitude(total_x, total_y);
 
             line_type = 2;
-        } 
+        }
         if (avoid_azimuth == 999) {
             avoid_azimuth = (line_azimuth + 180) % 360;
         }
@@ -205,24 +187,32 @@ void LINE::read() {
         line_type = 0;
         avoid_azimuth = 999;
     }
+    bool detect = false;
+    floop(24)if(line_stat[i] == 1) {detect = true;break;}
+    return detect;
 }
 
 int LINE::get_value(byte lineNUM) {
+    read();
     return line_values[lineNUM];
 }
 
 int LINE::get_azimuth() {
+    read();
     return line_azimuth;
 }
 
 int LINE::get_avoid() {
+    read();
     return avoid_azimuth;
 }
 
 int LINE::get_magnitude() {
+    read();
     return line_magnitude;
 }
 
 int LINE::get_type() {
+    read();
     return line_type;
 }
