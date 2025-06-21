@@ -28,15 +28,17 @@ class Defense {
     public:
         void setup(void);
         void defense_(void);
-        void Dline_not(void);
+        void p1(void);
+        void keeper_dash(void);
+        void GoBackLine(void);
     private:
+    const int motor_max = 255;
     int go_ang;
+    int line_history[3][300];
+    int ball_history[3][300];
+    int line_history_index=0;
+    int ball_history_index=0;
     void MyUI(int mode);
     void MyUI_clear(void);
-    void get_vector_Ball(void);
-    void get_vector_Line(void);
-    void get_vector(void) {
-        get_vector_Ball();
-        get_vector_Line();
-    };
+    void get_vector(void);
 };

@@ -15,6 +15,7 @@
 class MyPIXEL {
     public:
         void setup(); //初期設定
+        void on();
         void brightness(int brightness); //ネオピクの明るさ調整　999にすると既定値になる
 
         //ピクセル番号は時計回りで 0~15
