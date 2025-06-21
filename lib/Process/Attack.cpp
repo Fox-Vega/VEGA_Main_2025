@@ -13,13 +13,14 @@ void Attack::attack_() {
         mypixel.closest(line.get_avoid(), 50, 255, 50, 3);
     }
     mypixel.closest(ball_dir, 255, 0, 0, 1);
-    
+
     if (line.get_magnitude() != 999) {
-        mymotor.run(line.get_avoid(), 130, 0);
+        mymotor.run(line.get_avoid(), 150, 0);
     } else if (ball.get_value(99) != 0) {
         ball.read();
         ball_dir = ball.get_azimuth();
-        if (ball_dir < b_r1_deg || ball_dir > (360 - b_r1_deg)) {
+
+        if (abs((ball_dir + 180) % 360 - 180) < b_r1_deg) {
             //if ((ball.get_magnitude() > ball_catch[0] && ball.get_magnitude() < ball_catch[1]) || catch_stat == 1) {
             //    catch_stat = 1;
             //    attack.b_p4();
@@ -39,25 +40,26 @@ void Attack::attack_() {
 }
 
 void Attack::b_p1() {
-    int ball_azimuth = ball.get_azimuth();
-    if (ball.get_azimuth() > 180) {
-        ball_azimuth = ball.get_azimuth() - 360;
-    }
-    movedir = ball_azimuth * appraoch_value;
-    movedir = (movedir + 360) % 360;
-    mymotor.run(movedir, b_r1speed, 0);
+    movedir = ((ball_dir + 180) % 360 - 180) * appraoch_value + 360;
+    mymotor.run(movedir % 360, b_r1speed, 0);
 }
 
 void Attack::b_p2() {
-    movedir = ball.get_azimuth() + degrees(asin(constrain(brr / (ball.get_magnitude() * 1.6), -1, 1)));
-    movedir %= 360;
-    mymotor.run(movedir, b_r2speed, 0);
+    if (ball.get_azimuth() < 180) {
+        movedir = ball.get_azimuth() + degrees(asin(constrain(brr / (ball.get_magnitude() * 1.6), -1, 1)));
+    } else {
+        movedir = ball.get_azimuth() - degrees(asin(constrain(brr / (ball.get_magnitude() * 1.6), -1, 1))) + 360;
+    }
+    mymotor.run(movedir % 360, b_r2speed, 0);
 }
 
 void Attack::b_p3() {
-    movedir = ball.get_azimuth() + (90 + (brr - ball.get_magnitude()) * 90 / brr);
-    movedir %= 360;
-    mymotor.run(movedir, b_r3speed, 0);
+    if (ball.get_azimuth() < 180) {
+        movedir = ball.get_azimuth() + (90 + (brr - ball.get_magnitude()) * 90 / brr);
+    } else {
+        movedir = ball.get_azimuth() - (90 + (brr - ball.get_magnitude()) * 90 / brr) + 360;
+    }
+    mymotor.run(movedir % 360, b_r3speed, 0);
 }
 
 void Attack::b_p4() {

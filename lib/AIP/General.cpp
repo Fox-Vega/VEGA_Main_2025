@@ -20,6 +20,7 @@ void General::setup() {
 }
 
 void General::startup() {
+    mymotor.free();
     mypixel.brightness(999);
     phase = 1;
     while (phase < 4) {

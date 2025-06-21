@@ -48,6 +48,10 @@ void LINE::read() {
             }
         }
     }
+    for (int i = 0; i < 24; i++) {
+        Serial.print(line_stat[i]);
+        Serial.print(" ");
+    }
     
     //グループ分けを始めるセンサー番号決定
     byte startNUM = 99;
@@ -56,6 +60,9 @@ void LINE::read() {
             startNUM = i + 1;
         }
     }
+    Serial.print("/");
+    Serial.print(startNUM);
+    Serial.print(" ");
 
 
     bool pack_NOW = 0;
@@ -82,33 +89,24 @@ void LINE::read() {
         }
     }
     
+    for (int i = 0; i < 4; i++) {
+        Serial.print(pack_degs[i]);
+        Serial.print(" ");
+    }
+
+    
     if (pack_NUM != 0) { //検知しているしてるかを試す
         smallest = 999;
         smallest_pack = 99;
         if (pack_NUM == 3) {
-            int pack_dif = 0;
-            int pack_deg = 0;
-
-            pack_dif = (pack_degs[1] - pack_degs[0] + 360) % 360;
-            pack_deg = (pack_degs[0] + pack_dif / 2) % 360;
-            dif[0] = (pack_degs[2] + pack_deg + 360) % 360;
-
-            pack_dif = (pack_degs[2] - pack_degs[1] + 360) % 360;
-            pack_deg = (pack_degs[1] + pack_dif / 2) % 360;
-            dif[1] = (pack_degs[0] + pack_deg + 360) % 360;
-
-            pack_dif = (pack_degs[0] - pack_degs[2] + 360) % 360;
-            pack_deg = (pack_degs[2] + pack_dif / 2) % 360;
-            dif[2] = (pack_degs[1] + pack_deg + 360) % 360;
-
-            for (byte i = 0; i < 3; i++) {
-                nerror = dif[i] % 90;
-                if (nerror > 45) {
-                    nerror -= 90;
+            for (byte i = 0; i < pack_NUM + 1; i++) {
+                nerror[i] = pack_degs[i] % 90;
+                if (nerror[i] > 45) {
+                    nerror[i] -= 90;
                 }
-                if (smallest_pack > nerror) {
+                if (smallest_pack > nerror[i]) {
                     smallest = i;
-                    smallest_pack = nerror;
+                    smallest_pack = nerror[i];
                 }
             }
         }
@@ -198,6 +196,9 @@ void LINE::read() {
         } 
         if (avoid_azimuth == 999) {
             avoid_azimuth = (line_azimuth + 180) % 360;
+        }
+        if ((line_azimuth - avoid_azimuth + 360) % 360 < 90) {
+            avoid_azimuth = line_azimuth;
         }
     } else {
         line_azimuth = 0;

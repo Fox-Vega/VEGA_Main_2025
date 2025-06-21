@@ -13,7 +13,7 @@ class LINE {
         int get_type();
 
     private:
-        const int detection_border = 300;
+        const int detection_border = 270;
 
         int total_x;
         int total_y;
@@ -41,7 +41,7 @@ class LINE {
         int smallest = 0;
         int smallest_pack = 999;
         int line_type;
-        int nerror;
+        int nerror[4];
         int pack_degs[4];
         const int line_r = 11;
         int line_values[24];

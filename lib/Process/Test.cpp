@@ -4,6 +4,8 @@
 #include "Process.h"
 #include "AIP.h"
 
+bool isPixelActive = false; // pixel() 実行中フラグ
+
 void Test::test_() {
     mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_toggle() == 1) {
@@ -78,17 +80,24 @@ void Test::input() {
     } else {
         mybuzzer.stop();
     }
-    mypixel.multi(0, 15, 255, 255, 255);
-    line.read();
-    mypixel.closest(line.get_avoid(), 0, 255, 0, 5);
+    // if (line.get_magnitude() != 999) {
+    //     int line_azimuth = line.get_azimuth() + 180;
+    //     line_azimuth %= 360;
+    //     mypixel.closest(line_azimuth, 50, 255, 50, 3);
+    // }
 
-    ball.read();
+    mypixel.multi(0, 15, 255, 255, 255);
+
+    line.read();
+    mypixel.closest(line.get_azimuth(), 0, 255, 0, 5);
+    
     int goal_azimuth = 0 - gam.get_azimuth();
     if (goal_azimuth < 0) {
         goal_azimuth += 360;
     }
-    mypixel.closest(goal_azimuth, 255, 0, 100, 3); //常に前を向き続ける
+    mypixel.closest(goal_azimuth, 255, 0, 100, 3);
 
+    ball.read();
     if (ball.get_value(99) != 0) {
         int value = constrain(ball.get_value(99) / 4, 0, 255); //入力値を0~255の範囲に制限
         int r, g, b;
@@ -100,6 +109,7 @@ void Test::input() {
 }
 
 void Test::motor() {
+    mymotor.stabilization(0);
     if (myswitch.check_tact() == 9) {
         if (motor_mode != 1) {
             motor_speed = 0;
@@ -110,30 +120,15 @@ void Test::motor() {
         old_motor_mode = motor_mode;
         old_motor_speed = motor_speed;
         delay(200);
-    } else if (myswitch.check_tact() == 5 || myswitch.check_tact() == 6 || myswitch.check_tact() == 14) {
-        bool switched = 0;
-        unsigned long a = millis();
-        while ((int)(millis() - a) < 400) {
-            if (myswitch.check_tact() == 6 || myswitch.check_tact() == 14) {
-                stabilization += 1;
-                stabilization %= 2;
-                if (motor_speed != 0) {
-                    motor_mode = 2;
-                    motor_speed = 0;
-                }
-                switched = 1;
-            }
+    } else if (myswitch.check_tact() == 5) {
+        if (motor_speed != 0) {
+            motor_mode = 2;
+            motor_speed = 0;
+        } else {
+            motor_mode = old_motor_mode;
+            motor_speed = old_motor_speed;
         }
-        if (switched == 0) {
-            if (motor_speed != 0) {
-                motor_mode = 2;
-                motor_speed = 0;
-            } else {
-                motor_mode = old_motor_mode;
-                motor_speed = old_motor_speed;
-            }
-        }
-        delay(100);
+        delay(200);
     } else if (myswitch.check_tact() == 1) {
         if (motor_mode != 3) {
             motor_speed = 0;
@@ -145,17 +140,8 @@ void Test::motor() {
         motor_mode = 3;
         delay(200);
     }
-
-    if (stabilization == 1 && motor_mode != 2) {
-        mymotor.stabilization(1);
-    } else {
-        mymotor.stabilization(0);
-    }
-
     if (motor_mode == 1) {
         mymotor.run(0, motor_speed, 0);
-    } else if (motor_mode == 2) {
-        mymotor.run(0, 0, 0);
     } else if (motor_mode == 3) {
         mymotor.run(180, motor_speed, 0);
     }
@@ -176,27 +162,15 @@ void Test::motor() {
             }
         }
     } else {
-        if (stabilization == 0) {
-            mypixel.uni(0, 255, 0, 255);
-            mypixel.uni(2, 255, 0, 255);
-            mypixel.uni(4, 255, 0, 255);
-            mypixel.uni(6, 255, 0, 255);
-            mypixel.uni(8, 255, 0, 255);
-            mypixel.uni(10, 255, 0, 255);
-            mypixel.uni(12, 255, 0, 255);
-            mypixel.uni(14, 255, 0, 255);
-        } else {
-            mypixel.uni(0, 255, 255, 0);
-            mypixel.uni(2, 255, 255, 0);
-            mypixel.uni(4, 255, 255, 0);
-            mypixel.uni(6, 255, 255, 0);
-            mypixel.uni(8, 255, 255, 0);
-            mypixel.uni(10, 255, 255, 0);
-            mypixel.uni(12, 255, 255, 0);
-            mypixel.uni(14, 255, 255, 0);
-        }
+        mypixel.uni(0, 255, 0, 255);
+        mypixel.uni(2, 255, 0, 255);
+        mypixel.uni(4, 255, 0, 255);
+        mypixel.uni(6, 255, 0, 255);
+        mypixel.uni(8, 255, 0, 255);
+        mypixel.uni(10, 255, 0, 255);
+        mypixel.uni(12, 255, 0, 255);
+        mypixel.uni(14, 255, 0, 255);
     }
-    delay(100);
 }
 
 void Test::processing() {
@@ -207,12 +181,12 @@ void Test::processing() {
         delay(200);
     }
 
-    Serial.print(9);  // 最初にデータの個数を送信　１
+    Serial.print(8);  // 最初にデータの個数を送信
     Serial.print(",");
 
-    Serial.print(serial_mode); //２
+    Serial.print(serial_mode);
     Serial.print(",");
-    Serial.print((gam.get_azimuth() + 180) % 360);  // 改行を追加して1行ずつ送信　３
+    Serial.print((gam.get_azimuth() + 180) % 360);  // 改行を追加して1行ずつ送信
     Serial.print(",");
 
     // gam.get_cord();
@@ -220,9 +194,9 @@ void Test::processing() {
     // Serial.print(",");
     // Serial.print(430 - gam.get_y());
     // Serial.print(",");
-    Serial.print(582); //４
+    Serial.print(582);
     Serial.print(",");
-    Serial.print(430); //５
+    Serial.print(430);
     Serial.print(",");
 
     ball.read();
@@ -234,15 +208,15 @@ void Test::processing() {
         Serial.print(0);
         Serial.print(",");
     } else {
-        Serial.print(myvector.get_x()); //５
+        Serial.print(myvector.get_x() * 0.5);
         Serial.print(",");
-        Serial.print(-myvector.get_y()); //６
+        Serial.print(-myvector.get_y() * 0.5);
         Serial.print(",");
     }
     attack.attack_();
-    Serial.print(mymotor.get_azimuth()); //７
+    Serial.print(mymotor.get_azimuth());
     Serial.print(",");
-    Serial.println(mymotor.get_magnitude()); //８
+    Serial.println(mymotor.get_magnitude());
     // Serial.print(",");
     
 
