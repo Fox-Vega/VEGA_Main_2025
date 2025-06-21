@@ -49,7 +49,7 @@ void Defense::defense_(void){
                 else {go_ang=0;}
                 mypixel.closest(go_ang,0,0,255,7);
                 mypixel.closest(Dline.azimuth,0,255, 0, 3);
-                mymotor.run(Dline.azimuth,255/(22-Dline.dist), 0);
+                mymotor.run(go_ang,255/(22-Dline.dist), 0);
             }
         }
         else mymotor.run(180,75, 0); //ラインが検出されていない場合は停止
