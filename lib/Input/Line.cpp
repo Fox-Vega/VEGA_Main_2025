@@ -193,26 +193,21 @@ bool LINE::read() {
 }
 
 int LINE::get_value(byte lineNUM) {
-    read();
     return line_values[lineNUM];
 }
 
 int LINE::get_azimuth() {
-    read();
     return line_azimuth;
 }
 
 int LINE::get_avoid() {
-    read();
     return avoid_azimuth;
 }
 
 int LINE::get_magnitude() {
-    read();
     return line_magnitude;
 }
 
 int LINE::get_type() {
-    read();
     return line_type;
 }

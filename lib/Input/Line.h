@@ -5,7 +5,7 @@
 class LINE {
     public:
         void setup();
-        void read();
+        bool read();
         int get_value(byte lineNUM);
         int get_azimuth();
         int get_avoid();
@@ -13,6 +13,8 @@ class LINE {
         int get_type();
 
     private:
+        #define floop_id(var, n) for(int var = 0; var < (n); ++var)
+        #define floop(n) for(size_t i = 0; i < n; ++i)
         const int detection_border = 300;
 
         int total_x;
@@ -40,14 +42,14 @@ class LINE {
         int line_stat_[24];
         int line_stat[24];
         const byte Reader[8][3] = {
-            {1, 1, 1}, 
-            {1, 1, 0}, 
-            {1, 0, 1}, 
-            {1, 0, 0}, 
-            {0, 1, 1}, 
-            {0, 1, 0}, 
-            {0, 0, 1}, 
-            {0, 0, 0}, 
+            {1, 1, 1},
+            {1, 1, 0},
+            {1, 0, 1},
+            {1, 0, 0},
+            {0, 1, 1},
+            {0, 1, 0},
+            {0, 0, 1},
+            {0, 0, 0},
         };
         const int line_degs[24] = {0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345};
 };
