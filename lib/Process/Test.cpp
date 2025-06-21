@@ -79,17 +79,16 @@ void Test::input() {
         mybuzzer.stop();
     }
     mypixel.multi(0, 15, 255, 255, 255);
+    line.read();
+    mypixel.closest(line.get_avoid(), 0, 255, 0, 5);
+
     ball.read();
     int goal_azimuth = 0 - gam.get_azimuth();
     if (goal_azimuth < 0) {
         goal_azimuth += 360;
     }
-    mypixel.closest(goal_azimuth, 255, 0, 100, 3);
-    // if (line.get_magnitude() != 999) {
-    //     int line_azimuth = line.get_azimuth() + 180;
-    //     line_azimuth %= 360;
-    //     mypixel.closest(line_azimuth, 50, 255, 50, 3);
-    // }
+    mypixel.closest(goal_azimuth, 255, 0, 100, 3); //常に前を向き続ける
+
     if (ball.get_value(99) != 0) {
         int value = constrain(ball.get_value(99) / 4, 0, 255); //入力値を0~255の範囲に制限
         int r, g, b;
@@ -98,8 +97,6 @@ void Test::input() {
         b = 0;
         mypixel.closest(ball.get_azimuth(), r, g, b, 1);
     }
-    line.read();
-    mypixel.closest(line.get_azimuth(), 0, 255, 0, 5);
 }
 
 void Test::motor() {
@@ -210,12 +207,12 @@ void Test::processing() {
         delay(200);
     }
 
-    Serial.print(8);  // 最初にデータの個数を送信
+    Serial.print(9);  // 最初にデータの個数を送信　１
     Serial.print(",");
 
-    Serial.print(serial_mode);
+    Serial.print(serial_mode); //２
     Serial.print(",");
-    Serial.print((gam.get_azimuth() + 180) % 360);  // 改行を追加して1行ずつ送信
+    Serial.print((gam.get_azimuth() + 180) % 360);  // 改行を追加して1行ずつ送信　３
     Serial.print(",");
 
     // gam.get_cord();
@@ -223,9 +220,9 @@ void Test::processing() {
     // Serial.print(",");
     // Serial.print(430 - gam.get_y());
     // Serial.print(",");
-    Serial.print(582);
+    Serial.print(582); //４
     Serial.print(",");
-    Serial.print(430);
+    Serial.print(430); //５
     Serial.print(",");
 
     ball.read();
@@ -237,15 +234,15 @@ void Test::processing() {
         Serial.print(0);
         Serial.print(",");
     } else {
-        Serial.print(myvector.get_x() * 0.5);
+        Serial.print(myvector.get_x()); //５
         Serial.print(",");
-        Serial.print(-myvector.get_y() * 0.5);
+        Serial.print(-myvector.get_y()); //６
         Serial.print(",");
     }
     attack.attack_();
-    Serial.print(mymotor.get_azimuth());
+    Serial.print(mymotor.get_azimuth()); //７
     Serial.print(",");
-    Serial.println(mymotor.get_magnitude());
+    Serial.println(mymotor.get_magnitude()); //８
     // Serial.print(",");
     
 

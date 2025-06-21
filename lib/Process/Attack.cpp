@@ -6,12 +6,19 @@
 
 void Attack::attack_() {
     // mymotor.run(1, 200, 0);
-    if (1 == false) {
-        //pass
+    line.read();
+    ball.read();
+
+    if (line.get_magnitude() != 999) {
+        mypixel.closest(line.get_avoid(), 50, 255, 50, 3);
+    }
+    mypixel.closest(ball_dir, 255, 0, 0, 1);
+    
+    if (line.get_magnitude() != 999) {
+        mymotor.run(line.get_avoid(), 130, 0);
     } else if (ball.get_value(99) != 0) {
         ball.read();
         ball_dir = ball.get_azimuth();
-        mypixel.closest(ball_dir, 255, 0, 0, 0);
         if (ball_dir < b_r1_deg || ball_dir > (360 - b_r1_deg)) {
             //if ((ball.get_magnitude() > ball_catch[0] && ball.get_magnitude() < ball_catch[1]) || catch_stat == 1) {
             //    catch_stat = 1;
@@ -29,9 +36,6 @@ void Attack::attack_() {
         catch_stat = 0;
         mymotor.run(0, 0, 0);
     }
-    // Serial.println(catch_stat);
-    // Serial.println(ball.get_magnitude());
-    mypixel.closest(mymotor.get_azimuth(), 255, 50, 255, 3);
 }
 
 void Attack::b_p1() {
@@ -45,7 +49,7 @@ void Attack::b_p1() {
 }
 
 void Attack::b_p2() {
-    movedir = ball.get_azimuth() + degrees(asin(constrain(brr / (ball.get_magnitude() * 1.4), -1, 1)));
+    movedir = ball.get_azimuth() + degrees(asin(constrain(brr / (ball.get_magnitude() * 1.6), -1, 1)));
     movedir %= 360;
     mymotor.run(movedir, b_r2speed, 0);
 }

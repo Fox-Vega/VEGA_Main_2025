@@ -28,17 +28,26 @@ class LINE {
         int line_azimuth;
         int avoid_azimuth;
         int line_magnitude;
+        int line_dif;
+        int line2_dif;
+        int line_deg;
+        int line2_deg;
+        int line_theta;
+        int line2_theta;
+        int line_dist;
+        int line2_dist;
         const uint8_t selectPIN[3] = {22, 24, 26};
         const uint8_t outputPIN[3] = {A9, A11, A13};
         int smallest = 0;
         int smallest_pack = 999;
         int line_type;
-        int nerror[4];
+        int nerror;
         int pack_degs[4];
         const int line_r = 11;
         int line_values[24];
         int line_stat_[24];
         int line_stat[24];
+        short dif[3];
         const byte Reader[8][3] = {
             {1, 1, 1}, 
             {1, 1, 0}, 

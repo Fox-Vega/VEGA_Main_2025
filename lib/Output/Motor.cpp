@@ -13,12 +13,14 @@ void MyMOTOR::setup() {
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     motor_azimuth = movement_azimuth;
     motor_magnitude = power_ * pwmscale;
-    motor_stat = 1;
+    bool motor_stat = 1;
+    bool motor_running = 1;
     dir_azimuth %= 360;
     int difix = 0;
-    if (motor_stabilization) {
-        difix = mymotor.difix(dir_azimuth);
-    }
+    // if (motor_stabilization && old_motor_stat == 1) {
+    //     difix = mymotor.difix(dir_azimuth);
+    // }
+    difix = mymotor.difix(dir_azimuth);
 
     for (int i = 0; i < 4; i++) {
         if (motor_move == 1) {
@@ -35,9 +37,19 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
                 analogWrite(motor_PIN1[i], abs(power));
                 analogWrite(motor_PIN2[i], 0); 
             }
+            if (abs(power) < motor_border) {
+                motor_stat = 0;
+            }
+            if (abs(power) < motor_keep) {
+                motor_running = 0;
+            }
         }
     }
-    old_motor_stat = motor_stat;
+    if (old_motor_stat == 0) {
+        old_motor_stat = motor_stat;
+    } else if (motor_running == 0) {
+        old_motor_stat = 0;
+    }
 }
 
 int MyMOTOR::difix(int target_azimuth) {
