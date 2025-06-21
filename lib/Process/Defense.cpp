@@ -21,8 +21,6 @@
 #define floop_id(var, n) for(int var = 0; var < (n); ++var)
 #define floop_id_R(var, n) for(int var = (n); var > 0; --var)
 
-extern LINE line;
-
 data Dball;
 data Dline;
 
@@ -33,13 +31,19 @@ void Defense::setup(void){
 
 void Defense::defense_(void){
     setup();
-    while(true){
-        get_vector();
-        if(Dline.detect){
-        }
-        else{
-        };
+    while (1)
+    {
+        ball.read();
     }
+    printf_s("\n\n");
+
+    // while(true){
+    //     get_vector();
+    //     if(Dline.detect){
+    //     }
+    //     else{
+    //     };
+    // }
 }
 
 void Defense::get_vector(void)
@@ -47,7 +51,7 @@ void Defense::get_vector(void)
     // ライン情報の取得
     line.read();
     Dline.azimuth = line.get_azimuth();
-    Dline.dist = line.get_magnitude() * 900 / 22; // lineの距離をballと同じ900スケールに正規化
+    Dline.dist = line.get_magnitude() * 900 / 22;
     Dline.detect = (Dline.dist == 999) ? false : true;
     Dline.x = Dline.dist * cos(radians(Dline.azimuth));
     Dline.y = Dline.dist * sin(radians(Dline.azimuth));
@@ -77,7 +81,7 @@ void Defense::get_vector(void)
     Dball.y = myvector.get_y();
 
     // 履歴保存（history 0:detect 1:azimuth 2:dist）
-if (ball_history_index >= 300) {
+    if (ball_history_index >= 300) {
     // 古い順に削除（前に詰める）
     for (int i = 1; i < 300; i++) {
         ball_history[0][i - 1] = ball_history[0][i];

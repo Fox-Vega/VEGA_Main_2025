@@ -1,9 +1,5 @@
 #pragma once
-
 #include <Arduino.h>
-
-#define linedist 10
-#define linecentor 0.1
 
 struct data
 {
@@ -23,6 +19,7 @@ class Defense {
         void keeper_dash(void);
         void GoBackLine(void);
     private:
+    const int ball_max = 900;
     const int motor_max = 255;
     int go_ang;
     int line_history[3][300];
