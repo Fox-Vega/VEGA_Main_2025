@@ -28,9 +28,16 @@ void Defense::defense_(void){
     Serial.println("Defense Process Start");
     general.setup();
     while(true){
-        if(line.read())
+        if(line.read()!=true){
+            get_vector();
+            int go_ang = 999; //目標角度
+            int line_mod =
+        }
+        else Dline_not();
     }
 }
+
+
 
 // void Defense::MyUI(int mode){
 //     mode=0;
@@ -101,7 +108,7 @@ void Defense::defense_(void){
 void Defense::get_vector_Line(void)
 {
     Dline.azimuth = line.get_azimuth();
-    Dline.dist = line.get_magnitude();
+    Dline.dist = line.get_magnitude()*900/22;
     Dline.detect = (line.read()) ? false : true; // ラインが検出されていない場合はfalse
     Dline.x = Dline.dist * cos(radians(Dline.azimuth));
     Dline.y = Dline.dist * sin(radians(Dline.azimuth));

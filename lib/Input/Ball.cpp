@@ -60,7 +60,7 @@ void BALL::read() {
     delay(5);
 }
 
-int BALL::get_value(short ballNUM) { 
+int BALL::get_value(short ballNUM) {
     byte sensorNUM = ballNUM;
     if (ballNUM == 99) {
         sensorNUM = max_ballNUM;
@@ -79,7 +79,6 @@ int BALL::get_magnitude() {
         sum += history[i];
     }
 
-    
     int magnitude = sum / filter_size;
     magnitude = max_value - magnitude;
     old_magnitude = magnitude; // 過去の値を更新
