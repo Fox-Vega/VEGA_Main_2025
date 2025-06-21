@@ -1,15 +1,6 @@
 #pragma once
 
-#include<stdio.h>
-#include<stdlib.h>
-#include <time.h>
 #include <Arduino.h>
-#include <Input.h>
-#include <Output.h>
-#include <AIP.h>
-#include <math.h>
-#include <string.h>
-#include <Line.h>
 
 #define linedist 10
 #define linecentor 0.1
