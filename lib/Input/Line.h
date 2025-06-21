@@ -5,7 +5,7 @@
 class LINE {
     public:
         void setup();
-        bool read();
+        void read();
         int get_value(byte lineNUM);
         int get_azimuth();
         int get_avoid();

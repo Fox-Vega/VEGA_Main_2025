@@ -8,9 +8,11 @@ void LINE::setup(void) {
     }
 }
 
-bool LINE::read() {
+void LINE::read() {
     //リセット
-    floop(4)pack_degs[i] = 0;
+    for(int i = 4; i < 4; i++) {
+        pack_degs[i] = 0;
+    }
     for (int i = 0; i < 24; i++) {
         line_stat_[i] = 0;
         line_stat[i] = 0;
@@ -20,9 +22,22 @@ bool LINE::read() {
     for (int k = 0; k < 2; k++) {
         for (int j = 0; j < 3; j++) {
             for (int i = 0; i < 8; i++) {
-                for (int l = 0; l < 3; l++) {
-                    digitalWrite(selectPIN[l], Reader[i][l] ? HIGH : LOW);
+                if (Reader[i][0] == 0) {
+                    digitalWrite(selectPIN[0], LOW);
+                } else {
+                    digitalWrite(selectPIN[0], HIGH);
                 }
+                if (Reader[i][1] == 0) {
+                    digitalWrite(selectPIN[1], LOW);
+                } else {
+                    digitalWrite(selectPIN[1], HIGH);
+                }
+                if (Reader[i][2] == 0) {
+                    digitalWrite(selectPIN[2], LOW);
+                } else {
+                    digitalWrite(selectPIN[2], HIGH);
+                }
+
                 line_values[(j * 8) + i] = analogRead(outputPIN[j]);
                 if (line_values[(j * 8) + i] > detection_border) {
                     line_stat_[(j * 8) + i] += 1;
@@ -33,10 +48,6 @@ bool LINE::read() {
             }
         }
     }
-    for (int i = 0; i < 24; i++) {
-        Serial.print(line_stat[i]);
-        Serial.print(" ");
-    }
 
     //グループ分けを始めるセンサー番号決定
     byte startNUM = 99;
@@ -45,10 +56,6 @@ bool LINE::read() {
             startNUM = i + 1;
         }
     }
-    Serial.print("/");
-    Serial.print(startNUM);
-    Serial.print(" ");
-
 
     bool pack_NOW = 0;
     int pack_NUM = 0;
@@ -72,11 +79,6 @@ bool LINE::read() {
                 total_y = 0;
             }
         }
-    }
-
-    for (int i = 0; i < 4; i++) {
-        Serial.print(pack_degs[i]);
-        Serial.print(" ");
     }
 
     if (pack_NUM != 0) { //検知しているしてるかを試す
@@ -147,7 +149,6 @@ bool LINE::read() {
             line_magnitude = line_dist;
             line_type = 1;
         } else if (pack_NUM == 3) {
-
             total_x = 0;
             total_y = 0;
 
@@ -190,9 +191,6 @@ bool LINE::read() {
         line_type = 0;
         avoid_azimuth = 999;
     }
-    bool detect = false;
-    floop(24)if(line_stat[i] == 1) {detect = true;break;}
-    return detect;
 }
 
 int LINE::get_value(byte lineNUM) {
