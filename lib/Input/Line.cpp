@@ -20,7 +20,9 @@ bool LINE::read() {
     for (int k = 0; k < 2; k++) {
         for (int j = 0; j < 3; j++) {
             for (int i = 0; i < 8; i++) {
-                floop_id(l,3)(selectPIN[l],Reader[i][l]? HIGH:LOW);
+                for (int l = 0; l < 3; l++) {
+                    digitalWrite(selectPIN[l], Reader[i][l] ? HIGH : LOW);
+                }
                 line_values[(j * 8) + i] = analogRead(outputPIN[j]);
                 if (line_values[(j * 8) + i] > detection_border) {
                     line_stat_[(j * 8) + i] += 1;
