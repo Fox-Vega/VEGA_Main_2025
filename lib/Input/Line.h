@@ -5,7 +5,7 @@
 class LINE {
     public:
         void setup();
-        bool read();
+        void read();
         int get_value(byte lineNUM);
         int get_azimuth();
         int get_avoid();
@@ -13,9 +13,7 @@ class LINE {
         int get_type();
 
     private:
-        #define floop_id(var, n) for(int var = 0; var < (n); ++var)
-        #define floop(n) for(size_t i = 0; i < n; ++i)
-        const int detection_border = 300;
+        const int detection_border = 270;
 
         int total_x;
         int total_y;
@@ -30,6 +28,14 @@ class LINE {
         int line_azimuth;
         int avoid_azimuth;
         int line_magnitude;
+        int line_dif;
+        int line2_dif;
+        int line_deg;
+        int line2_deg;
+        int line_theta;
+        int line2_theta;
+        int line_dist;
+        int line2_dist;
         const uint8_t selectPIN[3] = {22, 24, 26};
         const uint8_t outputPIN[3] = {A9, A11, A13};
         int smallest = 0;
@@ -41,6 +47,7 @@ class LINE {
         int line_values[24];
         int line_stat_[24];
         int line_stat[24];
+        short dif[3];
         const byte Reader[8][3] = {
             {1, 1, 1},
             {1, 1, 0},

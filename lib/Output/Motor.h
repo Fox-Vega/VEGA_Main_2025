@@ -17,20 +17,21 @@ class MyMOTOR {
 
     private:
         //調整用
-        const float kp = 0.8; //比例 を大きくすると応答が速くなるが、振動しやすくなる
-        const float kd = 15.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい
-        const int pwmlimit = 110;
+        const float kp = 0.9; //比例 を大きくすると応答が速くなるが、振動しやすくなる
+        const float kd = 0.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい 46.0 - 6/20 - 少しずつ増やす。
+        const int pwmlimit = 120;
         const float pwmscale = 1.0;
         // const int motor_border = 90; //モーターが回っていると認識するボーダー
-        const int motor_border = 100; //モーターが回っていると認識するボーダー
+        const int motor_border = 90; //モーターが回っていると認識するボーダー
+        const int motor_keep = 40; //モーターが回り続けられる値
         const float pwm_tweaker[2] = {1.0, 1.0}; //1つ目が＋（右回り）　2つ目が-（左回り）　姿勢制御
 
+        int motor_power_[4];
         int prev_azimuth;
         int motor_azimuth;
         int motor_magnitude;
         bool PoMi; //正・負判断用
         bool motor_move = 1;
-        bool motor_stat;
         bool motor_stabilization;
         bool old_motor_stat;
         short power; //進行方向を参考した場合のモーター出力
