@@ -89,7 +89,9 @@ void Test::input() {
     mypixel.multi(0, 15, 255, 255, 255);
 
     line.read();
-    mypixel.closest(line.get_azimuth(), 0, 255, 0, 5);
+    if (line.get_magnitude() != 999) {
+        mypixel.closest(line.get_azimuth(), 0, 255, 0, 5);
+    }
     
     int goal_azimuth = 0 - gam.get_azimuth();
     if (goal_azimuth < 0) {

@@ -20,6 +20,7 @@ class General {
         //スタート座標　通常　左奥　右奥　右前　左前　
         int startcords_x[5] = {0, -145, 145, 145, -145}; //スタート位置のx座標
         int startcords_y[5] = {0, 257, 257, -257, -257}; //スタート位置のy座標
+        bool standby = 0;
         short startPIXELs[5] = {99, 14, 2, 6, 10};
         float lastbuzzer;
 };

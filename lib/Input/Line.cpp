@@ -1,5 +1,6 @@
 #include "line.h"
 #include "AIP.h"
+#include "Input.h"
 
 void LINE::setup(void) {
     for (int i = 0; i < 3; i++) {
@@ -10,7 +11,7 @@ void LINE::setup(void) {
 
 void LINE::read() {
     //リセット
-    for(int i = 4; i < 4; i++) {
+    for(int i = 0; i < 4; i++) {
         pack_degs[i] = 0;
     }
     for (int i = 0; i < 24; i++) {
@@ -49,6 +50,11 @@ void LINE::read() {
         }
     }
 
+    for (int i = 0; i < 24; i++) {
+        Serial.print(line_stat[i]);
+        Serial.print(" ");
+    }
+
     //グループ分けを始めるセンサー番号決定
     byte startNUM = 99;
     for (int i = 23; i > 0; i--) {
@@ -56,6 +62,7 @@ void LINE::read() {
             startNUM = i + 1;
         }
     }
+
 
     bool pack_NOW = 0;
     int pack_NUM = 0;
@@ -80,6 +87,14 @@ void LINE::read() {
             }
         }
     }
+
+    Serial.print("/ ");
+
+    for (int i = 0; i < 4; i++) {
+        Serial.print(pack_degs[i]);
+        Serial.print(" ");
+    }
+
 
     if (pack_NUM != 0) { //検知しているしてるかを試す
         smallest = 999;
@@ -179,18 +194,21 @@ void LINE::read() {
 
             line_type = 2;
         }
+
         if (avoid_azimuth == 999) {
             avoid_azimuth = (line_azimuth + 180) % 360;
+            favoid_azimuth = avoid_azimuth;
         }
-        if ((line_azimuth - avoid_azimuth + 360) % 360 < 90) {
-            avoid_azimuth = line_azimuth;
-        }
+
     } else {
         line_azimuth = 0;
         line_magnitude = 999;
         line_type = 0;
         avoid_azimuth = 999;
     }
+
+    Serial.print("/ ");
+    Serial.println(line_azimuth);
 }
 
 int LINE::get_value(byte lineNUM) {

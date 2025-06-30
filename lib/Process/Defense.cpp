@@ -135,7 +135,7 @@ void Defense::get_vector_Line(void)
 {
     Dline.azimuth = line.get_azimuth();
     Dline.dist = line.get_magnitude()*900/22;
-    Dline.detect = (line.read()) ? false : true; // ラインが検出されていない場合はfalse
+    // Dline.detect = (line.read()) ? false : true; // ラインが検出されていない場合はfalse
     Dline.x = Dline.dist * cos(radians(Dline.azimuth));
     Dline.y = Dline.dist * sin(radians(Dline.azimuth));
 }

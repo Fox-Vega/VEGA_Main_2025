@@ -111,7 +111,6 @@ void MyBUZZER::start(int BUZZERnote, int BUZZERduration) {
 
 void MyBUZZER::stop() {
     noTone(BUZZER_PIN);
-    delay(10);
 }
 
 void MyBUZZER::preset(int BUZZERpresetNUM) {

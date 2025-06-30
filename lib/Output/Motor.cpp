@@ -11,29 +11,22 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
+    motor_azimuth = movement_azimuth;
     motor_magnitude = power_ * pwmscale;
 
     int difix = 0;
-    if (motor_stabilization) { 
+    if (motor_stabilization) {
         difix = mymotor.difix(dir_azimuth);
     }
 
-    int h = 0;
-    if (motor_move == 1) {
-        for (int i = 0; i < 4; i++) {
-            int azimuth_motor = (movement_azimuth - motor_degrees[i] + 1080) % 360;
-            myvector.get_cord(azimuth_motor, motor_magnitude);
+    for (int i = 0; i < 4; i++) {
+        if (motor_move == 1) {
+            int azimuth_motor = (movement_azimuth - motor_degrees[i] + 360) % 360;
 
-            motor_power_[i] = myvector.get_x() - difix;
-            if (abs(motor_power_[i]) > h) {
-                h = motor_power_[i];
-            }
-        }
-        for (int i = 0; i < 4; i++) {
-            float motor_power = motor_power_[i] / h;
-            power = (h * motor_power) + difix;
-
-            power = constrain(power, -pwmlimit, pwmlimit);
+            // 座標計算
+            myvector.get_cord(azimuth_motor, power_);
+            int power = myvector.get_x();
+            power = constrain(power + difix, -pwmlimit, pwmlimit);
             if (power >= 0) {
                 analogWrite(motor_PIN1[i], 0);
                 analogWrite(motor_PIN2[i], abs(power)); 

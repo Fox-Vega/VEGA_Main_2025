@@ -21,8 +21,17 @@ void General::setup() {
 
 void General::startup() {
     mymotor.free();
+    mybuzzer.stop();
     mypixel.brightness(999);
-    phase = 1;
+
+    if (standby == 0) {
+        phase = 1;
+        mode = 0;
+    } else {
+        phase = 3;
+    }
+
+
     while (phase < 4) {
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
@@ -125,6 +134,7 @@ void General::startup() {
     mypixel.show();
     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
     mymotor.stabilization(1);
+    mymotor.move(1);
 }
 
 int General::get_mode() {

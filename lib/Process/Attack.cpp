@@ -11,12 +11,16 @@ void Attack::attack_() {
 
     if (line.get_magnitude() != 999) {
         mypixel.closest(line.get_avoid(), 50, 255, 50, 3);
+        mybuzzer.start(330, 999);
     }
     mypixel.closest(ball_dir, 255, 0, 0, 1);
 
+
     if (line.get_magnitude() != 999) {
-        mymotor.run(line.get_avoid(), 150, 0);
+        mymotor.run(line.get_avoid(), avoid_speed, 0);
+        mybuzzer.start(330, 999);
     } else if (ball.get_value(99) != 0) {
+        mybuzzer.stop();
         ball.read();
         ball_dir = ball.get_azimuth();
 
@@ -34,6 +38,7 @@ void Attack::attack_() {
             attack.b_p3();
         }
     } else {
+        mybuzzer.stop();
         catch_stat = 0;
         mymotor.run(0, 0, 0);
     }
@@ -41,7 +46,8 @@ void Attack::attack_() {
 
 void Attack::b_p1() {
     movedir = ((ball_dir + 180) % 360 - 180) * appraoch_value + 360;
-    mymotor.run(movedir % 360, b_r1speed, 0);
+    movedir %= 360;
+    mymotor.run(movedir, b_r1speed, 0);
 }
 
 void Attack::b_p2() {
@@ -50,7 +56,8 @@ void Attack::b_p2() {
     } else {
         movedir = ball.get_azimuth() - degrees(asin(constrain(brr / (ball.get_magnitude() * 1.6), -1, 1))) + 360;
     }
-    mymotor.run(movedir % 360, b_r2speed, 0);
+    movedir %= 360;
+    mymotor.run(movedir, b_r2speed, 0);
 }
 
 void Attack::b_p3() {
@@ -59,7 +66,8 @@ void Attack::b_p3() {
     } else {
         movedir = ball.get_azimuth() - (90 + (brr - ball.get_magnitude()) * 90 / brr) + 360;
     }
-    mymotor.run(movedir % 360, b_r3speed, 0);
+    movedir %= 360;
+    mymotor.run(movedir, b_r3speed, 0);
 }
 
 void Attack::b_p4() {
