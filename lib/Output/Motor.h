@@ -21,10 +21,8 @@ class MyMOTOR {
         const float kd = 500.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい 50.0 - 6/22 - 少しずつ増やす。
         const int pwmlimit = 120;
         const float pwmscale = 1.0;
-        // const int motor_border = 90; //モーターが回っていると認識するボーダー
-        const int motor_border = 90; //モーターが回っていると認識するボーダー
-        const int motor_keep = 40; //モーターが回り続けられる値
-        const float pwm_tweaker[2] = {1.0, 1.0}; //1つ目が＋（右回り）　2つ目が-（左回り）　姿勢制御
+        
+    
 
         int motor_power_[4];
         int prev_azimuth;
@@ -34,10 +32,13 @@ class MyMOTOR {
         bool motor_move = 1;
         bool motor_stabilization;
         bool old_motor_stat;
+        short h;
         short power; //進行方向を参考した場合のモーター出力
+        short max_power;
         short motorPWM; //機体動作用入力値
         short difixPWM; //姿勢制御用入力値
         short azimuth_motor; //モーターから見た進行方向の方位角
+        float pp;
         double integral;
         double prev_error;
         double derivative;

@@ -3,6 +3,7 @@
 #include "Output.h"
 #include "AIP.h"
 
+
 void BALL::setup() {
     for (int i = 0; i < NUMball; i++) {
         pinMode(ballPINs[i], INPUT);
