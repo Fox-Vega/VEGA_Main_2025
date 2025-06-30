@@ -6,27 +6,27 @@ class Attack {
     public:
         void attack_();
 
-        //p1　はゴールへの突進
-        //p2　はボールへ向かう
-        //p3　は接線でボールの周りをまわる
-        //p4　はゴール突進
         void b_p1();
         void b_p2();
         void b_p3();
         void b_p4();
     private:
+        //p1　はボールを捕獲ゾーンに入れる
+        //p2　は接線を計算してボールへ向かう
+        //p3　は接線でボールの周りをまわる
+        //p4　はゴールムーブ
+
         // 調整
-        float appraoch_value = 1.4; //ボールの回り込みパターン１の際の角度増加値
-        const int brr = 400; //回り込み半径
+        const float appraoch_value = 1.4; //ボールの回り込みパターン１の際の角度増加値
+        const float crecent_p2 = 1.6; //p2回り込み半径増幅値
+        const int brr = 400; //p3回り込み半径
         const int b_r1_deg = 25; //パターン１を行う範囲(片側)
         const short b_r1speed = 100; //ボールの回り込みパターン１の速度
         const short b_r2speed = 90; //ボールの回り込みパターン２の速度
         const short b_r3speed = 90; //ボールの回り込みパターン３の速度
-        const short avoid_speed = 115; //ライン回避
         const short b_r4speed = 0;
-        const short ball_catch[2] = {200, 260}; //１番目が最低値200　２番目が最高値260
+        const short avoid_speed = 115; //ライン回避
 
-        const int goalcord = 300;
 
         bool catch_stat = 0;
         short ball_dir;
