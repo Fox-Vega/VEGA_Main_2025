@@ -58,7 +58,6 @@ void BALL::read() {
     } else {
         history[0] = 0;
     }
-    delay(5);
 }
 
 int BALL::get_value(short ballNUM) {
