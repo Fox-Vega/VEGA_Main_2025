@@ -1,6 +1,7 @@
 #include "Defense.h"
 #include "Input.h"
 #include "Output.h"
+#include "AIP.h"
 //#include "okomeonigiri.h"
 
 #define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
@@ -15,55 +16,85 @@
 
 //A for loop that allows you to easily use a for loop with just a single number.
 #define floop(n) for(size_t i = 0; i < n; ++i)
+#define floop_R(n) for(size_t i = n; i> cn; --i)
 //A floop that allows you to use any variable name you like as the loop counter.
 #define floop_id(var, n) for(int var = 0; var < (n); ++var)
-
-extern LINE line;
+#define floop_id_R(var, n) for(int var = (n); var > 0; --var)
 
 data Dball;
 data Dline;
 
-void Defense::defense_(void){
+void Defense::setup(void){
     mybuzzer.start(1000, 200);
-    Serial.println("Defense Process Start");
     general.setup();
-    while(true){
-        line.read();
-        get_vector();
-        mypixel.closest(Dline.azimuth, 255, 0, 0, 1);
-        if(line.get_type()==1&&Dline.detect==true)
-        {
-            mybuzzer.start(1000, 200);
-            if(Dline.dist>2)
-            {
-                int ang_fb=0;//foward/backward
-                if((Dline.azimuth>90&&Dline.azimuth<270))
-                {
-                    ang_fb=1;//backward
-                }
-                else
-                {
-                    ang_fb=-1;//forward
-                }
-                if(ang_fb==0) {go_ang=180;}
-                else {go_ang=0;}
-                mypixel.closest(go_ang,0,0,255,7);
-                mypixel.closest(Dline.azimuth,0,255, 0, 3);
-                mymotor.run(go_ang,255/(22-Dline.dist), 0);
-            }
-        }
-        else mymotor.run(180,75, 0); //ラインが検出されていない場合は停止
-
-        // if(line.read()!=true){
-        //     get_vector();
-        //     int go_ang = 999; //目標角度
-        //     int line_mod =
-        // }
-        // else Dline_not();
-    }
 }
 
+void Defense::defense_(void){
+    setup();
+    while (1)
+    {
+        ball.read();
+    }
+    printf_s("\n\n");
 
+    // while(true){
+    //     get_vector();
+    //     if(Dline.detect){
+    //     }
+    //     else{
+    //     };
+    // }
+}
+
+void Defense::get_vector(void)
+{
+    // ライン情報の取得
+    line.read();
+    Dline.azimuth = line.get_azimuth();
+    Dline.dist = line.get_magnitude() * 900 / 22;
+    Dline.detect = (Dline.dist == 999) ? false : true;
+    Dline.x = Dline.dist * cos(radians(Dline.azimuth));
+    Dline.y = Dline.dist * sin(radians(Dline.azimuth));
+
+    // 履歴保存（history 0:detect 1:azimuth 2:dist）
+    if (line_history_index >= 300) {
+        // 古い順に削除（前に詰める）
+        for (int i = 1; i < 300; i++) {
+            line_history[0][i - 1] = line_history[0][i];
+            line_history[1][i - 1] = line_history[1][i];
+            line_history[2][i - 1] = line_history[2][i];
+        }
+        line_history_index = 299;
+    }
+    line_history[0][line_history_index] = Dline.detect;
+    line_history[1][line_history_index] = Dline.azimuth;
+    line_history[2][line_history_index] = Dline.dist;
+    line_history_index++;
+
+    // ボール情報の取得
+    ball.read();
+    Dball.azimuth = ball.get_azimuth();
+    Dball.dist = (int)ball.get_magnitude();
+    Dball.detect = ((int)ball.get_magnitude() > 0) ? true : false;
+    myvector.get_cord(Dball.azimuth, Dball.dist);
+    Dball.x = myvector.get_x();
+    Dball.y = myvector.get_y();
+
+    // 履歴保存（history 0:detect 1:azimuth 2:dist）
+    if (ball_history_index >= 300) {
+    // 古い順に削除（前に詰める）
+    for (int i = 1; i < 300; i++) {
+        ball_history[0][i - 1] = ball_history[0][i];
+        ball_history[1][i - 1] = ball_history[1][i];
+        ball_history[2][i - 1] = ball_history[2][i];
+    }
+    ball_history_index = 299;
+}
+ball_history[0][ball_history_index] = Dball.detect;
+ball_history[1][ball_history_index] = Dball.azimuth;
+ball_history[2][ball_history_index] = Dball.dist;
+ball_history_index++;
+}
 
 // void Defense::MyUI(int mode){
 //     mode=0;
@@ -129,23 +160,3 @@ void Defense::defense_(void){
 //         printf_s("\n");
 //     }
 // }
-
-
-void Defense::get_vector_Line(void)
-{
-    Dline.azimuth = line.get_azimuth();
-    Dline.dist = line.get_magnitude()*900/22;
-    // Dline.detect = (line.read()) ? false : true; // ラインが検出されていない場合はfalse
-    Dline.x = Dline.dist * cos(radians(Dline.azimuth));
-    Dline.y = Dline.dist * sin(radians(Dline.azimuth));
-}
-
-void Defense::get_vector_Ball(void)
-{
-    Dball.azimuth = ball.get_azimuth();
-    Dball.dist = (int)ball.get_magnitude();
-    Dball.detect = ((int)ball.get_magnitude() > 0) ? true : false;
-    myvector.get_cord(Dball.azimuth, Dball.dist);
-    Dball.x = myvector.get_x();
-    Dball.y = myvector.get_y();
-}

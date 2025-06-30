@@ -16,6 +16,10 @@ void MyPIXEL::setup() {
     PIXEL.show();
 }
 
+void MyPIXEL::on() {
+    usePIXEL = 1; //ネオピクセルの使用有無
+}
+
 void MyPIXEL::brightness(int brightness) {
     if (brightness == 999) {
         PIXEL.setBrightness(PIXELbrightness);
