@@ -17,12 +17,22 @@ void General::setup() {
     mypixel.multi(0, 15, 255, 255, 255);
     mypixel.show();
     mybuzzer.preset(1);
+    standby = 0;
 }
 
 void General::startup() {
     mymotor.free();
+    mybuzzer.stop();
     mypixel.brightness(999);
-    phase = 1;
+
+    if (standby == 0) {
+        phase = 1;
+        mode = 0;
+    } else {
+        phase = 3;
+    }
+
+
     while (phase < 4) {
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
@@ -103,6 +113,7 @@ void General::startup() {
                 } else if (tact_pressed == 9) {
                     //機能無し
                 } else if (toggle_stat == 1) {//スタート！
+                    standby = 1;
                     phase = 4;
                 } else {
                     if (mode == 3) {
@@ -125,6 +136,7 @@ void General::startup() {
     mypixel.show();
     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
     mymotor.stabilization(1);
+    mymotor.move(1);
 }
 
 int General::get_mode() {

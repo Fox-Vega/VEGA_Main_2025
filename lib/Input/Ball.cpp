@@ -3,6 +3,7 @@
 #include "Output.h"
 #include "AIP.h"
 
+
 void BALL::setup() {
     for (int i = 0; i < NUMball; i++) {
         pinMode(ballPINs[i], INPUT);
@@ -57,7 +58,6 @@ void BALL::read() {
     } else {
         history[0] = 0;
     }
-    delay(5);
 }
 
 int BALL::get_value(short ballNUM) {
@@ -82,6 +82,10 @@ int BALL::get_magnitude() {
     int magnitude = sum / filter_size;
     magnitude = max_value - magnitude;
     old_magnitude = magnitude; // 過去の値を更新
+
+    Serial.print(">Ball_mag:");
+    Serial.println(magnitude);
+    
     return magnitude;
 }
 

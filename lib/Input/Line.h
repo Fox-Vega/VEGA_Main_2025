@@ -13,7 +13,7 @@ class LINE {
         int get_type();
 
     private:
-        const int detection_border = 270;
+        const int detection_border = 360;
 
         int total_x;
         int total_y;
@@ -27,6 +27,7 @@ class LINE {
         int point4_;
         int line_azimuth;
         int avoid_azimuth;
+        int favoid_azimuth;
         int line_magnitude;
         int line_dif;
         int line2_dif;
@@ -47,6 +48,7 @@ class LINE {
         int line_values[24];
         int line_stat_[24];
         int line_stat[24];
+        bool over;
         short dif[3];
         const byte Reader[8][3] = {
             {1, 1, 1},

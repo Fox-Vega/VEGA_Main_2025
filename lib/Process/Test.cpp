@@ -10,8 +10,8 @@ void Test::test_() {
     mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_toggle() == 1) {
         for (int i = 0; i < 4; i++) {
-            analogWrite(motor_PIN1[i], 255);
-            analogWrite(motor_PIN2[i], 255);
+            analogWrite(motor_PIN1[i], 0);
+            analogWrite(motor_PIN2[i], 0);
         }
         if (myswitch.check_tact() == 1) {
             t_mode -= 1;
@@ -89,7 +89,9 @@ void Test::input() {
     mypixel.multi(0, 15, 255, 255, 255);
 
     line.read();
-    mypixel.closest(line.get_azimuth(), 0, 255, 0, 5);
+    if (line.get_magnitude() != 999) {
+        mypixel.closest(line.get_azimuth(), 0, 255, 0, 5);
+    }
     
     int goal_azimuth = 0 - gam.get_azimuth();
     if (goal_azimuth < 0) {

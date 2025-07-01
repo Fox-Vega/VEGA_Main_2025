@@ -11,29 +11,44 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
-    motor_magnitude = power_ * pwmscale;
+    h = 0;
+    max_power = constrain(power_, -pwmlimit, pwmlimit);
+
+    motor_azimuth = movement_azimuth;
+    motor_magnitude = max_power * pwmscale;
 
     int difix = 0;
-    if (motor_stabilization) { 
+    if (motor_stabilization) {
         difix = mymotor.difix(dir_azimuth);
     }
 
-    int h = 0;
-    if (motor_move == 1) {
-        for (int i = 0; i < 4; i++) {
-            int azimuth_motor = (movement_azimuth - motor_degrees[i] + 1080) % 360;
-            myvector.get_cord(azimuth_motor, motor_magnitude);
+    for (int i = 0; i < 4; i++) {
+        int azimuth_motor = (movement_azimuth - motor_degrees[i] + 360) % 360;
 
-            motor_power_[i] = myvector.get_x() - difix;
-            if (abs(motor_power_[i]) > h) {
-                h = motor_power_[i];
-            }
+        // 座標計算
+        myvector.get_cord(azimuth_motor, max_power - abs(difix));
+        motor_power_[i] = myvector.get_x();
+        Serial.print(motor_power_[i]);
+        Serial.print(" ");
+        if (motor_power_[i] > h) {
+            h = motor_power_[i];
         }
-        for (int i = 0; i < 4; i++) {
-            float motor_power = motor_power_[i] / h;
-            power = (h * motor_power) + difix;
+    }
 
-            power = constrain(power, -pwmlimit, pwmlimit);
+    for (int i = 0; i < 4; i++) {
+        pp = motor_power_[i] / h;
+
+        Serial.print(" /");
+        Serial.print(pp);
+        Serial.print("/ ");
+
+        power = ((max_power - abs(difix)) * pp) + difix;
+        power = constrain(power, -pwmlimit, pwmlimit);
+
+        if (motor_move == 1) {
+            Serial.print(power);
+            Serial.print(" ");
+            
             if (power >= 0) {
                 analogWrite(motor_PIN1[i], 0);
                 analogWrite(motor_PIN2[i], abs(power)); 
@@ -43,6 +58,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
             }
         }
     }
+    Serial.println();
 }
 
 int MyMOTOR::difix(int target_azimuth) {
@@ -57,11 +73,9 @@ int MyMOTOR::difix(int target_azimuth) {
 
     // 微分先行型PD制御：積分項を削除
     int pwm = kd * derivative + kp * error;  // 順序：微分項が先行
-    if (pwm >= 0) {
-        pwm *= pwm_tweaker[0];
-    } else {
-        pwm *= pwm_tweaker[1];
-    }
+
+    pwm = constrain(pwm, -pwmlimit, pwmlimit);
+
     lastupdate = millis();
 
     return pwm;
