@@ -31,19 +31,11 @@ void Defense::setup(void){
 
 void Defense::defense_(void){
     setup();
-    while (1)
+    while(1)
     {
-        ball.read();
+        grt_vector();
+        mymotor.run
     }
-    printf_s("\n\n");
-
-    // while(true){
-    //     get_vector();
-    //     if(Dline.detect){
-    //     }
-    //     else{
-    //     };
-    // }
 }
 
 void Defense::get_vector(void)
