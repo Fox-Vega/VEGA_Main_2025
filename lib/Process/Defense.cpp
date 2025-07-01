@@ -33,8 +33,8 @@ void Defense::defense_(void){
     setup();
     while(1)
     {
-        grt_vector();
-        mymotor.run
+        get_vector();
+        mymotor.run(Dline.azimuth.);
     }
 }
 
