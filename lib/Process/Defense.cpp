@@ -31,19 +31,37 @@ void Defense::setup(void){
 
 void Defense::defense_(void){
     setup();
-    while (1)
-    {
-        ball.read();
+    while(true){
+        get_vector();
+        if(Dline.detect){
+            if(line.get_type()==1){
+                p1();
+            }
+        }
+        else{
+            while(1){
+                GoBackLine();
+                get_vector();
+                if(Dline.detect)break;
+            }
+        };
     }
-    printf_s("\n\n");
+}
 
-    // while(true){
-    //     get_vector();
-    //     if(Dline.detect){
-    //     }
-    //     else{
-    //     };
-    // }
+void Defense::p1(void){
+    int move_x=0;
+    int move_y=0;
+}
+
+void Defense::GoBackLine(){
+    int last_line_time=0;
+    for(byte i=0; i<50;i++){
+        if(line_history[0][50-i]==1){
+            last_line_time=50-1;
+            break;
+        }
+    }
+    mymotor.run(line_history[1][last_line_time],120,0);
 }
 
 void Defense::get_vector(void)
@@ -51,20 +69,20 @@ void Defense::get_vector(void)
     // ライン情報の取得
     line.read();
     Dline.azimuth = line.get_azimuth();
-    Dline.dist = line.get_magnitude() * 900 / 22;
+    Dline.dist = line.get_magnitude() * ball_max / 22;
     Dline.detect = (Dline.dist == 999) ? false : true;
     Dline.x = Dline.dist * cos(radians(Dline.azimuth));
     Dline.y = Dline.dist * sin(radians(Dline.azimuth));
 
     // 履歴保存（history 0:detect 1:azimuth 2:dist）
-    if (line_history_index >= 300) {
+    if (line_history_index >= 50) {
         // 古い順に削除（前に詰める）
-        for (int i = 1; i < 300; i++) {
+        for (int i = 1; i < 50; i++) {
             line_history[0][i - 1] = line_history[0][i];
             line_history[1][i - 1] = line_history[1][i];
             line_history[2][i - 1] = line_history[2][i];
         }
-        line_history_index = 299;
+        line_history_index = 49;
     }
     line_history[0][line_history_index] = Dline.detect;
     line_history[1][line_history_index] = Dline.azimuth;
@@ -81,14 +99,14 @@ void Defense::get_vector(void)
     Dball.y = myvector.get_y();
 
     // 履歴保存（history 0:detect 1:azimuth 2:dist）
-    if (ball_history_index >= 300) {
+    if (ball_history_index >= 50) {
     // 古い順に削除（前に詰める）
-    for (int i = 1; i < 300; i++) {
+    for (int i = 1; i < 50; i++) {
         ball_history[0][i - 1] = ball_history[0][i];
         ball_history[1][i - 1] = ball_history[1][i];
         ball_history[2][i - 1] = ball_history[2][i];
     }
-    ball_history_index = 299;
+    ball_history_index = 49;
 }
 ball_history[0][ball_history_index] = Dball.detect;
 ball_history[1][ball_history_index] = Dball.azimuth;
