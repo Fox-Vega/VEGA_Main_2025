@@ -16,10 +16,6 @@ void MyPIXEL::setup() {
     PIXEL.show();
 }
 
-void MyPIXEL::on() {
-    usePIXEL = 1; //ネオピクセルの使用有無
-}
-
 void MyPIXEL::brightness(int brightness) {
     if (brightness == 999) {
         PIXEL.setBrightness(PIXELbrightness);
@@ -29,37 +25,43 @@ void MyPIXEL::brightness(int brightness) {
 }
 
 void MyPIXEL::uni(int PIXELNUM, int red, int green, int blue) {
-    PIXELNUM %= 16;
-    PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red, green, blue));
+    if (usePIXEL == 1) {
+        PIXELNUM %= 16;
+        PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red, green, blue));
+    }
 }
 
 void MyPIXEL::multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue) {
-    for (int i = PIXELNUMstart; i <= PIXELNUMend; i++) {
-        int a = i;
-        a %= 16;
-        mypixel.uni(a, red, green, blue);
+    if (usePIXEL == 1) {
+        for (int i = PIXELNUMstart; i <= PIXELNUMend; i++) {
+            int a = i;
+            a %= 16;
+            mypixel.uni(a, red, green, blue);
+        }
     }
 }
 
 void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
-    float ClosestPIXEL = (azimuth / 360.0f * NUMPIXEL); //浮動小数点演算を明確化
-    ClosestPIXEL = round(ClosestPIXEL); //標準の丸め関数を使用
+    if (usePIXEL == 1) {
+        float ClosestPIXEL = (azimuth / 360.0f * NUMPIXEL); //浮動小数点演算を明確化
+        ClosestPIXEL = round(ClosestPIXEL); //標準の丸め関数を使用
 
-    //ピクセルの範囲補正
-    if (ClosestPIXEL >= NUMPIXEL) {
-        ClosestPIXEL = 0;
-    }
+        //ピクセルの範囲補正
+        if (ClosestPIXEL >= NUMPIXEL) {
+            ClosestPIXEL = 0;
+        }
 
-    //numが偶数の場合も正しく範囲を決定
-    PIXELNUMstart = ClosestPIXEL - (num / 2);
-    if (PIXELNUMstart < 0) {
-        PIXELNUMstart += NUMPIXEL;
-    }
+        //numが偶数の場合も正しく範囲を決定
+        PIXELNUMstart = ClosestPIXEL - (num / 2);
+        if (PIXELNUMstart < 0) {
+            PIXELNUMstart += NUMPIXEL;
+        }
 
-    for (int i = 0; i < num; i++) {
-        int j = (PIXELNUMstart + i) % 16; //インデックス補正を動的に処理
+        for (int i = 0; i < num; i++) {
+            int j = (PIXELNUMstart + i) % 16; //インデックス補正を動的に処理
 
-        mypixel.uni(j, red, green, blue);
+            mypixel.uni(j, red, green, blue);
+        }
     }
 }
 
@@ -90,8 +92,10 @@ void MyPIXEL::shows() {
 }
 
 void MyPIXEL::clear() {
-    for (int i = 0; i < NUMPIXEL; i++) {
-        PIXEL.setPixelColor(i, PIXEL.Color(0, 0, 0));
+    if (usePIXEL == 1) {
+        for (int i = 0; i < NUMPIXEL; i++) {
+            PIXEL.setPixelColor(i, PIXEL.Color(0, 0, 0));
+        }
     }
 }
 

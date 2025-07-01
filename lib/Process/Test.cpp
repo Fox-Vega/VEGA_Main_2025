@@ -10,8 +10,8 @@ void Test::test_() {
     mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_toggle() == 1) {
         for (int i = 0; i < 4; i++) {
-            analogWrite(motor_PIN1[i], 255);
-            analogWrite(motor_PIN2[i], 255);
+            analogWrite(motor_PIN1[i], 0);
+            analogWrite(motor_PIN2[i], 0);
         }
         if (myswitch.check_tact() == 1) {
             t_mode -= 1;

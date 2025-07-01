@@ -11,6 +11,7 @@ void MyMOTOR::setup() {
 }
 
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
+    h = 0;
     max_power = constrain(power_, -pwmlimit, pwmlimit);
 
     motor_azimuth = movement_azimuth;
@@ -27,17 +28,27 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         // 座標計算
         myvector.get_cord(azimuth_motor, max_power - abs(difix));
         motor_power_[i] = myvector.get_x();
+        Serial.print(motor_power_[i]);
+        Serial.print(" ");
         if (motor_power_[i] > h) {
             h = motor_power_[i];
         }
     }
+
     for (int i = 0; i < 4; i++) {
         pp = motor_power_[i] / h;
+
+        Serial.print(" /");
+        Serial.print(pp);
+        Serial.print("/ ");
+
         power = ((max_power - abs(difix)) * pp) + difix;
+        power = constrain(power, -pwmlimit, pwmlimit);
 
         if (motor_move == 1) {
-            power = constrain(power, -pwmlimit, pwmlimit);
-
+            Serial.print(power);
+            Serial.print(" ");
+            
             if (power >= 0) {
                 analogWrite(motor_PIN1[i], 0);
                 analogWrite(motor_PIN2[i], abs(power)); 
@@ -47,6 +58,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
             }
         }
     }
+    Serial.println();
 }
 
 int MyMOTOR::difix(int target_azimuth) {

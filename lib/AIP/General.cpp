@@ -17,6 +17,7 @@ void General::setup() {
     mypixel.multi(0, 15, 255, 255, 255);
     mypixel.show();
     mybuzzer.preset(1);
+    standby = 0;
 }
 
 void General::startup() {
@@ -112,6 +113,7 @@ void General::startup() {
                 } else if (tact_pressed == 9) {
                     //機能無し
                 } else if (toggle_stat == 1) {//スタート！
+                    standby = 1;
                     phase = 4;
                 } else {
                     if (mode == 3) {
