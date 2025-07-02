@@ -17,8 +17,7 @@ void loop() {
         if (general.get_mode() == 1) {
             attack.attack_();
         } else if (general.get_mode() == 2) {
-            // defense.defense_();
-            mymotor.run(0, 0, 0);
+            defense.defense_();
         }
     } else if (general.get_mode() == 3) {
         test.test_();
