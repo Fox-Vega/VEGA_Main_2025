@@ -21,24 +21,24 @@ void LINE::read() {
 
     //読み取り
     for (int k = 0; k < 2; k++) {
-        for (int j = 0; j < 3; j++) {
-            for (int i = 0; i < 8; i++) {
-                if (Reader[i][0] == 0) {
-                    digitalWrite(selectPIN[0], LOW);
-                } else {
-                    digitalWrite(selectPIN[0], HIGH);
-                }
-                if (Reader[i][1] == 0) {
-                    digitalWrite(selectPIN[1], LOW);
-                } else {
-                    digitalWrite(selectPIN[1], HIGH);
-                }
-                if (Reader[i][2] == 0) {
-                    digitalWrite(selectPIN[2], LOW);
-                } else {
-                    digitalWrite(selectPIN[2], HIGH);
-                }
+        for (int i = 0; i < 8; i++) {
+            if (Reader[i][0] == 0) {
+                digitalWrite(selectPIN[0], LOW);
+            } else {
+                digitalWrite(selectPIN[0], HIGH);
+            }
+            if (Reader[i][1] == 0) {
+                digitalWrite(selectPIN[1], LOW);
+            } else {
+                digitalWrite(selectPIN[1], HIGH);
+            }
+            if (Reader[i][2] == 0) {
+                digitalWrite(selectPIN[2], LOW);
+            } else {
+                digitalWrite(selectPIN[2], HIGH);
+            }
 
+            for (int j = 0; j < 3; j++) {
                 line_values[(j * 8) + i] = analogRead(outputPIN[j]);
                 if (line_values[(j * 8) + i] > detection_border) {
                     line_stat_[(j * 8) + i] += 1;
@@ -50,12 +50,6 @@ void LINE::read() {
         }
     }
 
-    for (int i = 0; i < 24; i++) {
-        Serial.print(line_stat[i]);
-        Serial.print(" ");
-    }
-
-    //グループ分けを始めるセンサー番号決定
     byte startNUM = 99;
     for (int i = 23; i > 0; i--) {
         if (line_stat[i] == 0 && startNUM == 99) {
@@ -63,13 +57,11 @@ void LINE::read() {
         }
     }
 
-
-    bool pack_NOW = 0;
-    int pack_NUM = 0;
+    //グループ分け
     total_x = 0;
     total_y = 0;
-
-    //グループ分けをし、グループごとの角度を求める
+    int pack_NUM = 0;
+    bool pack_NOW = 0;
     for (int i = startNUM; i < startNUM + 24; i++) {
         byte pLine = i % 24;
         if (line_stat[pLine] == 1) {
@@ -86,13 +78,6 @@ void LINE::read() {
                 total_y = 0;
             }
         }
-    }
-
-    Serial.print("/ ");
-
-    for (int i = 0; i < 4; i++) {
-        Serial.print(pack_degs[i]);
-        Serial.print(" ");
     }
 
 
