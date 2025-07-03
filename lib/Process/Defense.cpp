@@ -31,7 +31,6 @@ void Defense::defense_(void){
 void Defense::p1(void){
     int move_x=0;
     int move_y=0;
-    // ...動作内容は未実装...
 }
 
 void Defense::GoBackLine(){
