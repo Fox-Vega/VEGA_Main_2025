@@ -136,8 +136,8 @@ void MyBUZZER::preset(int BUZZERpresetNUM) {
             }
             delay(100);
         } else if (BUZZERpresetNUM == 1) {
-            int Melody_Preset1[] = {260, 240, 325};
-            int NoteDurs[] = {7, 7, 7};
+            int Melody_Preset1[] = {350, 360, 370};
+            int NoteDurs[] = {10, 10, 10};
             int Size_Melody_Preset1 = sizeof(Melody_Preset1)/sizeof(Melody_Preset1[0]);
             for (int playing_Note = 0; playing_Note < Size_Melody_Preset1; playing_Note++) {
                     int noteDur = 1000 / NoteDurs[playing_Note];
