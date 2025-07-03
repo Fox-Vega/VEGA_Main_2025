@@ -180,9 +180,15 @@ void LINE::read() {
             line_type = 2;
         }
 
-        if (avoid_azimuth == 999) {
-            avoid_azimuth = (line_azimuth + 180) % 360;
-            favoid_azimuth = avoid_azimuth;
+        avoid_azimuth_ = (line_azimuth + 180) % 360;
+        if (favoid_azimuth == 999) {
+            favoid_azimuth = avoid_azimuth_;
+        }
+
+        line_dif = ((avoid_azimuth_ - favoid_azimuth) + 180) % 360 - 180;
+
+        if (abs(line_dif) < 120) {
+            avoid_azimuth = avoid_azimuth_;
         }
 
     } else {
@@ -190,6 +196,7 @@ void LINE::read() {
         line_magnitude = 999;
         line_type = 0;
         avoid_azimuth = 999;
+        favoid_azimuth = 999;
     }
 
     Serial.print("/ ");

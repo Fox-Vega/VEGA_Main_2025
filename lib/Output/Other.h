@@ -26,6 +26,8 @@ class MyPIXEL {
         void show();
         void shows();
         void clear(); //全消灯
+        void clears();
+        void use_pixel(bool stat);
 
     private:
         //調整用
@@ -33,6 +35,7 @@ class MyPIXEL {
 
         int step_num = 0;
         int PIXELNUMstart;
+        bool Test = 0;
         bool usePIXEL;
         const byte PIXELPIN = 45; // Pin where the NeoPixel ring is connected
         const byte NUMPIXEL = 16; // NUMber of pixels in the strip

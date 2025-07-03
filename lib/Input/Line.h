@@ -27,6 +27,7 @@ class LINE {
         int point4_;
         int line_azimuth;
         int avoid_azimuth;
+        int avoid_azimuth_;
         int favoid_azimuth;
         int line_magnitude;
         int line_dif;

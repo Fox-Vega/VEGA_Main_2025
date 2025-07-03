@@ -24,6 +24,7 @@ void General::startup() {
     mymotor.free();
     mybuzzer.stop();
     mypixel.brightness(999);
+    mypixel.use_pixel(0);
 
     if (standby == 0) {
         phase = 1;
@@ -34,10 +35,10 @@ void General::startup() {
 
 
     while (phase < 4) {
+        mypixel.clears();
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
         if (phase < 3) {
-            mypixel.clear();
             if (mode == 1) {
                 mypixel.multi(0, 15, 255, 130, 130);//アタック
             } else if (mode == 2) {
@@ -62,19 +63,21 @@ void General::startup() {
             if (ball.get_value(99) != 0) {
                 mypixel.closest(ball.get_azimuth(), 80, 0, 255, 1);
             }
-            mypixel.show();
         }
         switch (phase) {
             case 1://選択フェーズ
                 if (tact_pressed == 1){//アタック
+                    mypixel.use_pixel(0);
                     mode = 1;
-                    phase = 2;
                     mybuzzer.start(500, 200);
+                    phase = 2;
                 } else if (tact_pressed == 5) {//ディフェンス
+                    mypixel.use_pixel(0);
                     mode = 2;
-                    phase = 2;
                     mybuzzer.start(500, 200);
+                    phase = 2;
                 } else if (tact_pressed == 9) {//テスト
+                    mypixel.use_pixel(1);
                     mode = 3;
                     phase = 2;
                     mybuzzer.start(500, 200);
@@ -86,6 +89,7 @@ void General::startup() {
                     phase = 1;
                     startcord = 0;
                     mode = 0;
+                    mypixel.use_pixel(0);
                     mybuzzer.start(100, 500);
                 } else if (tact_pressed == 5) {
                     if (startcord < 4) {
@@ -118,10 +122,6 @@ void General::startup() {
                 } else {
                     if (mode == 3) {
                         mypixel.rainbow();
-                        mypixel.shows();
-                    } else {
-                        mypixel.rainbow();
-                        mypixel.show();
                     }
                     if (millis() - lastbuzzer > 500) {
                         mybuzzer.start(400, 50);
@@ -130,6 +130,7 @@ void General::startup() {
                 }
                 break;
         }
+        mypixel.shows();
     }
     mypixel.brightness(100);
     mypixel.clear();
