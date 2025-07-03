@@ -2,7 +2,7 @@
 
 
 #include <Other.h>
-#include <motor.h>
+#include <Motor.h>
 
 
 extern MyPIXEL mypixel;
