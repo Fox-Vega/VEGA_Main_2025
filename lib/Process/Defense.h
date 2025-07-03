@@ -11,6 +11,9 @@ class Defense {
         void keeper_dash(void);
         void GoBackLine(void);
     private:
+        //調整
+
+
         // ball
         int ball_azimuth;
         int ball_dist;
