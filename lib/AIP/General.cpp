@@ -24,7 +24,6 @@ void General::startup() {
     mymotor.free();
     mybuzzer.stop();
     mypixel.brightness(999);
-    mypixel.use_pixel(0);
 
     if (standby == 0) {
         phase = 1;
@@ -67,17 +66,14 @@ void General::startup() {
         switch (phase) {
             case 1://選択フェーズ
                 if (tact_pressed == 1){//アタック
-                    mypixel.use_pixel(0);
                     mode = 1;
                     mybuzzer.start(500, 200);
                     phase = 2;
                 } else if (tact_pressed == 5) {//ディフェンス
-                    mypixel.use_pixel(0);
                     mode = 2;
                     mybuzzer.start(500, 200);
                     phase = 2;
                 } else if (tact_pressed == 9) {//テスト
-                    mypixel.use_pixel(1);
                     mode = 3;
                     phase = 2;
                     mybuzzer.start(500, 200);
@@ -89,7 +85,6 @@ void General::startup() {
                     phase = 1;
                     startcord = 0;
                     mode = 0;
-                    mypixel.use_pixel(0);
                     mybuzzer.start(100, 500);
                 } else if (tact_pressed == 5) {
                     if (startcord < 4) {

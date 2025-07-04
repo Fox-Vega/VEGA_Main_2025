@@ -31,7 +31,7 @@ void Defense::defense_(void){
 void Defense::p1(void){
     int move_x=0;
     int move_y=0;
-    move_y=line_y
+    move_y=line_y;
 }
 
 void Defense::GoBackLine(){

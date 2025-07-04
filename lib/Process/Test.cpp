@@ -7,6 +7,7 @@
 bool isPixelActive = false; // pixel() 実行中フラグ
 
 void Test::test_() {
+    mypixel.use_pixel(1);
     mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_toggle() == 1) {
         for (int i = 0; i < 4; i++) {
@@ -146,6 +147,8 @@ void Test::motor() {
         mymotor.run(0, motor_speed, 0);
     } else if (motor_mode == 3) {
         mymotor.run(180, motor_speed, 0);
+    } else {
+        mymotor.free();
     }
     if (motor_mode != 2) {
         if (motor_mode == 1) {
