@@ -11,6 +11,9 @@ class Defense {
         void keeper_dash(void);
         void GoBackLine(void);
     private:
+        //調整
+
+
         // ball
         const double bmgn =1;
         const double bmmgn=0.1;

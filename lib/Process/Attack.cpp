@@ -41,7 +41,8 @@ void Attack::attack_() {
 void Attack::b_p1() {
     movedir = ((ball_dir + 180) % 360 - 180) * appraoch_value + 1080;
     movedir %= 360;
-    mymotor.run(movedir, b_r1speed, 0);
+    // mymotor.run(movedir, b_r1speed, 0);
+    mymotor.run(0, b_r1speed, 0);
 }
 
 void Attack::b_p2() {

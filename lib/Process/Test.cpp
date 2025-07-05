@@ -7,6 +7,7 @@
 bool isPixelActive = false; // pixel() 実行中フラグ
 
 void Test::test_() {
+    mypixel.use_pixel(1);
     mypixel.multi(0, 15, 255, 255, 255);
     if (myswitch.check_toggle() == 1) {
         for (int i = 0; i < 4; i++) {
@@ -90,7 +91,7 @@ void Test::input() {
 
     line.read();
     if (line.get_magnitude() != 999) {
-        mypixel.closest(line.get_azimuth(), 0, 255, 0, 5);
+        mypixel.closest(line.get_avoid(), 0, 255, 0, 5);
     }
     
     int goal_azimuth = 0 - gam.get_azimuth();
@@ -146,6 +147,8 @@ void Test::motor() {
         mymotor.run(0, motor_speed, 0);
     } else if (motor_mode == 3) {
         mymotor.run(180, motor_speed, 0);
+    } else {
+        mymotor.free();
     }
     if (motor_mode != 2) {
         if (motor_mode == 1) {
