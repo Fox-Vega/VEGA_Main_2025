@@ -139,7 +139,7 @@ void LINE::read() {
         line2_theta = line2_dif / 2;
         line_dist = line_r * cos(radians(line_theta));
         line2_dist = line_r * cos(radians(line2_theta));
-        
+
         if (pack_NUM == 1) {
             line_azimuth = pack_degs[0];
             line_magnitude = line_r;

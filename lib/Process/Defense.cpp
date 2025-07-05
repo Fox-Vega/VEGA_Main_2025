@@ -2,7 +2,6 @@
 #include "Input.h"
 #include "Output.h"
 #include "AIP.h"
-//#include "okomeonigiri.h"
 
 void Defense::setup(void){
     mybuzzer.start(1000, 200);
@@ -14,8 +13,11 @@ void Defense::defense_(void){
     while(true){
         get_vector();
         if(line_detect){
-            if(line.get_type()==1){
+            if(line.get_type()==1){//normal line
                 p1();
+            }
+            if(line.get_type()==2){//coaner line
+                p2();
             }
         }
         else{
@@ -35,6 +37,16 @@ void Defense::p1(void){
     move_x = ball_x*bmgn;
     go_ang=myvector.get_azimuth(move_x,move_y);
     mymotor.run(go_ang,ball_x*bmmgn,0);
+}
+
+void Defense::p2(void){
+    int type =999;
+    if(line_azimuth<=90)
+    else if(line_azimuth<=180)
+    else if()
+    else if()
+
+    if()
 }
 
 void Defense::GoBackLine(){
