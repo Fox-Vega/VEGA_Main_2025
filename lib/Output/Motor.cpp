@@ -48,7 +48,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         if (motor_move == 1) {
             Serial.print(power);
             Serial.print(" ");
-            
+
             if (power >= 0) {
                 analogWrite(motor_PIN1[i], 0);
                 analogWrite(motor_PIN2[i], abs(power)); 

@@ -12,6 +12,8 @@ class Defense {
         void GoBackLine(void);
     private:
         // ball
+        const double bmgn =1;
+        const double bmmgn=0.1;
         int ball_azimuth;
         int ball_dist;
         float ball_x;

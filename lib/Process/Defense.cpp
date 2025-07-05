@@ -31,7 +31,10 @@ void Defense::defense_(void){
 void Defense::p1(void){
     int move_x=0;
     int move_y=0;
-    // ...動作内容は未実装...
+    move_y = (130/22)*line_dist;
+    move_x = ball_x*bmgn;
+    go_ang=myvector.get_azimuth(move_x,move_y);
+    mymotor.run(go_ang,ball_x*bmmgn,0);
 }
 
 void Defense::GoBackLine(){
