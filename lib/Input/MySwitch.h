@@ -5,7 +5,7 @@
 class MySWITCH {
     public:
         void setup();
-        int check_tact();//タクトスイッチの状態を確認（右側が優先）　反応なしなら０
+        int check_tact();//タクトスイッチの状態を確認（加算式）　左1 中央5 右9　反応なしなら０
         int check_toggle();//トグルスイッチの状態を確認 0が奥、1が手前　反応なしなら０
 
     private:

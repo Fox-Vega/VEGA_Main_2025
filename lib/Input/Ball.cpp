@@ -38,7 +38,7 @@ void BALL::read() {
 
     // ballNUMstart の補正
     int ballNUMstart = (max_ballNUM + 14) % 16;
-    
+
     // 座標計算
     for (int i = 0; i < 5; i++) {
         int ballNUM = (ballNUMstart + i) % NUMball;
@@ -88,7 +88,7 @@ int BALL::get_magnitude() {
 
     Serial.print(">Ball_mag:");
     Serial.println(magnitude);
-    
+
     return magnitude;
 }
 

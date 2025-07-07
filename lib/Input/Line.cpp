@@ -20,8 +20,8 @@ void LINE::read() {
     }
 
     //読み取り
-    for (int k = 0; k < 2; k++) {
-        for (int i = 0; i < 8; i++) {
+    for (int k = 0; k < 2; k++) { //2回測定
+        for (int i = 0; i < 8; i++) { //8回の変更
             if (Reader[i][0] == 0) {
                 digitalWrite(selectPIN[0], LOW);
             } else {
@@ -38,11 +38,11 @@ void LINE::read() {
                 digitalWrite(selectPIN[2], HIGH);
             }
 
-            for (int j = 0; j < 3; j++) {
-                line_values[(j * 8) + i] = analogRead(outputPIN[j]);
-                if (line_values[(j * 8) + i] > detection_border) {
-                    line_stat_[(j * 8) + i] += 1;
-                    if (line_stat_[(j * 8) + i] == 2) {
+            for (int j = 0; j < 3; j++) { //3つのマルチプレクサを読む
+                line_values[(j * 8) + i] = analogRead(outputPIN[j]); //値の保存
+                if (line_values[(j * 8) + i] > detection_border) { //trueとfalseのステータスに変換
+                    line_stat_[(j * 8) + i] += 1; //仮ステータスに加算
+                    if (line_stat_[(j * 8) + i] >= 2) { //反応回数が2回であれば最終ステータスを１にする
                         line_stat[(j * 8) + i] = 1;
                     }
                 }
@@ -50,6 +50,7 @@ void LINE::read() {
         }
     }
 
+    //グループ処理の開始センサー番号を決める
     byte startNUM = 99;
     for (int i = 23; i > 0; i--) {
         if (line_stat[i] == 0 && startNUM == 99) {
@@ -60,17 +61,17 @@ void LINE::read() {
     //グループ分け
     total_x = 0;
     total_y = 0;
-    int pack_NUM = 0;
-    bool pack_NOW = 0;
+    int pack_NUM = 0; //グループの個数
+    bool pack_NOW = 0; //グループ処理中ステータス
     for (int i = startNUM; i < startNUM + 24; i++) {
-        byte pLine = i % 24;
+        byte pLine = i % 24; //処理中のセンサー
         if (line_stat[pLine] == 1) {
             myvector.get_cord(line_degs[pLine], line_r);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
             pack_NOW = 1;
         } else {
-            if (pack_NOW == 1) {
+            if (pack_NOW == 1) { //グループの終点を検知
                 pack_NOW = 0;
                 pack_degs[pack_NUM] = myvector.get_azimuth(total_x, total_y); 
                 pack_NUM += 1;
@@ -81,7 +82,7 @@ void LINE::read() {
     }
 
 
-    if (pack_NUM != 0) { //検知しているしてるかを試す
+    if (pack_NUM != 0) { //検知しているしてるかを確認
         smallest = 999;
         smallest_pack = 99;
         if (pack_NUM == 3) {
@@ -120,7 +121,7 @@ void LINE::read() {
         point3 = point3_;
         point4 = point4_;
 
-        if ((360 - point1_ + point2_) % 360 > (360 - point2_ + point1_) % 360 && (pack_NUM == 2 || pack_NUM == 3)) { //2か3つ反応している場合、一つ目を補正するため。
+        if ((360 - point1_ + point2_) % 360 > (360 - point2_ + point1_) % 360 && pack_NUM == 2) {
             point1 = point2_;
             point2 = point1_;
         }
@@ -139,7 +140,7 @@ void LINE::read() {
         line2_theta = line2_dif / 2;
         line_dist = line_r * cos(radians(line_theta));
         line2_dist = line_r * cos(radians(line2_theta));
-        
+
         if (pack_NUM == 1) {
             line_azimuth = pack_degs[0];
             line_magnitude = line_r;

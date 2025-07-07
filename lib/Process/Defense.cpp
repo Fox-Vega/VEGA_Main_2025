@@ -2,7 +2,6 @@
 #include "Input.h"
 #include "Output.h"
 #include "AIP.h"
-//#include "okomeonigiri.h"
 
 void Defense::setup(void){
     mybuzzer.start(1000, 200);
@@ -14,9 +13,13 @@ void Defense::defense_(void){
     while(true){
         get_vector();
         if(line_detect){
-            if(line.get_type()==1){
-                p1();
-            }
+            // if(line.get_type()==1){//normal line
+            //     p1();
+            // }
+            // if(line.get_type()==2){//coaner line
+            //     p2();
+            // }
+            line_();
         }
         else{
             while(1){
@@ -31,11 +34,29 @@ void Defense::defense_(void){
 void Defense::p1(void){
     int move_x=0;
     int move_y=0;
-    move_y=line_y;
+    move_y = (130/22)*line_dist;
+    move_x = ball_x*bmgn;
+    go_ang=myvector.get_azimuth(move_x,move_y);
+    mymotor.run(go_ang,ball_x*bmmgn,0);
 }
 
-void Defense::GoBackLine(){
-    int last_line_time=0;
+// void Defense::p2(void){
+//     int type =999;
+//     if(line_azimuth<=90)
+//     else if(line_azimuth<=180)
+//     else if()
+//     else if()
+// }
+
+void Defense::line_(void){
+    int line_fb=0;
+    if(line_azimuth<180)line_fb=1;
+    else line_fb=-1;
+    if(line_dist>3)mymotor.run((line_fb=1? 0:180),line_dist*(155/22),0);
+}
+
+    void Defense::GoBackLine(){
+        int last_line_time=0;
     for(byte i=0; i<50;i++){
         if(line_history[0][50-i]==1){
             last_line_time=50-1;

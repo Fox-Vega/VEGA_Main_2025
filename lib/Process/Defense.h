@@ -8,6 +8,7 @@ class Defense {
         void p1(void);//normal line
         void p2(void);//on corner
         void p3(void);//on next to goal
+        void line_(void);//trace test line
         void keeper_dash(void);
         void GoBackLine(void);
     private:
@@ -15,6 +16,8 @@ class Defense {
 
 
         // ball
+        const double bmgn =1;
+        const double bmmgn=0.1;
         int ball_azimuth;
         int ball_dist;
         float ball_x;
