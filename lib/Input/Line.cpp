@@ -20,8 +20,8 @@ void LINE::read() {
     }
 
     //読み取り
-    for (int k = 0; k < 2; k++) {
-        for (int i = 0; i < 8; i++) {
+    for (int k = 0; k < 2; k++) { //2回測定
+        for (int i = 0; i < 8; i++) { //8回の変更
             if (Reader[i][0] == 0) {
                 digitalWrite(selectPIN[0], LOW);
             } else {
@@ -38,11 +38,11 @@ void LINE::read() {
                 digitalWrite(selectPIN[2], HIGH);
             }
 
-            for (int j = 0; j < 3; j++) {
-                line_values[(j * 8) + i] = analogRead(outputPIN[j]);
-                if (line_values[(j * 8) + i] > detection_border) {
-                    line_stat_[(j * 8) + i] += 1;
-                    if (line_stat_[(j * 8) + i] == 2) {
+            for (int j = 0; j < 3; j++) { //3つのマルチプレクサを読む
+                line_values[(j * 8) + i] = analogRead(outputPIN[j]); //値の保存
+                if (line_values[(j * 8) + i] > detection_border) { //trueとfalseのステータスに変換
+                    line_stat_[(j * 8) + i] += 1; //仮ステータスに加算
+                    if (line_stat_[(j * 8) + i] >= 2) { //反応回数が2回であれば最終ステータスを１にする
                         line_stat[(j * 8) + i] = 1;
                     }
                 }
