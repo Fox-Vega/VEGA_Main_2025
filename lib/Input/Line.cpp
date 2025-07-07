@@ -60,17 +60,17 @@ void LINE::read() {
     //グループ分け
     total_x = 0;
     total_y = 0;
-    int pack_NUM = 0;
-    bool pack_NOW = 0;
+    int pack_NUM = 0; //グループの個数
+    bool pack_NOW = 0; //グループ処理中ステータス
     for (int i = startNUM; i < startNUM + 24; i++) {
-        byte pLine = i % 24;
+        byte pLine = i % 24; //処理中のセンサー
         if (line_stat[pLine] == 1) {
             myvector.get_cord(line_degs[pLine], line_r);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
             pack_NOW = 1;
         } else {
-            if (pack_NOW == 1) {
+            if (pack_NOW == 1) { //グループの終点を検知
                 pack_NOW = 0;
                 pack_degs[pack_NUM] = myvector.get_azimuth(total_x, total_y); 
                 pack_NUM += 1;
@@ -81,7 +81,7 @@ void LINE::read() {
     }
 
 
-    if (pack_NUM != 0) { //検知しているしてるかを試す
+    if (pack_NUM != 0) { //検知しているしてるかを確認
         smallest = 999;
         smallest_pack = 99;
         if (pack_NUM == 3) {
