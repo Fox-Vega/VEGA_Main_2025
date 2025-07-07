@@ -13,12 +13,13 @@ void Defense::defense_(void){
     while(true){
         get_vector();
         if(line_detect){
-            if(line.get_type()==1){//normal line
-                p1();
-            }
-            if(line.get_type()==2){//coaner line
-                p2();
-            }
+            // if(line.get_type()==1){//normal line
+            //     p1();
+            // }
+            // if(line.get_type()==2){//coaner line
+            //     p2();
+            // }
+            line_();
         }
         else{
             while(1){
@@ -39,18 +40,23 @@ void Defense::p1(void){
     mymotor.run(go_ang,ball_x*bmmgn,0);
 }
 
-void Defense::p2(void){
-    int type =999;
-    if(line_azimuth<=90)
-    else if(line_azimuth<=180)
-    else if()
-    else if()
+// void Defense::p2(void){
+//     int type =999;
+//     if(line_azimuth<=90)
+//     else if(line_azimuth<=180)
+//     else if()
+//     else if()
+// }
 
-    if()
+void Defense::line_(void){
+    int line_fb=0;
+    if(line_azimuth<180)line_fb=1;
+    else line_fb=-1;
+    if(line_dist>3)mymotor.run((line_fb=1? 0:180),line_dist*(155/22),0);
 }
 
-void Defense::GoBackLine(){
-    int last_line_time=0;
+    void Defense::GoBackLine(){
+        int last_line_time=0;
     for(byte i=0; i<50;i++){
         if(line_history[0][50-i]==1){
             last_line_time=50-1;
