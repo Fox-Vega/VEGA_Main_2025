@@ -199,8 +199,8 @@ void LINE::read() {
         favoid_azimuth = 999;
     }
 
-    Serial.print("/ ");
-    Serial.println(line_azimuth);
+    // Serial.print("/ ");
+    // Serial.println(line_azimuth);
 }
 
 int LINE::get_value(byte lineNUM) {

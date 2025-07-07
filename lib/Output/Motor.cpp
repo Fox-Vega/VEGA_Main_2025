@@ -38,17 +38,10 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     for (int i = 0; i < 4; i++) {
         pp = motor_power_[i] / h;
 
-        Serial.print(" /");
-        Serial.print(pp);
-        Serial.print("/ ");
-
         power = ((max_power - abs(difix)) * pp) + difix;
         power = constrain(power, -pwmlimit, pwmlimit);
 
         if (motor_move == 1) {
-            Serial.print(power);
-            Serial.print(" ");
-            
             if (power >= 0) {
                 analogWrite(motor_PIN1[i], 0);
                 analogWrite(motor_PIN2[i], abs(power)); 
@@ -58,7 +51,6 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
             }
         }
     }
-    Serial.println();
 }
 
 int MyMOTOR::difix(int target_azimuth) {

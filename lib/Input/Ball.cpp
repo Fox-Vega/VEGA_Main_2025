@@ -19,8 +19,12 @@ void BALL::read() {
         ballvalues[i] = 0;
     }
 
+
+    timer.reset();
+    
     // センサー値の取得
-    for (int j = 0; j < 40; j++) { //25だった
+    while (timer.read_micro() < (833 * 4)) {
+    // for (int i = 0; i < 100; i++) {
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
@@ -31,7 +35,6 @@ void BALL::read() {
             }
         }
     }
-    // Serial.println(max_ballvalue);
 
     // ballNUMstart の補正
     int ballNUMstart = (max_ballNUM + 14) % 16;

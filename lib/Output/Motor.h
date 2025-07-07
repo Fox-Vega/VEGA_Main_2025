@@ -19,7 +19,7 @@ class MyMOTOR {
         //調整用
         const float kp = 0.75; //比例 を大きくすると応答が速くなるが、振動しやすくなる
         const float kd = 250.0; //微分 を大きくすると急激な変化を抑えられるが、ノイズの影響を受けやすい 50.0 - 6/22 - 少しずつ増やす。
-        const int pwmlimit = 100;
+        const int pwmlimit = 110;
         const float pwmscale = 1.0;
         
     
