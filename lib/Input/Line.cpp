@@ -50,6 +50,7 @@ void LINE::read() {
         }
     }
 
+    //グループ処理の開始センサー番号を決める
     byte startNUM = 99;
     for (int i = 23; i > 0; i--) {
         if (line_stat[i] == 0 && startNUM == 99) {
@@ -120,7 +121,7 @@ void LINE::read() {
         point3 = point3_;
         point4 = point4_;
 
-        if ((360 - point1_ + point2_) % 360 > (360 - point2_ + point1_) % 360 && (pack_NUM == 2 || pack_NUM == 3)) { //2か3つ反応している場合、一つ目を補正するため。
+        if ((360 - point1_ + point2_) % 360 > (360 - point2_ + point1_) % 360 && pack_NUM == 2) {
             point1 = point2_;
             point2 = point1_;
         }
