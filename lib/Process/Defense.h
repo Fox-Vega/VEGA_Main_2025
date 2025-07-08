@@ -35,6 +35,7 @@ class Defense {
         const int ball_max = 900;
         const int motor_max = 255;
         int go_ang;
+        int lastdetect = 0;
         int line_history[3][50];
         int ball_history[3][50];
         int line_history_index=0;
