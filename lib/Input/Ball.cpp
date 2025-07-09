@@ -21,7 +21,7 @@ void BALL::read() {
 
 
     timer.reset();
-    
+
     // センサー値の取得
     while (timer.read_micro() < (833 * 4)) {
     // for (int i = 0; i < 100; i++) {

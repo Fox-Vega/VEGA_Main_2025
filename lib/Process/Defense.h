@@ -9,6 +9,7 @@ class Defense {
         void p2(void);//on corner
         void p3(void);//on next to goal
         void line_(void);//trace test line
+        void ball_(void);
         void keeper_dash(void);
         void GoBackLine(void);
     private:
@@ -31,11 +32,22 @@ class Defense {
         float line_y;
         bool line_detect;
 
+        // others
+        int r_azimuth;
+
         const int ball_near = 130;
         const int ball_max = 900;
         const int motor_max = 255;
         int go_ang;
-        int lastdetect = 0;
+        int line_go_ang;
+        int line_fb;
+        int line_power;
+        int move_x;
+        int move_y;
+        int move_power;
+        int ball_power = 50;
+        int ball_go_ang = 90;
+        int lastdetect = 180;
         int line_history[3][50];
         int ball_history[3][50];
         int line_history_index=0;
