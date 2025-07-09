@@ -84,17 +84,23 @@ void LINE::read() {
 
     if (pack_NUM != 0) { //検知しているしてるかを確認
         if (pack_NUM == 1) {
-            line_azimuth = pack_degs[0];
-            line_magnitude = line_r;
+            myvector.get_cord(pack_degs[0], line_r);
+            line_x = myvector.get_x();
+            line_y= myvector.get_y();
             line_type = 1;
         } else if (pack_NUM == 2) {
-            line_dif = (point2 - point1 + 360) % 360;
-            line_deg = (point1 + line_dif / 2) % 360;
+            line_dif = (pack_degs[1] - pack_degs[0] + 360) % 360;
+            if (line_dif > 180) {
+                line_dif = (360 - line_dif + 360) % 360;
+            }
+            
+            line_deg = (pack_degs[0] + line_dif / 2) % 360;
             line_theta = line_dif / 2;
             line_dist = line_r * cos(radians(line_theta));
 
-            line_azimuth = line_deg;
-            line_magnitude = line_dist;
+            myvector.get_cord(line_deg, line_dist);
+            line_x = myvector.get_x();
+            line_y = myvector.get_y();
             line_type = 1;
         } else if (pack_NUM == 3) {
             total_x = 0;
@@ -103,17 +109,18 @@ void LINE::read() {
             myvector.get_cord(line_deg, line_dist);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
-            myvector.get_cord(pack_degs[smallest], line_r);
+            myvector.get_cord(pack_degs[dot], line_r);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
 
-            line_azimuth = myvector.get_azimuth(total_x, total_y);
-            line_magnitude = myvector.get_magnitude(total_x, total_y);
+            line_x= total_x;
+            line_y = total_y;
 
             line_type = 2;
         } else if (pack_NUM == 4) {
             byte first_line = 0;
             short max_dif = 0;
+            
             for (byte i = 0; i < 4; i++) {
                 byte pline = (i + 1) % 4;
                 short dif = pack_degs[pline] - pack_degs[i];
@@ -123,10 +130,10 @@ void LINE::read() {
                 }
             }
 
-            line_dif = (point2 - point1 + 360) % 360;
-            line2_dif = (point4 - point3 + 360) % 360;
-            line_deg = (point1 + line_dif / 2) % 360;
-            line2_deg = (point3 + line2_dif / 2) % 360;
+            line_dif = (pack_degs[first_line + 1] - pack_degs[first_line] + 360) % 360;
+            line2_dif = (pack_degs[first_line + 3] - pack_degs[first_line + 2] + 360) % 360;
+            line_deg = (pack_degs[first_line] + line_dif / 2) % 360;
+            line2_deg = (pack_degs[first_line + 2] + line2_dif / 2) % 360;
             line_theta = line_dif / 2;
             line2_theta = line2_dif / 2;
             line_dist = line_r * cos(radians(line_theta));
@@ -141,8 +148,8 @@ void LINE::read() {
             total_x += myvector.get_x();
             total_y += myvector.get_y();
 
-            line_azimuth = myvector.get_azimuth(total_x , total_y);
-            line_magnitude = myvector.get_magnitude(total_x, total_y);
+            line_x = total_x;
+            line_y = total_y;
 
             line_type = 2;
         }
