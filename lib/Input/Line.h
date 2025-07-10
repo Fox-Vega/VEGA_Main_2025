@@ -18,7 +18,7 @@ class LINE {
         int get_type();
 
     private:
-        const int detection_border = 360;
+        const int detection_border = 600;
 
         int total_x;
         int total_y;

@@ -117,6 +117,7 @@ void LINE::read() {
             total_x += myvector.get_x();
             total_y += myvector.get_y();
             myvector.get_cord(pack_degs[dot], line_r);
+            myvector.get_cord(pack_degs[dot], line_r);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
 
@@ -125,6 +126,7 @@ void LINE::read() {
         } else if (pack_NUM == 4) {
             byte first_line = 0;
             short max_dif = 0;
+            
             for (byte i = 0; i < 4; i++) {
                 byte pline = (i + 1) % 4;
                 short dif = pack_degs[pline] - pack_degs[i];
@@ -156,6 +158,8 @@ void LINE::read() {
             total_x += myvector.get_x();
             total_y += myvector.get_y();
 
+            line_x = total_x;
+            line_y = total_y;
             line_x = total_x;
             line_y = total_y;
 
