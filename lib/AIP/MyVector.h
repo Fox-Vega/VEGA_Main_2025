@@ -10,6 +10,7 @@ class MyVECTOR {
         void get_svec(int tar_azimuth, int tar_magnitude); //targetの速度ベクトルを計算する関数　コート基準座標を入力　実行前に座標更新
         int get_azimuth(int x, int y); //方位角を計算する関数
         int get_magnitude(int x, int y); //距離を計算する関数
+        double dot_product(double origin_x, double origin_y, double point1_x, double point1_y, double point2_x, double point2_y);
         int get_x(); //取得したx座標を返す関数
         int get_y(); //取得したy座標を返す関数
 

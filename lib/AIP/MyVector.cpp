@@ -90,6 +90,31 @@ int MyVECTOR::get_magnitude(int x, int y) {
     return (int)sqrt(x * x + y * y); //マグニチュードを計算、送信
 }
 
+double MyVECTOR::dot_product(double origin_x, double origin_y, double point1_x, double point1_y, double point2_x, double point2_y) {
+    // ベクトル構築
+    double v1_x = point1_x - origin_x;
+    double v1_y = point1_y - origin_y;
+    
+    double v2_x = point2_x - origin_x;
+    double v2_y = point2_y - origin_y;
+
+    // 内積とノルム
+    double dot = v1_x * v2_x + v1_y * v2_y;
+    double mag1 = sqrt(v1_x * v1_x + v1_y * v1_y);
+    double mag2 = sqrt(v2_x * v2_x + v2_y * v2_y);
+
+    // 角度計算
+    double cos_theta = dot / (mag1 * mag2);
+    if (cos_theta > 1.0) cos_theta = 1.0;
+    if (cos_theta < -1.0) cos_theta = -1.0;
+
+    double angle_rad = acos(cos_theta);
+    double angle_deg = angle_rad * rad_to_deg;
+
+    return angle_deg;
+}
+
+
 //値取得ゾーン
 
 int MyVECTOR::get_x() {
