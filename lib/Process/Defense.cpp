@@ -86,28 +86,28 @@ void Defense::ball_(void){
         int ball_x = myvector.get_x();
         int ball_y = myvector.get_y();
         printf_s(">ball_x:%d\n>ball_y:%d\n", ball_x, ball_y);
-        // // ball_xの分類（-6 ～ 6）
-        // category = 0;
-        // if(ball_x < 0) {
-        //     if(ball_x < -150) category = -6;
-        //     else if(ball_x < -120) category = -5;
-        //     else if(ball_x < -100) category = -4;
-        //     else if(ball_x < -80) category = -3;
-        //     else if(ball_x < -50) category = -2;
-        //     else if(ball_x < -30)  category = -1;
-        //     else category = 0;
-        // } else {
-        //     if(ball_x < 30) category = 0;
-        //     else if(ball_x < 50) category = 1;
-        //     else if(ball_x < 80) category = 2;
-        //     else if(ball_x < 100) category = 3;
-        //     else if(ball_x < 120) category = 4;
-        //     else if(ball_x < 150) category = 5;
-        //     else category = 6;
-        // }
-        // printf_s(">ball_x-category:%d\n", category);
+        // ball_xの分類（-6 ～ 6）
+        category = 0;
+        if(ball_x < 0) {
+            if(ball_x < -150) category = -6;
+            else if(ball_x < -120) category = -5;
+            else if(ball_x < -100) category = -4;
+            else if(ball_x < -80) category = -3;
+            else if(ball_x < -50) category = -2;
+            else if(ball_x < -30)  category = -1;
+            else category = 0;
+        } else {
+            if(ball_x < 30) category = 0;
+            else if(ball_x < 50) category = 1;
+            else if(ball_x < 80) category = 2;
+            else if(ball_x < 100) category = 3;
+            else if(ball_x < 120) category = 4;
+            else if(ball_x < 150) category = 5;
+            else category = 6;
+        }
+        printf_s(">ball_x-category:%d\n", category);
 
-        // ball_power = category *10 + 25*(category < 0 ? -1 : 1);
+        ball_power = category *20 + 25*(category < 0 ? -1 : 1);
         if(category==0) ball_power = 0; // 中央にいるときはボールを蹴らない
         // -だったら左に（270）、+だったら右に
         ball_go_ang = (category < 0) ? 270 : 90;
