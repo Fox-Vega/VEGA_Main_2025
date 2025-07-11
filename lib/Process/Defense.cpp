@@ -7,59 +7,63 @@
 
 void Defense::setup(void){
     mybuzzer.start(1000, 200);
-    general.setup();
-    mypixel.use_pixel(true);
+    mypixel.use_pixel(false);
 }
 
 void Defense::defense_(void){
     setup();
-    while(true){
+    while(true) {
+        gotVector=0;
+        mypixel.multi(0, 15, 0, 0, 0);
         if(myswitch.check_toggle()==1){
         get_vector();
-        ball_();
-    //     if(line_detect){
-    //         p1();
-    //         // if(line_dist>1)line_();
-    //         // else{
-    //         //     if(true!=(r_azimuth<5&&r_azimuth>355)){ //ジャイロの初期化
-    //         //         mymotor.run(0,0,0);
-    //         //         mypixel.multi(0,15,255,0,0);
-    //         //         printf_s("reset dir\n");
-    //         //     }
-    //         //     else{
-    //         //         mymotor.free();
-    //         //         mypixel.clear();
-    //         //     }
-    //         //     printf_s("on line dist:%d\n", line_dist);
-    //         // }
-    //     }
-    //     else{
-    //         GoBackLine();
-    //     };
-    // }
-    // else mymotor.free();
-    // mypixel.show();
-         }}
-}
+        if(line_detect){
+            //p1();
+        }
+        else{
+            //GoBackLine();
+        }
+    }
+    else{
+        mymotor.free();
+        mypixel.rainbow();
+    }
+mypixel.show();
+}}
 
+void Defense::trace(void){
+    if(gotVector==0){
+    get_vector();
+    }
+    if(line_detect){
+        if(line_dist>2)mymotor.run(line_go_ang, line_power, 0);
+        else if(true!=(r_azimuth<15&&r_azimuth>345)){
+            mymotor.run(0,0,0);
+            int d=  0-r_azimuth;
+            if(d<0) d+=360;
+            mypixel.closest(d, 255, 255, 255, 3);
+        }
+        else {
+            mymotor.free();
+            mypixel.multi(0, 15, 0, 0, 255);
+        }
+    }
+    else{
+        GoBackLine();
+    }
+}
 
 void Defense::p1(void){
     line_();
+    ball_();
     move_x=ball_power;
     move_y=line_power*(line_go_ang==0 ? 1 : -1);
-    move_power = myvector.get_magnitude(move_x, move_y);
+    move_power = myvector.get_magnitude(move_x, move_y*0.75);
     int move_azimuth = myvector.get_azimuth(move_x, move_y);
-    mymotor.run(move_azimuth, move_power,0);
-    mypixel.closest(move_azimuth, 0, 255, 0, 3);
+    if(ball_power==0)trace();
+    else if(line_dist<2) {mymotor.run(ball_go_ang,ball_power,0);mypixel.closest(ball_go_ang, 255, 0, 0, 3);}
+    else {mymotor.run(move_azimuth, move_power,0);mypixel.closest(move_azimuth, 0, 255, 0, 3);}
 }
-
-// void Defense::p2(void){.
-//     int type =999;
-//     if(line_azimuth<=90)
-//     else if(line_azimuth<=180)
-//     else if()
-//     else if()
-// }
 
 void Defense::line_(void){
     int line_fb = 0;
@@ -69,12 +73,11 @@ void Defense::line_(void){
     if(line_azimuth>90&&line_azimuth<270){//f
         line_fb = 2;
     }
-    line_power = 125/(12-line_dist);
-    if(line_power<50) line_power = 50;
+    line_power = 120/(13-line_dist);
+    if(line_power<60) line_power = 60;
     line_go_ang = line_fb==2 ? 180 : 0;
     if(line_dist<2) line_power = 0;
-    // printf_s("line_fb:%s azimuth:%d\n", line_fb==2 ? "back" : "front", line_azimuth);
-    // mypixel.closest(line_go_ang, 0, 255, 0, 3);
+    else mypixel.closest(line_azimuth, 0, 255, 0, 3);
 }
 
 void Defense::ball_(void){
@@ -83,43 +86,47 @@ void Defense::ball_(void){
         int ball_x = myvector.get_x();
         int ball_y = myvector.get_y();
         printf_s(">ball_x:%d\n>ball_y:%d\n", ball_x, ball_y);
-        // ball_xの分類（-6 ～ 6）
-        int category = 0;
-        if(ball_x < 0) {
-            if(ball_x < -500) category = -6;
-            else if(ball_x < -400) category = -5;
-            else if(ball_x < -300) category = -4;
-            else if(ball_x < -200) category = -3;
-            else if(ball_x < -100) category = -2;
-            else if(ball_x < -50)  category = -1;
-            else category = 0;
-        } else {
-            if(ball_x < 50) category = 0;
-            else if(ball_x < 100) category = 1;
-            else if(ball_x < 200) category = 2;
-            else if(ball_x < 300) category = 3;
-            else if(ball_x < 400) category = 4;
-            else if(ball_x < 500) category = 5;
-            else category = 6;
-        }
-        printf_s(">ball_x-category:%d\n", category);
+        // // ball_xの分類（-6 ～ 6）
+        // category = 0;
+        // if(ball_x < 0) {
+        //     if(ball_x < -150) category = -6;
+        //     else if(ball_x < -120) category = -5;
+        //     else if(ball_x < -100) category = -4;
+        //     else if(ball_x < -80) category = -3;
+        //     else if(ball_x < -50) category = -2;
+        //     else if(ball_x < -30)  category = -1;
+        //     else category = 0;
+        // } else {
+        //     if(ball_x < 30) category = 0;
+        //     else if(ball_x < 50) category = 1;
+        //     else if(ball_x < 80) category = 2;
+        //     else if(ball_x < 100) category = 3;
+        //     else if(ball_x < 120) category = 4;
+        //     else if(ball_x < 150) category = 5;
+        //     else category = 6;
+        // }
+        // printf_s(">ball_x-category:%d\n", category);
+
+        // ball_power = category *10 + 25*(category < 0 ? -1 : 1);
+        if(category==0) ball_power = 0; // 中央にいるときはボールを蹴らない
+        // -だったら左に（270）、+だったら右に
+        ball_go_ang = (category < 0) ? 270 : 90;
     }
     else{
-        mymotor.free();
-        mypixel.clear();
-        mybuzzer.start(1000, 200);
-        printf_s("no ball\n");
+        category = 0;
+        ball_power = 0;
+        ball_go_ang = 0;
     }
 }
 
 void Defense::GoBackLine(){
     mypixel.closest(lastdetect,255,0,0,3);
-    mymotor.run(lastdetect,80,0);
+    int backPower =(lastdetect<15&&lastdetect>345)? 200 : 80;
+    mymotor.run(lastdetect,backPower,0);
     printf_s("noline:%d\n", lastdetect);
 }
 
-void Defense::get_vector(void)
-{
+void Defense::get_vector(void){
     // ライン情報の取得
     line.read();
     line_azimuth = line.get_azimuth();
@@ -144,4 +151,7 @@ void Defense::get_vector(void)
     //ジャイロ
     r_azimuth = gam.get_azimuth();
     printf_s(">r_azimuth:%d\n", r_azimuth);
+    line_();
+    ball_();
+    gotVector=1;
 }
