@@ -25,6 +25,7 @@ class Defense {
         float ball_x;
         float ball_y;
         bool ball_detect;
+        const int category_width = 30; // ボールの位置分類の幅
 
         // line
         int line_azimuth;

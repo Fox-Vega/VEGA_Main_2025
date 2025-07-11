@@ -18,10 +18,10 @@ void Defense::defense_(void){
         if(myswitch.check_toggle()==1){
         get_vector();
         if(line_detect){
-            //p1();
+            p1();
         }
         else{
-            //GoBackLine();
+            GoBackLine();
         }
     }
     else{
@@ -89,20 +89,20 @@ void Defense::ball_(void){
         // ball_xの分類（-6 ～ 6）
         category = 0;
         if(ball_x < 0) {
-            if(ball_x < -150) category = -6;
-            else if(ball_x < -120) category = -5;
-            else if(ball_x < -100) category = -4;
-            else if(ball_x < -80) category = -3;
-            else if(ball_x < -50) category = -2;
-            else if(ball_x < -30)  category = -1;
+            if(ball_x < category_width*-6) category = -6;
+            else if(ball_x < category_width*-5) category = -5;
+            else if(ball_x < category_width*-4) category = -4;
+            else if(ball_x < category_width*-3) category = -3;
+            else if(ball_x < category_width*-2) category = -2;
+            else if(ball_x < category_width*-1)  category = -1;
             else category = 0;
         } else {
-            if(ball_x < 30) category = 0;
-            else if(ball_x < 50) category = 1;
-            else if(ball_x < 80) category = 2;
-            else if(ball_x < 100) category = 3;
-            else if(ball_x < 120) category = 4;
-            else if(ball_x < 150) category = 5;
+            if(ball_x <  category_width) category = 0;
+            else if(ball_x < category_width*2) category = 1;
+            else if(ball_x < category_width*3) category = 2;
+            else if(ball_x < category_width*4) category = 3;
+            else if(ball_x < category_width*5) category = 4;
+            else if(ball_x < category_width*6) category = 5;
             else category = 6;
         }
         printf_s(">ball_x-category:%d\n", category);
