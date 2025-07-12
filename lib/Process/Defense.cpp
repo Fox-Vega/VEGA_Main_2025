@@ -86,34 +86,14 @@ void Defense::ball_(void){
         int ball_x = myvector.get_x();
         int ball_y = myvector.get_y();
         printf_s(">ball_x:%d\n>ball_y:%d\n", ball_x, ball_y);
-        // ball_xの分類（-6 ～ 6）
-        category = 0;
-        if(ball_x < 0) {
-            if(ball_x < category_width*-6) category = -6;
-            else if(ball_x < category_width*-5) category = -5;
-            else if(ball_x < category_width*-4) category = -4;
-            else if(ball_x < category_width*-3) category = -3;
-            else if(ball_x < category_width*-2) category = -2;
-            else if(ball_x < category_width*-1)  category = -1;
-            else category = 0;
-        } else {
-            if(ball_x <  category_width) category = 0;
-            else if(ball_x < category_width*2) category = 1;
-            else if(ball_x < category_width*3) category = 2;
-            else if(ball_x < category_width*4) category = 3;
-            else if(ball_x < category_width*5) category = 4;
-            else if(ball_x < category_width*6) category = 5;
-            else category = 6;
-        }
-        printf_s(">ball_x-category:%d\n", category);
-
-        ball_power = category *20 + 25*(category < 0 ? -1 : 1);
-        if(category==0) ball_power = 0; // 中央にいるときはボールを蹴らない
+        // ここで処理
+        ball_x= ball_x> ball_max_X ? ball_max_X : ball_x;
+        ball_power = (ball_x/30)*15+20*(ball_x>0 ? 1 : -1); // ボールの位置に応じてパワーを調整
+        ball_power = ball_x<catch_ball_X ? 0 : ball_power; // 中央にいるときはボールを蹴らない
         // -だったら左に（270）、+だったら右に
-        ball_go_ang = (category < 0) ? 270 : 90;
+        ball_go_ang = (ball_x < 0) ? 270 : 90;
     }
     else{
-        category = 0;
         ball_power = 0;
         ball_go_ang = 0;
     }
