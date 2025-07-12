@@ -34,6 +34,7 @@ class Defense {
         bool line_detect;
 
         // others
+        const int line_rate =0.75;
         int r_azimuth;
 
         const int ball_near = 130;

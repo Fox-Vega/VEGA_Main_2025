@@ -58,8 +58,8 @@ void Defense::p1(void){
     ball_();
     move_x=ball_power;
     move_y=line_power*(line_go_ang==0 ? 1 : -1);
-    move_power = myvector.get_magnitude(move_x, move_y*0.75);
-    int move_azimuth = myvector.get_azimuth(move_x, move_y);
+    move_power = myvector.get_magnitude(move_x, move_y*line_rate);
+    int move_azimuth = myvector.get_azimuth(move_x, move_y*line_rate);
     if(ball_power==0)trace();
     else if(line_dist<2) {mymotor.run(ball_go_ang,ball_power,0);mypixel.closest(ball_go_ang, 255, 0, 0, 3);}
     else {mymotor.run(move_azimuth, move_power,0);mypixel.closest(move_azimuth, 0, 255, 0, 3);}
