@@ -3,7 +3,11 @@
 #include "Output.h"
 #include "AIP.h"
 
+#define printf_s_short(fmt, ...) ({ char buf[128]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
 #define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+#define printf_s_long(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+
+#define printf_s_ln(fmt, ...) ({ char buf[64]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.println(buf); })
 
 void Defense::setup(void){}
 
