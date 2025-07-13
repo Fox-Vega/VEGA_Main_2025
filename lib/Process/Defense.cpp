@@ -3,26 +3,18 @@
 #include "Output.h"
 #include "AIP.h"
 
-#define printf_s_short(fmt, ...) ({ char buf[128]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
 #define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-#define printf_s_long(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
 
-#define printf_s_ln(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.println(buf); })
-
-void Defense::setup(void){
-    mybuzzer.start(1000, 200);
-    mypixel.use_pixel(false);
-}
+void Defense::setup(void){}
 
 void Defense::defense_(void){
-    setup();
-    while(true) {
         gotVector=0;
         mypixel.multi(0, 15, 0, 0, 0);
         if(myswitch.check_toggle()==1){
         get_vector();
         if(line_detect){
-            p1();
+            if(line_type==1)p1();
+            else if(line_type==2)p2();
         }
         else{
             GoBackLine();
@@ -31,35 +23,11 @@ void Defense::defense_(void){
     else{
         mymotor.free();
         mypixel.rainbow();
-    }
-mypixel.show();
-}}
-
-void Defense::trace(void){
-    if(gotVector==0){
-    get_vector();
-    }
-    if(line_detect){
-        if(line_dist>2)mymotor.run(line_go_ang, line_power, 0);
-        else if(true!=(r_azimuth<15&&r_azimuth>345)){
-            mymotor.run(0,0,0);
-            int d=  0-r_azimuth;
-            if(d<0) d+=360;
-            mypixel.closest(d, 255, 255, 255, 3);
-        }
-        else {
-            mymotor.free();
-            mypixel.multi(0, 15, 0, 0, 255);
-        }
-    }
-    else{
-        GoBackLine();
+        get_vector();
     }
 }
 
 void Defense::p1(void){
-    line_();
-    ball_();
     move_x=ball_power;
     move_y=line_power*(line_go_ang==0 ? 1 : -1);
     move_power = myvector.get_magnitude(move_x, move_y*line_rate);
@@ -67,6 +35,140 @@ void Defense::p1(void){
     if(ball_power==0)trace();
     else if(line_dist<2) {mymotor.run(ball_go_ang,ball_power,0);mypixel.closest(ball_go_ang, 255, 0, 0, 3);}
     else {mymotor.run(move_azimuth, move_power,0);mypixel.closest(move_azimuth, 0, 255, 0, 3);}
+}
+
+void Defense::p2(void){
+    int line_azimuth_mod = 999;
+    if(line_azimuth>0&&line_azimuth<90) line_azimuth_mod=45;
+    else if(line_azimuth>90&&line_azimuth<180) line_azimuth_mod=135;
+    else if(line_azimuth>180&&line_azimuth<270) line_azimuth_mod=225;
+    else if(line_azimuth>270&&line_azimuth<360) line_azimuth_mod=315;
+    else line_azimuth_mod = 999;
+    if(line_azimuth_mod==999)GoBackLine();
+    switch(line_azimuth_mod){
+        case 45:
+        if(ball_power==0){
+            if(line_dist>line_p2_trace_trigger){
+                trace();
+            }
+            else mymotor.free();
+        }
+        else{
+            if(ball_go_ang==90){
+            }
+            else{
+            }
+        }
+            break;
+        case 135:
+                if(ball_power==0){
+            if(line_dist>line_p2_trace_trigger){
+                trace();
+            }
+            else mymotor.free();
+        }
+        else{
+            if(ball_go_ang==90){
+            }
+            else{
+            }
+        }
+            break;
+        case 225:
+                if(ball_power==0){
+            if(line_dist>line_p2_trace_trigger){
+                trace();
+            }
+            else mymotor.free();
+        }
+        else{
+            if(ball_go_ang==90){
+            }
+            else{
+            }
+        }
+            break;
+        case 315:
+                if(ball_power==0){
+            if(line_dist>line_p2_trace_trigger){
+                trace();
+            }
+            else mymotor.free();
+        }
+        else{
+            if(ball_go_ang==90){
+            }
+            else{
+            }
+        }
+            break;
+        default:
+            GoBackLine();
+            break;
+    }
+}
+
+void Defense::trace(void){
+    if(gotVector==0){
+    get_vector();
+    }
+    if(line_detect){
+            if(line_dist>2){
+                mymotor.run(line_go_ang, line_power, 0);
+            }
+            else if(true!=(r_azimuth<15&&r_azimuth>345)){
+                mymotor.run(0,0,0);
+                int d=  0-r_azimuth;
+                if(d<0) d+=360;
+                mypixel.closest(d, 255, 255, 255, 3);
+            }
+            else {
+                mymotor.free();
+                mypixel.multi(0, 15, 0, 0, 255);
+            }
+    }
+    else{
+        GoBackLine();
+    }
+}
+
+void Defense::GoBackLine(){
+    mypixel.closest(lastdetect,255,0,0,3);
+    int backPower =(lastdetect<15&&lastdetect>345)? 200 : 80;
+    mymotor.run(lastdetect,backPower,0);
+    printf_s("noline:%d\n", lastdetect);
+}
+
+void Defense::get_vector(void){
+    // ライン情報の取得
+    line.read();
+    line_azimuth = line.get_azimuth();
+    line_dist = line.get_magnitude();
+    line_type = line.get_type();
+    line_detect = (line_dist == 999) ? false : true;
+    myvector.get_cord(line_azimuth, line_dist);
+    line_x = myvector.get_x();
+    line_y = myvector.get_y();
+    if(line_detect){
+        if(line_azimuth<45&&line_azimuth>315) lastdetect= 0;
+        else if(line_azimuth<225&&line_azimuth>135) lastdetect= 180;
+        else lastdetect = line_azimuth;
+    }
+    // ボール情報の取得
+    ball.read();
+    ball_azimuth = ball.get_azimuth();
+    ball_dist = (int)ball.get_magnitude();
+    ball_detect = ((int)ball.get_magnitude() > 0) ? true : false;
+    myvector.get_cord(ball_azimuth, ball_dist);
+    ball_x = myvector.get_x();
+    ball_y = myvector.get_y();
+    printf_s(">line_1:%d\n",line.get_value(0));
+    //ジャイロ
+    r_azimuth = gam.get_azimuth();
+    printf_s(">r_azimuth:%d\n", r_azimuth);
+    line_();// ラインの処理
+    ball_();// ボールの処理
+    gotVector=1;// ベクトルを取得したフラグを立てる
 }
 
 void Defense::line_(void){
@@ -101,41 +203,4 @@ void Defense::ball_(void){
         ball_power = 0;
         ball_go_ang = 0;
     }
-}
-
-void Defense::GoBackLine(){
-    mypixel.closest(lastdetect,255,0,0,3);
-    int backPower =(lastdetect<15&&lastdetect>345)? 200 : 80;
-    mymotor.run(lastdetect,backPower,0);
-    printf_s("noline:%d\n", lastdetect);
-}
-
-void Defense::get_vector(void){
-    // ライン情報の取得
-    line.read();
-    line_azimuth = line.get_azimuth();
-    line_dist = line.get_magnitude();
-    line_detect = (line_dist == 999) ? false : true;
-    line_x = line_dist * cos(radians(line_azimuth));
-    line_y = line_dist * sin(radians(line_azimuth));
-    if(line_detect){
-        if(line_azimuth<45&&line_azimuth>315) lastdetect= 0;
-        else if(line_azimuth<225&&line_azimuth>135) lastdetect= 180;
-        else lastdetect = line_azimuth;
-    }
-    // ボール情報の取得
-    ball.read();
-    ball_azimuth = ball.get_azimuth();
-    ball_dist = (int)ball.get_magnitude();
-    ball_detect = ((int)ball.get_magnitude() > 0) ? true : false;
-    myvector.get_cord(ball_azimuth, ball_dist);
-    ball_x = myvector.get_x();
-    ball_y = myvector.get_y();
-    printf_s(">line_1:%d\n",line.get_value(0));
-    //ジャイロ
-    r_azimuth = gam.get_azimuth();
-    printf_s(">r_azimuth:%d\n", r_azimuth);
-    line_();
-    ball_();
-    gotVector=1;
 }
