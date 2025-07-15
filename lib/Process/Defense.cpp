@@ -3,11 +3,7 @@
 #include "Output.h"
 #include "AIP.h"
 
-#define printf_s_short(fmt, ...) ({ char buf[128]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-#define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-#define printf_s_long(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-
-#define printf_s_ln(fmt, ...) ({ char buf[64]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.println(buf); })
+#define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })//Serial.printのprintfフォーマット版
 
 void Defense::setup(void){mypixel.use_pixel(true);}
 
@@ -31,58 +27,6 @@ void Defense::defense_(void){
         mypixel.rainbow();
         get_vector();
     }
-}
-
-void Defense::p1(void){
-    move_x=ball_power;
-    move_y=line_power*(line_go_ang==0 ? 1 : -1);
-    move_power = myvector.get_magnitude(move_x, move_y*line_rate);
-    int move_azimuth = myvector.get_azimuth(move_x, move_y*line_rate);
-    if(ball_power==0)trace();
-    else if(line_dist<2) {mymotor.run(ball_go_ang,ball_power,0);mypixel.closest(ball_go_ang, 255, 0, 0, 3);}
-    else {mymotor.run(move_azimuth, move_power,0);mypixel.closest(move_azimuth, 0, 255, 0, 3);}
-}
-
-void Defense::p2(void){
-    int line_azimuth_mod = 999;
-    if(line_azimuth>0&&line_azimuth<90) line_azimuth_mod=45;
-    else if(line_azimuth>90&&line_azimuth<180) line_azimuth_mod=135;
-    else if(line_azimuth>180&&line_azimuth<270) line_azimuth_mod=225;
-    else if(line_azimuth>270&&line_azimuth<360) line_azimuth_mod=315;
-    else line_azimuth_mod = 999;
-    if(line_azimuth_mod==999)GoBackLine();
-    mymotor.run(line_azimuth_mod-180 < 0 ? line_azimuth_mod-180+360 : line_azimuth_mod-180, 100, 0);
-}
-
-void Defense::trace(void){
-    if(gotVector==0){
-    get_vector();
-    }
-    if(line_detect){
-            if(line_dist>2){
-                mymotor.run(line_go_ang, line_power*line_rate, 0);
-            }
-            else if(true!=(r_azimuth<15&&r_azimuth>345)){
-                mymotor.run(0,0,0);
-                int d=  0-r_azimuth;
-                if(d<0) d+=360;
-                mypixel.closest(d, 255, 255, 255, 3);
-            }
-            else {
-                mymotor.free();
-                mypixel.multi(0, 15, 0, 0, 255);
-            }
-    }
-    else{
-        GoBackLine();
-    }
-}
-
-void Defense::GoBackLine(){
-    mypixel.closest(lastdetect,255,0,0,3);
-    int backPower =(lastdetect<15&&lastdetect>345)? 200 : 80;
-    mymotor.run(lastdetect,backPower,0);
-    printf_s("noline:%d\n", lastdetect);
 }
 
 void Defense::get_vector(void){
@@ -144,6 +88,59 @@ void Defense::get_vector(void){
     r_azimuth = gam.get_azimuth();
 
     gotVector=1;// ベクトルを取得したフラグを立てる
+}
+
+
+void Defense::p1(void){
+    move_x=ball_power;
+    move_y=line_power*(line_go_ang==0 ? 1 : -1);
+    move_power = myvector.get_magnitude(move_x, move_y*line_rate);
+    int move_azimuth = myvector.get_azimuth(move_x, move_y*line_rate);
+    if(ball_power==0)trace();
+    else if(line_dist<2) {mymotor.run(ball_go_ang,ball_power,0);mypixel.closest(ball_go_ang, 255, 0, 0, 3);}
+    else {mymotor.run(move_azimuth, move_power,0);mypixel.closest(move_azimuth, 0, 255, 0, 3);}
+}
+
+void Defense::p2(void){
+    int line_azimuth_mod = 999;
+    if(line_azimuth>0&&line_azimuth<90) line_azimuth_mod=45;
+    else if(line_azimuth>90&&line_azimuth<180) line_azimuth_mod=135;
+    else if(line_azimuth>180&&line_azimuth<270) line_azimuth_mod=225;
+    else if(line_azimuth>270&&line_azimuth<360) line_azimuth_mod=315;
+    else line_azimuth_mod = 999;
+    if(line_azimuth_mod==999)p4();
+    mymotor.run(line_azimuth_mod-180 < 0 ? line_azimuth_mod-180+360 : line_azimuth_mod-180, 100, 0);
+}
+
+void Defense::trace(void){
+    if(gotVector==0){
+    get_vector();
+    }
+    if(line_detect){
+            if(line_dist>2){
+                mymotor.run(line_go_ang, line_power*line_rate, 0);
+            }
+            else if(true!=(r_azimuth<15&&r_azimuth>345)){
+                mymotor.run(0,0,0);
+                int d=  0-r_azimuth;
+                if(d<0) d+=360;
+                mypixel.closest(d, 255, 255, 255, 3);
+            }
+            else {
+                mymotor.free();
+                mypixel.multi(0, 15, 0, 0, 255);
+            }
+    }
+    else{
+        p4();
+    }
+}
+
+void Defense::p4(void){
+    mypixel.closest(lastdetect,255,0,0,3);
+    int backPower =(lastdetect<15&&lastdetect>345)? 200 : 80;
+    mymotor.run(lastdetect,backPower,0);
+    printf_s("noline:%d\n", lastdetect);
 }
 
 void Defense::debug1(void){

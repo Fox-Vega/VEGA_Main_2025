@@ -5,14 +5,13 @@ class Defense {
     public:
         void setup(void);
         void defense_(void);
-        void p1(void);//normal line
+        void p1(void);//on horizontal line
         void p2(void);//on corner
-        void p3(void);//on next to goal
+        void p3(void);//on vetical line
+        void p4(void);//Goback line
         void trace(void);
         void keeper_dash(void);
-        void GoBackLine(void);
         void debug1(void);
-        void get_vector(void);
     private:
         // ball
         const int ball_max_X = 300;
@@ -36,8 +35,6 @@ class Defense {
         const int line_p2_trace_trigger = 7;
         int r_azimuth;
 
-        const int ball_near = 130;
-        const int ball_max = 900;
         int setup_f=0;
         int go_ang;
         int line_go_ang;
@@ -54,7 +51,5 @@ class Defense {
         int line_history_index=0;
         int ball_history_index=0;
         int gotVector=0;
-        void MyUI(int mode);
-        void MyUI_clear(void);
         void get_vector(void);
 };
