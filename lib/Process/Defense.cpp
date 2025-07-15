@@ -9,7 +9,8 @@
 
 #define printf_s_ln(fmt, ...) ({ char buf[64]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.println(buf); })
 
-void Defense::setup(void){}
+void Defense::setup(void){mypixel.use_pixel(true);
+}
 
 void Defense::defense_(void){
         gotVector=0;
@@ -17,8 +18,9 @@ void Defense::defense_(void){
         if(myswitch.check_toggle()==1){
         get_vector();
         if(line_detect){
-            if(line_type==1)p1();
-            else if(line_type==2)p2();
+            // if(line_type==1)p1();
+            // else if(line_type==2)p2();
+            trace();
         }
         else{
             GoBackLine();
@@ -49,67 +51,7 @@ void Defense::p2(void){
     else if(line_azimuth>270&&line_azimuth<360) line_azimuth_mod=315;
     else line_azimuth_mod = 999;
     if(line_azimuth_mod==999)GoBackLine();
-    switch(line_azimuth_mod){
-        case 45:
-        if(ball_power==0){
-            if(line_dist>line_p2_trace_trigger){
-                trace();
-            }
-            else mymotor.free();
-        }
-        else{
-            if(ball_go_ang==90){
-            }
-            else{
-            }
-        }
-            break;
-        case 135:
-                if(ball_power==0){
-            if(line_dist>line_p2_trace_trigger){
-                trace();
-            }
-            else mymotor.free();
-        }
-        else{
-            if(ball_go_ang==90){
-            }
-            else{
-            }
-        }
-            break;
-        case 225:
-                if(ball_power==0){
-            if(line_dist>line_p2_trace_trigger){
-                trace();
-            }
-            else mymotor.free();
-        }
-        else{
-            if(ball_go_ang==90){
-            }
-            else{
-            }
-        }
-            break;
-        case 315:
-                if(ball_power==0){
-            if(line_dist>line_p2_trace_trigger){
-                trace();
-            }
-            else mymotor.free();
-        }
-        else{
-            if(ball_go_ang==90){
-            }
-            else{
-            }
-        }
-            break;
-        default:
-            GoBackLine();
-            break;
-    }
+    mymotor.run(line_azimuth_mod-180 < 0 ? line_azimuth_mod-180+360 : line_azimuth_mod-180, 100, 0);
 }
 
 void Defense::trace(void){
@@ -118,7 +60,7 @@ void Defense::trace(void){
     }
     if(line_detect){
             if(line_dist>2){
-                mymotor.run(line_go_ang, line_power, 0);
+                mymotor.run(line_go_ang, line_power*line_rate, 0);
             }
             else if(true!=(r_azimuth<15&&r_azimuth>345)){
                 mymotor.run(0,0,0);
@@ -207,4 +149,10 @@ void Defense::ball_(void){
         ball_power = 0;
         ball_go_ang = 0;
     }
+}
+
+void Defense::debug1(void){
+    printf_s("\n>debug1-line_azimuth:%d\n", line_azimuth);
+    printf_s(">debug1-R_azimuth:%d\n", r_azimuth);
+    printf_s(">debug1-line_type:%d\n", line_type);
 }
