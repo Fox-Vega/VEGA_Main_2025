@@ -29,6 +29,8 @@ void Defense::defense_(void){
     }
 }
 
+
+
 void Defense::get_vector(void){
     // ライン情報の取得
     line.read();
@@ -113,9 +115,7 @@ void Defense::p2(void){
 }
 
 void Defense::trace(void){
-    if(gotVector==0){
-    get_vector();
-    }
+    if(gotVector==0) get_vector();
     if(line_detect){
             if(line_dist>2){
                 mymotor.run(line_go_ang, line_power*line_rate, 0);
@@ -147,4 +147,26 @@ void Defense::debug1(void){
     printf_s("\n>debug1-line_azimuth:%d\n", line_azimuth);
     printf_s(">debug1-R_azimuth:%d\n", r_azimuth);
     printf_s(">debug1-line_type:%d\n", line_type);
+}
+
+void Defense::line_calibration(void){
+    mybuzzer.start(1000, 200);
+    int line_detect=0;
+    while(myswitch.check_tact()!=9){
+        line.read();
+        int line_V[24]={0};
+        for(byte i = 0; i < 24; i++){
+            line_V[i] = line.get_value(i);
+        }
+        for(byte i = 0; i < 23; i++){//バブルソート
+            for(byte j = 0; j < 23-i; j++){
+                if(line_V[j] > line_V[j+1]){
+                    int temp = line_V[j];
+                    line_V[j] = line_V[j+1];
+                    line_V[j+1] = temp;
+                }
+            }
+        }
+        line_detect = line_V[0];
+    }
 }

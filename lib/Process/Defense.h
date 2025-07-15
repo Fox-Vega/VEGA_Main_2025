@@ -5,13 +5,7 @@ class Defense {
     public:
         void setup(void);
         void defense_(void);
-        void p1(void);//on horizontal line
-        void p2(void);//on corner
-        void p3(void);//on vetical line
-        void p4(void);//Goback line
-        void trace(void);
-        void keeper_dash(void);
-        void debug1(void);
+        void line_calibration(void);
     private:
         // ball
         const int ball_max_X = 300;
@@ -52,4 +46,11 @@ class Defense {
         int ball_history_index=0;
         int gotVector=0;
         void get_vector(void);
+        void p1(void);//on horizontal line
+        void p2(void);//on corner
+        void p3(void);//on vetical line
+        void p4(void);//Goback line
+        void trace(void);
+        void keeper_dash(void);
+        void debug1(void);
 };
