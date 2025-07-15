@@ -8,12 +8,11 @@ class Defense {
         void p1(void);//normal line
         void p2(void);//on corner
         void p3(void);//on next to goal
-        void line_(void);//trace test line
-        void ball_(void);
         void trace(void);
         void keeper_dash(void);
         void GoBackLine(void);
         void debug1(void);
+        void get_vector(void);
     private:
         // ball
         const int ball_max_X = 300;

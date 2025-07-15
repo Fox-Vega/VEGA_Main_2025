@@ -9,22 +9,22 @@
 
 #define printf_s_ln(fmt, ...) ({ char buf[64]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.println(buf); })
 
-void Defense::setup(void){mypixel.use_pixel(true);
-}
+void Defense::setup(void){mypixel.use_pixel(true);}
 
 void Defense::defense_(void){
         gotVector=0;
         mypixel.multi(0, 15, 0, 0, 0);
         if(myswitch.check_toggle()==1){
         get_vector();
-        if(line_detect){
-            // if(line_type==1)p1();
-            // else if(line_type==2)p2();
-            trace();
-        }
-        else{
-            GoBackLine();
-        }
+        // if(line_detect){
+        //     // if(line_type==1)p1();
+        //     // else if(line_type==2)p2();
+        //     trace();
+        // }
+        // else{
+        //     GoBackLine();
+        // }
+        debug1();
     }
     else{
         mymotor.free();
@@ -100,24 +100,7 @@ void Defense::get_vector(void){
         else if(line_azimuth<225&&line_azimuth>135) lastdetect= 180;
         else lastdetect = line_azimuth;
     }
-    // ボール情報の取得
-    ball.read();
-    ball_azimuth = ball.get_azimuth();
-    ball_dist = (int)ball.get_magnitude();
-    ball_detect = ((int)ball.get_magnitude() > 0) ? true : false;
-    myvector.get_cord(ball_azimuth, ball_dist);
-    ball_x = myvector.get_x();
-    ball_y = myvector.get_y();
-    printf_s(">line_1:%d\n",line.get_value(0));
-    //ジャイロ
-    r_azimuth = gam.get_azimuth();
-    printf_s(">r_azimuth:%d\n", r_azimuth);
-    line_();// ラインの処理
-    ball_();// ボールの処理
-    gotVector=1;// ベクトルを取得したフラグを立てる
-}
-
-void Defense::line_(void){
+    //計算
     int line_fb = 0;
     if(line_azimuth<=90||line_azimuth>=270){//b
         line_fb = 1;
@@ -130,9 +113,16 @@ void Defense::line_(void){
     line_go_ang = line_fb==2 ? 180 : 0;
     if(line_dist<2) line_power = 0;
     else mypixel.closest(line_azimuth, 0, 255, 0, 3);
-}
 
-void Defense::ball_(void){
+    // ボール情報の取得
+    ball.read();
+    ball_azimuth = ball.get_azimuth();
+    ball_dist = (int)ball.get_magnitude();
+    ball_detect = ((int)ball.get_magnitude() > 0) ? true : false;
+    myvector.get_cord(ball_azimuth, ball_dist);
+    ball_x = myvector.get_x();
+    ball_y = myvector.get_y();
+    //計算
     if(ball_detect){
         myvector.get_cord(ball_azimuth, ball_dist);
         int ball_x = myvector.get_x();
@@ -149,6 +139,11 @@ void Defense::ball_(void){
         ball_power = 0;
         ball_go_ang = 0;
     }
+
+    //ジャイロ
+    r_azimuth = gam.get_azimuth();
+
+    gotVector=1;// ベクトルを取得したフラグを立てる
 }
 
 void Defense::debug1(void){
