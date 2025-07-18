@@ -5,7 +5,6 @@ class Defense {
     public:
         void setup(void);
         void defense_(void);
-        void line_calibration(void);
     private:
         // ball
         const int ball_max_X = 300;

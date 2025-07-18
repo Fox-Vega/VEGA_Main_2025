@@ -83,7 +83,7 @@ void Defense::get_vector(void){
     }
     else{
         ball_power = 0;
-        ball_go_ang = 0;
+        ball_go_ang = 0;+
     }
 
     //ジャイロ
@@ -149,24 +149,3 @@ void Defense::debug1(void){
     printf_s(">debug1-line_type:%d\n", line_type);
 }
 
-void Defense::line_calibration(void){
-    mybuzzer.start(1000, 200);
-    int line_detect=0;
-    while(myswitch.check_tact()!=9){
-        line.read();
-        int line_V[24]={0};
-        for(byte i = 0; i < 24; i++){
-            line_V[i] = line.get_value(i);
-        }
-        for(byte i = 0; i < 23; i++){//バブルソート
-            for(byte j = 0; j < 23-i; j++){
-                if(line_V[j] > line_V[j+1]){
-                    int temp = line_V[j];
-                    line_V[j] = line_V[j+1];
-                    line_V[j+1] = temp;
-                }
-            }
-        }
-        line_detect = line_V[0];
-    }
-}

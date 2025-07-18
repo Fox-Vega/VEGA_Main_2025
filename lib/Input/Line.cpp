@@ -90,7 +90,7 @@ void LINE::read() {
     } else {
         if (pack_NUM == 1) {
             line_type = 1;
-            
+
             myvector.get_cord(pack_degs[0], line_r);
             line_x = myvector.get_x();
             line_y = myvector.get_y();
@@ -126,7 +126,7 @@ void LINE::read() {
         } else if (pack_NUM == 4) {
             byte first_line = 0;
             short max_dif = 0;
-            
+
             for (byte i = 0; i < 4; i++) {
                 byte pline = (i + 1) % 4;
                 short dif = pack_degs[pline] - pack_degs[i];
