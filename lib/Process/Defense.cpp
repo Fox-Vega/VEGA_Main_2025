@@ -104,14 +104,16 @@ void Defense::p1(void){
 }
 
 void Defense::p2(void){
-    int line_azimuth_mod = 999;
-    if(line_azimuth>0&&line_azimuth<90) line_azimuth_mod=45;
-    else if(line_azimuth>90&&line_azimuth<180) line_azimuth_mod=135;
-    else if(line_azimuth>180&&line_azimuth<270) line_azimuth_mod=225;
-    else if(line_azimuth>270&&line_azimuth<360) line_azimuth_mod=315;
+    int line_azimuth_mod[2] = {999,999};
+    if(line_azimuth>0&&line_azimuth<90)
+    else if(line_azimuth>90&&line_azimuth<180)
+    else if(line_azimuth>180&&line_azimuth<270)
+    else if(line_azimuth>270&&line_azimuth<360)
     else line_azimuth_mod = 999;
     if(line_azimuth_mod==999)p4();
-    mymotor.run(line_azimuth_mod-180 < 0 ? line_azimuth_mod-180+360 : line_azimuth_mod-180, 100, 0);
+    else{
+
+    }
 }
 
 void Defense::trace(void){
