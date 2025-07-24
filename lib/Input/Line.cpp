@@ -10,6 +10,10 @@ void LINE::setup(void) {
 }
 
 void LINE::read() {
+    for(int i = 0; i < 4; i++) {
+        pack_degs[i] = 0;
+    }
+
     for (int i = 0; i < 24; i++) { //初期化
         line_stat_[i] = 0;
         line_stat[i] = 0;
@@ -46,6 +50,13 @@ void LINE::read() {
         }
     }
 
+    for (int i = 0; i < 23; i++) {
+        Serial.print(line_values[i]);
+        Serial.print(" ");
+    }
+    //TODO
+
+
     //グループ処理の開始センサー番号を決める
     byte startNUM = 99;
     for (int i = 23; i > 0; i--) {
@@ -62,6 +73,7 @@ void LINE::read() {
     for(int i = 0; i < 4; i++) {
         pack_degs[i] = 0;
     }
+
     for (int i = startNUM; i < startNUM + 24; i++) {
         byte pLine = i % 24; //処理中のセンサー
         if (line_stat[pLine] == 1) {
@@ -80,6 +92,14 @@ void LINE::read() {
         }
     }
 
+    Serial.print("/ ");
+    for(int i = 0; i < 4; i++) {
+        Serial.print(pack_degs[i]);
+        Serial.print(" ");
+    }
+    Serial.println();
+    //TODO
+
 
     if (pack_NUM == 0) { //検知してるかを確認
         line_type = 0;
@@ -97,15 +117,22 @@ void LINE::read() {
         } else if (pack_NUM == 2) {
             line_type = 1;
 
-            line_dif = (point2 - point1 + 360) % 360;
-            line_deg = (point1 + line_dif / 2) % 360;
+            line_dif = (pack_degs[1] - pack_degs[0] + 360) % 360;
+            if (line_dif > 180) {
+                line_dif = 360 - line_dif;
+                line_deg = (pack_degs[1] + line_dif / 2) % 360;
+            } else {
+                line_deg = (pack_degs[0] + line_dif / 2) % 360;
+            }
+
             line_theta = line_dif / 2;
             line_dist = line_r * cos(radians(line_theta));
+
 
             myvector.get_cord(line_deg, line_dist);
             line_x = myvector.get_x();
             line_y = myvector.get_y();
-        } else if (pack_NUM == 3) {
+        } else if (pack_NUM == 3) { //TODO 未実装
             line_type = 2;
 
             int dot = 99;
@@ -123,7 +150,7 @@ void LINE::read() {
 
             line_x = total_x;
             line_y = total_y;
-        } else if (pack_NUM == 4) {
+        } else if (pack_NUM == 4) { //TODO　未実装
             byte first_line = 0;
             short max_dif = 0;
             
@@ -197,7 +224,11 @@ int LINE::get_azimuth() {
 }
 
 int LINE::get_magnitude() {
-    return myvector.get_magnitude(line_x, line_y);
+    int mag = 999;
+    if (line_type != 0) {
+        mag = myvector.get_magnitude(line_x, line_y);
+    }
+    return mag;
 }
 
 int LINE::get_avoid() {
