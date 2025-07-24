@@ -5,20 +5,10 @@ class Defense {
     public:
         void setup(void);
         void defense_(void);
-        void p1(void);//normal line
-        void p2(void);//on corner
-        void p3(void);//on next to goal
-        void line_(void);//trace test line
-        void ball_(void);
-        void keeper_dash(void);
-        void GoBackLine(void);
     private:
-        //調整
-
-
         // ball
-        const double bmgn =1;
-        const double bmmgn=0.1;
+        const int ball_max_X = 300;
+        const int catch_ball_X = 20;
         int ball_azimuth;
         int ball_dist;
         float ball_x;
@@ -31,13 +21,14 @@ class Defense {
         float line_x;
         float line_y;
         bool line_detect;
+        short line_type;
 
         // others
+        const int line_rate =1;
+        const int line_p2_trace_trigger = 7;
         int r_azimuth;
 
-        const int ball_near = 130;
-        const int ball_max = 900;
-        const int motor_max = 255;
+        int setup_f=0;
         int go_ang;
         int line_go_ang;
         int line_fb;
@@ -52,7 +43,13 @@ class Defense {
         int ball_history[3][50];
         int line_history_index=0;
         int ball_history_index=0;
-        void MyUI(int mode);
-        void MyUI_clear(void);
+        int gotVector=0;
         void get_vector(void);
+        void p1(void);//on horizontal line
+        void p2(void);//on corner
+        void p3(void);//on vetical line
+        void p4(void);//Goback line
+        void trace(void);
+        void keeper_dash(void);
+        void debug1(void);
 };

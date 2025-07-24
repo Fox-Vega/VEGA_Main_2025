@@ -115,7 +115,7 @@ void General::startup() {
                     standby = 1;
                     phase = 4;
                 } else {
-                    if (mode == 3) {
+                    if (mode == 3||mode ==2) {
                         mypixel.rainbow();
                     }
                     if (millis() - lastbuzzer > 500) {
