@@ -12,15 +12,14 @@ void Defense::defense_(void){
         mypixel.multi(0, 15, 0, 0, 0);
         if(myswitch.check_toggle()==1){
         get_vector();
-        // if(line_detect){
-        //     // if(line_type==1)p1();
-        //     // else if(line_type==2)p2();
-        //     trace();
-        // }
-        // else{
-        //     GoBackLine();
-        // }
-        debug1();
+        if(line_detect){
+            // if(line_type==1)p1();
+            // else if(line_type==2)p2();
+            trace();
+        }
+        else{
+            GoBackLine();
+        }
     }
     else{
         mymotor.free();
