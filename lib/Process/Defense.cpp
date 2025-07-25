@@ -53,7 +53,7 @@ void Defense::get_vector(void){
     if(line_azimuth>90&&line_azimuth<270){//f
         line_fb = 2;
     }
-    line_power = 120/(13-line_dist);
+    line_power = 120/(12-line_dist);
     if(line_power<60) line_power = 60;
     line_go_ang = line_fb==2 ? 180 : 0;
     if(line_dist<2) line_power = 0;
