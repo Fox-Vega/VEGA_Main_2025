@@ -18,7 +18,7 @@ void Defense::defense_(void){
             trace();
         }
         else{
-            GoBackLine();
+            p4();
         }
     }
     else{
@@ -82,7 +82,7 @@ void Defense::get_vector(void){
     }
     else{
         ball_power = 0;
-        ball_go_ang = 0;+
+        ball_go_ang = 0;
     }
 
     //ジャイロ
