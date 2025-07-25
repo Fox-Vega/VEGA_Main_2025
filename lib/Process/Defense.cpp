@@ -102,18 +102,18 @@ void Defense::p1(void){
     else {mymotor.run(move_azimuth, move_power,0);mypixel.closest(move_azimuth, 0, 255, 0, 3);}
 }
 
-void Defense::p2(void){
-    int line_azimuth_mod[2] = {999,999};
-    if(line_azimuth>0&&line_azimuth<90)
-    else if(line_azimuth>90&&line_azimuth<180)
-    else if(line_azimuth>180&&line_azimuth<270)
-    else if(line_azimuth>270&&line_azimuth<360)
-    else line_azimuth_mod = 999;
-    if(line_azimuth_mod==999)p4();
-    else{
+// void Defense::p2(void){
+//     int line_azimuth_mod[2] = {999,999};
+//     if(line_azimuth>0&&line_azimuth<90)
+//     else if(line_azimuth>90&&line_azimuth<180)
+//     else if(line_azimuth>180&&line_azimuth<270)
+//     else if(line_azimuth>270&&line_azimuth<360)
+//     else line_azimuth_mod = 999;
+//     if(line_azimuth_mod==999)p4();
+//     else{
 
-    }
-}
+//     }
+// }
 
 void Defense::trace(void){
     if(gotVector==0) get_vector();
