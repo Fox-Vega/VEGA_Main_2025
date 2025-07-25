@@ -54,7 +54,7 @@ void Defense::get_vector(void){
         line_fb = 2;
     }
     line_power = 120/(12-line_dist);
-    if(line_power<60) line_power = 60;
+    if(line_power<15) line_power = 15;
     line_go_ang = line_fb==2 ? 180 : 0;
     if(line_dist<2) line_power = 0;
     else mypixel.closest(line_azimuth, 0, 255, 0, 3);
