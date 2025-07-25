@@ -15,10 +15,11 @@ void Defense::defense_(void){
         if(line_detect){
             // if(line_type==1)p1();
             // else if(line_type==2)p2();
-            p1();
+            debug1();
         }
         else{
-            GoBackLine();
+            //p4();
+            debug1();
         }
     }
     else{
@@ -82,7 +83,7 @@ void Defense::get_vector(void){
     }
     else{
         ball_power = 0;
-        ball_go_ang = 0;+
+        ball_go_ang = 0;
     }
 
     //ジャイロ
@@ -154,5 +155,12 @@ void Defense::debug1(void){
     printf_s("\n>debug1-line_azimuth:%d\n", line_azimuth);
     printf_s(">debug1-R_azimuth:%d\n", r_azimuth);
     printf_s(">debug1-line_type:%d\n", line_type);
+    printf_s(">debug1-line_dist:%d\n", line_dist);
+    printf_s(">debug1-line_x:%f\n", line_x);
+    printf_s(">debug1-line_y:%f\n", line_y);
+    printf_s(">debug1-ball_azimuth:%d\n", ball_azimuth);
+    printf_s(">debug1-ball_dist:%d\n", ball_dist);
+    printf_s(">debug1-ball_x:%f\n", ball_x);
+    printf_s(">debug1-ball_y:%f\n", ball_y);
 }
 
