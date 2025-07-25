@@ -15,10 +15,10 @@ void Defense::defense_(void){
         if(line_detect){
             // if(line_type==1)p1();
             // else if(line_type==2)p2();
-            trace();
+            p1();
         }
         else{
-            p4();
+            GoBackLine();
         }
     }
     else{
@@ -54,7 +54,7 @@ void Defense::get_vector(void){
         line_fb = 2;
     }
     line_power = 120/(12-line_dist);
-    if(line_power<15) line_power = 15;
+    if(line_power<60) line_power = 60;
     line_go_ang = line_fb==2 ? 180 : 0;
     if(line_dist<2) line_power = 0;
     else mypixel.closest(line_azimuth, 0, 255, 0, 3);
@@ -82,7 +82,7 @@ void Defense::get_vector(void){
     }
     else{
         ball_power = 0;
-        ball_go_ang = 0;
+        ball_go_ang = 0;+
     }
 
     //ジャイロ
@@ -95,11 +95,17 @@ void Defense::get_vector(void){
 void Defense::p1(void){
     move_x=ball_power;
     move_y=line_power*(line_go_ang==0 ? 1 : -1);
-    move_power = myvector.get_magnitude(move_x, move_y*line_rate);
-    int move_azimuth = myvector.get_azimuth(move_x, move_y*line_rate);
+    move_power = myvector.get_magnitude(move_x*ball_rate, move_y*line_rate);
+    int move_azimuth = myvector.get_azimuth(move_x*ball_rate, move_y*line_rate);
     if(ball_power==0)trace();
-    else if(line_dist<2) {mymotor.run(ball_go_ang,ball_power,0);mypixel.closest(ball_go_ang, 255, 0, 0, 3);}
-    else {mymotor.run(move_azimuth, move_power,0);mypixel.closest(move_azimuth, 0, 255, 0, 3);}
+    else if(line_dist<2) {
+        mymotor.run(ball_go_ang,ball_power*ball_rate,0);
+        mypixel.closest(ball_go_ang, 255, 0, 0, 3);
+    }
+    else {
+        mymotor.run(move_azimuth, move_power*motor_rate,0);
+        mypixel.closest(move_azimuth, 0, 255, 0, 3);
+    }
 }
 
 // void Defense::p2(void){
