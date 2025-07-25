@@ -24,7 +24,9 @@ class Defense {
         short line_type;
 
         // others
-        const int line_rate =2;
+        const int line_rate =1;
+        const int ball_rate =1;
+        const int motor_rate = 2.5;
         const int line_p2_trace_trigger = 7;
         int r_azimuth;
 
