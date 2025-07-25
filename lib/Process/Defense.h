@@ -3,55 +3,54 @@
 
 class Defense {
     public:
-        void setup(void);
-        void defense_(void);
+        void setup(void);                  // 初期設定
+        void defense_(void);               // ディフェンス処理
     private:
-        // ball
-        const int ball_max_X = 300;
-        const int catch_ball_X = 20;
-        int ball_azimuth;
-        int ball_dist;
-        float ball_x;
-        float ball_y;
-        bool ball_detect;
+        // --- 調整用定数 ---
+        const int ball_max_X = 300;        // ボールの最大x座標（処理用）
+        const int catch_ball_X = 20;       // ボールが目の前にあると判定するライン
+        const int line_rate = 1;           // ラインの倍率
+        const int ball_rate = 1;           // ボールの倍率
+        const int motor_rate = 2.5;        // モーターの倍率
+        const int line_p2_trace_trigger = 7;// ラインのp2トレーストリガー
 
-        // line
-        int line_azimuth;
-        int line_dist;
-        float line_x;
-        float line_y;
-        bool line_detect;
-        short line_type;
+        // --- ボール関連変数 ---
+        int ball_azimuth;                  // ボールの方位角
+        int ball_dist;                     // ボールの距離
+        float ball_x;                      // ボールのx座標
+        float ball_y;                      // ボールのy座標
+        bool ball_detect;                  // ボールが検出されているかどうか
+        int ball_power = 50;               // ボールのパワー
+        int ball_go_ang = 90;              // ボールの進行方向
 
-        // others
-        const int line_rate =1;
-        const int ball_rate =1;
-        const int motor_rate = 2.5;
-        const int line_p2_trace_trigger = 7;
-        int r_azimuth;
+        // --- ライン関連変数 ---
+        int line_azimuth;                  // ラインの方位角
+        int line_dist;                     // ラインの距離
+        float line_x;                      // ラインのx座標
+        float line_y;                      // ラインのy座標
+        bool line_detect;                  // ラインが検出されているかどうか
+        short line_type;                   // ラインの種類
+        int line_go_ang;                   // ラインの進行方向
+        int line_fb;                       // ラインの前後
+        int line_power;                    // ラインのパワー
 
-        int setup_f=0;
-        int go_ang;
-        int line_go_ang;
-        int line_fb;
-        int line_power;
-        int move_x;
-        int move_y;
-        int move_power;
-        int ball_power = 50;
-        int ball_go_ang = 90;
-        int lastdetect = 180;
-        int line_history[3][50];
-        int ball_history[3][50];
-        int line_history_index=0;
-        int ball_history_index=0;
-        int gotVector=0;
-        void get_vector(void);
-        void p1(void);//on horizontal line
-        void p2(void);//on corner
-        void p3(void);//on vetical line
-        void p4(void);//Goback line
-        void trace(void);
-        void keeper_dash(void);
-        void debug1(void);
+        // --- その他処理用変数 ---
+        int r_azimuth;                     // ロボットの方位角
+        int setup_f = 0;                   // 初期設定フラグ
+        int go_ang;                        // 進行方向
+        int move_x;                        // 動くx
+        int move_y;                        // 動くy
+        int move_power;                    // 動くパワー
+        int lastdetect = 180;              // 最後の検出角度
+        int gotVector = 0;                 // ベクトル取得フラグ
+
+        // --- メソッド ---
+        void get_vector(void);             // ベクトルを取得する関数
+        void p1(void);                     // ボールとラインの合成
+        void p2(void);                     // コーナー
+        void p3(void);                     // 垂直ライン
+        void p4(void);                     // ラインに戻る
+        void trace(void);                  // ラインを追跡
+        void keeper_dash(void);            // キーパーのダッシュ
+        void debug1(void);                 // デバッグ用1
 };

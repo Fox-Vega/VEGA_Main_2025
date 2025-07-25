@@ -10,102 +10,98 @@ void Defense::setup(void){mypixel.use_pixel(true);}
 void Defense::defense_(void){
         gotVector=0;
         mypixel.multi(0, 15, 0, 0, 0);
-        if(myswitch.check_toggle()==1){
         get_vector();
-        if(line_detect){
+        if(line_detect){// ラインが検出されている場合
             // if(line_type==1)p1();
             // else if(line_type==2)p2();
             debug1();
         }
-        else{
+        else{//されていなかったら戻る
             //p4();
             debug1();
         }
-    }
-    else{
-        mymotor.free();
-        mypixel.rainbow();
-        get_vector();
-    }
 }
 
 
 
 void Defense::get_vector(void){
     // ライン情報の取得
-    line.read();
-    line_azimuth = line.get_azimuth();
-    line_dist = line.get_magnitude();
-    line_type = line.get_type();
-    line_detect = (line_dist == 999) ? false : true;
-    myvector.get_cord(line_azimuth, line_dist);
-    line_x = myvector.get_x();
-    line_y = myvector.get_y();
-    if(line_detect){
-        if(line_azimuth<45&&line_azimuth>315) lastdetect= 0;
-        else if(line_azimuth<225&&line_azimuth>135) lastdetect= 180;
-        else lastdetect = line_azimuth;
+    line.read();//ライン読み
+
+    line_azimuth = line.get_azimuth();//ラインの方位角を取得
+    line_dist = line.get_magnitude();// ラインの距離を取得
+    line_type = line.get_type();// ラインの種類を取得
+    line_detect = (line_dist == 999) ? false : true;// ラインが検出されているかどうか
+    myvector.get_cord(line_azimuth, line_dist);// 座標を計算
+    line_x = myvector.get_x();// 座標のxを取得
+    line_y = myvector.get_y();// 座標のyを取得
+
+    if(line_detect){//検出してたら最後の位置を記録
+        if(line_azimuth<45&&line_azimuth>315) lastdetect= 0;//０に近かったら０にする
+        else if(line_azimuth<225&&line_azimuth>135) lastdetect= 180;// １８０に近かったら１８０にする
+        else lastdetect = line_azimuth;// それ以外はそのまま記録
     }
-    //計算
-    int line_fb = 0;
-    if(line_azimuth<=90||line_azimuth>=270){//b
-        line_fb = 1;
+    //計算ぞーん
+    int line_fb = 0;//line_fb line_foward/backward  １は後ろ、２は前
+    if(line_azimuth<=90||line_azimuth>=270){//back
+        line_fb = 1;//後ろ
     }
-    if(line_azimuth>90&&line_azimuth<270){//f
-        line_fb = 2;
+    if(line_azimuth>90&&line_azimuth<270){//forward
+        line_fb = 2;//前
     }
-    line_power = 120/(12-line_dist);
-    if(line_power<60) line_power = 60;
-    line_go_ang = line_fb==2 ? 180 : 0;
-    if(line_dist<2) line_power = 0;
-    else mypixel.closest(line_azimuth, 0, 255, 0, 3);
+
+    line_power = 120/(12-line_dist);//距離でパワーを調整
+
+    if(line_power<60) line_power = 60;//最低限６０は出す
+
+    line_go_ang = line_fb==2 ? 180 : 0;//前にあったら１８０、後ろにあったら０
+    if(line_dist<2) line_power = 0; //ラインの上にいたらパワーを０にする
+    else mypixel.closest(line_azimuth, 0, 255, 0, 3);// ラインの方位角に合わせてピクセルを点灯
 
     // ボール情報の取得
-    ball.read();
-    ball_azimuth = ball.get_azimuth();
-    ball_dist = (int)ball.get_magnitude();
-    ball_detect = ((int)ball.get_magnitude() > 0) ? true : false;
-    myvector.get_cord(ball_azimuth, ball_dist);
-    ball_x = myvector.get_x();
-    ball_y = myvector.get_y();
-    //計算
+    ball.read();//ボール読み
+
+    ball_azimuth = ball.get_azimuth();//ボールの方位角を取得
+    ball_dist = (int)ball.get_magnitude();// ボールの距離を取得
+    ball_detect = ((int)ball.get_magnitude() > 0) ? true : false;// ボールが検出されているかどうか
+    myvector.get_cord(ball_azimuth, ball_dist);// 座標を計算
+    ball_x = myvector.get_x();// 座標のxを取得
+    ball_y = myvector.get_y();// 座標のyを取得
+    //計算ぞーん
     if(ball_detect){
-        myvector.get_cord(ball_azimuth, ball_dist);
-        int ball_x = myvector.get_x();
-        int ball_y = myvector.get_y();
-        printf_s(">ball_x:%d\n>ball_y:%d\n", ball_x, ball_y);
+        myvector.get_cord(ball_azimuth, ball_dist);// 座標を計算（ボールの位置）
         // ここで処理
-        ball_x= ball_x> ball_max_X ? ball_max_X : ball_x;
-        ball_power = (ball_x/30)*15+20*(ball_x>0 ? 1 : -1); // ボールの位置に応じてパワーを調整
-        ball_power = ball_x<catch_ball_X ? 0 : ball_power; // 中央にいるときはボールを蹴らない
-        // -だったら左に（270）、+だったら右に
-        ball_go_ang = (ball_x < 0) ? 270 : 90;
+        ball_x= ball_x> ball_max_X ? ball_max_X : ball_x;// ボールの位置が最大値を超えたら最大値にする
+        ball_power = (ball_x/30)*15+20*(ball_x>0 ? 1 : -1); // ボールの位置に応じてパワーを調整　  ボールｘ/30　+　２０（前後で１か-1掛ける）
+        ball_power = ball_x<catch_ball_X ? 0 : ball_power; // ボールとxの位置が近いときはパワーを０にする
+        ball_go_ang = (ball_x < 0) ? 270 : 90;// -だったら左に（270）、+だったら右に（90）
     }
     else{
-        ball_power = 0;
-        ball_go_ang = 0;
+        ball_power = 0; // ボールがないときはパワーを０にする
+        ball_x = 0;// ボールのx座標を０にする
+        ball_go_ang = 0;// ボールの方位角を０にする
     }
 
     //ジャイロ
-    r_azimuth = gam.get_azimuth();
+    r_azimuth = gam.get_azimuth();//r_azimuth robot_azimuth
 
-    gotVector=1;// ベクトルを取得したフラグを立てる
+    gotVector=1;// ベクトルを取得したフラグを立てる 多重取得防止用
 }
 
 
 void Defense::p1(void){
-    move_x=ball_power;
-    move_y=line_power*(line_go_ang==0 ? 1 : -1);
-    move_power = myvector.get_magnitude(move_x*ball_rate, move_y*line_rate);
-    int move_azimuth = myvector.get_azimuth(move_x*ball_rate, move_y*line_rate);
-    if(ball_power==0)trace();
-    else if(line_dist<2) {
-        mymotor.run(ball_go_ang,ball_power*ball_rate,0);
-        mypixel.closest(ball_go_ang, 255, 0, 0, 3);
+    move_x=ball_power;//動くｘ（ボールのパワー）
+    move_y=line_power*(line_go_ang==0 ? 1 : -1);//動くｙ（ラインのパワー）
+    move_power = myvector.get_magnitude(move_x*ball_rate, move_y*line_rate);//動くパワー（ボールのパワーとラインのパワーを合成）
+    int move_azimuth = myvector.get_azimuth(move_x*ball_rate, move_y*line_rate);//動く方位角（ボールのパワーとラインのパワーを合成）
+    if(ball_power==0)trace();// ボールがないときはラインを追跡
+    else if(line_dist<2) {//ライン上にいたらボールだけを追う
+        mymotor.run(ball_go_ang,ball_power*ball_rate,0);//ボールの方位角、ボールのパワー*ボール倍率、０度
+        mypixel.closest(ball_go_ang, 255, 0, 0, 3);// ボールの方位角に合わせてピクセルを点灯
     }
-    else {
-        mymotor.run(move_azimuth, move_power*motor_rate,0);
-        mypixel.closest(move_azimuth, 0, 255, 0, 3);
+    else {//合成結果に基づいて動く
+        mymotor.run(move_azimuth, move_power*motor_rate,0);//動く方位角、動くパワー*モータ倍率、０度
+        mypixel.closest(move_azimuth, 0, 255, 0, 3);// 動く方位角に合わせてピクセルを点灯
     }
 }
 
@@ -122,45 +118,46 @@ void Defense::p1(void){
 //     }
 // }
 
-void Defense::trace(void){
-    if(gotVector==0) get_vector();
-    if(line_detect){
-            if(line_dist>2){
-                mymotor.run(line_go_ang, line_power*line_rate, 0);
+void Defense::trace(void){//ラインを追跡
+    if(gotVector==0) get_vector();//多重取得防止
+    if(line_detect){// ラインが検出されている場合
+            if(line_dist>2){//ラインに戻ろうと動く
+                mymotor.run(line_go_ang, line_power*line_rate, 0);//ラインの向き・パワー*ライン倍率・０度
             }
-            else if(true!=(r_azimuth<15&&r_azimuth>345)){
-                mymotor.run(0,0,0);
-                int d=  0-r_azimuth;
-                if(d<0) d+=360;
-                mypixel.closest(d, 255, 255, 255, 3);
+            else if(true!=(r_azimuth<15&&r_azimuth>345)){//向きがズレすぎてた場合回転
+                mymotor.run(0,0,0);//姿勢制御
+
+                int d=  0-r_azimuth;//ピクセルに０度を表示
+                if(d<0) d+=360;//０度未満だったら３６０を足す
+                mypixel.closest(d, 255, 255, 255, 3);// ピクセルを白色にして０度を表示
             }
-            else {
-                mymotor.free();
-                mypixel.multi(0, 15, 0, 0, 255);
+            else {//乗ってたら何もしない
+                mymotor.free();//自由回転
+                mypixel.multi(0, 15, 0, 0, 255);// ピクセルを緑色にして０度を表示
             }
     }
     else{
-        p4();
+        p4();//ラインに戻る
     }
 }
 
-void Defense::p4(void){
+void Defense::p4(void){//ラインに戻る
     mypixel.closest(lastdetect,255,0,0,3);
-    int backPower =(lastdetect<15&&lastdetect>345)? 200 : 80;
-    mymotor.run(lastdetect,backPower,0);
-    printf_s("noline:%d\n", lastdetect);
+    int backPower =(lastdetect<15&&lastdetect>345)? 250 : 200;//ラインよりも後ろにいたら早く戻るようにする
+    mymotor.run(lastdetect,backPower,0);//最後の検出角度・戻るパワー・０度
+    printf_s("noline:%d\n", lastdetect);//ラインがないですよ～　最後の検出角度
 }
 
-void Defense::debug1(void){
-    printf_s("\n>debug1-line_azimuth:%d\n", line_azimuth);
-    printf_s(">debug1-R_azimuth:%d\n", r_azimuth);
-    printf_s(">debug1-line_type:%d\n", line_type);
-    printf_s(">debug1-line_dist:%d\n", line_dist);
-    printf_s(">debug1-line_x:%f\n", line_x);
-    printf_s(">debug1-line_y:%f\n", line_y);
-    printf_s(">debug1-ball_azimuth:%d\n", ball_azimuth);
-    printf_s(">debug1-ball_dist:%d\n", ball_dist);
-    printf_s(">debug1-ball_x:%f\n", ball_x);
-    printf_s(">debug1-ball_y:%f\n", ball_y);
+void Defense::debug1(void){//デバッグ用
+    printf_s("\n>debug1-line_azimuth:%d\n", line_azimuth);//ラインの方位角
+    printf_s(">debug1-R_azimuth:%d\n", r_azimuth);//ロボットの方位角
+    printf_s(">debug1-line_type:%d\n", line_type);//ラインの種類
+    printf_s(">debug1-line_dist:%d\n", line_dist);//ラインの距離
+    printf_s(">debug1-line_x:%f\n", (double)line_x);//ラインのx座標
+    printf_s(">debug1-line_y:%f\n", (double)line_y);//ラインのy座標
+    printf_s(">debug1-ball_azimuth:%d\n", ball_azimuth);//ボールの方位角
+    printf_s(">debug1-ball_dist:%d\n", ball_dist);//ボールの距離
+    printf_s(">debug1-ball_x:%f\n", (double)ball_x);//ボールのx座標
+    printf_s(">debug1-ball_y:%f\n", (double)ball_y);//ボールのy座標
 }
 
