@@ -11,7 +11,7 @@ class Defense {
         const int catch_ball_X = 20;       // ボールが目の前にあると判定するライン
         const int line_rate = 1;           // ラインの倍率
         const int ball_rate = 1;           // ボールの倍率
-        const int motor_rate = 1.8;        // モーターの倍率
+        const int motor_rate = 2;        // モーターの倍率
         const int line_p2_trace_trigger = 7;// ラインのp2トレーストリガー
 
         // --- ボール関連変数 ---
