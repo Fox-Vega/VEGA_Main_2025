@@ -72,7 +72,7 @@ void Defense::get_vector(void){
     if(ball_detect){
         ball_x= ball_x> ball_max_X ? ball_max_X : ball_x;// ボールの位置が最大値を超えたら最大値にする
         ball_power = (ball_x/30)*30; // ボールの位置に応じてパワーを調整　  ボールｘ/30　+　20（前後で１か-1掛ける）
-        ball_power = ball_x<catch_ball_X ? 0 : ball_power; // ボールとxの位置が近いときはパワーを０にする
+        ball_power = abs(ball_x)<catch_ball_X ? 0 : ball_power; // ボールとxの位置が近いときはパワーを０にする
         ball_go_ang = (ball_x < 0) ? 270 : 90;// -だったら左に（270）、+だったら右に（90）
     }
     else{
