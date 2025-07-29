@@ -143,9 +143,9 @@ void Defense::trace(void){//ラインを追跡
 }
 
 void Defense::p4(void){//ラインに戻る
-    mypixel.closest(lastdetect,255,0,0,3);
+    mypixel.closest(lastdetect,255,0,100,3);
     int backPower =(lastdetect<15&&lastdetect>345)? 250 : 200;//ラインよりも後ろにいたら早く戻るようにする
-    mymotor.run(lastdetect,backPower,0);//最後の検出角度・戻るパワー・０度
+    //mymotor.run(lastdetect,backPower,0);//最後の検出角度・戻るパワー・０度
     printf_s("noline:%d\n", lastdetect);//ラインがないですよ～　最後の検出角度
 }
 
