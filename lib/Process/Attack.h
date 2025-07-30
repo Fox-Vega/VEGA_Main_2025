@@ -22,9 +22,9 @@ class Attack {
         const int brr = 180; //p3回り込み半径
 
         const int b_r1_deg = 10; //パターン１を行う範囲(片側)
-        const short b_r1speed = 200; //ボールの回り込みパターン１の速度
-        const short b_r2speed = 200; //ボールの回り込みパターン２の速度
-        const short b_r3speed = 200; //ボールの回り込みパターン３の速度
+        const short b_r1speed = 175; //ボールの回り込みパターン１の速度
+        const short b_r2speed = 175; //ボールの回り込みパターン２の速度
+        const short b_r3speed = 175; //ボールの回り込みパターン３の速度
         const short b_r4speed = 0;
         const short avoid_speed = 100; //ライン回避
 
