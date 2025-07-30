@@ -14,7 +14,8 @@
 //コメントぐちゃぐちゃ
 
 
-void Defense::setup(void){mypixel.use_pixel(true);}
+void Defense::setup(void){//からっぽ
+}
 
 void Defense::defense_(void){
         gotVector=0;
