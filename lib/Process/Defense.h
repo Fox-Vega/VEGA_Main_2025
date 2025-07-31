@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
+#include <Timer.h>
 
 class Defense {
     public:
@@ -41,6 +42,7 @@ class Defense {
         int move_power;                    // 動くパワー
         int lastdetect = 180;              // 最後の検出角度 デフォルト後ろ
         int gotVector = 0;                 // ベクトル取得フラグ　多重取得防止やけど使ってない
+        Timer d_timer;
 
         // --- メソッド ---
         void get_vector(void);             // ベクトルを取得する関数

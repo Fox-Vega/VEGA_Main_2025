@@ -9,7 +9,7 @@
 // 赤             ボールの右左
 // 白             ボールとｘが同じ
 // ピンク         最後の検出角度
-// 青緑っぽいやつ  動く角度
+// 青緑っぽいやつ(緑強めの)  動く角度
 
 //コメントぐちゃぐちゃ
 
@@ -19,7 +19,7 @@ void Defense::setup(void){//からっぽ
 
 void Defense::defense_(void){
         gotVector=0;
-        mypixel.multi(0, 15, 0, 0, 0);
+        //mypixel.multi(0, 15, 0, 0, 0);
         get_vector();//センサーとか取得
         if(line_detect){// ラインが検出されている場合
             p1();//動く
@@ -60,7 +60,7 @@ void Defense::get_vector(void){//センサー取得→少し計算
     if(line_power<60) line_power = 60;//最低限60は出す
     if(line_dist<2) line_power = 0; //ラインの上にいたらパワーを0にする
 
-    else mypixel.closest(line_azimuth, 0, 255, 0, 3);// ラインの方位角に合わせてピクセルを点灯
+    //else mypixel.closest(line_azimuth, 0, 255, 0, 3);// ラインの方位角に合わせてピクセルを点灯
 
     // ボール情報の取得
     ball.read();//ボール読み
@@ -88,6 +88,7 @@ void Defense::get_vector(void){//センサー取得→少し計算
     r_azimuth = gam.get_azimuth();//r_azimuth robot_azimuth
 
     gotVector=1;// ベクトルを取得したフラグを立てる 多重取得防止用
+    debug1();//デバッグ用
 }
 
 
@@ -100,12 +101,12 @@ void Defense::p1(void){
         if(ball_power==0)p5();// ボールがないときはラインを追跡
         else if(line_dist<2) {//ライン上にいたらボールだけを追う
             mymotor.run(ball_go_ang,ball_power*ball_rate,0);//ボールの方位角、ボールのパワー*ボール倍率、０度
-            mypixel.closest(ball_go_ang, 255, 0, 0, 3);// ボールの方位角に合わせてピクセルを点灯
+            //mypixel.closest(ball_go_ang, 255, 0, 0, 3);// ボールの方位角に合わせてピクセルを点灯
         }
         else {//合成結果に基づいて動く
             mymotor.run(move_azimuth, move_power*motor_rate,0);//動く方位角、動くパワー*モータ倍率、０度
-            mypixel.closest(ball_go_ang, 255, 0, 0, 3);// ボールの方位角に合わせてピクセルを点灯
-            mypixel.closest(move_azimuth, 0, 255, 100, 1);// 動く方位角に合わせてピクセルを点灯
+            //mypixel.closest(ball_go_ang, 255, 0, 0, 3);// ボールの方位角に合わせてピクセルを点灯
+            //mypixel.closest(move_azimuth, 0, 255, 100, 1);// 動く方位角に合わせてピクセルを点灯
         }
 }
 
@@ -116,14 +117,13 @@ void Defense::p5(void){//ラインを追跡
         }
         else if(true!=(r_azimuth<15&&r_azimuth>345)){//向きがズレすぎてた場合回転
             mymotor.run(0,0,0);//0度に向く
-
             int d=  0-r_azimuth;//ピクセルに０度を表示
             if(d<0) d+=360;//０度未満だったら３６０を足す
-            mypixel.closest(d, 255, 255, 255, 3);// ピクセルを白色にして０度を表示
+            //mypixel.closest(d, 100, 50, 255, 3);//
         }
         else {//乗ってたら何もしない
             mymotor.free();//モーター開放
-            mypixel.multi(0, 15, 0, 0, 255);// ピクセルを緑色にして０度を表示
+            //mypixel.multi(0, 15, 0, 0, 255);// ピクセルを緑色にして０度を表示
         }
     }
     else{
@@ -132,34 +132,36 @@ void Defense::p5(void){//ラインを追跡
 }
 
 void Defense::p4(void){//ラインに戻る
-    mypixel.closest(lastdetect,255,0,100,3);//最後の検出角度表示　ピンク
+    //mypixel.closest(lastdetect,255,0,100,3);//最後の検出角度表示　ピンク
     int backPower = 220;//戻るパワー
     mymotor.run(lastdetect,backPower,0);//最後の検出角度・戻るパワー・０度
 }
 
 void Defense::debug1(void){//デバッグ用
-    Serial.println("\n>debug1-line_azimuth:" + String(line_azimuth));//ラインの方位角
-    Serial.println(">debug1-R_azimuth:" + String(r_azimuth));//ロボットの方位角
-    Serial.println(">debug1-line_type:" + String(line_type));//ラインの種類
-    Serial.println(">debug1-line_dist:" + String(line_dist));//ラインの距離
-    Serial.println(">debug1-line_x:" + String(line_x));//ラインのx座標
-    Serial.println(">debug1-line_y:" + String(line_y));//ラインのy座標
-    Serial.println(">debug1-ball_azimuth:" + String(ball_azimuth));//ボールの方位角
-    Serial.println(">debug1-ball_dist:" + String(ball_dist));//ボールの距離
-    Serial.println(">debug1-ball_x:" + String(ball_x));//ボールのx座標
-    Serial.println(">debug1-ball_y:" + String(ball_y));//ボールのy座標
-    //line_poweer
-    Serial.println(">debug1-line_power:" + String(line_power));//ラインのパワー
-    Serial.println(">debug1-ball_power:" + String(ball_power));//ボールのパワ
-    Serial.println(">debug1-line_go_ang:" + String(line_go_ang));//ラインの進行方向
-    Serial.println(">debug1-ball_go_ang:" + String(ball_go_ang));//ボールの
-    Serial.println(">debug1-move_x:" + String(move_x));//動くx
-    Serial.println(">debug1-move_y:" + String(move_y));//動くy
-    Serial.println(">debug1-move_power:" + String(move_power));//動くパワー
-    Serial.println(">debug1-lastdetect:" + String(lastdetect));//最後の検出角度
-    Serial.println(">debug1-gotVector:" + String(gotVector));//ベクトル
-    Serial.println(">debug1-r_azimuth:" + String(r_azimuth));//ロボットの方位角
-    Serial.println(">debug1-ball_detect:" + String(ball_detect));//ボールが検出7
+    // Serial.println(">debug1-line_azimuth:" + String(line_azimuth));//ラインの方位角
+    // Serial.println(">debug1-R_azimuth:" + String(r_azimuth));//ロボットの方位角
+    // Serial.println(">debug1-line_type:" + String(line_type));//ラインの種類
+    // Serial.println(">debug1-line_dist:" + String(line_dist));//ラインの距離
+    // Serial.println(">debug1-line_x:" + String(line_x));//ラインのx座標
+    // Serial.println(">debug1-line_y:" + String(line_y));//ラインのy座標
+    // Serial.println(">debug1-ball_azimuth:" + String(ball_azimuth));//ボールの方位角
+    // Serial.println(">debug1-ball_dist:" + String(ball_dist));//ボールの距離
+    // Serial.println(">debug1-ball_x:" + String(ball_x));//ボールのx座標
+    // Serial.println(">debug1-ball_y:" + String(ball_y));//ボールのy座標
+    // //line_power
+    // Serial.println(">debug1-line_power:" + String(line_power));//ラインのパワー
+    // Serial.println(">debug1-ball_power:" + String(ball_power));//ボールのパワー
+    // Serial.println(">debug1-line_go_ang:" + String(line_go_ang));//ラインの進行方向
+    // Serial.println(">debug1-ball_go_ang:" + String(ball_go_ang));//ボールの進行方向
+
+
+    // Serial.println(">debug1-move_x:" + String(move_x));//動くx
+    // Serial.println(">debug1-move_y:" + String(move_y));//動くy
+    // Serial.println(">debug1-move_power:" + String(move_power));//動くパワー
+    // Serial.println(">debug1-lastdetect:" + String(lastdetect));//最後の検出角度
+    // Serial.println(">debug1-gotVector:" + String(gotVector));//ベクトル
+    // Serial.println(">debug1-r_azimuth:" + String(r_azimuth));//ロボットの方位角
+    // Serial.println(">debug1-ball_detect:" + String(ball_detect));//ボールが検出7
     Serial.println(">debug1-line_detect:" + String(line_detect));//ラインが検出
 }
 
