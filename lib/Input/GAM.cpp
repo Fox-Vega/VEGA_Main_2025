@@ -20,7 +20,6 @@ void GAM::setup() {
     }
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
-    azimuth = 0;
     while (millis() < 5500) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
@@ -34,12 +33,29 @@ void GAM::setup() {
     accel_bias[1] = sample[1] / sampleNUM;
 }
 
+void GAM::read_azimuth() {
+    sensors_event_t euler_event;
+    bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
+    azimuth = (int)euler_event.orientation.x - yawtweak;
+}
+
 int GAM::get_azimuth() {
+    return azimuth;
+}
+
+void GAM::dir_reset() {
     sensors_event_t euler_event;
     bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
 
-    return (int)(euler_event.orientation.x - yawtweak);
+    yawtweak = euler_event.orientation.x;
 }
+
+
+
+
+
+
+//　＝＝＝＝＝＝＝＝　以下実験　＝＝＝＝＝＝＝＝
 
 void GAM::get_cord() {
     //BNO055から加速度データを取得（単位：m/s^2）
@@ -163,13 +179,6 @@ void GAM::get_speed(float dt, float accel,short i) {
     highpassValue[i] = accel - lowpassValue[i];
     speed[i] = (float)((highpassValue[i] + old_accel_data[i]) * dt) / 2 + speed[i];
     old_accel_data[i] = highpassValue[i];
-}
-
-void GAM::dir_reset() {
-    sensors_event_t euler_event;
-    bno.getEvent(&euler_event, Adafruit_BNO055::VECTOR_EULER);
-
-    yawtweak = euler_event.orientation.x;
 }
 
 void GAM::cord_custom(int x, int y) {

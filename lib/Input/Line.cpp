@@ -114,6 +114,10 @@ void LINE::read() {
             myvector.get_cord(pack_degs[0], line_r);
             line_x = myvector.get_x();
             line_y = myvector.get_y();
+
+            if (abs(line_x) > abs(line_y)) {
+                line_type = 2;
+            }
         } else if (pack_NUM == 2) {
             line_type = 1;
 
@@ -132,8 +136,12 @@ void LINE::read() {
             myvector.get_cord(line_deg, line_dist);
             line_x = myvector.get_x();
             line_y = myvector.get_y();
+
+            if (abs(line_x) > abs(line_y)) {
+                line_type = 2;
+            }
         } else if (pack_NUM == 3) { //TODO 未実装
-            line_type = 2;
+            line_type = 3;
 
             int dot = 99;
 
@@ -191,7 +199,7 @@ void LINE::read() {
             line_x = total_x;
             line_y = total_y;
 
-            line_type = 2;
+            line_type = 3;
         }
     }
 }
