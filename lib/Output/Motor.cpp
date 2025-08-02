@@ -28,8 +28,8 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         // 座標計算
         myvector.get_cord(azimuth_motor, max_power - abs(difix));
         motor_power_[i] = myvector.get_x();
-        Serial.print(motor_power_[i]);
-        Serial.print(" ");
+        // Serial.print(motor_power_[i]);
+        // Serial.print(" ");
         if (motor_power_[i] > h) {
             h = motor_power_[i];
         }

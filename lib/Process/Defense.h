@@ -9,13 +9,16 @@ class Defense {
     private:
         // --- 調整用定数 ---
         const int ball_max_X = 300;        // ボールの最大x座標（処理用）
-        const int catch_ball_X = 30;       // ボールが目の前にあると判定するライン
+        const int catch_ball_X = 10;       // ボールが目の前にあると判定するライン
         const int line_rate = 1;           // ラインの倍率
         const int ball_rate = 1.2;         // ボールの倍率
         const int motor_rate = 1;          // モーターの倍率
+        const int p2_back_t=3;             //　p2の戻る距離トリガー
+        const int p2_back_s=100;
 
         // --- ボール関連変数 ---
         int ball_azimuth;                  // ボールの方位角
+        int ball_absolute_angle;           // 機体角度を考慮したボールの絶対角度
         int ball_dist;                     // ボールの距離
         float ball_x;                      // ボールのx座標
         float ball_y;                      // ボールのy座標

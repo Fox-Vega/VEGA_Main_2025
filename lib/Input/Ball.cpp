@@ -86,8 +86,8 @@ int BALL::get_magnitude() {
     magnitude = max_value - magnitude;
     old_magnitude = magnitude; // 過去の値を更新
 
-    Serial.print(">Ball_mag:");
-    Serial.println(magnitude);
+    // Serial.print(">Ball_mag:");
+    // Serial.println(magnitude);
 
     return magnitude;
 }
