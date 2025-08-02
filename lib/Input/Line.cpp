@@ -50,10 +50,10 @@ void LINE::read() {
         }
     }
 
-    for (int i = 0; i < 23; i++) {
-        Serial.print(line_values[i]);
-        Serial.print(" ");
-    }
+    // for (int i = 0; i < 23; i++) {
+    //     Serial.print(line_values[i]);
+    //     Serial.print(" ");
+    // }
     //TODO
 
 
@@ -92,12 +92,12 @@ void LINE::read() {
         }
     }
 
-    Serial.print("/ ");
-    for(int i = 0; i < 4; i++) {
-        Serial.print(pack_degs[i]);
-        Serial.print(" ");
-    }
-    Serial.println();
+    // Serial.print("/ ");
+    // for(int i = 0; i < 4; i++) {
+    //     Serial.print(pack_degs[i]);
+    //     Serial.print(" ");
+    // }
+    // Serial.println();
     //TODO
 
 

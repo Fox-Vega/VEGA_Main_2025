@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
+#include <Timer.h>
 
 class Defense {
     public:
@@ -8,20 +9,22 @@ class Defense {
     private:
         // --- 調整用定数 ---
         const int ball_max_X = 300;        // ボールの最大x座標（処理用）
-        const int catch_ball_X = 20;       // ボールが目の前にあると判定するライン
+        const int catch_ball_X = 10;       // ボールが目の前にあると判定するライン
         const int line_rate = 1;           // ラインの倍率
-        const int ball_rate = 1;           // ボールの倍率
-        const int motor_rate = 2;        // モーターの倍率
-        const int line_p2_trace_trigger = 7;// ラインのp2トレーストリガー
+        const int ball_rate = 1.2;         // ボールの倍率
+        const int motor_rate = 1;          // モーターの倍率
+        const int p2_back_t=3;             //　p2の戻る距離トリガー
+        const int p2_back_s=100;
 
         // --- ボール関連変数 ---
         int ball_azimuth;                  // ボールの方位角
+        int ball_absolute_angle;           // 機体角度を考慮したボールの絶対角度
         int ball_dist;                     // ボールの距離
         float ball_x;                      // ボールのx座標
         float ball_y;                      // ボールのy座標
         bool ball_detect;                  // ボールが検出されているかどうか
-        int ball_power = 50;               // ボールのパワー
-        int ball_go_ang = 90;              // ボールの進行方向
+        int ball_power = 0;               // ボールのパワー
+        int ball_go_ang = 0;              // ボールの進行方向
 
         // --- ライン関連変数 ---
         int line_azimuth;                  // ラインの方位角
@@ -36,21 +39,21 @@ class Defense {
 
         // --- その他処理用変数 ---
         int r_azimuth;                     // ロボットの方位角
-        int setup_f = 0;                   // 初期設定フラグ
         int go_ang;                        // 進行方向
         int move_x;                        // 動くx
         int move_y;                        // 動くy
         int move_power;                    // 動くパワー
-        int lastdetect = 180;              // 最後の検出角度
-        int gotVector = 0;                 // ベクトル取得フラグ
+        int lastdetect = 180;              // 最後の検出角度 デフォルト後ろ
+        int gotVector = 0;                 // ベクトル取得フラグ　多重取得防止やけど使ってない
+        Timer d_timer;
 
         // --- メソッド ---
         void get_vector(void);             // ベクトルを取得する関数
-        void p1(void);                     // ボールとラインの合成
-        void p2(void);                     // コーナー
-        void p3(void);                     // 垂直ライン
-        void p4(void);                     // ラインに戻る
-        void trace(void);                  // ラインを追跡
-        void keeper_dash(void);            // キーパーのダッシュ
-        void debug1(void);                 // デバッグ用1
+        void p1(void);                     // 水平ライン
+        void p2(void);                     // コーナー　　まだ
+        void p3(void);                     // 垂直ライン　まだ
+        void p4(void);                     // ラインに戻る　不安定
+        void p5(void);                     // ラインを追跡　まあまあ
+        void keeper_dash(void);            // キーパーのダッシュ　まだ
+        void debug1(void);                 // デバッグ用1　めっちゃ重い
 };
