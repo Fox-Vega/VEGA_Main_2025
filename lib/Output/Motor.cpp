@@ -54,22 +54,33 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
 }
 
 int MyMOTOR::difix(int target_azimuth) {
-    unsigned long dt = millis() - lastupdate;
-
+    float dt = (millis() - lastupdate) / 1000.0; //秒に直す
     int current_azimuth = gam.get_azimuth();
-    int error = (target_azimuth - current_azimuth + 540) % 360 - 180;
 
-    // 微分項の計算（測定値の変化量ベース）
-    float derivative = ((current_azimuth - prev_azimuth + 540) % 360 - 180) / dt;
-    prev_azimuth = current_azimuth;
+    //角度差を求める
+    float error = target_azimuth - current_azimuth;
+    if (error > 180) { //-180 ~ 180　に収める
+        error -= 360;
+    } else if (error < -180) {
+        error += 360;
+    }
 
-    // 微分先行型PD制御：積分項を削除
-    int pwm = kd * derivative + kp * error;  // 順序：微分項が先行
+    //微分項の計算
+    int dif = current_azimuth - prev_azimuth;
+    if (dif > 180) { //-180 ~ 180　に収める
+        dif -= 360;
+    } else if (dif < 180) {
+        dif += 360;
+    }
+    float derivative = dif / dt;
+
+    // 微分先行型PD
+    int pwm = kp * error - kd * derivative;
 
     pwm = constrain(pwm, -pwmlimit, pwmlimit);
 
     lastupdate = millis();
-
+    prev_azimuth = current_azimuth;
     return pwm;
 }
 

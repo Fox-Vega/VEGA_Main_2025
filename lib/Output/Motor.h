@@ -17,8 +17,8 @@ class MyMOTOR {
 
     private:
         //調整用
-        const float kp = 1.05; //比例 を大きくすると応答が速くなるが、振動しやすくなる
-        const float kd = 425.0; //微分 を大きくするとどうなるかわからん 400.0 - 7/28 - 少しずつ増やす。
+        const float kp = 1.4; //比例 を大きくすると応答が速くなるが、振動しやすくなる
+        const float kd = 0.0; //微分 を大きくするとどうなるかわからん 400.0 - 7/28 - 少しずつ増やす。
         const int pwmlimit = 200;
         const float pwmscale = 1.0;
 
@@ -45,5 +45,5 @@ class MyMOTOR {
         const byte motor_PIN1[4] = {9, 7, 5, 3};
         const byte motor_PIN2[4] = {8, 6, 4, 2};
         const short motor_degrees[4] = {45, 135, 225, 315};
-        unsigned long  lastupdate;
+        unsigned long lastupdate;
 };
