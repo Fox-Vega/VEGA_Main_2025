@@ -22,20 +22,38 @@ void LINE::read() {
     //読み取り
     for (int k = 0; k < 2; k++) { //2回測定
         for (int i = 0; i < 8; i++) { //8回の変更
+            // selectPIN[0] (ピン22)
+            // if (Reader[i][0] == 0) {
+            //     digitalWrite(selectPIN[0], LOW);
+            // } else {
+            //     digitalWrite(selectPIN[0], HIGH);
+            // }
+            // selectPIN[1] (ピン24)
+            // if (Reader[i][1] == 0) {
+            //     digitalWrite(selectPIN[1], LOW);
+            // } else {
+            //     digitalWrite(selectPIN[1], HIGH);
+            // }
+            // selectPIN[2] (ピン26)
+            // if (Reader[i][2] == 0) {
+            //     digitalWrite(selectPIN[2], LOW);
+            // } else {
+            //     digitalWrite(selectPIN[2], HIGH);
+            // }
             if (Reader[i][0] == 0) {
-                digitalWrite(selectPIN[0], LOW);
+                PORTA &= ~(1 << PA0); // LOW
             } else {
-                digitalWrite(selectPIN[0], HIGH);
+                PORTA |= (1 << PA0);  // HIGH
             }
             if (Reader[i][1] == 0) {
-                digitalWrite(selectPIN[1], LOW);
+                PORTA &= ~(1 << PA2); // LOW
             } else {
-                digitalWrite(selectPIN[1], HIGH);
+                PORTA |= (1 << PA2);  // HIGH
             }
             if (Reader[i][2] == 0) {
-                digitalWrite(selectPIN[2], LOW);
+                PORTA &= ~(1 << PA4); // LOW
             } else {
-                digitalWrite(selectPIN[2], HIGH);
+                PORTA |= (1 << PA4);  // HIGH
             }
 
             for (int j = 0; j < 3; j++) { //3つのマルチプレクサを読む

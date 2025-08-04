@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include <Timer.h>
 
+//ちなpはプロセスの略
+
 class Defense {
     public:
         void setup(void);                  // 初期設定
@@ -14,7 +16,8 @@ class Defense {
         const int ball_rate = 1.1;         // ボールの倍率
         const int motor_rate = 1;          // モーターの倍率
         const int p2_back_t=3;             //　p2の戻る距離トリガー
-        const int p2_back_s=100;
+        const int p2_back_s=100;           // p2の戻る速度
+        const int p3_move_t = 3200; // 垂直ラインの移動処理用タイマー
 
         // --- ボール関連変数 ---
         int ball_azimuth;                  // ボールの方位角
@@ -45,8 +48,9 @@ class Defense {
         int move_power;                    // 動くパワー
         int lastdetect = 180;              // 最後の検出角度 デフォルト後ろ
         int gotVector = 0;                 // ベクトル取得フラグ　多重取得防止やけど使ってない
-        Timer d_timer;
+        Timer d_timer;                     //デバッグ用
         Timer l_s;                         //line_same
+        Timer p3_timer;                // 垂直ラインの移動処理用タイマー
         int line_same=999;
         int line_his;
 
@@ -58,6 +62,7 @@ class Defense {
         void p4(void);                     // ラインに戻る　不安定
         void p5(void);                     // ラインを追跡　まあまあ
         inline void get_line_value(void);  //　inline値取得
+        inline void p3_move(int dir1,int dir2, int Power); // 垂直ラインの移動処理
         void keeper_dash(void);            // キーパーのダッシュ　まだ
         void debug1(void);                 // デバッグ用1　めっちゃ重い
 };
