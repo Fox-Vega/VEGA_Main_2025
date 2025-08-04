@@ -87,7 +87,8 @@ int MyVECTOR::get_azimuth(int x, int y) {
 }
 
 int MyVECTOR::get_magnitude(int x, int y) {
-    return (int)sqrt(x * x + y * y); //マグニチュードを計算、送信
+
+    return (int)sqrt((double)x * x + (double)y * y); // マグニチュードを計算、送信
 }
 
 double MyVECTOR::dot_product(double origin_x, double origin_y, double point1_x, double point1_y, double point2_x, double point2_y) {

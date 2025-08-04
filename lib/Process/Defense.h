@@ -9,9 +9,9 @@ class Defense {
     private:
         // --- 調整用定数 ---
         const int ball_max_X = 300;        // ボールの最大x座標（処理用）
-        const int catch_ball_X = 10;       // ボールが目の前にあると判定するライン
+        const int catch_ball_X = 20;       // ボールが目の前にあると判定するライン
         const int line_rate = 1;           // ラインの倍率
-        const int ball_rate = 1.2;         // ボールの倍率
+        const int ball_rate = 1.1;         // ボールの倍率
         const int motor_rate = 1;          // モーターの倍率
         const int p2_back_t=3;             //　p2の戻る距離トリガー
         const int p2_back_s=100;
@@ -46,6 +46,9 @@ class Defense {
         int lastdetect = 180;              // 最後の検出角度 デフォルト後ろ
         int gotVector = 0;                 // ベクトル取得フラグ　多重取得防止やけど使ってない
         Timer d_timer;
+        Timer l_s;                         //line_same
+        int line_same=999;
+        int line_his;
 
         // --- メソッド ---
         void get_vector(void);             // ベクトルを取得する関数
@@ -54,6 +57,7 @@ class Defense {
         void p3(void);                     // 垂直ライン　まだ
         void p4(void);                     // ラインに戻る　不安定
         void p5(void);                     // ラインを追跡　まあまあ
+        inline void get_line_value(void);  //　inline値取得
         void keeper_dash(void);            // キーパーのダッシュ　まだ
         void debug1(void);                 // デバッグ用1　めっちゃ重い
 };
