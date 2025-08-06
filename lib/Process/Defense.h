@@ -12,7 +12,7 @@ class Defense {
         // --- 調整用定数 ---
         const int ball_max_X = 300;        // ボールの最大x座標（処理用）
         const int catch_ball_X = 20;       // ボールが目の前にあると判定するライン
-        const int line_rate = 1;           // ラインの倍率
+        const int line_rate = 0.9;           // ラインの倍率
         const int ball_rate = 1.1;         // ボールの倍率
         const int motor_rate = 1;          // モーターの倍率
         const int p2_back_t=3;             //　p2の戻る距離トリガー

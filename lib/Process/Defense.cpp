@@ -14,6 +14,8 @@
 //ライン強化　not yet
 //速度上昇　　not yet
 
+
+
 void Defense::setup(void){//からっぽ
 }
 
@@ -26,7 +28,10 @@ void Defense::defense_(void){
         if(line_type==1){
             p1();// 水平ライン
         }
-        else p3();// 垂直ライン（今は角代わり）
+        else {
+            p3();// 垂直ライン（今は角代わり）
+        }
+        // p5();// ラインを追跡
     }
     else{//されていなかったら戻る
         p4();//戻る
@@ -74,11 +79,17 @@ void Defense::get_vector(void){//センサー取得→少し計算
     myvector.get_cord(line_azimuth, line_dist);// 座標を計算
     line_x = myvector.get_x();// 座標のxを取得
     line_y = myvector.get_y();// 座標のyを取得
+    // Serial.println("line_x:"+String(line_x)+" line_y:"+String(line_y)+" line_azimuth:"+String(line_azimuth)+" line_dist:"+String(line_dist));
 
     int line_fb = 0;//line_fb line_foward/backward  1は後ろ、2は前
-    if(line_azimuth<=90||line_azimuth>=270) line_fb = 1;//後ろ
-    if(line_azimuth>90&&line_azimuth<270) line_fb = 2;//前
+    // if(line_azimuth<=90||line_azimuth>=270) line_fb = 1;//後ろ
+    // if(line_azimuth>90&&line_azimuth<270) line_fb = 2;//前
+    if(line_y<0) line_fb = 2;//後ろ
+    if(line_y>0) line_fb = 1;//前
     line_go_ang = line_fb==2 ? 180 : 0;//前にあったら180、後ろにあったら0
+    // if(line_fb==1) line_dist = line_dist - 3.5; // 後ろにあったら距離を3.5減らす
+    // else  line_dist = line_dist + 3.5; // 前にあったら距離を3.5増やす
+    // Serial.println("line_x:"+String(line_x)+" line_y:"+String(line_y+2)+" line_azimuth:"+String(line_azimuth)+" line_dist:"+String(line_dist));
 
     line_power = 200/(12-line_dist);//距離でパワーを調整　200：最大値　12-line_dist:11のときに1になるように
     // if(line_power<80) line_power = 80;//最低限80は出す
@@ -92,7 +103,6 @@ void Defense::get_vector(void){//センサー取得→少し計算
     //Serial.println("D_timer"+String(d_timer.read_milli()));
 
     ball_azimuth = ball.get_azimuth();//ボールの方位角を取得
-    // ball_absolute_angle = (ball_azimuth + r_azimuth) % 360; // 機体角度を考慮したボールの絶対角度
     ball_dist = (int)ball.get_magnitude();// ボールの距離を取得
     ball_detect = ((int)ball.get_magnitude() > 0) ? true : false;// ボールが検出されているかどうか
     myvector.get_cord(ball_azimuth, ball_dist);// 座標を計算
@@ -102,8 +112,8 @@ void Defense::get_vector(void){//センサー取得→少し計算
     if(ball_detect){
         ball_go_ang = (ball_x < 0) ? 270 : 90;// -だったら左に（270）、+だったら右に（90）
         ball_power=150; // ボールが検出されているときはパワーを一定にする
-        if(ball_y<100) ball_power=180; // ボールが近いときはパワーを上げる
-        if(ball_y<50) ball_power=200; // ボールが近いときはパワーを上げる
+        if(ball_y<120) ball_power=180; // ボールが近いときはパワーを上げる
+        if(ball_y<70) ball_power=200; // ボールが近いときはパワーを上げる
         ball_power = abs(ball_x)<catch_ball_X ? 0 : ball_power; // ボールとxの位置が近いときはパワーを０にする
     }
     else{
@@ -197,39 +207,58 @@ void Defense::p3(void) { // 垂直ライン
     }
 }
 
-inline void Defense::p3_move(int dir1, int dir2, int Power) { // 垂直ラインの移動処理
-    p3_timer.reset(); // 垂直ラインの移動処理用タイマーをリセット
-    while (line_type != 1 && p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t * 0.7)) { // 戻れたか時間切れで抜けるループ
+// inline void Defense::p3_move(int dir1, int dir2, int Power) { // 垂直ラインの移動処理
+//     p3_timer.reset(); // 垂直ラインの移動処理用タイマーをリセット
+//     while (line_type != 1 && p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t * 0.7)) { // 戻れたか時間切れで抜けるループ
+//         get_line_value(); // ラインの値を取得
+//         if (l_s.read_milli() > 200 && line_same == 0) { // ラインがなかったら戻る
+//             mybuzzer.start(330, 999); // ブザー鳴らす
+//             p3_timer.reset();
+//             while (p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t)) { // ラインを検出するまでか時間切れになるまで戻り続ける
+//                 get_line_value(); // ラインの値を取得
+//                 if (line_detect) break; // ラインが検出されたら抜ける 戻れたってことやね
+//                 mymotor.run(dir2, Power, 0); // キーパーラインに戻る
+//             }
+//             mybuzzer.stop(); // ブザー止める
+//             break; // p3から抜ける
+//         } else {
+//             mymotor.run(dir1, Power, 0); // 垂直ラインの移動処理 今は角代わり
+//         }
+//     }
+//}
+
+inline void Defense::p3_move(int dir1, int dir2, int Power) {
+    p3_timer.reset(); // タイマーをリセット
+    while (line_type != 1 && p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t * 0.7)) {
         get_line_value(); // ラインの値を取得
-        if (l_s.read_milli() > 200 && line_same == 0) { // ラインがなかったら戻る
-            mybuzzer.start(330, 999); // ブザー鳴らす
+        if (l_s.read_milli() > 200 && line_same == 0) { // ラインがなかった場合
+            mybuzzer.start(330, 999); // ブザーを鳴らす
             p3_timer.reset();
-            while (p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t)) { // ラインを検出するまでか時間切れになるまで戻り続ける
+            while (p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t >> 1) && !line_detect) {
                 get_line_value(); // ラインの値を取得
-                if (line_detect) break; // ラインが検出されたら抜ける 戻れたってことやね
                 mymotor.run(dir2, Power, 0); // キーパーラインに戻る
             }
-            mybuzzer.stop(); // ブザー止める
-            break; // p3から抜ける
-        } else {
-            mymotor.run(dir1, Power, 0); // 垂直ラインの移動処理 今は角代わり
+            mybuzzer.stop(); // ブザーを止める
+            break;
         }
+        mymotor.run(dir1, Power, 0); // 垂直ラインの移動処理
     }
 }
 
 
 void Defense::p5(void){//ラインを追跡
     if(line_detect){// ラインが検出されている場合
-        if(line_dist>2){//ラインに戻ろうと動く
-            mymotor.run(line_go_ang, line_power*line_rate*motor_rate, 0);//ラインの向き・パワー*ライン倍率・０度
+        if(line_dist>2&&line_power>80){//ラインに戻ろうと動く
+            mymotor.run(line_go_ang, line_power*motor_rate, 0);//ラインの向き・パワー*ライン倍率・０度
         }
-        else if(true!=(r_azimuth<15&&r_azimuth>345)){//向きがズレすぎてた場合回転
+        else {//乗ってたら何もしない
+            if(!(r_azimuth<15&&r_azimuth>345)){//向きがズレすぎてた場合回転
             mymotor.run(0,0,0);//0度に向く
             int d=  0-r_azimuth;//ピクセルに０度を表示
             if(d<0) d+=360;//０度未満だったら３６０を足す
-        }
-        else {//乗ってたら何もしない
+        }else{
             mymotor.free();//モーター開放
+        }
         }
     }
     else{

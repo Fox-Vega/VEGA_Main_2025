@@ -77,7 +77,7 @@ int MyVECTOR::get_azimuth(int x, int y) {
     azimuth = (int)90 - degrees(theta); //y軸基準の角度を方位角に変換
 
     //値を調整
-    if (azimuth < 0) { 
+    if (azimuth < 0) {
         azimuth += 360;
     } else if (azimuth > 360) {
         azimuth -= 360;
@@ -87,7 +87,6 @@ int MyVECTOR::get_azimuth(int x, int y) {
 }
 
 int MyVECTOR::get_magnitude(int x, int y) {
-
     return (int)sqrt((double)x * x + (double)y * y); // マグニチュードを計算、送信
 }
 
