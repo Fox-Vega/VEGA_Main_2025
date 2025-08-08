@@ -59,12 +59,6 @@ void inline Defense::get_line_value(void){//ラインの値を取得する(p3で
 void Defense::get_vector(void){//センサー取得→少し計算
     //ジャイロ(計算で使うからはじめに取得)
     r_azimuth = gam.get_azimuth();//r_azimuth robot_azimuth
-
-    // ライン情報の取得
-    //Serial.println("D_timer"+String(d_timer.read_milli()));
-
-    //Serial.println("D_timer"+String(d_timer.read_milli()));
-
     get_line_value();//ラインの値を取得
 
     if(line_detect){//検出してたら最後の位置を記録
@@ -72,35 +66,22 @@ void Defense::get_vector(void){//センサー取得→少し計算
         else if(line_azimuth<225&&line_azimuth>135) lastdetect= 180;//180に近かったら180にする
         else lastdetect = line_azimuth;// それ以外はそのまま記録
     }
-    //Serial.println("D_timer"+String(d_timer.read_milli()));
-
-
     //計算ぞーん
     myvector.get_cord(line_azimuth, line_dist);// 座標を計算
     line_x = myvector.get_x();// 座標のxを取得
     line_y = myvector.get_y();// 座標のyを取得
-    // Serial.println("line_x:"+String(line_x)+" line_y:"+String(line_y)+" line_azimuth:"+String(line_azimuth)+" line_dist:"+String(line_dist));
-
     int line_fb = 0;//line_fb line_foward/backward  1は後ろ、2は前
-    // if(line_azimuth<=90||line_azimuth>=270) line_fb = 1;//後ろ
-    // if(line_azimuth>90&&line_azimuth<270) line_fb = 2;//前
-    if(line_y<0) line_fb = 2;//後ろ
-    if(line_y>0) line_fb = 1;//前
+    if(line_azimuth<=90||line_azimuth>=270) line_fb = 1;//前
+    else if(line_azimuth>90&&line_azimuth<270) line_fb = 2;//後ろ
     line_go_ang = line_fb==2 ? 180 : 0;//前にあったら180、後ろにあったら0
-    // if(line_fb==1) line_dist = line_dist - 3.5; // 後ろにあったら距離を3.5減らす
-    // else  line_dist = line_dist + 3.5; // 前にあったら距離を3.5増やす
-    // Serial.println("line_x:"+String(line_x)+" line_y:"+String(line_y+2)+" line_azimuth:"+String(line_azimuth)+" line_dist:"+String(line_dist));
-
-    line_power = 200/(12-line_dist);//距離でパワーを調整　200：最大値　12-line_dist:11のときに1になるように
-    // if(line_power<80) line_power = 80;//最低限80は出す
+    if(!line_detect) mybuzzer.stop();
+    else mybuzzer.start(1000, 999);
+    line_power = 255/(12-line_dist);//距離でパワーを調整　200：最大値　12-line_dist:11のときに1になるように
+    // if(line_power<50) line_power = 50;//最低限50は出す
     if(line_dist<2) line_power = 0; //ラインの上にいたらパワーを0にする
 
-    //else mypixel.closest(line_azimuth, 0, 255, 0, 3);// ラインの方位角に合わせてピクセルを点灯
-
     // ボール情報の取得
-    //Serial.println("D_timer"+String(d_timer.read_milli()));
     ball.read();//ボール読み
-    //Serial.println("D_timer"+String(d_timer.read_milli()));
 
     ball_azimuth = ball.get_azimuth();//ボールの方位角を取得
     ball_dist = (int)ball.get_magnitude();// ボールの距離を取得
@@ -121,12 +102,8 @@ void Defense::get_vector(void){//センサー取得→少し計算
         ball_x = 0;// ボールのx座標を０にする
         ball_go_ang = 0;// ボールの方位角を０にする
     }
-    //Serial.println("D_timer"+String(d_timer.read_milli()));
 
     gotVector=1;// ベクトルを取得したフラグを立てる 多重取得防止用
-    //debug1();//デバッグ用
-    //Serial.println("D_timer"+String(d_timer.read_milli()));
-    // Serial.println("l_s millo:"+String(l_s.read_milli()/1000)+"line_same:"+String(line_same));
 }
 
 
@@ -134,15 +111,12 @@ void Defense::p1(void) {
     move_x = ball_power * (ball_go_ang == 90 ? 1 : -1); // 動くｘ（ボールのパワー）
     move_y = line_power * (line_go_ang == 0 ? 1 : -1); // 動くｙ（ラインのパワー）
     move_power = myvector.get_magnitude(move_x * ball_rate, move_y * line_rate); // 動くパワー（ボールのパワーとラインのパワーを合成）
-
-    int move_azimuth = myvector.get_azimuth(move_x * ball_rate, move_y * line_rate); // 動く方位角（ボールのパワーとラインのパワーを合成）
+    move_azimuth = myvector.get_azimuth(move_x * ball_rate, move_y * line_rate); // 動く方位角（ボールのパワーとラインのパワーを合成）
 
     if (ball_power == 0) {
         p5(); // ボールがないときはラインを追跡
     } else { // 合成結果に基づいて動く
         mymotor.run(move_azimuth, move_power, 0); // 動く方位角、動くパワー*モータ倍率、０度
-        // mypixel.closest(ball_go_ang, 255, 0, 0, 3); // ボールの方位角に合わせてピクセルを点灯
-        // mypixel.closest(move_azimuth, 0, 255, 100, 1); // 動く方位角に合わせてピクセルを点灯
     }
 }
 
@@ -248,7 +222,7 @@ inline void Defense::p3_move(int dir1, int dir2, int Power) {
 
 void Defense::p5(void){//ラインを追跡
     if(line_detect){// ラインが検出されている場合
-        if(line_dist>2&&line_power>80){//ラインに戻ろうと動く
+        if(line_dist>2){//ラインに戻ろうと動く
             mymotor.run(line_go_ang, line_power*motor_rate, 0);//ラインの向き・パワー*ライン倍率・０度
         }
         else {//乗ってたら何もしない
