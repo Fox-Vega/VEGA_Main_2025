@@ -9,6 +9,8 @@ Timer timer_test;
 
 void setup() {
     general.setup();
+    defense.setup();
+    //attack.setup();
     general.startup();
 }
 
@@ -27,7 +29,5 @@ void loop() {
     } else {
         general.startup();
     }
-    //Serial.println(">timer_test:"+String(timer_test.read_milli()));
     mypixel.show();
-    //Serial.println(">timer_test:"+String(timer_test.read_milli()));
 }

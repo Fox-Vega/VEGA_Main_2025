@@ -9,14 +9,29 @@ class Defense {
         void setup(void);                  // 初期設定
         void defense_(void);               // ディフェンス処理
     private:
+        // モード定義
+        //#define OFFmotor true
+        //#define OFFpixel true
+        //#define OFFball true  ---まだ
+
         // --- 調整用定数 ---
-        const uint16_t ball_max_X = 300;        // ボールの最大x座標（処理用）
-        const uint8_t catch_ball_X = 20;       // ボールが目の前にあると判定するライン
-        const float line_rate = 1.1;           // ラインの倍率
+
+        //倍率
+        const float line_rate = 1;           // ラインの倍率
         const float ball_rate = 1;         // ボールの倍率
         const float motor_rate = 1;          // モーターの倍率
-        const uint8_t p2_back_t=3;             //　p2の戻る距離トリガー
-        const uint8_t p2_back_s=100;           // p2の戻る速度
+
+        //距離
+        const uint16_t ball_max_X = 300;        // ボールの最大x座標（処理用）
+        const uint8_t catch_ball_X = 20;       // ボールが目の前にあると判定するライン
+
+        const uint8_t p5_t = 5;                   // p5のトリガー
+        const uint8_t p2_back_t=3;               //　p2の戻る距離トリガー
+
+        //速度
+        const uint8_t p2_back_s=100;               // p2の戻る速度
+
+        //タイマー
         const uint16_t p3_move_t = 3200; // 垂直ラインの移動処理用タイマー
 
         // --- ボール関連変数 ---
@@ -41,6 +56,9 @@ class Defense {
         uint8_t line_power;                    // ラインのパワー
 
         // --- その他処理用変数 ---
+        bool usePixel = true;              // ピクセルを使用するかどうか
+        bool useBall = true;                // ボールを使用するかどうか
+        bool useMotor = true;               // モーターを使用するかどうか
         int r_azimuth;                     // ロボットの方位角
         int go_ang;                        // 進行方向
         int move_x;                        // 動くx
@@ -66,4 +84,4 @@ class Defense {
         inline void p3_move(int dir1,int dir2, int Power); // 垂直ラインの移動処理
         void keeper_dash(void);            // キーパーのダッシュ　まだ
         void debug1(void);                 // デバッグ用1　めっちゃ重い
-};
+        }
