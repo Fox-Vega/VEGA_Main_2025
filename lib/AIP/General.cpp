@@ -143,7 +143,7 @@ void General::startup() {
     mymotor.stabilization(1);
     mymotor.move(1);
 }
-inline void General::readCommand(){
+inline void General::readCommand(){//シリアル使ってるけど送信しなきゃ速度は食わない　食うなら作らない定期
     if (Serial.available()) {
         String line = Serial.readStringUntil('\n');
         line.trim();
