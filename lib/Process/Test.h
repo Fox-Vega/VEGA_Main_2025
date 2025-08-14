@@ -8,8 +8,12 @@ class Test {
         void input();
         void processing();
         void motor();
+        void attitudeControl();
 
     private:
+        uint8_t AT_Deadband = 10;//姿勢制御の±許容誤差範囲
+        bool exit = false;
+        bool lastPixelState = false;
         byte t_mode = 1;
         byte serial_mode = 0;
         byte motor_mode = 0;

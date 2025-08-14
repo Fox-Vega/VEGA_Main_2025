@@ -34,6 +34,7 @@ void General::startup() {
 
 
     while (phase < 4) {
+        readCommand();
         mypixel.clears();
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
@@ -125,6 +126,14 @@ void General::startup() {
                 }
                 break;
         }
+        if(tact_pressed==15){
+            if(mypixel.pixelEnabled()==true){
+                mypixel.use_pixel(0);
+            } else{
+                mypixel.use_pixel(1);
+            }
+            mybuzzer.start(800, 50);
+        }
         mypixel.shows();
     }
     mypixel.brightness(100);
@@ -134,7 +143,146 @@ void General::startup() {
     mymotor.stabilization(1);
     mymotor.move(1);
 }
+inline void General::readCommand(){
+    if (Serial.available()) {
+        String line = Serial.readStringUntil('\n');
+        line.trim();
+        if(line.length() > 0 && line[0] == '/') {//コマンドを検知
+            String parts[5];
+            int count = 0;
+            int start = 0;
 
+            for (int i = 0; i <= (int)line.length() && count < 5; i++) {  // キャスト追加
+                if (i == (int)line.length() || line[i] == ' ') {
+                    if (i > start) {
+                        parts[count] = line.substring(start, i);
+                        count++;
+                    }
+                    start = i + 1;
+                }
+            }
+
+            // for (int i = 0; i < count; i++) {
+            //     Serial.print("part"); Serial.print(i);
+            //     Serial.print("="); Serial.println(parts[i]);
+            // }
+
+            //実行ゾーン
+            String command = parts[0].substring(1); // 最初の文字(/)を除去
+            if(command == "mode"){
+                if(parts[1]=="attack"||parts[1]=="0"||parts[1]=="Attack"||parts[1]=="ATTACK"){
+                    if(parts[2]==""||parts[2]=="select"){
+                        mode = 1;
+                        mybuzzer.start(500, 200);
+                        phase = 2;
+                        Serial.println("Attack mode selected");
+                    } else if(parts[2]=="run"){
+                        mode = 1;
+                        mybuzzer.start(500, 200);
+                        delay(10);
+                        mybuzzer.start(500, 500);
+                        phase = 3;
+                        Serial.println("Attack mode run");
+                    } else {
+                        Serial.println("Invalid sub command. Use select or run.");
+                    }
+                } else if(parts[1]=="defense"||parts[1]=="1"||parts[1]=="Defense"||parts[1]=="DEFENSE"||parts[1]=="Defence"||parts[1]=="DEFENCE"||parts[1]=="Defence"){
+                    if(parts[2]==""||parts[2]=="select"){
+                        mode = 2;
+                        mybuzzer.start(500, 200);
+                        phase = 2;
+                        Serial.println("Defense mode selected");
+                    } else if(parts[2]=="run"){
+                        mode = 2;
+                        mybuzzer.start(500, 200);
+                        delay(10);
+                        mybuzzer.start(500, 500);
+                        phase = 3;
+                        Serial.println("Defense mode run");
+                    } else {
+                        Serial.println("Invalid sub command. Use select or run.");
+                    }
+                } else if(parts[1]=="test"||parts[1]=="2"||parts[1]=="Test"||parts[1]=="TEST"){
+                    if(parts[2]==""||parts[2]=="select"){
+                        mode = 3;
+                        mybuzzer.start(500, 200);
+                        phase = 2;
+                        Serial.println("Test mode selected");
+                    } else if(parts[2]=="run"){
+                        mode = 3;
+                        mybuzzer.start(500, 200);
+                        delay(10);
+                        mybuzzer.start(500, 500);
+                        phase = 3;
+                        Serial.println("Test mode run");
+                    } else {
+                        Serial.println("Invalid sub command. Use select or run.");
+                    }
+                } else {
+                    Serial.println("Invalid mode. Use attack, defense, or test.");
+                }
+            } else if(command == "help"){
+                Serial.println("Available commands:");
+                Serial.println("/mode attack [select|run] - Set attack mode");
+                Serial.println("/mode defense [select|run] - Set defense mode");
+                Serial.println("/mode test [select|run] - Set test mode");
+                Serial.println("/help - Show this help");
+            } else if (command == "pixel"){
+                if(parts[1] == "on"||parts[1] == "true"){
+                    mypixel.use_pixel(1);
+                    mybuzzer.start(800, 50);
+                    Serial.println("Turning pixel on");
+                } else if(parts[1] == "off"||parts[1] == "false"){
+                    mypixel.use_pixel(0);
+                    mybuzzer.start(800, 50);
+                    Serial.println("Turning pixel off");
+                } else {
+                    Serial.println("Invalid pixel command. Use true or false.");
+                }
+            } else if(command =="phase"){
+                if(parts[1]="set"){
+                if(parts[2] == "1"){
+                    Serial.println("Setting phase to 1");
+                    phase = 1;
+                    mybuzzer.start(800, 50);
+                } else if(parts[2] == "2"){
+                    Serial.println("Setting phase to 2");
+                    phase = 2;
+                    mybuzzer.start(800, 50);
+                } else if(parts[2] == "3"){
+                    Serial.println("Setting phase to 3");
+                    phase = 3;
+                    mybuzzer.start(800, 50);
+                } }
+                else if(parts[1] == "next"){
+                    Serial.println("Setting phase to next");
+                    if(phase < 3) {
+                        phase += 1;
+                        mybuzzer.start(500, 100);
+                    } else {
+                        Serial.println("Already at the last phase.");
+                    }
+                } else if(parts[1] == "back"){
+                    Serial.println("Setting phase to back");
+                    if(phase > 1) {
+                        phase -= 1;
+                        mybuzzer.start(100, 100);
+                    } else {
+                        Serial.println("Already at the first phase.");
+                    }
+                } else if(parts[1]== "get"){
+                    Serial.print("Current phase: ");
+                    Serial.println(phase);
+                } else {
+                    Serial.println("Invalid phase. Use 1, 2, 3, or next, back.");
+                }
+            }else {
+                Serial.print("Unknown command: ");
+                Serial.println(command);
+            }
+        }
+    }
+}
 int General::get_mode() {
     return mode;
 }

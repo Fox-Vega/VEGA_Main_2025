@@ -9,10 +9,10 @@
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
 void GAM::setup() {
-    delay(3000);
     mybuzzer.start(400, 100);
     delay(50);
     mybuzzer.start(300, 100);
+    delay(3000);
     Wire.begin();
     if (!bno.begin()) {
         Serial.println("BNO055 not detected.");
@@ -64,7 +64,7 @@ void GAM::get_cord() {
     sensors_event_t event;
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
-    
+
     for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
         if (accel_data[i] > 0) {
             accel_data[i] *= accel_offsetp[robotNUM][i];

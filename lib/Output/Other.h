@@ -28,6 +28,7 @@ class MyPIXEL {
         void clear(); //全消灯
         void clears();
         void use_pixel(bool stat);
+        bool pixelEnabled();
 
     private:
         //調整用

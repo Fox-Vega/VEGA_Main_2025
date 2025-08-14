@@ -8,7 +8,7 @@ void MyPIXEL::setup() {
     PIXEL.setBrightness(PIXELbrightness);
     if (myswitch.check_tact() != 0) {
         usePIXEL = 1; //ネオピクセルの使用有無
-        delay(400);
+        // delay(400);
     } else {
         usePIXEL = 0; //ネオピクセルの使用有無
     }
@@ -107,6 +107,10 @@ void MyPIXEL::clears() {
 
 void MyPIXEL::use_pixel(bool stat) {
     usePIXEL = stat;
+}
+
+bool MyPIXEL::pixelEnabled() {
+    return usePIXEL;
 }
 
 void MyBUZZER::setup() {

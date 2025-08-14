@@ -18,14 +18,14 @@ void loop() {
     mypixel.clear();
     gam.read_azimuth();
 
-    if (myswitch.check_toggle() == 1 && general.get_mode() != 3) {
+    if (myswitch.check_toggle() == 1 ) {
         if (general.get_mode() == 1) {
             attack.attack_();
         } else if (general.get_mode() == 2) {
             defense.defense_();
+        } else if (general.get_mode() == 3) {
+            test.test_();
         }
-    } else if (general.get_mode() == 3) {
-        test.test_();
     } else {
         general.startup();
     }
