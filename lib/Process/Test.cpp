@@ -223,7 +223,5 @@ void Test::processing() {
     Serial.print(",");
     Serial.println(mymotor.get_magnitude());
     // Serial.print(",");
-    
-
     delay(10);
 }

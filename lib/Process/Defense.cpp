@@ -78,6 +78,7 @@ void Defense::get_vector(void){//センサー取得→少し計算
     myvector.get_cord(line_azimuth, line_dist);// 座標を計算
     line_x = myvector.get_x();// 座標のxを取得
     line_y = myvector.get_y();// 座標のyを取得
+    if(line_type!=2){
     int line_absorate_azimuth = line_azimuth - r_azimuth;
     // ここから方位(0/45/90/…/315)判定  ±15°許容
     int la = line_absorate_azimuth % 360; if(la < 0) la += 360; // 正規化
@@ -87,6 +88,7 @@ void Defense::get_vector(void){//センサー取得→少し計算
     else if( la >= 210 && la <= 240 ) line_sector = 225;           // 左下
     else if( la >= 300 && la <= 330 ) line_sector = 315;           // 左上
     if(line_sector!=-1)line_type= 2;
+    }
     // ここまで
     int line_fb = 0;//line_fb line_foward/backward  1は後ろ、2は前
     if(line_azimuth<=90||line_azimuth>=270) line_fb = 1;//前
@@ -143,7 +145,7 @@ void Defense::p2(void) {
     if (line_azimuth > 0 && line_azimuth < 90) {
         corner = 1; // 右上 キーパーライン
     } else if (line_azimuth > 90 && line_azimuth < 180) {
-        corner = 3; // 右下 ライン外
+        corner = 2; // 右下 ライン外
     } else if (line_azimuth > 180 && line_azimuth < 270) {
         corner = 1; // 左下 ライン外
     } else if (line_azimuth > 270 && line_azimuth < 360) {
@@ -188,11 +190,12 @@ void Defense::p2(void) {
 }
 
 void Defense::p3(void) { // 垂直ライン
-    if (line_azimuth < 180) {//右に動く（左にある）
-        p3_move(45, 135, 200); // 垂直ラインの移動処理
-    } else {//左に動く（右にある）
-        p3_move(315, 225, 200); // 垂直ラインの移動処理
-    }
+    mymotor.run(0,100,0);
+    // if (line_azimuth < 180) {//右に動く（左にある）
+    //     p3_move(45, 135, 200); // 垂直ラインの移動処理
+    // } else {//左に動く（右にある）
+    //     p3_move(315, 225, 200); // 垂直ラインの移動処理
+    // }
 }
 
 // inline void Defense::p3_move(int dir1, int dir2, int Power) { // 垂直ラインの移動処理
@@ -216,21 +219,22 @@ void Defense::p3(void) { // 垂直ライン
 //}
 
 inline void Defense::p3_move(int dir1, int dir2, int Power) {
-    p3_timer.reset(); // タイマーをリセット
-    while (line_type != 1 && p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t * 0.7)) {
-        get_line_value(); // ラインの値を取得
-        if (l_s.read_milli() > 200 && line_same == 0) { // ラインがなかった場合
-            mybuzzer.start(330, 999); // ブザーを鳴らす
-            p3_timer.reset();
-            while (p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t >> 1) && !line_detect) {
-                get_line_value(); // ラインの値を取得
-                if(useMotor) mymotor.run(dir2, Power, 0); // キーパーラインに戻る
-            }
-            mybuzzer.stop(); // ブザーを止める
-            break;
-        }
-        if(useMotor) mymotor.run(dir1, Power, 0); // 垂直ラインの移動処理
-    }
+    // p3_timer.reset(); // タイマーをリセット
+    // while (line_type != 1 && p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t * 0.7)) {
+    //     get_line_value(); // ラインの値を取得
+    //     if (l_s.read_milli() > 200 && line_same == 0) { // ラインがなかった場合
+    //         mybuzzer.start(330, 999); // ブザーを鳴らす
+    //         p3_timer.reset();
+    //         while (p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t >> 1) && !line_detect) {
+    //             get_line_value(); // ラインの値を取得
+    //             if(useMotor) mymotor.run(dir2, Power, 0); // キーパーラインに戻る
+    //         }
+    //         mybuzzer.stop(); // ブザーを止める
+    //         break;
+    //     }
+    //     if(useMotor) mymotor.run(dir1, Power, 0); // 垂直ラインの移動処理
+    // }
+    mymotor.run(0,100,0);
 }
 
 
