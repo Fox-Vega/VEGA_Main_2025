@@ -10,9 +10,10 @@ class Defense {
         void defense_(void);               // ディフェンス処理
     private:
         // モード定義
-        //#define OFFmotor true
-        //#define OFFpixel true
-        //#define OFFball true  ---まだ
+        #define Dmotor true
+        #define TimerSerial true
+        //#define pixel true
+        //#define ball true  ---まだ
 
         // --- 調整用定数 ---
 
@@ -59,6 +60,7 @@ class Defense {
         bool usePixel = true;              // ピクセルを使用するかどうか
         bool useBall = true;                // ボールを使用するかどうか
         bool useMotor = true;               // モーターを使用するかどうか
+        bool useTimer = true;               // タイマーを使用するかどうか
         int r_azimuth;                     // ロボットの方位角
         int go_ang;                        // 進行方向
         int move_x;                        // 動くx

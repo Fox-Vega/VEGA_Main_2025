@@ -15,36 +15,49 @@
 
 
 void Defense::setup(void){//モード　透明なやつは今オンになってる
-    #ifdef OFFmotor
-    useMotor = false;
+    #ifdef Dmotor
+    useMotor = true;
     #endif
-    #ifdef OFFpixel
-    usePixel = false;
+    #ifdef pixel
+    usePixel = true;
     #endif
-    #ifdef OFFball
-    useBall = false;
+    #ifdef ball
+    useBall = true;
+    #endif
+    #ifdef TimerSerial
+    useTimer = true;
     #endif
 }
 
 void Defense::defense_(void){
     d_timer.reset();
+    if(useTimer){Serial.println("before:" + String(d_timer.read_milli()));}
     gotVector=0;
-    //mypixel.multi(0, 15, 0, 0, 0);
     get_vector();//センサーとか取得
+    if(useTimer){Serial.println("after get vector:" + String(d_timer.read_milli()));}
     if(line_detect){// ラインが検出されている場合
         if(line_type==1){
             p1();// 水平ライン
+            if(useTimer){Serial.println("after p1:" + String(d_timer.read_milli()));}
         }
         else if(line_type==2){
             p2();// 角ライン
+            if(useTimer){Serial.println("after p2:" + String(d_timer.read_milli()));}
         }
         else if(line_type==3){
             p3();// 垂直ライン
+            if(useTimer){Serial.println("after p3:" + String(d_timer.read_milli()));}
         }
     }
     else{//されていなかったら戻る
         p4();//戻る
+        if(useTimer){Serial.println("after p4:" + String(d_timer.read_milli()));}
     }
+    if(!useMotor){
+        mymotor.free();
+        if(useTimer){Serial.println("usemotor false:" + String(d_timer.read_milli()));}
+    }
+    if(useTimer){Serial.println("after all:" + String(d_timer.read_milli()));}
 }
 
 void inline Defense::get_line_value(void){//ラインの値を取得する(p3で使うからinline)
@@ -143,13 +156,13 @@ void Defense::p2(void) {
 
     int corner; // 角の分別
     if (line_azimuth > 0 && line_azimuth < 90) {
-        corner = 1; // 右上 キーパーライン
+        corner = 1; // 右上
     } else if (line_azimuth > 90 && line_azimuth < 180) {
-        corner = 2; // 右下 ライン外
+        corner = 2; // 右下
     } else if (line_azimuth > 180 && line_azimuth < 270) {
-        corner = 1; // 左下 ライン外
+        corner = 3; // 左下
     } else if (line_azimuth > 270 && line_azimuth < 360) {
-        corner = 2; // 左上 キーパーライン
+        corner = 4; // 左上
     }
 
     if (corner == 1) { // 右上
@@ -184,6 +197,32 @@ void Defense::p2(void) {
                 }
             } else { // 右やったらそのまま動く
                 p1();
+            }
+        }
+    }
+
+    if(corner == 2){//右下
+        if(line_dist>p2_back_t){
+            mymotor.run(225,p2_back_s,0);
+        } else {
+            if(ball_go_ang==270){
+                line_fb=1;
+                p1();
+            } else {
+                mymotor.free();
+            }
+        }
+    }
+
+    if(corner == 3){//左下
+        if(line_dist>p2_back_t){
+            mymotor.run(135,p2_back_s,0);
+        } else {
+            if(ball_go_ang==90){
+                line_fb=1;
+                p1();
+            } else {
+                mymotor.free();
             }
         }
     }
