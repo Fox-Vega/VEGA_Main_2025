@@ -16,7 +16,11 @@ void General::setup() {
     gam.setup();
     mypixel.multi(0, 15, 255, 255, 255);
     mypixel.show();
-    mybuzzer.preset(1);
+    if(myswitch.check_tact() == 15){
+        mybuzzer.preset(0);
+    } else {
+        mybuzzer.preset(1);
+    }
     standby = 0;
 }
 

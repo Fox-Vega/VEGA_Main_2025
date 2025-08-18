@@ -158,9 +158,9 @@ void Defense::p2(void) {
     if (line_azimuth > 0 && line_azimuth < 90) {
         corner = 1; // 右上
     } else if (line_azimuth > 90 && line_azimuth < 180) {
-        corner = 2; // 右下
+        corner = 3; // 右下
     } else if (line_azimuth > 180 && line_azimuth < 270) {
-        corner = 3; // 左下
+        corner = 2; // 左下
     } else if (line_azimuth > 270 && line_azimuth < 360) {
         corner = 4; // 左上
     }
@@ -236,26 +236,6 @@ void Defense::p3(void) { // 垂直ライン
     //     p3_move(315, 225, 200); // 垂直ラインの移動処理
     // }
 }
-
-// inline void Defense::p3_move(int dir1, int dir2, int Power) { // 垂直ラインの移動処理
-//     p3_timer.reset(); // 垂直ラインの移動処理用タイマーをリセット
-//     while (line_type != 1 && p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t * 0.7)) { // 戻れたか時間切れで抜けるループ
-//         get_line_value(); // ラインの値を取得
-//         if (l_s.read_milli() > 200 && line_same == 0) { // ラインがなかったら戻る
-//             mybuzzer.start(330, 999); // ブザー//////////////////// \\鳴らす
-//             p3_timer.reset();
-//             while (p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t)) { // ラインを検出するまでか時間切れになるまで戻り続ける
-//                 get_line_value(); // ラインの値を取得
-//                 if (line_detect) break; // ラインが検出されたら抜ける 戻れたってことやね
-//                 mymotor.run(dir2, Power, 0); // キーパーラインに戻る
-//             }
-//             mybuzzer.stop(); // ブザー止める
-//             break; // p3から抜ける
-//         } else {
-//             mymotor.run(dir1, Power, 0); // 垂直ラインの移動処理 今は角代わり
-//         }
-//     }
-//}
 
 inline void Defense::p3_move(int dir1, int dir2, int Power) {
     // p3_timer.reset(); // タイマーをリセット

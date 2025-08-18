@@ -11,7 +11,7 @@ class Defense {
     private:
         // モード定義
         #define Dmotor true
-        #define TimerSerial true
+        //#define TimerSerial true
         //#define pixel true
         //#define ball true  ---まだ
 
