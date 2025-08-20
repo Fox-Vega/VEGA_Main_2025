@@ -96,6 +96,7 @@ void Defense::applyUI(){
     background.blue = background.blue*(background.alpha/100);
 
     mypixel.multi(0, 15, background.red, background.green, background.blue);
+    mypixel.closest(line_azimuth,);
 }
 
 void Defense::ReadCommand(){}
