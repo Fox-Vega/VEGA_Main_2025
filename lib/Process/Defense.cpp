@@ -28,8 +28,7 @@ void Defense::setup(void){
 
 void Defense::defense_(void){
     d_timer.reset();
-    if(SerialEnabled){
-
+    if(SerialEnabled){//
     }
     get_value();
 }
