@@ -58,7 +58,8 @@ void Defense::get_value(){
 }
 
 int Defense::cal_vector(){
-    int r
+    int r=999;
+    return r;
 }
 
 bool Defense::useSerial(bool use) {
