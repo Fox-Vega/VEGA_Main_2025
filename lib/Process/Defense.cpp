@@ -57,8 +57,8 @@ void Defense::get_value(){
     ball_dist=ball.get_magnitude();
 }
 
-int cal_vector(){
-    
+int Defense::cal_vector(){
+    int r
 }
 
 bool Defense::useSerial(bool use) {
