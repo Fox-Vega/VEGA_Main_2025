@@ -63,6 +63,7 @@ class Defense {
         void dash();
         void back();
         void ReadCommand();
+        void resetUI();
         inline int norm360(int a){a%=360;if(a < 0)a+=360;return a;};
 
 
