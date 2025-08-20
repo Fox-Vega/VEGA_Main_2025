@@ -51,7 +51,10 @@ void Defense::get_value(){
         line_y=999;
     }
 
-    ball_detect=true;
+    //ball_detect=true;
+    ball_azimuth=ball.get_azimuth();
+    ball_a
+    ball_dist=ball.get_magnitude();
 }
 
 bool Defense::useSerial(bool use) {
