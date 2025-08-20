@@ -66,7 +66,9 @@ int Defense::cal_vector(){
 }
 
 void Defense::resetUI(){
-    background.red = 0;
+    background.red = 57;
+    background.green = 197;
+    background.blue = 187;
 }
 
 void Defense::ReadCommand(){}
