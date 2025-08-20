@@ -63,6 +63,7 @@ void Defense::get_value(){
 
 int Defense::cal_vector(){
     int r=999;
+    ve
     return r;
 }
 
