@@ -53,7 +53,7 @@ void Defense::get_value(){
 
     //ball_detect=true;
     ball_azimuth=ball.get_azimuth();
-    ball_a
+    ball_absolute_angle=norm360(ball_azimuth - r_azimuth);
     ball_dist=ball.get_magnitude();
 }
 
