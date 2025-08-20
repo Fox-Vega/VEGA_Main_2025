@@ -66,7 +66,7 @@ int Defense::cal_vector(){
 }
 
 void Defense::resetUI(){
-    mypixel.multi
+    background.red = 0;
 }
 
 void Defense::ReadCommand(){}
