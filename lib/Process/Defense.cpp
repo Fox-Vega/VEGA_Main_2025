@@ -32,7 +32,9 @@ void Defense::setup(void){
 void Defense::defense_(void){
     resetUI();
     d_timer.reset();
-    if(SerialEnabled){ReadCommand();}//ここにコマンド読み追加する予定
+    if(SerialEnabled){
+        ReadCommand();
+    }
     get_value();
     cal_vector();
     applyUI();
@@ -75,7 +77,7 @@ int Defense::cal_vector(){
         } else {
             vector.ball_ang=90;
         }
-        vector.ball
+        vector.ball_power=200;
     }
     return r;
 }
