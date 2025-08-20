@@ -67,7 +67,9 @@ int Defense::cal_vector(){
     vector.ball_x = myvector.get_x();
     vector.ball_y = myvector.get_y();
     if(vector.ball_x<0){
-        vector.ball_ang=180;
+        vector.ball_ang=270;
+    } else {
+        vector.ball_ang=90;
     }
     return r;
 }
