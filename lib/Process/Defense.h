@@ -57,7 +57,7 @@ class Defense {
             int red;
             int green;
             int blue;
-            flo alpha;
+            float alpha;
         };
 
         RGBA background;
