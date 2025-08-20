@@ -62,6 +62,8 @@ int Defense::cal_vector(){
     return r;
 }
 
+
+
 bool Defense::useSerial(bool use) {
     SerialEnabled = use;
     return SerialEnabled;
