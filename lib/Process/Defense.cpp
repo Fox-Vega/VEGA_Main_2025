@@ -30,6 +30,7 @@ void Defense::setup(void){
 }
 
 void Defense::defense_(void){
+    resetUI();
     d_timer.reset();
     if(SerialEnabled){ReadCommand();}//ここにコマンド読み追加する予定
     get_value();
@@ -64,7 +65,9 @@ int Defense::cal_vector(){
     return r;
 }
 
-void Defense::resetUI(){}
+void Defense::resetUI(){
+    mypixel.multi
+}
 
 void Defense::ReadCommand(){}
 
