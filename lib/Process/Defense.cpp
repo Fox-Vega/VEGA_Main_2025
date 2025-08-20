@@ -66,7 +66,9 @@ int Defense::cal_vector(){
     myvector.get_cord(ball_azimuth,ball_dist);
     vector.ball_x = myvector.get_x();
     vector.ball_y = myvector.get_y();
-    
+    if(vector.ball_x<0){
+        vector.
+    }
     return r;
 }
 
