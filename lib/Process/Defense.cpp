@@ -66,13 +66,17 @@ int Defense::cal_vector(){
     myvector.get_cord(ball_azimuth,ball_dist);
     vector.ball_x = myvector.get_x();
     vector.ball_y = myvector.get_y();
-    if(ball_azimurh<15||ball_azimuth>345){}
-    if(vector.ball_x<0){
+    if(ball_azimuth<15||ball_azimuth>345){
+
+    } else{
+        if(vector.ball_x<0){
         vector.ball_ang=270;
-    } else {
-        vector.ball_ang=90;
+        } else {
+            vector.ball_ang=90;
+        }
+
     }
-    return r;
+        return r;
 }
 
 void Defense::resetUI(){
