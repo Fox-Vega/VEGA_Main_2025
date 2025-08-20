@@ -12,6 +12,7 @@ class Defense {
     private:
         // モード定義
         bool SerialEnabled = false;       // シリアル通信の有効/無効
+        bool PixelEnabled = true;
         // --- 調整用定数 ---
 
         // --- ボール関連変数 ---
