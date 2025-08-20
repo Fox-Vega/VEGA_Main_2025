@@ -62,6 +62,7 @@ class Defense {
         void move();
         void dash();
         void back();
+        void read
         inline int norm360(int a){a%=360;if(a < 0)a+=360;return a;};
 
 
