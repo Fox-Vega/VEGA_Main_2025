@@ -50,6 +50,8 @@ void Defense::get_value(){
         line_x=999;
         line_y=999;
     }
+
+    ball_detect=true;
 }
 
 bool Defense::useSerial(bool use) {
