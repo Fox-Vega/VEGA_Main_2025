@@ -74,9 +74,10 @@ void Defense::resetUI(){
 }
 
 void Defense::applyUI(){
-    background.red = background.red*background.alpha/100;
-    background.green = background.green*background.alpha/100;
-    background.blue = background.blue*background.alpha/100;
+
+    background.red = background.red*(background.alpha/100);
+    background.green = background.green*(background.alpha/100);
+    background.blue = background.blue*(background.alpha/100);
 
     mypixel.multi(0, 15, background.red, background.green, background.blue);
 }
