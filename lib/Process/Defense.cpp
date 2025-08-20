@@ -105,4 +105,3 @@ bool Defense::useSerial(bool use) {
     SerialEnabled = use;
     return SerialEnabled;
 }
-
