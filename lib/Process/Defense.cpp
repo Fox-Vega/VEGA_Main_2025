@@ -42,7 +42,7 @@ void Defense::get_value(){
     if(line_detect){
         line_azimuth=line.get_azimuth();
         line_absolute_angle=norm360(line_azimuth - r_azimuth);
-        line_dist=line.get_magnitude();
+        line_dist=line.get_magnitude()/10;
     } else {
         line_azimuth=999;
         line_absolute_angle=999;
