@@ -168,4 +168,6 @@ class Defense {
         // inline void p3_move(int dir1,int dir2, int Power); // 垂直ラインの移動処理
         // void keeper_dash(void);            // キーパーのダッシュ　まだ
         // void debug1(void);                 // デバッグ用1　めっちゃ重い
+
+        
 };
