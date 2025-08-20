@@ -77,7 +77,7 @@ void Defense::applyUI(){
     background.green = background.green*background.alpha/100;
     background.blue = background.blue*background.alpha/100;
 
-    
+    mypixel.multi(0, 15, background.red, background.green, background.blue);
 }
 
 void Defense::ReadCommand(){}
