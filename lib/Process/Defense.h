@@ -44,10 +44,10 @@ class Defense {
             int line_x;// ラインのx座標
             int line_y;// ラインのy座標
 
-            int go_ang;//
-            int move_power;
-            int move_x;
-            int move_y;
+            int go_ang;//動く方向
+            int move_power;//動く強さ
+            int move_x;//動くx
+            int move_y;//動くy
         };
         vector vector;
         // --- その他処理用変数 ---
