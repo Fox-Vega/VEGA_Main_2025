@@ -9,6 +9,8 @@
 //シリアルコマンドも実装
 //ベクトル合成でｐとかでできるだけ分けないようにしたい
 
+//powershell -ExecutionPolicy Bypass -File C:\Users\kusas\Desktop\program\auto-commit.ps1
+
 
 
 void Defense::setup(void){
