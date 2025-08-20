@@ -35,7 +35,7 @@ void Defense::defense_(void){
     if(SerialEnabled){ReadCommand();}//ここにコマンド読み追加する予定
     get_value();
     cal_vector();
-    a
+    applyUI();
 }
 
 void Defense::get_value(){
