@@ -73,7 +73,9 @@ void Defense::resetUI(){
 }
 
 void Defense::applyUI(){
-    background.red =
+    background.red = background.red*background.alpha/100;
+    background.green = background.green*background.alpha/100;
+    
 }
 
 void Defense::ReadCommand(){}
