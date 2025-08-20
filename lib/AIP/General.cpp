@@ -1,6 +1,7 @@
 #include "General.h"
 #include "Input.h"
 #include "Output.h"
+#include "Process.h"
 
 
 void General::setup() {
@@ -298,9 +299,21 @@ inline void General::readCommand(){//シリアル使ってるけど送信しな�
                         gam.dir_reset();
                         mybuzzer.start(300, 500);
                     }
+                } else if(parts[1]=="defense"||parts[1]=="1"||parts[1]=="Defense"||parts[1]=="DEFENSE"||parts[1]=="Defence"||parts[1]=="DEFENCE"||parts[1]=="Defence"){
+                    if(parts[2]=="Serial"){
+                        if(parts[2]=="true"||parts[2]=="on"){
+                            Serial.println("defense:Uses Serial set to "+String(defense.useSerial(true)));
+                        } else if(parts[2]=="false"||parts[2]=="off"){
+                            Serial.println("defense:Uses Serial set to "+String(defense.useSerial(false)));
+                        } else {
+                            Serial.println("Invalid serial command. Use true or false.");
+                        }
+                    } else {
+                        Serial.println("Invalid defense command.");
+                    }
                 } else {
                     Serial.print("Unknown command: ");
-                    Serial.println(command);
+                    Serial.println(parts[1]+String(" was not found in library."));
                 }
             } else {
                 Serial.println("Before use Serial command,toggle switch must be far side.");//トグルが奥じゃないと動作しないように
