@@ -169,5 +169,5 @@ class Defense {
         // void keeper_dash(void);            // キーパーのダッシュ　まだ
         // void debug1(void);                 // デバッグ用1　めっちゃ重い
 
-        //前
+        //前でぃ
 };
