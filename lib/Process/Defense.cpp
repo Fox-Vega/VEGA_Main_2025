@@ -72,6 +72,8 @@ void Defense::resetUI(){
     background.alpha = 80;
 }
 
+void applyUI
+
 void Defense::ReadCommand(){}
 
 bool Defense::useSerial(bool use) {
