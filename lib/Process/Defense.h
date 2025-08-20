@@ -11,40 +11,40 @@ class Defense {
         bool useSerial(bool use);           // シリアルを使うかどうか　コマンドで変える
     private:
         // モード定義
-        bool SerialEnabled = false;       
+        bool SerialEnabled = false;       // シリアル通信の有効/無効
         // --- 調整用定数 ---
 
         // --- ボール関連変数 ---
 
-        bool ball_detect;
-        int ball_azimuth;
-        int ball_absolute_angle;
-        int ball_dist;
-        int ball_x;
-        int ball_y;
+        bool ball_detect;// ボールが検出されているかどうか
+        int ball_azimuth;// ボールの方位角
+        int ball_absolute_angle;// ボールの絶対角度
+        int ball_dist;// ボールの距離
+        int ball_x;// ボールのx座標
+        int ball_y;// ボールのy座標
 
         // --- ライン関連変数 ---
-        bool line_detect;
-        int line_azimuth;
-        int line_absolute_angle;
-        int line_dist;
-        int lastdetect;
-        int line_x;
-        int line_y;
+        bool line_detect;// ラインが検出されているかどうか
+        int line_azimuth;// ラインの方位角
+        int line_absolute_angle;// ラインの絶対角度
+        int line_dist;// ラインの距離
+        int lastdetect;// 最後に検出したラインの方位角
+        int line_x;// ラインのx座標
+        int line_y;// ラインのy座標
 
         //　--- ベクトル ---
-        struct vector {
-            int ball_ang;
-            int ball_power;
-            int ball_x;
-            int ball_y;
+        struct vector {//   ベクトル
+            int ball_ang;// ボールの動きたい方向
+            int ball_power;// ボールのパワー
+            int ball_x;// ボールのx座標
+            int ball_y;// ボールのy座標
 
-            int line_ang;
-            int line_power;
-            int line_x;
-            int line_y;
+            int line_ang;// ラインの動きたい方向
+            int line_power;// ラインのパワー
+            int line_x;// ラインのx座標
+            int line_y;// ラインのy座標
 
-            int go_ang;
+            int go_ang;//
             int move_power;
             int move_x;
             int move_y;
