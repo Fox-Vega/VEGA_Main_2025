@@ -83,6 +83,7 @@ int Defense::cal_vector(){
 }
 
 void Defense::resetUI(){
+    //背景
     background.red = 57;
     background.green = 197;
     background.blue = 187;
