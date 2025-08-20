@@ -37,6 +37,7 @@ void Defense::get_value(){
     line.read();
     ball.read();
 
+    r_azimuth = gam.get_azimuth();
     line_detect=line.get_magnitude()==999 ? false : true;
     if(line_detect){
         line_azimuth=line.get_azimuth();
