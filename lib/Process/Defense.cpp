@@ -72,7 +72,9 @@ void Defense::resetUI(){
     background.alpha = 80;
 }
 
-void applyUI
+void Defense::applyUI(){
+    background.red =
+}
 
 void Defense::ReadCommand(){}
 
