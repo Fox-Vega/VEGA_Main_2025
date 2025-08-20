@@ -51,12 +51,13 @@ class Defense {
         };
         vector vector;
         // --- その他処理用変数 ---
+        int mode;
         int r_azimuth;
         Timer d_timer;
 
         // --- メソッド ---
         void get_value();
-        void cal_vector();
+        int cal_vector();
         void move();
         void dash();
         void back();
