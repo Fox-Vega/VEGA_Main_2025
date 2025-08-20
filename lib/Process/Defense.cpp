@@ -64,7 +64,9 @@ void Defense::get_value(){
 int Defense::cal_vector(){
     int r=999;
     myvector.get_cord(ball_azimuth,ball_dist);
-    vector.ball_x =
+    vector.ball_x = myvector.get_x();
+    vector.ball_y = myvector.get_y();
+    
     return r;
 }
 
