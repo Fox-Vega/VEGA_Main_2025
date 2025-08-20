@@ -7,11 +7,11 @@
 class Defense {
     public:
         void setup(void);                  // 初期設定
-        void defense_(void);               // ディフェンス処理
-        bool useSerial(bool use);
+        void defense_(void);               // メイン処置
+        bool useSerial(bool use);           // シリアルを使うかどうか　コマンドで変える
     private:
         // モード定義
-        bool SerialEnabled = false;
+        bool SerialEnabled = false;       
         // --- 調整用定数 ---
 
         // --- ボール関連変数 ---
