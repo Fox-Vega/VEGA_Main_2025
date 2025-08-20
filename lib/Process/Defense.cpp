@@ -29,9 +29,9 @@ void Defense::setup(void){
 
 void Defense::defense_(void){
     d_timer.reset();
-    if(SerialEnabled){//ここにコマンド読み追加する予定
-    }
+    if(SerialEnabled){}//ここにコマンド読み追加する予定
     get_value();
+    cal_vector();
 }
 
 void Defense::get_value(){
