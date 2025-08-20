@@ -64,6 +64,8 @@ int Defense::cal_vector(){
 
 void Defense::resetUI(){}
 
+void Defense::ReadCommand(){}
+
 bool Defense::useSerial(bool use) {
     SerialEnabled = use;
     return SerialEnabled;

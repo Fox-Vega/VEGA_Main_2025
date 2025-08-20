@@ -51,6 +51,21 @@ class Defense {
             int move_y;//動くy
         };
         vector vector;
+
+        // ---NeoPixel---
+        struct RGBA {
+            int red;
+            int blue;
+            int green;
+            int alpha;
+        };
+
+        RGBA background;
+        RGBA P_line;
+        RGBA P_ball;
+        RGBA P_r_azimuth;
+        RGBA go_ang;
+
         // --- その他処理用変数 ---
         int mode;
         int r_azimuth;

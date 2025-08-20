@@ -28,7 +28,7 @@ void General::setup() {
 void General::startup() {
     mymotor.free();
     mybuzzer.stop();
-    mypixel.brightness(999);
+    // mypixel.brightness(999);
 
     if (standby == 0) {
         phase = 1;
@@ -141,7 +141,7 @@ void General::startup() {
         }
         mypixel.shows();
     }
-    mypixel.brightness(100);
+    //mypixel.brightness(100);
     mypixel.clear();
     mypixel.show();
     gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
@@ -238,6 +238,11 @@ inline void General::readCommand(){//シリアル使ってるけど送信しな�
                         mypixel.use_pixel(0);
                         mybuzzer.start(800, 50);
                         Serial.println("Turning pixel off");
+                    } else if(parts[1]=="brightness"||parts[1]=="br"){
+                        mypixel.brightness(parts[2].toInt());
+                        mybuzzer.start(1000, 50);
+                        Serial.print("Setting pixel brightness to ");
+                        Serial.println(parts[2]);
                     } else {
                         Serial.println("Invalid pixel command. Use true or false.");
                     }
@@ -278,29 +283,29 @@ inline void General::readCommand(){//シリアル使ってるけど送信しな�
                     } else {
                         Serial.println("Invalid phase. Use 1, 2, 3, or next, back.");
                     }
-                } else if(parts[1]=="get"){
-                    if(parts[2]=="phase"){
+                } else if(command=="get"){
+                    if(parts[1]=="phase"){
                         Serial.print("Current phase: ");
                         Serial.println(phase);
-                    } else if(parts[2]=="mode"){
+                    } else if(parts[1]=="mode"){
                         Serial.print("Current mode: ");
                         Serial.println(mode);
-                    } else if(parts[2]=="ball"){
+                    } else if(parts[1]=="ball"){
                         ball.read();
                         Serial.print("Ball azimuth:"+String(ball.get_azimuth())+" ball distance:"+String(ball.get_magnitude()));
-                    } else if(parts[2]=="line"){
+                    } else if(parts[1]=="line"){
                         Serial.println("err can't read line sensor not found line.read()");
                     } else{
                         Serial.println("Invalid get command.");
                     }
-                } else if(parts[1]=="gam"){
-                    if(parts[2]=="reset"){
+                } else if(command=="gam"){
+                    if(parts[1]=="reset"){
                         Serial.println("Resetting azimuth");
                         gam.dir_reset();
                         mybuzzer.start(300, 500);
                     }
-                } else if(parts[1]=="defense"||parts[1]=="1"||parts[1]=="Defense"||parts[1]=="DEFENSE"||parts[1]=="Defence"||parts[1]=="DEFENCE"||parts[1]=="Defence"){
-                    if(parts[2]=="Serial"){
+                } else if(command=="defense"||command=="1"||command=="Defense"||command=="DEFENSE"||command=="Defence"||command=="DEFENCE"||command=="Defence"){
+                    if(parts[1]=="Serial"){
                         if(parts[2]=="true"||parts[2]=="on"){
                             Serial.println("defense:Uses Serial set to "+String(defense.useSerial(true)));
                         } else if(parts[2]=="false"||parts[2]=="off"){
