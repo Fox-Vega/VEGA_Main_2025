@@ -67,13 +67,15 @@ int Defense::cal_vector(){
     vector.ball_x = myvector.get_x();
     vector.ball_y = myvector.get_y();
     if(ball_azimuth<15||ball_azimuth>345){
-        vector.
+        vector.ball_ang=999;
+        vector.ball_power=0;
     } else {
         if(vector.ball_x<0){
-        vector.ball_ang=270;
+            vector.ball_ang=270;
         } else {
             vector.ball_ang=90;
         }
+        vector.ball
     }
     return r;
 }
