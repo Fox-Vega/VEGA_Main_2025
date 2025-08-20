@@ -57,6 +57,10 @@ void Defense::get_value(){
     ball_dist=ball.get_magnitude();
 }
 
+int cal_vector(){
+    
+}
+
 bool Defense::useSerial(bool use) {
     SerialEnabled = use;
     return SerialEnabled;
