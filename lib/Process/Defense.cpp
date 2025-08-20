@@ -28,7 +28,7 @@ void Defense::setup(void){
 
 void Defense::defense_(void){
     d_timer.reset();
-    if(SerialEnabled){//
+    if(SerialEnabled){//ここにコマンド読み追加する予定
     }
     get_value();
 }
