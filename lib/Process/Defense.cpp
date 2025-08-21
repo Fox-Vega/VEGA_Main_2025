@@ -100,13 +100,12 @@ int Defense::cal_vector(){
     }
 
     if(ball_azimuth==999){
-
     } else {}
     return r;
 }
 void Defense::move(){
     if(vector.move_power==0){
-
+        mymotor.free();
     } else {
         mymotor.run(vector.go_ang,vector.move_power,0);
     }
