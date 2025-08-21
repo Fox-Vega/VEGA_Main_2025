@@ -88,7 +88,7 @@ int Defense::cal_vector(){
     if (line_detect){
         if(abs(line_x)>5){
             vector.line_ang=line_azimuth;
-            vector.line_power=line_dist/
+            vector.line_power=line_dist*20;
         } else {
 
         }
