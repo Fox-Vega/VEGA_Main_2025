@@ -90,7 +90,7 @@ int Defense::cal_vector(){
             vector.line_ang=line_azimuth;
             vector.line_power=line_dist*20;
         } else {
-
+            vector.line_ang=
         }
     } else {
         vector.go_ang=lastdetect;
