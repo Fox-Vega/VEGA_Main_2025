@@ -55,7 +55,7 @@ void Defense::get_value(){
         myvector.get_cord(line_azimuth,line_dist);
         line_x=myvector.get_x();
         line_y=myvector.get_y();
-    } else {
+    } else {;
         line_azimuth=999;
         line_absolute_angle=999;
         line_dist=999;
