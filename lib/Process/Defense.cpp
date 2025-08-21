@@ -86,7 +86,9 @@ int Defense::cal_vector(){
     }
 
     if (line_detect){
-        if(
+        if(abs(line_x)>5){
+            
+        }
     } else {
         vector.go_ang=lastdetect;
         vector.move_power=200;
