@@ -114,6 +114,7 @@ void Defense::resetUI(){
     background.green = 197;
     background.blue = 187;
     background.alpha = 100;
+
 }
 
 void Defense::applyUI(){
