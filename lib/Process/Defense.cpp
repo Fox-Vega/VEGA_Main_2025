@@ -37,6 +37,7 @@ void Defense::defense_(void){
     }
     get_value();
     cal_vector();
+    move();
     applyUI();
 }
 
@@ -50,6 +51,10 @@ void Defense::get_value(){
         line_azimuth=line.get_azimuth();
         line_absolute_angle=norm360(line_azimuth - r_azimuth);
         line_dist=line.get_magnitude()/10;
+        lastdetect=line_azimuth;
+        myvector.get_cord(line_azimuth,line_dist);
+        line_x=myvector.get_x();
+        line_y=myvector.get_y();
     } else {
         line_azimuth=999;
         line_absolute_angle=999;
@@ -79,7 +84,17 @@ int Defense::cal_vector(){
         }
         vector.ball_power=200;
     }
+
+    if (line_detect){
+        vector.move_power=0;
+    } else {
+        vector.go_ang=lastdetect;
+        vector.move_power=200;
+    }
     return r;
+}
+void Defense::move(){
+    mymotor.run(vector.go_ang,vector.move_power,0);
 }
 
 void Defense::resetUI(){
@@ -98,6 +113,8 @@ void Defense::applyUI(){
 
     mypixel.multi(0, 15, background.red, background.green, background.blue);
     mypixel.closest(line_azimuth,255,0,0,1);
+    Serial.println(line_x);
+    Serial.println(line_y);
 }
 
 void Defense::ReadCommand(){}
