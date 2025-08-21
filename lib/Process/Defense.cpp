@@ -70,6 +70,8 @@ void Defense::get_value(){
 
 int Defense::cal_vector(){
     int r=999;
+
+    //ボールのベクトルを算出
     myvector.get_cord(ball_azimuth,ball_dist);
     vector.ball_x = myvector.get_x();
     vector.ball_y = myvector.get_y();
@@ -86,10 +88,10 @@ int Defense::cal_vector(){
     }
 
     if (line_detect){
-        if(abs(line_x)>5){
+        if(abs(line_x)>5){//角か縦　type分類も追加したいな
             vector.line_ang=line_azimuth;
             vector.line_power=line_dist*20;
-        } else {
+        } else {//これは直線ライン　角度は前後ろのみ
             vector.line_ang=line_y<0?180:0;
             vector.line_power=line_dist*20;
         }
@@ -98,34 +100,40 @@ int Defense::cal_vector(){
         vector.move_power=200;
         return r;
     }
-
-    if(ball_azimuth==999){
-    } else {}
     return r;
 }
 void Defense::move(){
     if(vector.move_power==0){
         mymotor.free();
     } else {
-        mymotor.run(vector.go_ang,vector.move_power,0);
+        mymotor.run(vector.line_ang,vector.line_power,0);
     }
+    mypixel.closest(vector.line_ang,0,255,0,1);
 }
 
 void Defense::resetUI(){
-    //背景
+    //背景 #39c5bbff
     background.red = 57;
     background.green = 197;
     background.blue = 187;
-    background.alpha = 100;
-
+    background.alpha = 1;
+    //ボール #ff00007f
+    P_ball.red = 255;
+    P_ball.green = 0;
+    P_ball.blue = 0;
+    P_ball.alpha = 0.5;
+    //ライン #00b4787f
+    P_line.red = 0;
+    P_line.green = 180;
+    P_line.blue = 120;
+    P_line.alpha = 0.5;
 }
 
 void Defense::applyUI(){
-
-    background.red = background.red*(background.alpha/100);
-    background.green = background.green*(background.alpha/100);
-    background.blue = background.blue*(background.alpha/100);
-
+    //alphaの適用　　　
+    background.red = background.red*background.alpha;
+    background.green = background.green*background.alpha;
+    background.blue = background.blue*background.alpha;
     mypixel.multi(0, 15, background.red, background.green, background.blue);
     mypixel.closest(line_azimuth,255,0,0,1);
     Serial.println(line_x);
