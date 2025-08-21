@@ -105,7 +105,11 @@ int Defense::cal_vector(){
     return r;
 }
 void Defense::move(){
-    mymotor.run(vector.go_ang,vector.move_power,0);
+    if(vector.move_power==0){
+
+    } else {
+        mymotor.run(vector.go_ang,vector.move_power,0);
+    }
 }
 
 void Defense::resetUI(){
