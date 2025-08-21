@@ -353,7 +353,7 @@ class Defense {
 // //     if(useMotor) mymotor.run(lastdetect,backPower,0);//最後の検出角度・戻るパワー・０度
 // // }
 
-// // void Defense::debug1(void){//デバッグ用 
+// // void Defense::debug1(void){//デバッグ用
 // // }
 
         // --- 調整用定数 ---
