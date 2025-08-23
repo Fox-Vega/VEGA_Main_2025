@@ -20,7 +20,7 @@ void MyPIXEL::brightness(int brightness) {
     if (brightness == 999) {
         PIXEL.setBrightness(PIXELbrightness);
     } else {
-        PIXEL.setBrightness(brightness);
+        PIXEL.setBrightness(brightness<0 ? 0 : (brightness>255 ? 255 : brightness));
     }
 }
 

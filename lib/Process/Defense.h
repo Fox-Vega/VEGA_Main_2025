@@ -14,6 +14,8 @@ private:
     bool SerialEnabled = false;        // シリアル通信の有効/無効
     bool PixelEnabled = true;
     // --- 調整用定数 ---
+    // float line_late =0.8;
+    int line_max =  10000;
 
     // --- ボール関連変数 ---
     bool ball_detect;                  // ボールが検出されているかどうか
@@ -77,6 +79,8 @@ private:
     void resetUI();
     void applyUI();
     inline int norm360(int a) { a %= 360; if(a < 0) a += 360; return a; }
+    inline bool diff_signs(int a, int b) {return (a >= 0 && b < 0) || (a < 0 && b >= 0);}
+
 
     // 前ディフェンス
     // void Defense::defense_(void) {
