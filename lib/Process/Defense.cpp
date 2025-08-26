@@ -81,7 +81,7 @@ int Defense::cal_vector(){
     myvector.get_cord(ball_azimuth,ball_dist);
     vector.ball_x = myvector.get_x();
     vector.ball_y = myvector.get_y();
-    if(ball_azimuth<15||ball_azimuth>345){
+    if(ball_azimuth<7||ball_azimuth>353){
         vector.ball_ang=999;
         vector.ball_power=0;
     } else {
