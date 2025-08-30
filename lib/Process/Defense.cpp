@@ -5,7 +5,6 @@
 
 //todo
 //ベクトルで主に動くように
-//ピクセルのUIも整えたい
 //シリアルコマンドも実装
 //ベクトル合成でｐとかでできるだけ分けないようにしたい
 
@@ -27,6 +26,9 @@ void Defense::setup(void){
     vector.move_power = 999;
     vector.move_x = 999;
     vector.move_y = 999;
+    d_timer.reset();
+    silentTime.reset();
+
 }
 
 void Defense::defense_(void){
@@ -120,7 +122,7 @@ int Defense::cal_vector(){
         vector.go_ang=vector.line_ang;
     } else {
         myvector.get_cord(vector.line_ang,vector.line_power);//ベクトル合成のためにxyを統一
-        vector.move_y=myvector.get_y();
+        vector.move_y=myvector.get_y()*line_late;
         if(vector.move_y>line_max)vector.move_y=line_max;
 
         myvector.get_cord(vector.ball_ang,vector.ball_power);
@@ -138,12 +140,14 @@ int Defense::cal_vector(){
 
     }
 void Defense::move(){
+    last_power=vector.move_power;
     if(vector.move_power<30){
         mymotor.free();
     } else {
+        silentTime.reset();
         mymotor.run(vector.go_ang,vector.move_power,0);
     }
-    mypixel.closest(vector.line_ang,0,255,0,1);
+    mypixel.closest(vector.line_ang,0,255,0,1,1);
 }
 
 void Defense::resetUI(){
@@ -176,30 +180,32 @@ void Defense::resetUI(){
 
 void Defense::applyUI(){
     //alphaの適用　　　
-    background.red = background.red*background.alpha;
-    background.green = background.green*background.alpha;
-    background.blue = background.blue*background.alpha;
-    P_ball.red = P_ball.red*P_ball.alpha;
-    P_ball.green = P_ball.green*P_ball.alpha;
-    P_ball.blue = P_ball.blue*P_ball.alpha;
-    P_line.red = P_line.red*P_line.alpha;
-    P_line.green = P_line.green*P_line.alpha;
-    P_line.blue = P_line.blue*P_line.alpha;
-    P_r_azimuth.red = P_r_azimuth.red*P_r_azimuth.alpha;
-    P_r_azimuth.green = P_r_azimuth.green*P_r_azimuth.alpha;
-    P_r_azimuth.blue = P_r_azimuth.blue*P_r_azimuth.alpha;
-    go_ang.red = go_ang.red*go_ang.alpha;
-    go_ang.green = go_ang.green*go_ang.alpha;
-    go_ang.blue = go_ang.blue*go_ang.alpha;
+    // background.red = background.red*background.alpha;
+    // background.green = background.green*background.alpha;
+    // background.blue = background.blue*background.alpha;
+    // P_ball.red = P_ball.red*P_ball.alpha;
+    // P_ball.green = P_ball.green*P_ball.alpha;
+    // P_ball.blue = P_ball.blue*P_ball.alpha;
+    // P_line.red = P_line.red*P_line.alpha;
+    // P_line.green = P_line.green*P_line.alpha;
+    // P_line.blue = P_line.blue*P_line.alpha;
+    // P_r_azimuth.red = P_r_azimuth.red*P_r_azimuth.alpha;
+    // P_r_azimuth.green = P_r_azimuth.green*P_r_azimuth.alpha;
+    // P_r_azimuth.blue = P_r_azimuth.blue*P_r_azimuth.alpha;
+    // go_ang.red = go_ang.red*go_ang.alpha;
+    // go_ang.green = go_ang.green*go_ang.alpha;
+    // go_ang.blue = go_ang.blue*go_ang.alpha;
 
-    mypixel.multi(0, 15, background.red, background.green, background.blue);
-    mypixel.closest(line_azimuth,P_line.red,P_line.green,P_line.blue,3);
-    mypixel.closest(ball_azimuth,P_ball.red,P_ball.green,P_ball.blue,3);
-    mypixel.closest(r_azimuth,P_r_azimuth.red,P_r_azimuth.green,P_r_azimuth.blue,3);
-    mypixel.closest(vector.go_ang,go_ang.red,go_ang.green,go_ang.blue,3);
+    mypixel.multi(0, 15, background.red, background.green, background.blue,background.alpha);
+    mypixel.closest(line_azimuth,P_line.red,P_line.green,P_line.blue,P_line.alpha,3);
+    mypixel.closest(ball_azimuth,P_ball.red,P_ball.green,P_ball.blue,P_line.alpha,3);
+    mypixel.closest(r_azimuth,P_r_azimuth.red,P_r_azimuth.green,P_r_azimuth.blue,P_r_azimuth.alpha,3);
+    mypixel.closest(vector.go_ang,go_ang.red,go_ang.green,go_ang.blue,go_ang.alpha,3);
 }
 
-void Defense::ReadCommand(){}
+void Defense::ReadCommand(){};
+
+void Defense::dash(){};
 
 bool Defense::useSerial(bool use) {
     SerialEnabled = use;

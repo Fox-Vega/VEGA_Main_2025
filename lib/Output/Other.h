@@ -19,9 +19,9 @@ class MyPIXEL {
         void brightness(int brightness); //ネオピクの明るさ調整　999にすると既定値になる
 
         //ピクセル番号は時計回りで 0~15
-        void uni(int PIXELNUM, int red, int green, int blue); //単ピクセル点灯
-        void multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue); //連続ピクセル点灯
-        void closest(int azimuth, int red, int green, int blue, int num);
+        void uni(int PIXELNUM, int red, int green, int blue, double alpha); //単ピクセル点灯
+        void multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue,double alpha); //連続ピクセル点灯
+        void closest(int azimuth, int red, int green, int blue, double alpha, int num);
         void rainbow();
         void show();
         void shows();

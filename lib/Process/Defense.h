@@ -14,6 +14,7 @@ private:
     bool SerialEnabled = false;        // シリアル通信の有効/無効
     bool PixelEnabled = true;
     // --- 調整用定数 ---
+    float line_late=0.7;
     // float line_late =0.8;
     int line_max =  10000;
 
@@ -66,8 +67,10 @@ private:
 
     // --- その他処理用変数 ---
     int mode;
+    int last_power;
     int r_azimuth;
     Timer d_timer;
+    Timer silentTime;
 
     // --- メソッド ---
     void get_value();

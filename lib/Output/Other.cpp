@@ -24,24 +24,24 @@ void MyPIXEL::brightness(int brightness) {
     }
 }
 
-void MyPIXEL::uni(int PIXELNUM, int red, int green, int blue) {
+void MyPIXEL::uni(int PIXELNUM, int red, int green, int blue,double alpha) {
     if (usePIXEL == 1) {
         PIXELNUM %= 16;
-        PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red, green, blue));
+        PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red*alpha, green*alpha, blue*alpha));
     }
 }
 
-void MyPIXEL::multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue) {
+void MyPIXEL::multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue,double alpha) {
     if (usePIXEL == 1) {
         for (int i = PIXELNUMstart; i <= PIXELNUMend; i++) {
             int a = i;
             a %= 16;
-            mypixel.uni(a, red, green, blue);
+            mypixel.uni(a, red, green, blue,alpha);
         }
     }
 }
 
-void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
+void MyPIXEL::closest(int azimuth, int red, int green, int blue, double alpha, int num) {
     if (usePIXEL == 1) {
         float ClosestPIXEL = (azimuth / 360.0f * NUMPIXEL); //浮動小数点演算を明確化
         ClosestPIXEL = round(ClosestPIXEL); //標準の丸め関数を使用
@@ -60,7 +60,7 @@ void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
         for (int i = 0; i < num; i++) {
             int j = (PIXELNUMstart + i) % 16; //インデックス補正を動的に処理
 
-            mypixel.uni(j, red, green, blue);
+            mypixel.uni(j, red, green, blue,alpha);
         }
     }
 }
