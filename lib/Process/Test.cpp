@@ -254,7 +254,7 @@ void Test::attitudeControl() {//pde用シリアルはまだです
         gam.dir_reset();
         mybuzzer.start(300, 500);
     }
-    if(r_azimuth < 10 || r_azimuth > 350) {
+    if(r_azimuth < 5 || r_azimuth > 355 ){
         mymotor.free();
         mypixel.multi(0, 15, 255, 255, 255,1);
     } else {

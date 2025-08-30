@@ -11,7 +11,7 @@ class Test {
         void attitudeControl();
 
     private:
-        uint8_t AT_Deadband = 10;//姿勢制御の±許容誤差範囲
+        uint8_t AT_Deadband = 1;//姿勢制御の±許容誤差範囲
         bool exit = false;
         bool lastPixelState = false;
         byte t_mode = 1;

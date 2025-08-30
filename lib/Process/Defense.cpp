@@ -83,7 +83,7 @@ int Defense::cal_vector(){
     myvector.get_cord(ball_azimuth,ball_dist);
     vector.ball_x = myvector.get_x();
     vector.ball_y = myvector.get_y();
-    if(ball_azimuth<15||ball_azimuth>345){
+    if(ball_azimuth<7||ball_azimuth>353){
         vector.ball_ang=999;
         vector.ball_power=0;
     } else {
@@ -171,11 +171,11 @@ void Defense::resetUI(){
     P_r_azimuth.green = 0;
     P_r_azimuth.blue = 100;
     P_r_azimuth.alpha = 0.5;
-    //進行方向　#0000FF7F
+    //進行方向 
     go_ang.red = 0;
-    go_ang.green = 0;
-    go_ang.blue = 255;
-    go_ang.alpha = 0.5;
+    go_ang.green = 255;
+    go_ang.blue = 0;
+    go_ang.alpha = 1;
 }
 
 void Defense::applyUI(){
