@@ -33,7 +33,7 @@ class MyPIXEL {
         //色関係
         void HEX6toRGB(String hex, int red, int green, int blue);
         void HEX8toRGBA(String hex, int red, int green, int blue, int alpha);
-        void getRGBA(char get);
+        itn getRGBA(char get);
 
     private:
         //調整用
