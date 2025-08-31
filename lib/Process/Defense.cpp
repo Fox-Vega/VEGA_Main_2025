@@ -123,16 +123,11 @@ int Defense::cal_vector(){
         vector.move_x=myvector.get_x();
 
         vector.go_ang=myvector.get_azimuth(vector.move_x,vector.move_y);
-        vector.move_power=myvector.get_magnitude(vector.move_x,vector.move_y);
-        // Serial.println("moveX: " + String(vector.move_x));
-        // Serial.println("moveY: " + String(vector.move_y));
-        // Serial.println("movePower: " + String(vector.move_power));
-        // Serial.println("goAng: " + String(vector.go_ang));
         }
     }
     return r;
+}
 
-    }
 void Defense::move(){
     if(silentTime.read_milli()>7000){
         dash();
