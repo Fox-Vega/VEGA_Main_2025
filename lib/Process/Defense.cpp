@@ -33,20 +33,14 @@ void Defense::setup(void){
 
 void Defense::defense_(void){
     resetUI();
-
     d_timer.reset();
     if(SerialEnabled){
         ReadCommand();
-
     }
     get_value();
-
     cal_vector();
-
     move();
-
     applyUI();
-
 }
 
 void Defense::get_value(){
@@ -140,14 +134,18 @@ int Defense::cal_vector(){
 
     }
 void Defense::move(){
-    last_power=vector.move_power;
-    if(vector.move_power<30){
-        mymotor.free();
+    if(silentTime.read_milli()>7000){
+        dash();
     } else {
-        silentTime.reset();
-        mymotor.run(vector.go_ang,vector.move_power,0);
+        last_power=vector.move_power;
+        if(vector.move_power<30){
+            mymotor.free();
+        } else {
+            silentTime.reset();
+            mymotor.run(vector.go_ang,vector.move_power,0);
+        }
+        mypixel.closest(vector.line_ang,0,255,0,1,1);
     }
-    mypixel.closest(vector.line_ang,0,255,0,1,1);
 }
 
 void Defense::resetUI(){
@@ -171,7 +169,7 @@ void Defense::resetUI(){
     P_r_azimuth.green = 0;
     P_r_azimuth.blue = 100;
     P_r_azimuth.alpha = 0.5;
-    //進行方向 
+    //進行方向
     go_ang.red = 0;
     go_ang.green = 255;
     go_ang.blue = 0;
@@ -179,23 +177,6 @@ void Defense::resetUI(){
 }
 
 void Defense::applyUI(){
-    //alphaの適用　　　
-    // background.red = background.red*background.alpha;
-    // background.green = background.green*background.alpha;
-    // background.blue = background.blue*background.alpha;
-    // P_ball.red = P_ball.red*P_ball.alpha;
-    // P_ball.green = P_ball.green*P_ball.alpha;
-    // P_ball.blue = P_ball.blue*P_ball.alpha;
-    // P_line.red = P_line.red*P_line.alpha;
-    // P_line.green = P_line.green*P_line.alpha;
-    // P_line.blue = P_line.blue*P_line.alpha;
-    // P_r_azimuth.red = P_r_azimuth.red*P_r_azimuth.alpha;
-    // P_r_azimuth.green = P_r_azimuth.green*P_r_azimuth.alpha;
-    // P_r_azimuth.blue = P_r_azimuth.blue*P_r_azimuth.alpha;
-    // go_ang.red = go_ang.red*go_ang.alpha;
-    // go_ang.green = go_ang.green*go_ang.alpha;
-    // go_ang.blue = go_ang.blue*go_ang.alpha;
-
     mypixel.multi(0, 15, background.red, background.green, background.blue,background.alpha);
     mypixel.closest(line_azimuth,P_line.red,P_line.green,P_line.blue,P_line.alpha,3);
     mypixel.closest(ball_azimuth,P_ball.red,P_ball.green,P_ball.blue,P_line.alpha,3);
@@ -205,7 +186,14 @@ void Defense::applyUI(){
 
 void Defense::ReadCommand(){};
 
-void Defense::dash(){};
+void Defense::dash(){
+    silentTime.reset();
+    d_timer.reset();
+    while(d_timer.read_milli()<1000){
+    get_value();
+    mymotor.run(ball_azimuth,100,0);
+    }
+};
 
 bool Defense::useSerial(bool use) {
     SerialEnabled = use;
