@@ -24,10 +24,10 @@ class BALL {
         int total_x = 0;
         int total_y = 0;
         int ballvalue;
-        int ball_azimuth;
-        int old_magnitude;
+        int ball_azimuth = 0;
+        int old_magnitude = 0;
         int ballvalues[16]; //ボールの値を格納する配列
-        int total_magnitude = 0;
+        int total_magnitude = 10;
         byte ballNUMstart;
         byte max_ballNUM = 0;
         byte max_ballvalue = 0;

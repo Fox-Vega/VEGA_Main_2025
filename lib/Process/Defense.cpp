@@ -3,249 +3,214 @@
 #include "Output.h"
 #include "AIP.h"
 
-//コメントぐちゃぐちゃ
-
-
-
 //todo
-//p3戻り実装　done
-//inline　　　done
-//機体前めに  not yet
-//ライン強化　not yet
-//速度上昇　　not yet
+//ベクトルで主に動くように
+//シリアルコマンドも実装
+//ベクトル合成でｐとかでできるだけ分けないようにしたい
+
+//powershell -ExecutionPolicy Bypass -File C:\Users\kusas\Desktop\program\auto-commit.ps1
 
 
 
-void Defense::setup(void){//からっぽ
+void Defense::setup(void){
+    // vectorの全要素を999で初期化
+    vector.ball_ang = 999;
+    vector.ball_power = 999;
+    vector.ball_x = 999;
+    vector.ball_y = 999;
+    vector.line_ang = 999;
+    vector.line_power = 999;
+    vector.line_x = 999;
+    vector.line_y = 999;
+    vector.go_ang = 999;
+    vector.move_power = 999;
+    vector.move_x = 999;
+    vector.move_y = 999;
+    d_timer.reset();
+    silentTime.reset();
+
 }
 
 void Defense::defense_(void){
+    resetUI();
     d_timer.reset();
-    gotVector=0;
-    //mypixel.multi(0, 15, 0, 0, 0);
-    get_vector();//センサーとか取得
-    if(line_detect){// ラインが検出されている場合
-        if(line_type==1){
-            p1();// 水平ライン
-        }
-        else {
-            p3();// 垂直ライン（今は角代わり）
-        }
-        // p5();// ラインを追跡
+    if(SerialEnabled){
+        ReadCommand();
     }
-    else{//されていなかったら戻る
-        p4();//戻る
-    }
+    get_value();
+    cal_vector();
+    move();
+    applyUI();
 }
 
-void inline Defense::get_line_value(void){//ラインの値を取得する(p3で使うからinline)
-    line.read();//ライン読み
-    line_azimuth = line.get_azimuth();//ラインの方位角を取得
-    line_dist = line.get_magnitude()/10;// ラインの距離を取得 /10は最大値を１１にするやつ
-    line_type = line.get_type();// ラインの種類を取得
-    line_detect = (line_dist == 99) ? false : true;// ラインが検出されているかどうか
+void Defense::get_value(){
+    line.read();
+    ball.read();
 
-    // line_his と l_s の処理を追加
-    if (line_his == line_type) {//前回と同じ状態
-        line_same = line_type;// ラインの種類を保存
+    r_azimuth = gam.get_azimuth();
+    line_detect=line.get_magnitude()==999 ? false : true;
+    if(line_detect){
+        line_azimuth=line.get_azimuth();
+        line_absolute_angle=norm360(line_azimuth - r_azimuth);
+        line_dist=line.get_magnitude()/10;
+        lastdetect=line_azimuth;
+        myvector.get_cord(line_azimuth,line_dist);
+        line_x=myvector.get_x();
+        line_y=myvector.get_y();
+    } else {;
+        line_azimuth=999;
+        line_absolute_angle=999;
+        line_dist=999;
+        line_x=999;
+        line_y=999;
+    }
+
+    ball_azimuth=ball.get_azimuth();
+    ball_absolute_angle=norm360(ball_azimuth - r_azimuth);
+    ball_dist=ball.get_magnitude();
+}
+
+int Defense::cal_vector(){
+    int r=999;
+
+    //ボールのベクトルを算出
+    myvector.get_cord(ball_azimuth,ball_dist);
+    vector.ball_x = myvector.get_x();
+    vector.ball_y = myvector.get_y();
+    if(ball_azimuth<7||ball_azimuth>353){
+        vector.ball_ang=999;
+        vector.ball_power=0;
     } else {
-        l_s.reset();// ラインの種類が変わったら履歴をリセット
-        line_same = 999;// ラインの種類をリセット
+        if(vector.ball_x<0){
+            vector.ball_ang=270;
+        } else {
+            vector.ball_ang=90;
+        }
+        vector.ball_power=200;
     }
-    line_his = line_type;// ラインの種類を履歴に保存
-}
 
-
-void Defense::get_vector(void){//センサー取得→少し計算
-    //ジャイロ(計算で使うからはじめに取得)
-    r_azimuth = gam.get_azimuth();//r_azimuth robot_azimuth
-    get_line_value();//ラインの値を取得
-
-    if(line_detect){//検出してたら最後の位置を記録
-        if(line_azimuth<45&&line_azimuth>315) lastdetect= 0;//0に近かったら0にする
-        else if(line_azimuth<225&&line_azimuth>135) lastdetect= 180;//180に近かったら180にする
-        else lastdetect = line_azimuth;// それ以外はそのまま記録
+    vector.line_x = line_x;
+    vector.line_y = line_y;
+    if (line_detect){
+        if(abs(line_x)>5){//角か縦　type分類も追加したいな
+            vector.line_ang=line_azimuth;
+            vector.line_power=line_dist*40;
+        } else {//これは直線ライン　角度は前後ろのみ
+            vector.line_ang=line_y<0?180:0;
+            vector.line_power=line_dist*20;
+        }
+        mybuzzer.stop();
+    } else {
+        mybuzzer.start(1000,999);
+        vector.go_ang=lastdetect;
+        vector.move_power=200;
+        return r;
     }
-    //計算ぞーん
-    myvector.get_cord(line_azimuth, line_dist);// 座標を計算
-    line_x = myvector.get_x();// 座標のxを取得
-    line_y = myvector.get_y();// 座標のyを取得
-    int line_fb = 0;//line_fb line_foward/backward  1は後ろ、2は前
-    if(line_azimuth<=90||line_azimuth>=270) line_fb = 1;//前
-    else if(line_azimuth>90&&line_azimuth<270) line_fb = 2;//後ろ
-    line_go_ang = line_fb==2 ? 180 : 0;//前にあったら180、後ろにあったら0
-    if(!line_detect) mybuzzer.stop();
-    else mybuzzer.start(1000, 999);
-    line_power = 255/(12-line_dist);//距離でパワーを調整　200：最大値　12-line_dist:11のときに1になるように
-    // if(line_power<50) line_power = 50;//最低限50は出す
-    if(line_dist<2) line_power = 0; //ラインの上にいたらパワーを0にする
-
-    // ボール情報の取得
-    ball.read();//ボール読み
-
-    ball_azimuth = ball.get_azimuth();//ボールの方位角を取得
-    ball_dist = (int)ball.get_magnitude();// ボールの距離を取得
-    ball_detect = ((int)ball.get_magnitude() > 0) ? true : false;// ボールが検出されているかどうか
-    myvector.get_cord(ball_azimuth, ball_dist);// 座標を計算
-    ball_x = myvector.get_x();// 座標のxを取得
-    ball_y = myvector.get_y();// 座標のyを取得
-    //計算ぞーん
-    if(ball_detect){
-        ball_go_ang = (ball_x < 0) ? 270 : 90;// -だったら左に（270）、+だったら右に（90）
-        ball_power=150; // ボールが検出されているときはパワーを一定にする
-        if(ball_y<120) ball_power=180; // ボールが近いときはパワーを上げる
-        if(ball_y<70) ball_power=200; // ボールが近いときはパワーを上げる
-        ball_power = abs(ball_x)<catch_ball_X ? 0 : ball_power; // ボールとxの位置が近いときはパワーを０にする
+    if(vector.ball_power<30){
+        vector.move_power=vector.line_power;
+        vector.go_ang=vector.line_ang;
     }
     else{
-        ball_power = 0; // ボールがないときはパワーを０にする
-        ball_x = 0;// ボールのx座標を０にする
-        ball_go_ang = 0;// ボールの方位角を０にする
-    }
+    if(diff_signs(ball_x,line_x)==1234){
+        vector.move_power=vector.line_power;
+        vector.go_ang=vector.line_ang;
+    } else {
+        myvector.get_cord(vector.line_ang,vector.line_power);//ベクトル合成のためにxyを統一
+        vector.move_y=myvector.get_y()*line_late;
+        if(vector.move_y>line_max)vector.move_y=line_max;
 
-    gotVector=1;// ベクトルを取得したフラグを立てる 多重取得防止用
-}
+        myvector.get_cord(vector.ball_ang,vector.ball_power);
+        vector.move_x=myvector.get_x();
 
-
-void Defense::p1(void) {
-    move_x = ball_power * (ball_go_ang == 90 ? 1 : -1); // 動くｘ（ボールのパワー）
-    move_y = line_power * (line_go_ang == 0 ? 1 : -1); // 動くｙ（ラインのパワー）
-    move_power = myvector.get_magnitude(move_x * ball_rate, move_y * line_rate); // 動くパワー（ボールのパワーとラインのパワーを合成）
-    move_azimuth = myvector.get_azimuth(move_x * ball_rate, move_y * line_rate); // 動く方位角（ボールのパワーとラインのパワーを合成）
-
-    if (ball_power == 0) {
-        p5(); // ボールがないときはラインを追跡
-    } else { // 合成結果に基づいて動く
-        mymotor.run(move_azimuth, move_power, 0); // 動く方位角、動くパワー*モータ倍率、０度
-    }
-}
-
-void Defense::p2(void) {
-    p3(); //　角が取得できたらこれ消す予定
-    // mypixel.closest(line_azimuth, 0, 255, 0, 3);
-    // int m_rl = (ball_go_ang == 90 ? 1 : -1); // move_right-left
-
-    // int corner; // 角の分別
-    // if (line_azimuth > 0 && line_azimuth < 90) {
-    //     corner = 3; // 右上 キーパーライン
-    // } else if (line_azimuth > 90 && line_azimuth < 180) {
-    //     corner = 4; // 右下 ライン外
-    // } else if (line_azimuth > 180 && line_azimuth < 270) {
-    //     corner = 1; // 左下 ライン外
-    // } else if (line_azimuth > 270 && line_azimuth < 360) {
-    //     corner = 2; // 左上 キーパーライン
-    // }
-
-    // if (corner == 1) { // 右上
-    //     if (ball_power != 0) {
-    //         if (m_rl == 1) { // 右の場合 出ないようにする
-    //             if (line_dist < p2_back_t) {
-    //                 move_x = p2_back_s; // 動くx
-    //                 move_y = line_power * (line_go_ang == 0 ? 1 : -1); // 動くｙ（ラインのパワー）
-    //                 int move_azimuth = myvector.get_azimuth(move_x, move_y * line_rate); // 動く方位角（戻るパワーとラインのパワーを合成）
-    //                 move_power = myvector.get_magnitude(move_x, move_y * line_rate); // 動くパワー（ボールのパワーとラインのパワーを合成）
-    //                 mymotor.run(move_azimuth, move_power * motor_rate, 0); // 動く方位角、動くパワー*モータ倍率、０度
-    //             } else {
-    //                 mymotor.free();
-    //             }
-    //         } else { // 左やったらそのまま動く
-    //             p1();
-    //         }
-    //     }
-    // }
-
-    // if (corner == 4) { // 左上
-    //     if (ball_power != 0) {
-    //         if (m_rl == -1) { // 左の場合 出ないようにする
-    //             if (line_dist < p2_back_t) {
-    //                 move_x = p2_back_s * -1; // 動くx
-    //                 move_y = line_power * (line_go_ang == 0 ? 1 : -1); // 動くｙ（ラインのパワー）
-    //                 int move_azimuth = myvector.get_azimuth(move_x, move_y * line_rate); // 動く方位角（戻るパワーとラインのパワーを合成）
-    //                 move_power = myvector.get_magnitude(move_x, move_y * line_rate); // 動くパワー（ボールのパワーとラインのパワーを合成）
-    //                 mymotor.run(move_azimuth, move_power * motor_rate, 0); // 動く方位角、動くパワー*モータ倍率、０度
-    //             } else {
-    //                 mymotor.free();
-    //             }
-    //         } else { // 右やったらそのまま動く
-    //             p1();
-    //         }
-    //     }
-    // }
-}
-
-void Defense::p3(void) { // 垂直ライン
-    if (line_azimuth < 180) {//右に動く（左にある）
-        p3_move(45, 135, 200); // 垂直ラインの移動処理
-    } else {//左に動く（右にある）
-        p3_move(315, 225, 200); // 垂直ラインの移動処理
-    }
-}
-
-// inline void Defense::p3_move(int dir1, int dir2, int Power) { // 垂直ラインの移動処理
-//     p3_timer.reset(); // 垂直ラインの移動処理用タイマーをリセット
-//     while (line_type != 1 && p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t * 0.7)) { // 戻れたか時間切れで抜けるループ
-//         get_line_value(); // ラインの値を取得
-//         if (l_s.read_milli() > 200 && line_same == 0) { // ラインがなかったら戻る
-//             mybuzzer.start(330, 999); // ブザー鳴らす
-//             p3_timer.reset();
-//             while (p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t)) { // ラインを検出するまでか時間切れになるまで戻り続ける
-//                 get_line_value(); // ラインの値を取得
-//                 if (line_detect) break; // ラインが検出されたら抜ける 戻れたってことやね
-//                 mymotor.run(dir2, Power, 0); // キーパーラインに戻る
-//             }
-//             mybuzzer.stop(); // ブザー止める
-//             break; // p3から抜ける
-//         } else {
-//             mymotor.run(dir1, Power, 0); // 垂直ラインの移動処理 今は角代わり
-//         }
-//     }
-//}
-
-inline void Defense::p3_move(int dir1, int dir2, int Power) {
-    p3_timer.reset(); // タイマーをリセット
-    while (line_type != 1 && p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t * 0.7)) {
-        get_line_value(); // ラインの値を取得
-        if (l_s.read_milli() > 200 && line_same == 0) { // ラインがなかった場合
-            mybuzzer.start(330, 999); // ブザーを鳴らす
-            p3_timer.reset();
-            while (p3_timer.read_milli() < static_cast<unsigned int>(p3_move_t >> 1) && !line_detect) {
-                get_line_value(); // ラインの値を取得
-                mymotor.run(dir2, Power, 0); // キーパーラインに戻る
-            }
-            mybuzzer.stop(); // ブザーを止める
-            break;
-        }
-        mymotor.run(dir1, Power, 0); // 垂直ラインの移動処理
-    }
-}
-
-
-void Defense::p5(void){//ラインを追跡
-    if(line_detect){// ラインが検出されている場合
-        if(line_dist>2){//ラインに戻ろうと動く
-            mymotor.run(line_go_ang, line_power*motor_rate, 0);//ラインの向き・パワー*ライン倍率・０度
-        }
-        else {//乗ってたら何もしない
-            if(!(r_azimuth<15&&r_azimuth>345)){//向きがズレすぎてた場合回転
-            mymotor.run(0,0,0);//0度に向く
-            int d=  0-r_azimuth;//ピクセルに０度を表示
-            if(d<0) d+=360;//０度未満だったら３６０を足す
-        }else{
-            mymotor.free();//モーター開放
-        }
+        vector.go_ang=myvector.get_azimuth(vector.move_x,vector.move_y);
         }
     }
-    else{
-        p4();//ラインに戻る
+    return r;
+}
+
+void Defense::move(){
+    if(silentTime.read_milli()>7000){
+        dash();
+    } else {
+        Serial.print("vector:");
+        Serial.print("  ball: (");
+        Serial.print(vector.ball_x);
+        Serial.print(", ");
+        Serial.print(vector.ball_y);
+        Serial.print(") ");
+        Serial.print("  line: (");
+        Serial.print(vector.line_x);
+        Serial.print(", ");
+        Serial.print(vector.line_y);
+        Serial.print(") ");
+        Serial.print("  move: (");
+        Serial.print(vector.move_x);
+        Serial.print(", ");
+        Serial.print(vector.move_y);
+        Serial.print(",");
+        Serial.print(vector.go_ang);
+        Serial.print(", ");
+        Serial.print(vector.move_power);
+        Serial.println(") ");
+        last_power=vector.move_power;
+        if(vector.move_power<30){
+            mymotor.free();
+        } else {
+            silentTime.reset();
+            mymotor.run(vector.go_ang,vector.move_power,0);
+        }
+        mypixel.closest(vector.line_ang,0,255,0,1,1);
     }
 }
 
-void Defense::p4(void){//ラインに戻る
-    mypixel.closest(lastdetect,255,0,100,3);//最後の検出角度表示　ピンク
-    int backPower = 220;//戻るパワー
-    mymotor.run(lastdetect,backPower,0);//最後の検出角度・戻るパワー・０度
+void Defense::resetUI(){
+    //背景 #39c5bbff
+    background.red = 57;
+    background.green = 197;
+    background.blue = 187;
+    background.alpha = 1;
+    //ボール #ff00007f
+    P_ball.red = 255;
+    P_ball.green = 0;
+    P_ball.blue = 0;
+    P_ball.alpha = 0.5;
+    //ライン #00b4787f
+    P_line.red = 0;
+    P_line.green = 180;
+    P_line.blue = 120;
+    P_line.alpha = 0.5;
+    //前方の角度　#FF00647F
+    P_r_azimuth.red = 255;
+    P_r_azimuth.green = 0;
+    P_r_azimuth.blue = 100;
+    P_r_azimuth.alpha = 0.5;
+    //進行方向
+    go_ang.red = 0;
+    go_ang.green = 255;
+    go_ang.blue = 0;
+    go_ang.alpha = 1;
 }
 
-void Defense::debug1(void){//デバッグ用
+void Defense::applyUI(){
+    mypixel.multi(0, 15, background.red, background.green, background.blue,background.alpha);
+    mypixel.closest(line_azimuth,P_line.red,P_line.green,P_line.blue,P_line.alpha,3);
+    mypixel.closest(ball_azimuth,P_ball.red,P_ball.green,P_ball.blue,P_line.alpha,3);
+    mypixel.closest(r_azimuth,P_r_azimuth.red,P_r_azimuth.green,P_r_azimuth.blue,P_r_azimuth.alpha,3);
+    mypixel.closest(vector.go_ang,go_ang.red,go_ang.green,go_ang.blue,go_ang.alpha,3);
 }
 
+void Defense::ReadCommand(){};
+
+void Defense::dash(){
+    silentTime.reset();
+    d_timer.reset();
+    while(d_timer.read_milli()<1000){
+    get_value();
+    mymotor.run(ball_azimuth,100,0);
+    }
+};
+
+bool Defense::useSerial(bool use) {
+    SerialEnabled = use;
+    return SerialEnabled;
+}

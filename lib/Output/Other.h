@@ -19,15 +19,21 @@ class MyPIXEL {
         void brightness(int brightness); //ネオピクの明るさ調整　999にすると既定値になる
 
         //ピクセル番号は時計回りで 0~15
-        void uni(int PIXELNUM, int red, int green, int blue); //単ピクセル点灯
-        void multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue); //連続ピクセル点灯
-        void closest(int azimuth, int red, int green, int blue, int num);
+        void uni(int PIXELNUM, int red, int green, int blue, double alpha); //単ピクセル点灯
+        void multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue,double alpha); //連続ピクセル点灯
+        void closest(int azimuth, int red, int green, int blue, double alpha, int num);
         void rainbow();
         void show();
         void shows();
         void clear(); //全消灯
         void clears();
         void use_pixel(bool stat);
+        bool pixelEnabled();
+
+        //色関係
+        void HEX6toRGB(String hex, int red, int green, int blue);
+        void HEX8toRGBA(String hex, int red, int green, int blue, int alpha);
+        double getRGBA(char get);
 
     private:
         //調整用
@@ -40,6 +46,11 @@ class MyPIXEL {
         const byte PIXELPIN = 45; // Pin where the NeoPixel ring is connected
         const byte NUMPIXEL = 16; // NUMber of pixels in the strip
         Adafruit_NeoPixel PIXEL = Adafruit_NeoPixel(NUMPIXEL, PIXELPIN, NEO_GRB + NEO_KHZ800);
+
+        int R;
+        int G;
+        int B;
+        int A;
 };
 
 class MyBUZZER {

@@ -10,10 +10,27 @@ void Attack::attack_() {
     if (line.get_magnitude() != 999) {
         mymotor.run(line.get_avoid(), avoid_speed, 0);
         mybuzzer.start(330, 999);
-        mypixel.closest(line.get_avoid(), 50, 255, 50, 3);
+        mypixel.closest(line.get_avoid(), 50, 255, 50,1, 3);
 
     } else if (ball.get_value(99) != 0) {
-        
+        mybuzzer.stop();
+        ball.read();
+        mypixel.closest(ball_dir, 255, 0, 0,1, 1);
+        ball_dir = ball.get_azimuth();
+
+        if (abs((ball_dir + 180) % 360 - 180) < b_r1_deg) {
+            //if ((ball.get_magnitude() > ball_catch[0] && ball.get_magnitude() < ball_catch[1]) || catch_stat == 1) {
+            //    catch_stat = 1;
+            //    attack.b_p4();
+            //}
+            attack.b_p1();
+        } else if (ball.get_magnitude() > brr) {
+            catch_stat = 0;
+            attack.b_p2();
+        } else {
+            catch_stat = 0;
+            attack.b_p3();
+        }
     } else {
         mymotor.free();
     }

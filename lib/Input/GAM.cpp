@@ -5,31 +5,50 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
+#include <avr/wdt.h>
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
 void GAM::setup() {
-    Serial.println("1-1");
-    delay(3000);
     mybuzzer.start(400, 100);
     delay(50);
     mybuzzer.start(300, 100);
+    delay(3000);
     Wire.begin();
     Serial.println("1-2");
     if (!bno.begin()) {
-        Serial.println("BND");
-        while(1);  //センサー未検出時は停止
-    } else {
-        Serial.println("1-2-1");
+        Serial.println("BNO055 not detected.");
+        for(int i=0;i<3;i++){
+            mybuzzer.start(1000,500);
+            delay(500);
+        }
+        if(myswitch.check_tact()==15){
+            mybuzzer.start(1500,1000);
+            goto skip_BNO;
+        } else {
+            mypixel.use_pixel(true);
+            mypixel.brightness(200);
+            mypixel.multi(0,15,255,0,0,1);
+            mypixel.show();
+            while(1){
+                if(myswitch.check_tact()>0){
+                    mypixel.multi(0,15,0,0,255,1);
+                    mypixel.show();
+                    mybuzzer.start(200,500);
+                    delay(500);
+                    wdt_enable(WDTO_15MS);
+                    while (1) {}
+                }
+            }
+        }
     }
-    Serial.println("1-3");
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
     Serial.println("1-4");
     while (millis() < 5500) {
         Serial.println("1-5");
         sensors_event_t accel_event;
-        bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER); 
+        bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
         for (int i = 0; i < 2; i++) {
             sample[i] += accel_data[i];
@@ -39,6 +58,8 @@ void GAM::setup() {
     Serial.println("1-6");
     accel_bias[0] = sample[0] / sampleNUM;
     accel_bias[1] = sample[1] / sampleNUM;
+skip_BNO:
+;
 }
 
 void GAM::read_azimuth() {
@@ -72,7 +93,7 @@ void GAM::get_cord() {
     sensors_event_t event;
     bno.getEvent(&event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
     float accel_data[2] = {event.acceleration.x - accel_bias[0], event.acceleration.y - accel_bias[1]};
-    
+
     for (int i = 0; i < 2; i++) { //処理軸以外が移動を検知していた場合、ノイズの判定を緩くする（加速度センサーの性質を利用）
         if (accel_data[i] > 0) {
             accel_data[i] *= accel_offsetp[robotNUM][i];
@@ -99,7 +120,7 @@ void GAM::get_cord() {
     }
 
     //値の大小で移動方向を判断するだけでなく、前回との差を考慮して移動しているかを判定する。
-    for (int i = 0; i < 2; i++) { 
+    for (int i = 0; i < 2; i++) {
         float accel_dif = old_accel_data[i] - accel_data[i];
         if(fabs(accel_dif) == 0.0f) { //静止時処理
             ten_count += 1;
