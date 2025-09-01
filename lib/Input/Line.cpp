@@ -10,13 +10,9 @@ void LINE::setup(void) {
 }
 
 void LINE::read() {
-    for(int i = 0; i < 4; i++) {
-        pack_degs[i] = 0;
-    }
-
     for (int i = 0; i < 24; i++) { //初期化
-        line_stat_[i] = 0;
         line_stat[i] = 0;
+        line_stat_[i] = 0;
     }
 
     //読み取り
@@ -82,15 +78,17 @@ void LINE::read() {
         }
     }
 
-    //グループ分け
+    //グループ分けの初期化
     total_x = 0;
     total_y = 0;
     int pack_NUM = 0; //グループの個数
     bool pack_NOW = 0; //グループ処理中ステータス
     for(int i = 0; i < 4; i++) {
-        pack_degs[i] = 0;
+        pack_x[i] = 0;
+        pack_y[i] = 0;
     }
 
+    //グループ分け
     for (int i = startNUM; i < startNUM + 24; i++) {
         byte pLine = i % 24; //処理中のセンサー
         if (line_stat[pLine] == 1) {
@@ -101,7 +99,8 @@ void LINE::read() {
         } else {
             if (pack_NOW == 1) { //グループの終点を検知
                 pack_NOW = 0;
-                pack_degs[pack_NUM] = myvector.get_azimuth(total_x, total_y); 
+                pack_x[pack_NUM] = total_x;
+                pack_y[pack_NUM] = total_y;
                 pack_NUM += 1;
                 total_x = 0;
                 total_y = 0;
@@ -118,131 +117,34 @@ void LINE::read() {
     //TODO
 
 
-    if (pack_NUM == 0) { //検知してるかを確認
+    if (pack_NUM == 0) { //検知していない
         line_type = 0;
         line_x = 999;
         line_y = 999;
-        avoid_x = 999;
-        avoid_y = 999;
-    } else {
-        if (pack_NUM == 1) {
+    } else { //検知している
+        if (pack_NUM == 1) { //１つ検知
             line_type = 1;
-
-            myvector.get_cord(pack_degs[0], line_r);
-            line_x = myvector.get_x();
-            line_y = myvector.get_y();
-
-            if (abs(line_x) > abs(line_y)) {
-                line_type = 2;
-            }
-        } else if (pack_NUM == 2) {
+            line_x = pack_x[0];
+            line_y = pack_y[0];
+        } else if (pack_NUM == 2) { //２つ検知
+            //間が小さいほうを特定
+            //ベクトルの移動平均
+            line_x = 0;
+            line_y = 0;
             line_type = 1;
-
-            line_dif = (pack_degs[1] - pack_degs[0] + 360) % 360;
-            if (line_dif > 180) {
-                line_dif = 360 - line_dif;
-                line_deg = (pack_degs[1] + line_dif / 2) % 360;
-            } else {
-                line_deg = (pack_degs[0] + line_dif / 2) % 360;
-            }
-
-            line_theta = line_dif / 2;
-            line_dist = line_r * cos(radians(line_theta));
-
-
-            myvector.get_cord(line_deg, line_dist);
-            line_x = myvector.get_x();
-            line_y = myvector.get_y();
-
-            if (abs(line_x) > abs(line_y)) {
-                line_type = 2;
-            }
         } else if (pack_NUM == 3) { //TODO 未実装
-            line_type = 3;
-
-            int dot = 99;
-
-            total_x = 0;
-            total_y = 0;
-
-            myvector.get_cord(line_deg, line_dist);
-            total_x += myvector.get_x();
-            total_y += myvector.get_y();
-            myvector.get_cord(pack_degs[dot], line_r);
-            myvector.get_cord(pack_degs[dot], line_r);
-            total_x += myvector.get_x();
-            total_y += myvector.get_y();
-
-            line_x = total_x;
-            line_y = total_y;
+            //２番が角の可能性あり
+            //２つがA辺、残りＢ辺がほとんど
+            //ラインに対する最短距離の位置角が９０度に近いものを選ぶ
         } else if (pack_NUM == 4) { //TODO　未実装
-            byte first_line = 0;
-            short max_dif = 0;
-
-            for (byte i = 0; i < 4; i++) {
-                byte pline = (i + 1) % 4;
-                short dif = pack_degs[pline] - pack_degs[i];
-                if (dif > max_dif) {
-                    first_line = pline; //line1の1番センサーを決める
-                    max_dif = dif;
-                }
-            }
-            point1 = first_line;
-            point2 = first_line + 1;
-            point3 = first_line + 2;
-            point4 = first_line + 3;
-
-            line_dif = (pack_degs[point2] - pack_degs[point1] + 360) % 360;
-            line2_dif = (pack_degs[point4] - pack_degs[point3] + 360) % 360;
-            line_deg = (pack_degs[point1] + line_dif / 2) % 360;
-            line2_deg = (pack_degs[point3]+ line2_dif / 2) % 360;
-            line_theta = line_dif / 2;
-            line2_theta = line2_dif / 2;
-            line_dist = line_r * cos(radians(line_theta));
-            line2_dist = line_r * cos(radians(line2_theta));
-
-            total_x = 0;
-            total_y = 0;
-
-            myvector.get_cord(line_deg, line_dist);
-            total_x += myvector.get_x();
-            total_y += myvector.get_y();
-            myvector.get_cord(line2_deg, line2_dist);
-            total_x += myvector.get_x();
-            total_y += myvector.get_y();
-
-            line_x = total_x;
-            line_y = total_y;
-            line_x = total_x;
-            line_y = total_y;
-
-            line_type = 3;
+            //しばらくは実装しなくていい
+            //ラインに対する最短距離の位置角が９０度に近いものを選ぶ
         }
     }
 }
 
 int LINE::get_value(byte lineNUM) {
     return line_values[lineNUM];
-}
-
-int LINE::get_x() {
-    return line_x;
-}
-
-int LINE::get_y() {
-    return line_y;
-}
-
-int LINE::get_ax() {
-    return avoid_x;
-}
-
-int LINE::get_ay() {
-    return avoid_y;
-}
-
-int LINE::get_type() {
-    return line_type;
 }
 
 int LINE::get_azimuth() {
@@ -257,6 +159,14 @@ int LINE::get_magnitude() {
     return mag;
 }
 
-int LINE::get_avoid() {
-    return myvector.get_azimuth(avoid_x, avoid_y);
+int LINE::get_x() {
+    return line_x;
+}
+
+int LINE::get_y() {
+    return line_y;
+}
+
+int LINE::get_type() {
+    return line_type;
 }
