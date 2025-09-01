@@ -27,7 +27,5 @@ void loop() {
     } else {
         general.startup();
     }
-    //Serial.println(">timer_test:"+String(timer_test.read_milli()));
     mypixel.show();
-    //Serial.println(">timer_test:"+String(timer_test.read_milli()));
 }

@@ -10,10 +10,16 @@ void General::setup() {
     mypixel.setup();
     mypixel.multi(0, 15, 255, 128, 0);
     mypixel.show();
+
     ball.setup();
+    Serial.println("1");
     line.setup();
+    Serial.println("2");
     mymotor.setup();
+    Serial.println("3");
     gam.setup();
+    Serial.println("4");
+
     mypixel.multi(0, 15, 255, 255, 255);
     mypixel.show();
     mybuzzer.preset(1);
@@ -34,6 +40,7 @@ void General::startup() {
 
 
     while (phase < 4) {
+        gam.read_azimuth();
         mypixel.clears();
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
