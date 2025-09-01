@@ -111,7 +111,7 @@ int Defense::cal_vector(){
         vector.go_ang=vector.line_ang;
     }
     else{
-    if(diff_signs(ball_x,line_x)){
+    if(diff_signs(ball_x,line_x)==1234){
         vector.move_power=vector.line_power;
         vector.go_ang=vector.line_ang;
     } else {
@@ -132,6 +132,26 @@ void Defense::move(){
     if(silentTime.read_milli()>7000){
         dash();
     } else {
+        Serial.print("vector:");
+        Serial.print("  ball: (");
+        Serial.print(vector.ball_x);
+        Serial.print(", ");
+        Serial.print(vector.ball_y);
+        Serial.print(") ");
+        Serial.print("  line: (");
+        Serial.print(vector.line_x);
+        Serial.print(", ");
+        Serial.print(vector.line_y);
+        Serial.print(") ");
+        Serial.print("  move: (");
+        Serial.print(vector.move_x);
+        Serial.print(", ");
+        Serial.print(vector.move_y);
+        Serial.print(",");
+        Serial.print(vector.go_ang);
+        Serial.print(", ");
+        Serial.print(vector.move_power);
+        Serial.println(") ");
         last_power=vector.move_power;
         if(vector.move_power<30){
             mymotor.free();
