@@ -4,15 +4,16 @@
 
 class MyVECTOR {
     public:
-        int get_azimuth(int x, int y); //方位角を計算する関数
-        float get_magnitude(int x, int y); //距離を計算する関数
-        void get_cord(int azimuth, int magnitude);//座標を計算する関数
-        int get_x(); //取得したx座標を返す関数
-        int get_y(); //取得したy座標を返す関数
-        int get_vectordegree(int ax, int ay, int bx, int by);
+        float get_azimuth(float x, float y); //ベクトルの方位角を取得
+        float get_magnitude(float x, float y); //ベクトルの大きさを取得
+        void get_cord(float azimuth, float magnitude); //ベクトルの座標を計算
+        float get_x(); //ベクトルのx座標を取得
+        float get_y(); //ベクトルのy座標を取得
+        float get_vectordegree(float ax, float ay, float bx, float by); //ベクトル間の角度を取得
 
     private:
         int x, y;
-        float theta;
-        float azimuth;
+        double theta;
+        double azimuth;
+        #define M_PI 3.14159265358979323846 //保険
 };
