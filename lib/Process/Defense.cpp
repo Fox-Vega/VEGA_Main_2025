@@ -6,7 +6,6 @@
 //todo
 //ベクトルで主に動くように
 //シリアルコマンドも実装
-//ベクトル合成でｐとかでできるだけ分けないようにしたい
 
 //powershell -ExecutionPolicy Bypass -File C:\Users\kusas\Desktop\program\auto-commit.ps1
 
