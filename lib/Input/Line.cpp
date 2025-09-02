@@ -59,6 +59,8 @@ void LINE::read() {
             startNUM = i + 1;
         }
     }
+    if (startNUM == 99) startNUM = 0;
+
 
     //グループ分けの初期化
     total_x = 0;
