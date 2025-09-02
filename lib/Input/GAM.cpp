@@ -15,6 +15,7 @@ void GAM::setup() {
     mybuzzer.start(300, 100);
     delay(3000);
     Wire.begin();
+    Serial.println("1-2");
     if (!bno.begin()) {
         Serial.println("BNO055 not detected.");
         for(int i=0;i<3;i++){
@@ -43,7 +44,9 @@ void GAM::setup() {
     }
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
+    Serial.println("1-4");
     while (millis() < 5500) {
+        Serial.println("1-5");
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
@@ -52,6 +55,7 @@ void GAM::setup() {
         }
         sampleNUM += 1;
     }
+    Serial.println("1-6");
     accel_bias[0] = sample[0] / sampleNUM;
     accel_bias[1] = sample[1] / sampleNUM;
 skip_BNO:
