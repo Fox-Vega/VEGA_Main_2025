@@ -183,7 +183,7 @@ void Defense::resetUI(){
     P_r_azimuth.green = 0;
     P_r_azimuth.blue = 100;
     P_r_azimuth.alpha = 0.5;
-    //進行方向
+    //進行方向 #00FF00FF
     go_ang.red = 0;
     go_ang.green = 255;
     go_ang.blue = 0;
