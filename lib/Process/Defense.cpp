@@ -198,7 +198,7 @@ void Defense::applyUI(){
     mypixel.closest(vector.go_ang,go_ang.red,go_ang.green,go_ang.blue,go_ang.alpha,3);
 }
 
-void Defense::ReadCommand(){};
+void Defense::ReadCommand(){2};
 
 void Defense::dash(){
     silentTime.reset();
