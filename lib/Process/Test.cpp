@@ -259,7 +259,7 @@ void Test::attitudeControl() {//pde用シリアルはまだです
         mypixel.multi(0, 15, 255, 255, 255,1);
     } else {
         mymotor.run(0, 0, 0);
-        int r_absorate_azimuth__0 =　(360 + (-r_azimuth )) % 360;
+        int r_absorate_azimuth__0 =　(360 + (-r_azimuth ---------------)) % 360;
         mypixel.closest(r_absorate_azimuth__0, 255, 0, 0,1, 3);
     }
 }
