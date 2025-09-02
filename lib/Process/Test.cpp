@@ -250,6 +250,7 @@ void Test::processing() {
 
 void Test::attitudeControl() {//pde用シリアルはまだです
     int r_azimuth = gam.get_azimuth();
+    
     if (myswitch.check_tact() == 5) { //方向と座標をリセット
         gam.dir_reset();
         mybuzzer.start(300, 500);
