@@ -123,34 +123,34 @@ void LINE::read() {
             line_y = (pack_y[0] + pack_y[1]) / 2;
         } else if (pack_NUM == 3) { //TODO 未実装
             line_type = 2;
-            
+
             float dif = 360;
             int close = 0;
-            
+
             float aside_x = (pack_x[0] + pack_x[1]) / 2;
             float aside_y = (pack_y[0] + pack_y[1]) / 2;
-            float pata = myvector.get_vectordegrees(aside_x, aside_y, pack_x[2], pack_y[2]);
+            float pata = myvector.get_vectordegree(aside_x, aside_y, pack_x[2], pack_y[2]);
             if (pata < dif) {
                 close = 1;
                 dif = pata;
             }
-            
+
             float bside_x = (pack_x[1] + pack_x[2]) / 2;
             float bside_y = (pack_y[1] + pack_y[2]) / 2;
-            float patb = myvector.get_vectordegrees(bside_x, bside_y, pack_x[0], pack_y[0]);
+            float patb = myvector.get_vectordegree(bside_x, bside_y, pack_x[0], pack_y[0]);
             if (patb < dif) {
                 close = 2;
                 dif = patb;
-            } 
-            
+            }
+
             float cside_x = (pack_x[0] + pack_x[2]) / 2;
             float cside_y = (pack_y[0] + pack_y[2]) / 2;
-            float patc = myvector.get_vectordegrees(cside_x, cside_y, pack_x[1], pack_y[1]);
+            float patc = myvector.get_vectordegree(cside_x, cside_y, pack_x[1], pack_y[1]);
             if (patc < dif) {
                 close = 3;
                 dif = patc;
             }
-            
+
             if (close == 1) {
                 line_x = aside_x + pack_x[2];
                 line_y = aside_y + pack_y[2];
@@ -165,7 +165,7 @@ void LINE::read() {
             //しばらくは実装しなくていい
             //ラインに対する最短距離の位置角が９０度に近いものを選ぶ
         }
-        if (myvector.get_vectordegrees(line_x, line_y, oldline_x, oldline_y) > 120 && trip == false) {
+        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > 120 && trip == false) {
             over = !over;
         }
         if (over == false) {
