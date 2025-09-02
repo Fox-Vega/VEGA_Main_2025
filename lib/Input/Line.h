@@ -20,12 +20,12 @@ class LINE {
         int total_x;
         int total_y;
 
-        int line_x;
-        int line_y;
-        int oldline_x;
-        int oldline_y;
-        int escape_x;
-        int escape_y;
+        float line_x;
+        float line_y;
+        float oldline_x;
+        float oldline_y;
+        float escape_x;
+        float escape_y;
 
         int line_type;
         //0なら反応なし
