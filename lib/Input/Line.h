@@ -28,7 +28,7 @@ class LINE {
         //1なら線検知
         //2なら角検知
 
-        const int line_r = 110;
+        const int line_r = 1000;
         const uint8_t selectPIN[3] = {22, 24, 26};
         const uint8_t outputPIN[3] = {A9, A11, A13};
 
