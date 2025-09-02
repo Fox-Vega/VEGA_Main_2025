@@ -66,6 +66,7 @@ void LINE::read() {
     total_x = 0;
     total_y = 0;
     int pack_NUM = 0; //グループの個数
+    int sample = 0;
     bool pack_NOW = 0; //グループ処理中ステータス
     for(int i = 0; i < 4; i++) {
         pack_x[i] = 0;
@@ -80,25 +81,19 @@ void LINE::read() {
             total_x += myvector.get_x();
             total_y += myvector.get_y();
             pack_NOW = 1;
+            sample += 1;
         } else {
             if (pack_NOW == 1) { //グループの終点を検知
                 pack_NOW = 0;
-                pack_x[pack_NUM] = total_x;
-                pack_y[pack_NUM] = total_y;
+                pack_x[pack_NUM] = total_x / sample;
+                pack_y[pack_NUM] = total_y / sample;
                 pack_NUM += 1;
                 total_x = 0;
                 total_y = 0;
+                sample = 0;
             }
         }
     }
-
-    // Serial.print("/ ");
-    // for(int i = 0; i < 4; i++) {
-    //     Serial.print(pack_degs[i]);
-    //     Serial.print(" ");
-    // }
-    // Serial.println();
-    //TODO
 
 
     if (pack_NUM == 0) { //検知していない
@@ -121,7 +116,11 @@ void LINE::read() {
             line_type = 1;
             line_x = (pack_x[0] + pack_x[1]) / 2;
             line_y = (pack_y[0] + pack_y[1]) / 2;
-        } else if (pack_NUM == 3) { //TODO 未実装
+            if (line_x == 0 && line_y == 0) {
+                line_x = oldline_x;
+                line_y = oldline_y;
+            }
+        } else if (pack_NUM == 3) {
             line_type = 2;
 
             float dif = 360;
@@ -165,13 +164,28 @@ void LINE::read() {
             //しばらくは実装しなくていい
             //ラインに対する最短距離の位置角が９０度に近いものを選ぶ
         }
-        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > 120 && trip == false) {
+        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > 150 && trip == false) {
             over = !over;
         }
+
         if (over == false) {
-            escape_x = -line_x;
-            escape_y = -line_y;
+            escape_x = line_x;
+            escape_y = line_y;
         }
+        oldline_x = line_x;
+        oldline_y = line_y;
+
+        for (int i = 0; i < 24; i++) {
+            Serial.print(line_stat[i]);
+        }
+        Serial.print("  ");
+        Serial.print(pack_x[0]);
+        Serial.print(" ");
+        Serial.print(pack_y[0]);
+        Serial.print(" ");
+        Serial.print(pack_x[1]);
+        Serial.print(" ");
+        Serial.println(pack_y[1]);
     }
 }
 

@@ -18,8 +18,8 @@ class LINE {
     private:
         const int detection_border = 600;
 
-        int total_x;
-        int total_y;
+        float total_x;
+        float total_y;
 
         float line_x;
         float line_y;
@@ -40,8 +40,8 @@ class LINE {
         const uint8_t selectPIN[3] = {22, 24, 26};
         const uint8_t outputPIN[3] = {A9, A11, A13};
 
-        int pack_x[4];
-        int pack_y[4];
+        float pack_x[4];
+        float pack_y[4];
         int line_values[24]; //アナログ値　UI用に使う
         int line_stat[24];
         int line_stat_[24];
