@@ -122,24 +122,73 @@ void LINE::read() {
         line_x = 999;
         line_y = 999;
     } else { //検知している
+        if (line_type = 0) {
+            trip = true;
+        } else {
+            trip = false;
+        }
         if (pack_NUM == 1) { //１つ検知
             line_type = 1;
             line_x = pack_x[0];
             line_y = pack_y[0];
+            trip = false;
+            over = false;
         } else if (pack_NUM == 2) { //２つ検知
-            //間が小さいほうを特定
-            //ベクトルの移動平均
-            line_x = 0;
-            line_y = 0;
             line_type = 1;
+            line_x = (pack_x[0] + pack_x[1]) / 2;
+            line_y = (pack_y[0] + pack_y[1]) / 2;
         } else if (pack_NUM == 3) { //TODO 未実装
-            //２番が角の可能性あり
-            //２つがA辺、残りＢ辺がほとんど
-            //ラインに対する最短距離の位置角が９０度に近いものを選ぶ
+            line_type = 2;
+            
+            float dif = 360
+            int close = 0
+            
+            float aside_x = (pack_x[0] + pack_x[1]) / 2;
+            float aside_y = (pack_y[0] + pack_y[1]) / 2;
+            float pata = myvector.get_vectordegrees(aside_x, aside_y, pack_x[2], pack[2]);
+            if (pata < dif) {
+                close = 1;
+                dif = pata;
+            }
+            
+            float bside_x = (pack_x[1] + pack_x[2]) / 2;
+            float bside_y = (pack_y[1] + pack_y[2]) / 2;
+            float patb = myvector.get_vectordegrees(bside_x, bside_y, pack_x[0], pack[0]);
+            if (patb < dif) {
+                close = 2;
+                dif = patb;
+            } 
+            
+            float cside_x = (pack_x[0] + pack_x[2]) / 2;
+            float cside_y = (pack_y[0] + pack_y[2]) / 2;
+            float patc = myvector.get_vectordegrees(cside_x, cside_y, pack_x[1], pack[1]);
+            if (patc < dif) {
+                close = 3;
+                dif = patc;
+            }
+            
+            if (close = 1) {
+                line_x = aside_x + pack_x[2];
+                line_y = aside_y + pack_y[2];
+            } else if (close = 2) {
+                line_x = bside_x + pack_x[0];
+                line_y = bside_y + pack_y[0];
+            } else {
+                line_x = cside_x + pack_x[1];
+                line_y = cside_y + pack_y[1];
+            }
         } else if (pack_NUM == 4) { //TODO　未実装
             //しばらくは実装しなくていい
             //ラインに対する最短距離の位置角が９０度に近いものを選ぶ
         }
+        if (myvector.get_vectordegrees(line_x, line_y, oldline_x, oldline_y) > 120 && trip == false) {
+            if (over == false) over = true;
+            if (over == true) over = false;
+        }
+        if (over == false) {
+            escape_x = -line_x;
+            escape_ｙ = -line_ｙ;
+        ｝
     }
 }
 
