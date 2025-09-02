@@ -1,5 +1,5 @@
 #include "AIP.h"
-
+#include "MyVector.h"
 
 float MyVECTOR::get_azimuth(float x, float y) {
     theta = atan2(y, x);
@@ -37,7 +37,7 @@ float MyVECTOR::get_y() {
     return y;
 }
 
-float get_vectordegree(float ax, float ay, float bx, float by) {
+float MyVECTOR::get_vectordegree(float ax, float ay, float bx, float by) {
     float a_magnitude = myvector.get_magnitude(ax, ay);
     float b_magnitude = myvector.get_magnitude(bx, by);
     if (a_magnitude == 0.0f || b_magnitude == 0.0f) return 0;
