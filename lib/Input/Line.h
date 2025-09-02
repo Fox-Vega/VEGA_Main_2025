@@ -13,6 +13,7 @@ class LINE {
         int get_x();
         int get_y();
         int get_type();
+        int get_eazimuth();
 
     private:
         const int detection_border = 600;

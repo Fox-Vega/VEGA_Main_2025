@@ -202,3 +202,7 @@ int LINE::get_y() {
 int LINE::get_type() {
     return line_type;
 }
+
+int LINE::get_eazimuth() {
+    return myvector.get_azimuth(escape_x, escape_y);
+}
