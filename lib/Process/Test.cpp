@@ -36,7 +36,7 @@ void Test::test_(){
         switch(t_mode) {
             case 1:
                 mypixel.uni(0, 255, 0, 0,1);
-                mypixel.multi(7, 9, 255, 0,1, 0);
+                mypixel.multi(7, 9, 255, 0,1,);
                 break;
             case 2:
                 mypixel.multi(0, 15, 255, 0,1, 0);
