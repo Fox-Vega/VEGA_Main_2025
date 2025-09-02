@@ -22,11 +22,18 @@ class LINE {
 
         int line_x;
         int line_y;
+        int oldline_x;
+        int oldline_y;
+        int escape_x;
+        int escape_y;
 
         int line_type;
         //0なら反応なし
         //1なら線検知
         //2なら角検知
+
+        bool trip = false;
+        bool over = false;
 
         const int line_r = 1000;
         const uint8_t selectPIN[3] = {22, 24, 26};
