@@ -228,7 +228,7 @@ void Test::processing() {
 
     ball.read();
     int ball_azimuth = (ball.get_azimuth() + gam.get_azimuth() + 90) % 360;
-    myvector.get_cord(ball_azimuth , ball.get_magnitude());い
+    myvector.get_cord(ball_azimuth , ball.get_magnitude());
     if (ball.get_value(99) == 0) {
         Serial.print(0);
         Serial.print(",");
