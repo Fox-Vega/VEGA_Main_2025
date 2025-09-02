@@ -111,7 +111,7 @@ int Defense::cal_vector(){
         vector.go_ang=vector.line_ang;
     }
     else{
-    if(diff_signs(ball_x,line_x)==1234){
+    if(false){
         vector.move_power=vector.line_power;
         vector.go_ang=vector.line_ang;
     } else {
