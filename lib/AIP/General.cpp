@@ -153,6 +153,7 @@ void General::startup() {
     mymotor.move(1);
 }
 inline void General::readCommand(){//シリアル使ってるけど送信しなきゃ速度は食わない　食うなら作らない定期
+    //シリアルが速度食うのは送信待つからや　読むなら　大丈夫
     if (Serial.available()) {
         String line = Serial.readStringUntil('\n');
         line.trim();
