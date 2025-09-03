@@ -78,7 +78,8 @@ int Defense::cal_vector(){
     vector.ball_y = myvector.get_y();
     if(ball_azimuth<7||ball_azimuth>353){
         vector.ball_ang=999;
-        vector.ball_power=0;
+        vector.ball_power=0
+            Serial.println("on ball");
     } else {
         if(vector.ball_x<0){
             vector.ball_ang=270;
@@ -92,9 +93,11 @@ int Defense::cal_vector(){
     vector.line_y = line_y;
     if (line_detect){
         if(abs(line_x)>5){//角か縦　type分類も追加したいな
+            Serial.println("corner");
             vector.line_ang=line_azimuth;
             vector.line_power=line_dist*40;
         } else {//これは直線ライン　角度は前後ろのみ
+            Serial.println("normal");
             vector.line_ang=line_y<0?180:0;
             vector.line_power=line_dist*20;
         }
@@ -108,16 +111,18 @@ int Defense::cal_vector(){
     if(vector.ball_power<30){
         vector.move_power=vector.line_power;
         vector.go_ang=vector.line_ang;
+        Serrial.println("on ball only line");
     }
     else{
     if(false){
         vector.move_power=vector.line_power;
         vector.go_ang=vector.line_ang;
     } else {
+        Serial.println("normal vec");
         myvector.get_cord(vector.line_ang,vector.line_power);//ベクトル合成のためにxyを統一
         vector.move_y=myvector.get_y()*line_late;
         if(vector.move_y>line_max)vector.move_y=line_max;
-
+s
         myvector.get_cord(vector.ball_ang,vector.ball_power);
         vector.move_x=myvector.get_x();
 
@@ -154,8 +159,10 @@ void Defense::move(){
         last_power=vector.move_power;
         if(vector.move_power<30){
             mymotor.free();
+            Serial.println("no power");
         } else {
             silentTime.reset();
+            Serial.println("normal p");
             mymotor.run(vector.go_ang,vector.move_power,0);
         }
         mypixel.closest(vector.line_ang,0,255,0,1,1);
