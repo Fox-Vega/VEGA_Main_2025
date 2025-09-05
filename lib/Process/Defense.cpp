@@ -11,7 +11,7 @@
 
 
 
-void Defense::setup(void){
+void Defense::setup(void){　
     // vectorの全要素を999で初期化
     vector.ball_ang = 999;
     vector.ball_power = 999;
