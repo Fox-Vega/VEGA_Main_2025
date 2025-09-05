@@ -17,47 +17,29 @@ void LINE::read() {
         line_stat[i] = 0;
     }
     //読み取り
-    for (int k = 0; k < 2; k++) { //2回測定
-        for (int i = 0; i < 8; i++) { //8回の変更
-            // selectPIN[0] (ピン22)
-            // if (Reader[i][0] == 0) {
-            //     digitalWrite(selectPIN[0], LOW);
-            // } else {
-            //     digitalWrite(selectPIN[0], HIGH);
-            // }
-            // selectPIN[1] (ピン24)
-            // if (Reader[i][1] == 0) {
-            //     digitalWrite(selectPIN[1], LOW);
-            // } else {
-            //     digitalWrite(selectPIN[1], HIGH);
-            // }
-            // selectPIN[2] (ピン26)
-            // if (Reader[i][2] == 0) {
-            //     digitalWrite(selectPIN[2], LOW);
-            // } else {
-            //     digitalWrite(selectPIN[2], HIGH);
-            // }
+    for (int k = 0; k < 1; k++) { //測定回数
+        for (int i = 0; i < 8; i++) { //取得ピン切り替え
             if (Reader[i][0] == 0) {
-                PORTA &= ~(1 << PA0); // LOW
+                digitalWrite(selectPIN[0], LOW);
             } else {
-                PORTA |= (1 << PA0);  // HIGH
+                digitalWrite(selectPIN[0], HIGH);
             }
             if (Reader[i][1] == 0) {
-                PORTA &= ~(1 << PA2); // LOW
+                digitalWrite(selectPIN[1], LOW);
             } else {
-                PORTA |= (1 << PA2);  // HIGH
+                digitalWrite(selectPIN[1], HIGH);
             }
             if (Reader[i][2] == 0) {
-                PORTA &= ~(1 << PA4); // LOW
+                digitalWrite(selectPIN[2], LOW);
             } else {
-                PORTA |= (1 << PA4);  // HIGH
+                digitalWrite(selectPIN[2], HIGH);
             }
 
-            for (int j = 0; j < 3; j++) { //3つのマルチプレクサを読む
+            for (int j = 0; j < 3; j++) { //値読み取り
                 line_values[(j * 8) + i] = analogRead(outputPIN[j]); //値の保存
-                if (line_values[(j * 8) + i] > detection_border) { //trueとfalseのステータスに変換
+                if (line_values[(j * 8) + i] > detection_border) { //ステータスに変換
                     line_stat_[(j * 8) + i] += 1; //仮ステータスに加算
-                    if (line_stat_[(j * 8) + i] >= 2) { //反応回数が2回であれば最終ステータスを１にする
+                    if (line_stat_[(j * 8) + i] >= 1) { //最終ステータス
                         line_stat[(j * 8) + i] = 1;
                     }
                 }
@@ -73,7 +55,8 @@ void LINE::read() {
     int sample = 0; //平均取得用サンプル数
     bool pack_NOW = 0; //処理ステータス
     for(int i = 0; i < 4; i++) {
-        pack_degs[i] = 0;
+        pack_x[i] = 0;
+        pack_y[i] = 0;
     }
     //グループ分け
     byte startNUM = 0;
@@ -93,27 +76,22 @@ void LINE::read() {
         } else {
             if (pack_NOW == 1) { //グループの終点を検知
                 pack_NOW = 0;
-                pack_degs[pack_NUM] = myvector.get_azimuth(total_x, total_y); 
+                pack_x[pack_NUM] = total_x / sample;
+                pack_y[pack_NUM] = total_y / sample;
                 pack_NUM += 1;
                 total_x = 0;
                 total_y = 0;
+                sample = 0;
             }
         }
     }
-
-    // Serial.print("/ ");
-    // for(int i = 0; i < 4; i++) {
-    //     Serial.print(pack_degs[i]);
-    //     Serial.print(" ");
-    // }
-    // Serial.println();
-    //TODO
-
 
     if (pack_NUM == 0) { //検知してるかを確認
         line_type = 0;
         line_x = 999;
         line_y = 999;
+        escape_x = 0;
+        escape_y = 0;
     } else { //検知している
         //初回検知判定
         trip = false;
@@ -175,26 +153,6 @@ int LINE::get_value(byte lineNUM) {
     return line_values[lineNUM];
 }
 
-int LINE::get_x() {
-    return line_x;
-}
-
-int LINE::get_y() {
-    return line_y;
-}
-
-int LINE::get_ax() {
-    return avoid_x;
-}
-
-int LINE::get_ay() {
-    return avoid_y;
-}
-
-int LINE::get_type() {
-    return line_type;
-}
-
 int LINE::get_azimuth() {
     return myvector.get_azimuth(line_x, line_y);
 }
@@ -207,6 +165,18 @@ int LINE::get_magnitude() {
     return mag;
 }
 
-int LINE::get_avoid() {
-    return myvector.get_azimuth(avoid_x, avoid_y);
+int LINE::get_x() {
+    return line_x;
+}
+
+int LINE::get_y() {
+    return line_y;
+}
+
+int LINE::get_type() {
+    return line_type;
+}
+
+int LINE::get_eazimuth() {
+    return myvector.get_azimuth(escape_x, escape_y);
 }
