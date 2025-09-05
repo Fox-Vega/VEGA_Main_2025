@@ -5,7 +5,7 @@
 
 
 void General::setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     myswitch.setup();
     mybuzzer.setup();
     mypixel.setup();
@@ -47,6 +47,9 @@ void General::startup() {
         mypixel.clears();
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
+        if(Serial.available()){
+            readCommand();
+        }
         if (phase < 3) {
             if (mode == 1) {
                 mypixel.multi(0, 15, 255, 130, 130,1);//アタック
