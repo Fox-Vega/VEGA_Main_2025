@@ -33,12 +33,12 @@ void MyPIXEL::uni(int PIXELNUM, int red, int green, int blue,double alpha) {
     }
 }
 
-void MyPIXEL::multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue,double alpha) {
+void MyPIXEL::multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue, double alpha) {
     if (usePIXEL == 1) {
         for (int i = PIXELNUMstart; i <= PIXELNUMend; i++) {
             int a = i;
             a %= 16;
-            mypixel.uni(a, red, green, blue,alpha);
+            mypixel.uni(a, red, green, blue, alpha);
         }
     }
 }

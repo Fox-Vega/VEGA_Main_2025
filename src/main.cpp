@@ -10,11 +10,12 @@ Timer timer_test;
 void setup() {
     general.setup();
     defense.setup();
-    //attack.setup();
     general.startup();
 }
 
 void loop() {
+    line.read();
+    ball.read();
     mypixel.clear();
     gam.read_azimuth();
 
