@@ -51,12 +51,12 @@ void Defense::get_value(){
     if(line_detect){
         line_azimuth=line.get_azimuth();
         line_absolute_angle=norm360(line_azimuth - r_azimuth);
-        line_dist=line.get_magnitude()/10;
+        line_dist=(line.get_magnitude()/100)+1;
         lastdetect=line_azimuth;
         myvector.get_cord(line_azimuth,line_dist);
         line_x=myvector.get_x();
         line_y=myvector.get_y();
-    } else {;
+    } else {
         line_azimuth=999;
         line_absolute_angle=999;
         line_dist=999;
@@ -78,8 +78,8 @@ int Defense::cal_vector(){
     vector.ball_y = myvector.get_y();
     if(ball_azimuth<7||ball_azimuth>353){
         vector.ball_ang=999;
-        vector.ball_power=0
-            Serial.println("on ball");
+        vector.ball_power=0;
+        Serial.println("on ball");
     } else {
         if(vector.ball_x<0){
             vector.ball_ang=270;
@@ -92,6 +92,7 @@ int Defense::cal_vector(){
     vector.line_x = line_x;
     vector.line_y = line_y;
     if (line_detect){
+        Serial.println("line detected");
         if(abs(line_x)>5){//角か縦　type分類も追加したいな
             Serial.println("corner");
             vector.line_ang=line_azimuth;
@@ -111,18 +112,18 @@ int Defense::cal_vector(){
     if(vector.ball_power<30){
         vector.move_power=vector.line_power;
         vector.go_ang=vector.line_ang;
-        Serrial.println("on ball only line");
+        Serial.println("on ball only line");
     }
     else{
     if(false){
         vector.move_power=vector.line_power;
         vector.go_ang=vector.line_ang;
+        Serial.println("on line only ball");
     } else {
         Serial.println("normal vec");
         myvector.get_cord(vector.line_ang,vector.line_power);//ベクトル合成のためにxyを統一
         vector.move_y=myvector.get_y()*line_late;
         if(vector.move_y>line_max)vector.move_y=line_max;
-s
         myvector.get_cord(vector.ball_ang,vector.ball_power);
         vector.move_x=myvector.get_x();
 
