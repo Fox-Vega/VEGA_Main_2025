@@ -25,6 +25,8 @@ void MyPIXEL::brightness(int brightness) {
 }
 
 void MyPIXEL::uni(int PIXELNUM, int red, int green, int blue,double alpha) {
+    if(alpha < 0) alpha = 0;
+    if(alpha > 1) alpha = 1;
     if (usePIXEL == 1) {
         PIXELNUM %= 16;
         PIXEL.setPixelColor(PIXELNUM, PIXEL.Color(red*alpha, green*alpha, blue*alpha));
