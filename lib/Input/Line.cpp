@@ -106,65 +106,26 @@ void LINE::read() {
         } else {
             trip = false;
         }
-        if (pack_NUM == 1) { //１つ検知
-            line_type = 1;
-            line_x = pack_x[0];
-            line_y = pack_y[0];
-            trip = false;
-            over = false;
-        } else if (pack_NUM == 2) { //２つ検知
-            line_type = 1;
-            line_x = (pack_x[0] + pack_x[1]) / 2;
-            line_y = (pack_y[0] + pack_y[1]) / 2;
-            if (line_x == 0 && line_y == 0) {
-                line_x = oldline_x;
-                line_y = oldline_y;
-            }
-        } else if (pack_NUM == 3) {
-            line_type = 2;
 
-            float dif = 360;
-            int close = 0;
-
-            float aside_x = (pack_x[0] + pack_x[1]) / 2;
-            float aside_y = (pack_y[0] + pack_y[1]) / 2;
-            float pata = myvector.get_vectordegree(aside_x, aside_y, pack_x[2], pack_y[2]);
-            if (pata < dif) {
-                close = 1;
-                dif = pata;
-            }
-
-            float bside_x = (pack_x[1] + pack_x[2]) / 2;
-            float bside_y = (pack_y[1] + pack_y[2]) / 2;
-            float patb = myvector.get_vectordegree(bside_x, bside_y, pack_x[0], pack_y[0]);
-            if (patb < dif) {
-                close = 2;
-                dif = patb;
-            }
-
-            float cside_x = (pack_x[0] + pack_x[2]) / 2;
-            float cside_y = (pack_y[0] + pack_y[2]) / 2;
-            float patc = myvector.get_vectordegree(cside_x, cside_y, pack_x[1], pack_y[1]);
-            if (patc < dif) {
-                close = 3;
-                dif = patc;
-            }
-
-            if (close == 1) {
-                line_x = aside_x + pack_x[2];
-                line_y = aside_y + pack_y[2];
-            } else if (close == 2) {
-                line_x = bside_x + pack_x[0];
-                line_y = bside_y + pack_y[0];
-            } else {
-                line_x = cside_x + pack_x[1];
-                line_y = cside_y + pack_y[1];
-            }
-        } else if (pack_NUM == 4) { //TODO　未実装
-            //しばらくは実装しなくていい
-            //ラインに対する最短距離の位置角が９０度に近いものを選ぶ
+        int total_linex = 0;
+        int total_liney = 0;
+        for (int i = 0; i < pack_NUM; i++) {
+            total_linex += pack_x[i];
+            total_liney += pack_y[i];
         }
-        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > 150 && trip == false) {
+        line_type = 1;
+        if (pack_NUM >= 3) {
+            line_type = 2;
+        }
+        line_x = total_linex / pack_NUM;
+        line_y = total_liney / pack_NUM;
+
+
+        if (line_x == 0 && line_y == 0) { //クロ座標防止
+            line_x = oldline_x;
+            line_y = oldline_y;
+        }
+        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > 120 && trip == false) {
             over = !over;
         }
 
@@ -175,17 +136,17 @@ void LINE::read() {
         oldline_x = line_x;
         oldline_y = line_y;
 
-        for (int i = 0; i < 24; i++) {
-            Serial.print(line_stat[i]);
-        }
-        Serial.print("  ");
-        Serial.print(pack_x[0]);
-        Serial.print(" ");
-        Serial.print(pack_y[0]);
-        Serial.print(" ");
-        Serial.print(pack_x[1]);
-        Serial.print(" ");
-        Serial.println(pack_y[1]);
+        // for (int i = 0; i < 24; i++) {
+        //     Serial.print(line_stat[i]);
+        // }
+        // Serial.print("  ");
+        // Serial.print(pack_x[0]);
+        // Serial.print(" ");
+        // Serial.print(pack_y[0]);
+        // Serial.print(" ");
+        // Serial.print(pack_x[1]);
+        // Serial.print(" ");
+        // Serial.println(pack_y[1]);
     }
 }
 
