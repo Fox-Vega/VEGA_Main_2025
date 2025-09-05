@@ -250,16 +250,17 @@ void Test::processing() {
 
 void Test::attitudeControl() {//pde用シリアルはまだです
     int r_azimuth = gam.get_azimuth();
+    Serial.println();
     if (myswitch.check_tact() == 5) { //方向と座標をリセット
         gam.dir_reset();
         mybuzzer.start(300, 500);
     }
-    if(r_azimuth < 5 || r_azimuth > 355 ){
+    if(r_azimuth < 5 || r_azimuth > 355){
         mymotor.free();
         mypixel.multi(0, 15, 255, 255, 255,1);
     } else {
         mymotor.run(0, 0, 0);
-        int r_absorate_azimuth__0 = 0-r_azimuth;
+        int r_absorate_azimuth__0 = (360 + (-r_azimuth)) % 360;
         mypixel.closest(r_absorate_azimuth__0, 255, 0, 0,1, 3);
     }
 }
