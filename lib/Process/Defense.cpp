@@ -78,7 +78,7 @@ int Defense::cal_vector(){
     vector.ball_y = myvector.get_y();
     if(ball_azimuth<7||ball_azimuth>353){
         vector.ball_ang=999;
-        vector.ball_power=0
+        vector.ball_power=0;
             Serial.println("on ball");
     } else {
         if(vector.ball_x<0){
@@ -111,7 +111,7 @@ int Defense::cal_vector(){
     if(vector.ball_power<30){
         vector.move_power=vector.line_power;
         vector.go_ang=vector.line_ang;
-        Serrial.println("on ball only line");
+        Serial.println("on ball only line");
     }
     else{
     if(false){
@@ -122,7 +122,6 @@ int Defense::cal_vector(){
         myvector.get_cord(vector.line_ang,vector.line_power);//ベクトル合成のためにxyを統一
         vector.move_y=myvector.get_y()*line_late;
         if(vector.move_y>line_max)vector.move_y=line_max;
-s
         myvector.get_cord(vector.ball_ang,vector.ball_power);
         vector.move_x=myvector.get_x();
 

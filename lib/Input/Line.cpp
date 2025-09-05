@@ -10,11 +10,11 @@ void LINE::setup(void) {
 }
 
 void LINE::read() {
-    for (int i = 0; i < 24; i++) { //初期化
+    //読み取り用初期化
+    for (int i = 0; i < 24; i++) {
         line_stat[i] = 0;
         line_stat_[i] = 0;
     }
-
     //読み取り
     for (int k = 0; k < 1; k++) { //1回測定
         for (int j = 0; j < 3; j++) { //3つのマルチプレクサを読む
@@ -45,42 +45,31 @@ void LINE::read() {
         }
     }
 
-    // for (int i = 0; i < 23; i++) {
-    //     Serial.print(line_values[i]);
-    //     Serial.print(" ");
-    // }
-    //TODO
-
-
-    //グループ処理の開始センサー番号を決める
-    byte startNUM = 99;
-    for (int i = 23; i >= 0; i--) {
-        if (line_stat[i] == 0 && startNUM == 99) {
-            startNUM = i + 1;
-        }
-    }
-    if (startNUM == 99) startNUM = 0;
-
 
     //グループ分けの初期化
     total_x = 0;
     total_y = 0;
     int pack_NUM = 0; //グループの個数
-    int sample = 0;
-    bool pack_NOW = 0; //グループ処理中ステータス
+    int sample = 0; //平均取得用サンプル数
+    bool pack_NOW = 0; //処理ステータス
     for(int i = 0; i < 4; i++) {
         pack_x[i] = 0;
         pack_y[i] = 0;
     }
-
     //グループ分け
+    byte startNUM = 0;
+    for (int i = 23; i >= 0; i--) {
+        if (line_stat[i] == 0 && startNUM == 99) {
+            startNUM = i + 1;
+        }
+    }
     for (int i = startNUM; i < startNUM + 24; i++) {
         byte pLine = i % 24; //処理中のセンサー
         if (line_stat[pLine] == 1) {
+            pack_NOW = 1;
             myvector.get_cord(line_degs[pLine], line_r);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
-            pack_NOW = 1;
             sample += 1;
         } else {
             if (pack_NOW == 1) { //グループの終点を検知
@@ -101,41 +90,48 @@ void LINE::read() {
         line_x = 999;
         line_y = 999;
     } else { //検知している
+        //初回検知判定
+        trip = false;
         if (line_type == 0) {
             trip = true;
-        } else {
-            trip = false;
         }
 
+        //ライン位置計算
         int total_linex = 0;
         int total_liney = 0;
         for (int i = 0; i < pack_NUM; i++) {
             total_linex += pack_x[i];
             total_liney += pack_y[i];
         }
+        line_x = total_linex / pack_NUM;
+        line_y = total_liney / pack_NUM;
+
+        //ライン種類判別
         line_type = 1;
         if (pack_NUM >= 3) {
             line_type = 2;
         }
-        line_x = total_linex / pack_NUM;
-        line_y = total_liney / pack_NUM;
 
-
-        if (line_x == 0 && line_y == 0) { //クロ座標防止
+        //クロ座標防止
+        if (line_x == 0 && line_y == 0) {
             line_x = oldline_x;
             line_y = oldline_y;
         }
-        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > 120 && trip == false) {
-            over = !over;
-        }
 
+        //ライン越え判定
+        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > over_border && trip == false) over = !over;
+
+        //逃げる方向更新
         if (over == false) {
             escape_x = line_x;
             escape_y = line_y;
         }
+
+        //情報更新
         oldline_x = line_x;
         oldline_y = line_y;
 
+        //デバッグ用
         // for (int i = 0; i < 24; i++) {
         //     Serial.print(line_stat[i]);
         // }

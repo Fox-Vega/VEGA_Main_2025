@@ -46,7 +46,6 @@ void GAM::setup() {
     bno.setMode(OPERATION_MODE_AMG);
     Serial.println("1-4");
     while (millis() < 5500) {
-        Serial.println("1-5");
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
         float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};

@@ -17,6 +17,7 @@ class LINE {
 
     private:
         const int detection_border = 600;
+        const int over_border = 100;
 
         float total_x;
         float total_y;
