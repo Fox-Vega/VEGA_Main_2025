@@ -14,7 +14,6 @@ void LINE::read() {
     for (int i = 0; i < 24; i++) {
         line_stat[i] = 0;
         line_stat_[i] = 0;
-        line_stat[i] = 0;
     }
     //読み取り
     for (int k = 0; k < 1; k++) { //測定回数
