@@ -8,9 +8,13 @@ class BALL {
         void read(); //センサーデータ取得
         int get_value(short ballNUM); //ボール値を取得する関数　99を使うと最大値を取得
         int get_azimuth(); //ボールの方向を取得する関数
+        int get_x();
+        int get_y();
 
     private:
         int value[16];
+        int ball_x;
+        int ball_y;
         int total_x = 0;
         int total_y = 0;
         unsigned long ballvalues[16]; //ボールの値を格納する配列

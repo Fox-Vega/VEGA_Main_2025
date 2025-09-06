@@ -36,8 +36,18 @@ void BALL::read() {
         total_x += myvector.get_x();
         total_y += myvector.get_y();
     }
+    ball_x = total_x / 5;
+    ball_y = total_y / 5;
 }
 
 int BALL::get_azimuth() {
     return myvector.get_azimuth(-total_x, -total_y);
+}
+
+int BALL::get_x() {
+    return ball_x;
+}
+
+int BALL::get_y() {
+    return ball_y;
 }
