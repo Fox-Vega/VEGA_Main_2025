@@ -11,7 +11,7 @@
 
 
 
-void Defense::setup(void){
+void Defense::setup(void){　
     // vectorの全要素を999で初期化
     vector.ball_ang = 999;
     vector.ball_power = 999;
@@ -31,20 +31,22 @@ void Defense::setup(void){
 }
 
 void Defense::defense_(void){
-    resetUI();
-    d_timer.reset();
-    if(SerialEnabled){
-        ReadCommand();
-    }
-    get_value();
-    cal_vector();
-    move();
-    applyUI();
+    // resetUI();
+    // d_timer.reset();
+    // if(SerialEnabled){
+    //     ReadCommand();
+    // }
+    // get_value();
+    // cal_vector();
+    // move();
+    // applyUI();
+    Serial.print("line:");
+    Serial.println(line.get_magnitude());
+    Serial.print("absolate:");
+    Serial.println((line.get_magnitude()/100)+1);
 }
 
 void Defense::get_value(){
-    line.read();
-    ball.read();
 
     r_azimuth = gam.get_azimuth();
     line_detect=line.get_magnitude()==999 ? false : true;
@@ -71,7 +73,6 @@ void Defense::get_value(){
 
 int Defense::cal_vector(){
     int r=999;
-
     //ボールのベクトルを算出
     myvector.get_cord(ball_azimuth,ball_dist);
     vector.ball_x = myvector.get_x();
@@ -87,6 +88,7 @@ int Defense::cal_vector(){
             vector.ball_ang=90;
         }
         vector.ball_power=200;
+        Serial.println("off ball");
     }
 
     vector.line_x = line_x;
@@ -206,7 +208,9 @@ void Defense::applyUI(){
     mypixel.closest(vector.go_ang,go_ang.red,go_ang.green,go_ang.blue,go_ang.alpha,3);
 }
 
-void Defense::ReadCommand(){};
+void Defense::ReadCommand(){
+
+};
 
 void Defense::dash(){
     silentTime.reset();
