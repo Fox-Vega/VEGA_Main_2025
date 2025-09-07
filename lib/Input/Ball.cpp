@@ -19,6 +19,7 @@ void BALL::read() {
     //センサー値取得
     max_ballvalue = 0;
     for (int i = 0; i < NUMball; i++) {
+        timer.reset();
         ballvalues[i] = pulseIn(ballPINs[i], LOW);
         if (ballvalues[i] > max_ballvalue) { //最大値の記録
             max_ballvalue = ballvalues[i];
