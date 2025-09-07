@@ -44,10 +44,18 @@ int BALL::get_azimuth() {
     return myvector.get_azimuth(-total_x, -total_y);
 }
 
+int BALL::get_magnitude() {
+    return myvector.get_magnitude(-total_x, -total_y);
+}
+
 int BALL::get_x() {
     return ball_x;
 }
 
 int BALL::get_y() {
     return ball_y;
+}
+
+int BALL::get_value(byte ballNUM) {
+    return ballvalues[ballNUM];
 }

@@ -8,8 +8,10 @@ class BALL {
         void read(); //センサーデータ取得
         int get_value(short ballNUM); //ボール値を取得する関数　99を使うと最大値を取得
         int get_azimuth(); //ボールの方向を取得する関数
+        int get_magnitude();
         int get_x();
         int get_y();
+        int get_value(byte ballNUM);
 
     private:
         int value[16];
