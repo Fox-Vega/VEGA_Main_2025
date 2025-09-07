@@ -20,7 +20,7 @@ void BALL::read() {
     max_ballvalue = 0;
     for (int i = 0; i < NUMball; i++) {
         timer.reset();
-        ballvalues[i] = pulseIn(ballPINs[i], LOW);
+        ballvalues[i] = pulseIn(ballPINs[i], LOW, 833);
         if (ballvalues[i] > max_ballvalue) { //最大値の記録
             max_ballvalue = ballvalues[i];
             max_ballNUM = i;
