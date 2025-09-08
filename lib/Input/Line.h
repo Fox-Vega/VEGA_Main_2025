@@ -7,13 +7,14 @@ class LINE {
     public:
         void setup();
         void read();
-        int get_value(byte lineNUM);
+        int get_line();
         int get_azimuth();
         int get_magnitude();
         int get_x();
         int get_y();
         int get_type();
         int get_eazimuth();
+        int get_value(byte lineNUM);
 
     private:
         const int detection_border = 600;
