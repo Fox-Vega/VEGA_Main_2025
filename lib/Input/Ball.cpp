@@ -19,19 +19,19 @@ void BALL::read() {
     max_ballNUM = 99;
     max_ballvalue = 0;
     for (int i = 0; i < NUMball; i++) {
-        timer.reset();
-        ballvalues[i] = pulseIn(ballPINs[i], LOW, 833);
+        ballvalues[i] = pulseIn(ballPINs[i], LOW, 1666);
         if (ballvalues[i] > max_ballvalue) { //最大値の記録
             max_ballvalue = ballvalues[i];
             max_ballNUM = i;
         }
     }
+
     if (max_ballNUM == 99) {
-        ball = false;
+        ball = 0;
         ball_x_ = 0;
         ball_y_ = 0;
     } else {
-        ball = true;
+        ball = 1;
         // 座標計算
         total_x = 0;
         total_y = 0;
@@ -47,9 +47,10 @@ void BALL::read() {
     }
 
 
-    for (int i = 14; i > 0; ) { //ずらす
-        history_x[i - 1] = history_x[i];
-        history_y[i - 1] = history_y[i];
+    for (int i = 14; i > 0; i--) { //ずらす
+        int a = i - 1;
+        history_x[i] = history_x[a];
+        history_y[i] = history_y[a];
     }
     history_x[0] = ball_x_;
     history_y[0] = ball_y_;
@@ -62,18 +63,29 @@ void BALL::read() {
     }
     ball_x = total_x / 15;
     ball_y = total_y / 15;
+
+    //TODO
+    // for (int i = 0; i < 16; i++) {
+    //     Serial.print(ballvalues[i]);
+    //     Serial.print(" ");
+    // }
+    // Serial.print("/ ");
+    // Serial.print(max_ballNUM);
+    // Serial.print("/ ");
+    // Serial.print(history_x[14]);
+    // Serial.println();
 }
 
-int BALL::get_stat() {
+bool BALL::get_stat() {
     return ball;
 }
 
 int BALL::get_azimuth() {
-    return myvector.get_azimuth(-total_x, -total_y);
+    return myvector.get_azimuth(-ball_x, -ball_y);
 }
 
 int BALL::get_magnitude() {
-    return myvector.get_magnitude(-total_x, -total_y);
+    return myvector.get_magnitude(-ball_x, -ball_y);
 }
 
 int BALL::get_x() {

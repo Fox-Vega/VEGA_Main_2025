@@ -6,7 +6,7 @@ class BALL {
     public:
         void setup(); //初期設定
         void read(); //センサーデータ取得
-        int get_stat();
+        bool get_stat();
         int get_azimuth(); //ボールの方向を取得する関数
         int get_magnitude();
         int get_x();

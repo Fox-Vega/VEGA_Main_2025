@@ -15,7 +15,6 @@ void GAM::setup() {
     mybuzzer.start(300, 100);
     delay(3000);
     Wire.begin();
-    Serial.println("1-2");
     if (!bno.begin()) {
         Serial.println("BNO055 not detected.");
         for(int i=0;i<3;i++){
@@ -24,7 +23,6 @@ void GAM::setup() {
         }
         if(myswitch.check_tact()==15){
             mybuzzer.start(1500,1000);
-            goto skip_BNO;
         } else {
             mypixel.use_pixel(true);
             mypixel.brightness(200);
@@ -36,7 +34,6 @@ void GAM::setup() {
                     mypixel.show();
                     mybuzzer.start(200,500);
                     delay(500);
-                    wdt_enable(WDTO_15MS);
                     while (1) {}
                 }
             }
@@ -44,7 +41,6 @@ void GAM::setup() {
     }
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
-    Serial.println("1-4");
     while (millis() < 5500) {
         sensors_event_t accel_event;
         bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
@@ -54,11 +50,8 @@ void GAM::setup() {
         }
         sampleNUM += 1;
     }
-    Serial.println("1-6");
     accel_bias[0] = sample[0] / sampleNUM;
     accel_bias[1] = sample[1] / sampleNUM;
-skip_BNO:
-;
 }
 
 void GAM::read_azimuth() {

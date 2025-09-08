@@ -123,7 +123,7 @@ void Test::input() {
     mypixel.closest(goal_azimuth, 255, 0, 100,1, 3);
 
     ball.read();
-    if (ball.get_value(99) != 0) {
+    if (ball.get_stat() != 0) {
         int value = constrain(ball.get_value(99) / 4, 0, 255); //入力値を0~255の範囲に制限
         int r, g, b;
         r = 255;

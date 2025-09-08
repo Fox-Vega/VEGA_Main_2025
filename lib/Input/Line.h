@@ -16,8 +16,8 @@ class LINE {
         int get_value(byte lineNUM);
 
     private:
-        const int detection_border = 580;
-        const int over_border = 100;
+        const int detection_border = 590;
+        const int over_border = 80;
 
         float total_x;
         float total_y;

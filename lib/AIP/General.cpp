@@ -5,7 +5,7 @@
 
 
 void General::setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
     myswitch.setup();
     mybuzzer.setup();
     mypixel.setup();
@@ -13,12 +13,13 @@ void General::setup() {
     mypixel.show();
 
     ball.setup();
-    Serial.println("1");
+    Serial.println("ballFinish");
     line.setup();
-    Serial.println("2");
+    Serial.println("lineFinish");
     mymotor.setup();
-    Serial.println("3");
+    Serial.println("motorFinish");
     gam.setup();
+    Serial.println("gamFinish");
     mypixel.multi(0, 15, 255, 255, 255,1);
     mypixel.show();
     if(myswitch.check_tact() == 15){
@@ -27,12 +28,11 @@ void General::setup() {
         mybuzzer.preset(1);
     }
     standby = 0;
-
-    
+    Serial.println("GeneralSetupFinish");
 }
 
 void General::startup() {
-    
+    Serial.println("GeneralStartupStart");
     mymotor.free();
     mybuzzer.stop();
     // mypixel.brightness(999);
@@ -44,19 +44,11 @@ void General::startup() {
         phase = 3;
     }
 
-
     while (phase < 4) {
-        timer_startup.reset();
         gam.read_azimuth();
-        // Serial.println("gam:"+String(timer_startup.read_milli()));timer_startup.reset();
         mypixel.clears();
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
-        //Serial.println("switch:"+String(timer_startup.read_milli()));timer_startup.reset();
-        if(Serial.available()){
-            readCommand();
-        }
-        //Serial.println("readcom:"+String(timer_startup.read_milli()));timer_startup.reset();
         if (phase < 3) {
             if (mode == 1) {
                 mypixel.multi(0, 15, 255, 130, 130,1);//アタック
