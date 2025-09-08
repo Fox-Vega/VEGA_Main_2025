@@ -11,7 +11,7 @@
 
 
 
-void Defense::setup(void){　
+void Defense::setup(void){
     // vectorの全要素を999で初期化
     vector.ball_ang = 999;
     vector.ball_power = 999;
@@ -31,19 +31,15 @@ void Defense::setup(void){　
 }
 
 void Defense::defense_(void){
-    // resetUI();
-    // d_timer.reset();
-    // if(SerialEnabled){
-    //     ReadCommand();
-    // }
-    // get_value();
-    // cal_vector();
-    // move();
-    // applyUI();
-    Serial.print("line:");
-    Serial.println(line.get_magnitude());
-    Serial.print("absolate:");
-    Serial.println((line.get_magnitude()/100)+1);
+    resetUI();
+    d_timer.reset();
+    if(SerialEnabled){
+        ReadCommand();
+    }
+    get_value();
+    cal_vector();
+    move();
+    applyUI();
 }
 
 void Defense::get_value(){
@@ -51,7 +47,7 @@ void Defense::get_value(){
     r_azimuth = gam.get_azimuth();
     line_detect=line.get_magnitude()==999 ? false : true;
     if(line_detect){
-        line_azimuth=line.get_azimuth();
+        line_azimuth=norm360(line.get_azimuth()-180);
         line_absolute_angle=norm360(line_azimuth - r_azimuth);
         line_dist=(line.get_magnitude()/100)+1;
         lastdetect=line_azimuth;
@@ -68,7 +64,7 @@ void Defense::get_value(){
 
     ball_azimuth=ball.get_azimuth();
     ball_absolute_angle=norm360(ball_azimuth - r_azimuth);
-    ball_dist=ball.get_magnitude();
+    //ball_dist=ball.get_magnitude();
 }
 
 int Defense::cal_vector(){

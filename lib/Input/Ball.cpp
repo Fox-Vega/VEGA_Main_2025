@@ -15,7 +15,7 @@ void BALL::read() {
     for (int i = 0; i < NUMball; i++) {
         ballvalues[i] = 0;
     }
-
+    Serial.println("Reading ball sensors");
     //センサー値取得
     max_ballvalue = 0;
     for (int i = 0; i < NUMball; i++) {
@@ -25,6 +25,8 @@ void BALL::read() {
             max_ballNUM = i;
         }
     }
+    Serial.println("done");
+    Serial.println("calculating ball position");
 
     // 座標計算
     total_x = 0;
@@ -38,6 +40,7 @@ void BALL::read() {
     }
     ball_x = total_x / 5;
     ball_y = total_y / 5;
+    Serial.println("done");
 }
 
 int BALL::get_azimuth() {

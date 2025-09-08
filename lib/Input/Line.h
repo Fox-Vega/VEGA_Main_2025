@@ -16,7 +16,7 @@ class LINE {
         int get_eazimuth();
 
     private:
-        const int detection_border = 600;
+        const int detection_border = 950;
         const int over_border = 100;
 
         float total_x;
