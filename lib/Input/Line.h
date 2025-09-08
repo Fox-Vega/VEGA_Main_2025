@@ -7,13 +7,12 @@ class LINE {
     public:
         void setup();
         void read();
-        int get_line();
-        int get_azimuth();
-        int get_magnitude();
+        int get_azimuth(); //方位角
+        int get_magnitude(); //大きさ
         int get_x();
         int get_y();
-        int get_type();
-        int get_eazimuth();
+        int get_type(); //種類　0=無し　1=辺　2=角
+        int get_eazimuth(); //逃げる方向
         int get_value(byte lineNUM);
 
     private:
