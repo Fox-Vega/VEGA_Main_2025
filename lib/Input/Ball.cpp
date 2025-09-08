@@ -30,6 +30,7 @@ void BALL::read() {
     if (max_ballNUM == 99) {
         ball = false;
     } else {
+        ball = true;
         // 座標計算
         total_x = 0;
         total_y = 0;
@@ -39,13 +40,13 @@ void BALL::read() {
             myvector.get_cord(balldirs[ballNUM], ballvalues[ballNUM]);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
-        } 
+        }
         ball_x = total_x / 5;
         ball_y = total_y / 5;
     }
 }
 
-int BALL::get_ball() {
+int BALL::get_stat() {
     return ball;
 }
 
