@@ -17,30 +17,36 @@ void BALL::read() {
     }
     Serial.println("Reading ball sensors");
     //センサー値取得
+    max_ballNUM = 99;
     max_ballvalue = 0;
     for (int i = 0; i < NUMball; i++) {
-        ballvalues[i] = pulseIn(ballPINs[i], LOW);
+        timer.reset();
+        ballvalues[i] = pulseIn(ballPINs[i], LOW, 833);
         if (ballvalues[i] > max_ballvalue) { //最大値の記録
             max_ballvalue = ballvalues[i];
             max_ballNUM = i;
         }
     }
-    Serial.println("done");
-    Serial.println("calculating ball position");
-
-    // 座標計算
-    total_x = 0;
-    total_y = 0;
-    int ballNUMstart = (max_ballNUM + 14) % NUMball; //ベクトル移動平均計算開始センサー番号
-    for (int i = 0; i < 5; i++) {
-        int ballNUM = (ballNUMstart + i) % NUMball;
-        myvector.get_cord(balldirs[ballNUM], ballvalues[ballNUM]);
-        total_x += myvector.get_x();
-        total_y += myvector.get_y();
+    if (max_ballNUM == 99) {
+        ball = false;
+    } else {
+        // 座標計算
+        total_x = 0;
+        total_y = 0;
+        int ballNUMstart = (max_ballNUM + 14) % NUMball; //ベクトル移動平均計算開始センサー番号
+        for (int i = 0; i < 5; i++) {
+            int ballNUM = (ballNUMstart + i) % NUMball;
+            myvector.get_cord(balldirs[ballNUM], ballvalues[ballNUM]);
+            total_x += myvector.get_x();
+            total_y += myvector.get_y();
+        } 
+        ball_x = total_x / 5;
+        ball_y = total_y / 5;
     }
-    ball_x = total_x / 5;
-    ball_y = total_y / 5;
-    Serial.println("done");
+}
+
+int BALL::get_ball() {
+    return ball;
 }
 
 int BALL::get_azimuth() {

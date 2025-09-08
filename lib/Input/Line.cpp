@@ -148,10 +148,6 @@ void LINE::read() {
     }
 }
 
-int LINE::get_value(byte lineNUM) {
-    return line_values[lineNUM];
-}
-
 int LINE::get_azimuth() {
     return myvector.get_azimuth(line_x, line_y);
 }
@@ -178,4 +174,8 @@ int LINE::get_type() {
 
 int LINE::get_eazimuth() {
     return myvector.get_azimuth(escape_x, escape_y);
+}
+
+int LINE::get_value(byte lineNUM) {
+    return line_values[lineNUM];
 }
