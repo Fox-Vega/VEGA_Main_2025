@@ -48,7 +48,7 @@ void BALL::read() {
     }
 
 
-    for (int i = 14; i > 0; ) {
+    for (int i = 14; i > 0; ) { //ずらす
         history_x[i - 1] = history_x[i];
         history_y[i - 1] = history_y[i];
     }
