@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "Timer.h"
 
 class General {
     public:
@@ -24,4 +25,5 @@ class General {
         short startPIXELs[5] = {99, 14, 2, 6, 10};
         float lastbuzzer;
         inline void readCommand();
+        Timer timer_startup;
 };

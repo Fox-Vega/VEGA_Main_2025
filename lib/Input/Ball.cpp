@@ -15,7 +15,6 @@ void BALL::read() {
     for (int i = 0; i < NUMball; i++) {
         ballvalues[i] = 0;
     }
-
     //センサー値取得
     max_ballNUM = 99;
     max_ballvalue = 0;

@@ -27,9 +27,12 @@ void General::setup() {
         mybuzzer.preset(1);
     }
     standby = 0;
+
+    
 }
 
 void General::startup() {
+    
     mymotor.free();
     mybuzzer.stop();
     // mypixel.brightness(999);
@@ -43,13 +46,17 @@ void General::startup() {
 
 
     while (phase < 4) {
+        timer_startup.reset();
         gam.read_azimuth();
+        // Serial.println("gam:"+String(timer_startup.read_milli()));timer_startup.reset();
         mypixel.clears();
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
+        //Serial.println("switch:"+String(timer_startup.read_milli()));timer_startup.reset();
         if(Serial.available()){
             readCommand();
         }
+        //Serial.println("readcom:"+String(timer_startup.read_milli()));timer_startup.reset();
         if (phase < 3) {
             if (mode == 1) {
                 mypixel.multi(0, 15, 255, 130, 130,1);//アタック
@@ -72,9 +79,11 @@ void General::startup() {
                 mypixel.uni(startPIXELs[startcord], 255, 255, 255,1);
             }
             ball.read();
+            //Serial.println("ball(read):"+String(timer_startup.read_milli()));timer_startup.reset();
             if (ball.get_value(99) != 0) {
                 mypixel.closest(ball.get_azimuth(), 80, 0, 255,1, 1);
             }
+            //Serial.println("ball(get_value):"+String(timer_startup.read_milli()));timer_startup.reset();
         }
         switch (phase) {
             case 1://選択フェーズ
