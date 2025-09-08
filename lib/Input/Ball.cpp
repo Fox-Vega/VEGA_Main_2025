@@ -28,6 +28,8 @@ void BALL::read() {
     }
     if (max_ballNUM == 99) {
         ball = false;
+        ball_x_ = 0;
+        ball_y_ = 0;
     } else {
         ball = true;
         // 座標計算
@@ -40,9 +42,26 @@ void BALL::read() {
             total_x += myvector.get_x();
             total_y += myvector.get_y();
         }
-        ball_x = total_x / 5;
-        ball_y = total_y / 5;
+        ball_x_ = total_x / 5;
+        ball_y_ = total_y / 5;
     }
+
+
+    for (int i = 14; i > 0; ) {
+        history_x[i - 1] = history_x[i];
+        history_y[i - 1] = history_y[i];
+    }
+    history_x[0] = ball_x_;
+    history_y[0] = ball_y_;
+
+    total_x = 0;
+    total_y = 0;
+    for (int i = 0; i < 15; i++) {
+        total_x += history_x[i];
+        total_y += history_y[i];
+    }
+    ball_x = total_x / 15;
+    ball_y = total_y / 15;
 }
 
 int BALL::get_stat() {
