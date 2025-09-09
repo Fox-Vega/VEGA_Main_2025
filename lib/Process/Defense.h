@@ -9,12 +9,13 @@ public:
     void setup(void);                  // 初期設定
     void defense_(void);               // メイン処置
     bool useSerial(bool use);          // シリアルを使うかどうか コマンドで変える
+    void timerReset();
 private:
     // モード定義
     bool SerialEnabled = false;        // シリアル通信の有効/無効
     bool PixelEnabled = true;
     // --- 調整用定数 ---
-    float line_late=1;
+    float line_late=0.5;
     // float line_late =0.8;
     int line_max =  10000;
 
@@ -71,6 +72,7 @@ private:
     int r_azimuth;
     Timer d_timer;
     Timer silentTime;
+    int uiMode = 0;
 
     // --- メソッド ---
     void get_value();

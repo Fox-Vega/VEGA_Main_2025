@@ -134,17 +134,17 @@ void LINE::read() {
         oldline_y = line_y;
 
         //デバッグ用
-        for (int i = 0; i < 24; i++) {
-            Serial.print(line_stat[i]);
-        }
-        Serial.print("  ");
-        Serial.print(pack_x[0]);
-        Serial.print(" ");
-        Serial.print(pack_y[0]);
-        Serial.print(" ");
-        Serial.print(pack_x[1]);
-        Serial.print(" ");
-        Serial.println(pack_y[1]);
+        // for (int i = 0; i < 24; i++) {
+        //     Serial.print(line_stat[i]);
+        // }
+        // Serial.print("  ");
+        // Serial.print(pack_x[0]);
+        // Serial.print(" ");
+        // Serial.print(pack_y[0]);
+        // Serial.print(" ");
+        // Serial.print(pack_x[1]);
+        // Serial.print(" ");
+        // Serial.println(pack_y[1]);
     }
 }
 
