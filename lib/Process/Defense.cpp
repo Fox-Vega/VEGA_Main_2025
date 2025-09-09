@@ -117,15 +117,14 @@ int Defense::cal_vector(){
         vector.move_power=200;
         return r;
     }
-    if(vector.ball_power<30){
+
+    if(vector.ball_power<30||ball.get_stat()==0){
         vector.move_power=vector.line_power;
         vector.go_ang=vector.line_ang;
         // Serial.println("on ball only line");
-    } else if(diff_signs(ball_x,line_x)){
-        mybuzzer.start(1000,999);
-        vector.go_ang=-lastdetect;
-        vector.move_power=200;
-        return r;
+    } else if(diff_signs(ball_x,line_x)&&abs(line_x)>5){
+        vector.move_power=vector.line_power;
+        vector.go_ang=vector.line_ang;
     } else {
         // Serial.println("normal vec");
         myvector.get_cord(vector.line_ang,vector.line_power);//ベクトル合成のためにxyを統一
