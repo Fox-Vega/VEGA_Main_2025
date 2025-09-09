@@ -26,11 +26,11 @@ void GAM::setup() {
         } else {
             mypixel.use_pixel(true);
             mypixel.brightness(200);
-            mypixel.multi(0,15,255,0,0,1);
+            mypixel.multi(0,15,255,0,0);
             mypixel.show();
             while(1){
                 if(myswitch.check_tact()>0){
-                    mypixel.multi(0,15,0,0,255,1);
+                    mypixel.multi(0,15,0,0,255);
                     mypixel.show();
                     mybuzzer.start(200,500);
                     delay(500);

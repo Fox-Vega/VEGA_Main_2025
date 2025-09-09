@@ -5,11 +5,11 @@
 
 
 void General::setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     myswitch.setup();
     mybuzzer.setup();
     mypixel.setup();
-    mypixel.multi(0, 15, 255, 128,1, 0);
+    mypixel.multi(0, 15, 255, 128,1);
     mypixel.show();
 
     ball.setup();
@@ -20,7 +20,7 @@ void General::setup() {
     Serial.println("motorFinish");
     gam.setup();
     Serial.println("gamFinish");
-    mypixel.multi(0, 15, 255, 255, 255,1);
+    mypixel.multi(0, 15, 255, 255, 255);
     mypixel.show();
     if(myswitch.check_tact() == 15){
         mybuzzer.preset(0);
@@ -49,31 +49,34 @@ void General::startup() {
         mypixel.clears();
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
+        if(Serial.available()){
+            readCommand();
+        }
         if (phase < 3) {
             if (mode == 1) {
-                mypixel.multi(0, 15, 255, 130, 130,1);//アタック
+                mypixel.multi(0, 15, 255, 130, 130);//アタック
             } else if (mode == 2) {
-                mypixel.multi(0, 15, 130, 255, 130,1);//ディフェンス
+                mypixel.multi(0, 15, 130, 255, 130);//ディフェンス
             } else if (mode == 3) {
-                mypixel.multi(0, 15, 255, 255, 90,1);//テスト
+                mypixel.multi(0, 15, 255, 255, 90);//テスト
             }
             int d = 0 - gam.get_azimuth();
             if (d < 0) {
                 d += 360;
             }
-            mypixel.closest(d, 255, 0, 100,1, 3);
+            mypixel.closest(d, 255, 0, 100, 3);
             if (startPIXELs[startcord] == 99) {
-                mypixel.uni(2, 255, 255, 255,1);
-                mypixel.uni(6, 255, 255, 255,1);
-                mypixel.uni(10, 255, 255, 255,1);
-                mypixel.uni(14, 255, 255, 255,1);
+                mypixel.uni(2, 255, 255, 255);
+                mypixel.uni(6, 255, 255, 255);
+                mypixel.uni(10, 255, 255, 255);
+                mypixel.uni(14, 255, 255, 255);
             } else {
-                mypixel.uni(startPIXELs[startcord], 255, 255, 255,1);
+                mypixel.uni(startPIXELs[startcord], 255, 255, 255);
             }
             ball.read();
             //Serial.println("ball(read):"+String(timer_startup.read_milli()));timer_startup.reset();
             if (ball.get_value(99) != 0) {
-                mypixel.closest(ball.get_azimuth(), 80, 0, 255,1, 1);
+                mypixel.closest(ball.get_azimuth(), 80, 0, 255,1);
             }
             //Serial.println("ball(get_value):"+String(timer_startup.read_milli()));timer_startup.reset();
         }
