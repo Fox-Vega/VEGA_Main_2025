@@ -19,9 +19,9 @@ void BALL::read() {
     max_ballNUM = 99;
     max_ballvalue = 0;
     for (int i = 0; i < NUMball; i++) {
-        timer.reset();
-        while(digitalRead(ballPINs[i]) == HIGH && timer.read_micro() < 833);
-        ballvalues[i] = pulseIn(ballPINs[i], LOW, 833);
+        // timer.reset();
+        // while(digitalRead(ballPINs[i]) == HIGH && timer.read_micro() < 833);
+        ballvalues[i] = pulseIn(ballPINs[i], LOW, 1666);
         if (ballvalues[i] > max_ballvalue) { //最大値の記録
             max_ballvalue = ballvalues[i];
             max_ballNUM = i;
@@ -49,7 +49,7 @@ void BALL::read() {
     }
 
 
-    for (int i = 4; i > 0; i--) { //ずらす
+    for (int i = 2; i > 0; i--) { //ずらす
         int a = i - 1;
         history_x[i] = history_x[a];
         history_y[i] = history_y[a];
@@ -59,22 +59,18 @@ void BALL::read() {
 
     total_x = 0;
     total_y = 0;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 3; i++) {
         total_x += history_x[i];
         total_y += history_y[i];
     }
-    ball_x = total_x / 5;
-    ball_y = total_y / 5;
+    ball_x = total_x / 3;
+    ball_y = total_y / 3;
 
-    //TODO
+    // //TODO
     // for (int i = 0; i < 16; i++) {
     //     Serial.print(ballvalues[i]);
     //     Serial.print(" ");
     // }
-    // Serial.print("/ ");
-    // Serial.print(max_ballNUM);
-    // Serial.print("/ ");
-    // Serial.print(history_x[14]);
     // Serial.println();
 }
 

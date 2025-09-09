@@ -58,12 +58,16 @@ void LINE::read() {
         pack_y[i] = 0;
     }
     //グループ分け
-    byte startNUM = 0;
+    byte startNUM = 99;
     for (int i = 23; i >= 0; i--) {
         if (line_stat[i] == 0 && startNUM == 99) {
             startNUM = i + 1;
         }
     }
+    if (startNUM == 99) {
+        startNUM = 0;
+    }
+
     for (int i = startNUM; i < startNUM + 24; i++) {
         byte pLine = i % 24; //処理中のセンサー
         if (line_stat[pLine] == 1) {
@@ -86,6 +90,7 @@ void LINE::read() {
     }
 
     if (pack_NUM == 0) { //検知してるかを確認
+        over = 0;
         line_type = 0;
         line_x = 999;
         line_y = 999;
@@ -122,6 +127,7 @@ void LINE::read() {
 
         //ライン越え判定
         if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > over_border && trip == false) over = !over;
+        // if (myvector.get_vectordegree(line_x, line_y, escape_x, escape_y) > over_border) over = false;
 
         //逃げる方向更新
         if (over == false) {
@@ -134,17 +140,19 @@ void LINE::read() {
         oldline_y = line_y;
 
         //デバッグ用
-        // for (int i = 0; i < 24; i++) {
-        //     Serial.print(line_stat[i]);
-        // }
-        // Serial.print("  ");
-        // Serial.print(pack_x[0]);
-        // Serial.print(" ");
-        // Serial.print(pack_y[0]);
-        // Serial.print(" ");
-        // Serial.print(pack_x[1]);
-        // Serial.print(" ");
-        // Serial.println(pack_y[1]);
+        for (int i = 0; i < 24; i++) {
+            Serial.print(line_stat[i]);
+        }
+        Serial.print("  ");
+        Serial.print(line.get_azimuth());
+        Serial.print("  ");
+        Serial.print(line.get_eazimuth());
+        Serial.print(" ");
+        Serial.print(trip);
+        Serial.print(" ");
+        Serial.print(over);
+        Serial.print(" ");
+        Serial.println(pack_NUM);
     }
 }
 

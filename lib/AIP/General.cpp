@@ -5,7 +5,7 @@
 
 
 void General::setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
     myswitch.setup();
     mybuzzer.setup();
     mypixel.setup();
