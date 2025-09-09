@@ -19,7 +19,9 @@ void BALL::read() {
     max_ballNUM = 99;
     max_ballvalue = 0;
     for (int i = 0; i < NUMball; i++) {
-        ballvalues[i] = pulseIn(ballPINs[i], LOW, 1666);
+        timer.reset();
+        while(digitalRead(ballPINs[i]) == HIGH && timer.read_micro() < 833);
+        ballvalues[i] = pulseIn(ballPINs[i], LOW, 833);
         if (ballvalues[i] > max_ballvalue) { //最大値の記録
             max_ballvalue = ballvalues[i];
             max_ballNUM = i;
