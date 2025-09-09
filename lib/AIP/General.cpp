@@ -339,5 +339,6 @@ inline void General::readCommand(){//シリアル使ってるけど送信しな�
     }
 }
 int General::get_mode() {
+    defense.timerReset();
     return mode;
 }
