@@ -56,7 +56,6 @@ void Defense::defense_(void){
 }
 
 void Defense::get_value(){
-
     r_azimuth = gam.get_azimuth();
     line_detect=line.get_magnitude()==999 ? false : true;
     if(line_detect){
@@ -77,7 +76,6 @@ void Defense::get_value(){
 
     ball_azimuth=ball.get_azimuth();
     ball_absolute_angle=norm360(ball_azimuth - r_azimuth);
-    //ball_dist=ball.get_magnitude();
 }
 
 int Defense::cal_vector(){
@@ -123,8 +121,12 @@ int Defense::cal_vector(){
         vector.move_power=vector.line_power;
         vector.go_ang=vector.line_ang;
         // Serial.println("on ball only line");
-    }
-    else{
+    } else if(diff_signs(ball_x,line_x)){
+        mybuzzer.start(1000,999);
+        vector.go_ang=-lastdetect;
+        vector.move_power=200;
+        return r;
+    } else {
         // Serial.println("normal vec");
         myvector.get_cord(vector.line_ang,vector.line_power);//ベクトル合成のためにxyを統一
 
@@ -267,10 +269,8 @@ void Defense::ReadCommand(){
 void Defense::dash(){
     silentTime.reset();
     d_timer.reset();
-    while(d_timer.read_milli()<3000){
-    // get_value();
-    // mymotor.run(ball_azimuth,180,0);
-    attack.attack_();
+    while(d_timer.read_milli()<1750){
+    mymotor.run(ball_azimuth,180,0);
     }
 };
 
