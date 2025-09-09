@@ -49,7 +49,7 @@ void BALL::read() {
     }
 
 
-    for (int i = 14; i > 0; i--) { //ずらす
+    for (int i = 4; i > 0; i--) { //ずらす
         int a = i - 1;
         history_x[i] = history_x[a];
         history_y[i] = history_y[a];
@@ -59,12 +59,12 @@ void BALL::read() {
 
     total_x = 0;
     total_y = 0;
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 5; i++) {
         total_x += history_x[i];
         total_y += history_y[i];
     }
-    ball_x = total_x / 15;
-    ball_y = total_y / 15;
+    ball_x = total_x / 5;
+    ball_y = total_y / 5;
 
     //TODO
     // for (int i = 0; i < 16; i++) {
