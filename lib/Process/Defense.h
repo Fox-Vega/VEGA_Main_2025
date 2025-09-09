@@ -14,7 +14,7 @@ private:
     bool SerialEnabled = false;        // シリアル通信の有効/無効
     bool PixelEnabled = true;
     // --- 調整用定数 ---
-    float line_late=0.7;
+    float line_late=1;
     // float line_late =0.8;
     int line_max =  10000;
 

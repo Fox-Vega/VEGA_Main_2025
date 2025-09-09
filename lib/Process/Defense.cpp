@@ -26,8 +26,6 @@ void Defense::setup(void){
     vector.move_x = 999;
     vector.move_y = 999;
     d_timer.reset();
-    silentTime.reset();
-
 }
 
 void Defense::defense_(void){
@@ -198,10 +196,10 @@ void Defense::resetUI(){
 
 void Defense::applyUI(){
     mypixel.multi(0, 15, background.red, background.green, background.blue,background.alpha);
-    mypixel.closest(line_azimuth,P_line.red,P_line.green,P_line.blue,P_line.alpha,3);
-    mypixel.closest(ball_azimuth,P_ball.red,P_ball.green,P_ball.blue,P_line.alpha,3);
-    mypixel.closest(r_azimuth,P_r_azimuth.red,P_r_azimuth.green,P_r_azimuth.blue,P_r_azimuth.alpha,3);
-    mypixel.closest(vector.go_ang,go_ang.red,go_ang.green,go_ang.blue,go_ang.alpha,3);
+    mypixel.closest(line_azimuth,P_line.red,P_line.green,P_line.blue,P_line.alpha,1);
+    mypixel.closest(ball_azimuth,P_ball.red,P_ball.green,P_ball.blue,P_line.alpha,1);
+    mypixel.closest(r_azimuth,P_r_azimuth.red,P_r_azimuth.green,P_r_azimuth.blue,P_r_azimuth.alpha,1);
+    mypixel.closest(vector.go_ang,go_ang.red,go_ang.green,go_ang.blue,go_ang.alpha,1);
 }
 
 void Defense::ReadCommand(){
