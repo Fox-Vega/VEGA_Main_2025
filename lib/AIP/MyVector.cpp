@@ -2,7 +2,7 @@
 #include "MyVector.h"
 
 float MyVECTOR::get_azimuth(float x, float y) {
-    theta = atan2(y, x);
+    theta = atan2(x, y);
     azimuth = degrees(theta) - 90;
     if (azimuth < 0) {
         azimuth += 360;
