@@ -22,13 +22,14 @@ class BALL {
         int ball_y_;
         int total_x = 0;
         int total_y = 0;
-        unsigned long ballvalues[16]; //ボールの値を格納する配列
+        int ballvalues[16]; //ボールの値を格納する配列
         byte ballNUMstart;
         byte max_ballNUM = 0;
-        unsigned long max_ballvalue = 0;
+        int max_ballvalue = 0;
         const byte NUMball = 16;
         int history_x[3];
         int history_y[3];
+        size_t history_size;
         const int ballPINs[16] = {31, 29, 27, 25, 23, 19, 17, 15, 32, 34, 36, 38, 40, 42, 44, 46};
         const float balldirs[16] = {0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5}; //ボールセンサの角度
 };

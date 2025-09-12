@@ -8,6 +8,7 @@ void BALL::setup() {
     for (int i = 0; i < NUMball; i++) {
         pinMode(ballPINs[i], INPUT);
     }
+    history_size = sizeof(history_x) / sizeof(history_x[0]);
 }
 
 void BALL::read() {
@@ -19,9 +20,12 @@ void BALL::read() {
     max_ballNUM = 99;
     max_ballvalue = 0;
     for (int i = 0; i < NUMball; i++) {
-        // timer.reset();
-        // while(digitalRead(ballPINs[i]) == HIGH && timer.read_micro() < 833);
-        ballvalues[i] = pulseIn(ballPINs[i], LOW, 1666);
+        timer.reset();
+        while(timer.read_micro() <= 833) {
+            if (digitalRead(ballPINs[i]) == LOW) {
+                ballvalues[i]++;
+            }
+        }
         if (ballvalues[i] > max_ballvalue) { //最大値の記録
             max_ballvalue = ballvalues[i];
             max_ballNUM = i;
@@ -49,8 +53,8 @@ void BALL::read() {
     }
 
 
-    for (int i = 2; i > 0; i--) { //ずらす
-        int a = i - 1;
+    for (size_t i = (history_size - 1); i > 0; i--) { //ずらす
+        size_t a = i - 1;
         history_x[i] = history_x[a];
         history_y[i] = history_y[a];
     }
@@ -59,12 +63,12 @@ void BALL::read() {
 
     total_x = 0;
     total_y = 0;
-    for (int i = 0; i < 3; i++) {
+    for (size_t i = 0; i < history_size; i++) {
         total_x += history_x[i];
         total_y += history_y[i];
     }
-    ball_x = total_x / 3;
-    ball_y = total_y / 3;
+    ball_x = total_x / history_size;
+    ball_y = total_y / history_size;
 
     // //TODO
     // for (int i = 0; i < 16; i++) {
