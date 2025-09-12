@@ -169,11 +169,11 @@ int LINE::get_magnitude() {
 }
 
 int LINE::get_x() {
-    return -line_x;
+    return line_x;
 }
 
 int LINE::get_y() {
-    return -line_y;
+    return line_y;
 }
 
 int LINE::get_type() {
