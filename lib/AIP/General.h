@@ -24,6 +24,6 @@ class General {
         bool standby = 0;
         short startPIXELs[5] = {99, 14, 2, 6, 10};
         float lastbuzzer;
-        inline void readCommand();
+        // inline void readCommand();
         Timer timer_startup;
 };

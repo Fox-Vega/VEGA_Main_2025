@@ -51,7 +51,7 @@ void General::startup() {
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
         if(Serial.available()){
-            readCommand();
+            // readCommand();
         }
         if (phase < 3) {
             if (mode == 1) {

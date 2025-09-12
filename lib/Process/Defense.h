@@ -14,11 +14,13 @@ private:
     const int dash_border=8000;
     const int ball_move_border=15;
     const int ball_power=180;//ball
+    const float line_late=1;
 
+    int lastdetect;
     int move_azimuth;
     int move_power;
-    int move_x;
-    int move_y;
+    double move_x;
+    double move_y;
     bool ball_move=false;
     Timer Dtimer;
     // モード定義
