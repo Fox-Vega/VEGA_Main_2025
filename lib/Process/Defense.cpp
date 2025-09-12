@@ -66,11 +66,11 @@ void Defense::defense_() {
 }
 
 void resetUI() {
-    //　背景　
-    background.red = 0;
-    background.green = 0;
-    background.blue = 0;
-    background.alpha = 0.1;
+    //　背景　#39C5BB7F
+    background.red = 57;
+    background.green = 197;
+    background.blue = 187;
+    background.alpha = 0.5;
 }
 
 int getErr(int a, int b) {
