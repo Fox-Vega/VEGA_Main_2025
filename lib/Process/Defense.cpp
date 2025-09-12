@@ -93,7 +93,8 @@ void Defense::resetUI() {
 }
 
 void Defense::applyUI() {
-    
+    mypixel.multi(0, 15, background.red * background.alpha, background.green * background.alpha, background.blue * background.alpha); //背景
+    mypixel.closest(, 31, P_line.red * P_line.alpha, P_line.green * P_line.alpha, P_line.blue * P_line.alpha); //ライン
 }
 
 int getErr(int a, int b) {
