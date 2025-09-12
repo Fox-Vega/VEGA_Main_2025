@@ -31,7 +31,6 @@ void BALL::read() {
             max_ballNUM = i;
         }
     }
-    Serial.println(max_ballNUM);
 
     if (max_ballNUM == 99) {
         ball = 0;
@@ -54,8 +53,8 @@ void BALL::read() {
     }
 
 
-    for (size_t i = (history_size - 1); i > 0; i--) { //ずらす
-        size_t a = i - 1;
+    for (int i = (history_size - 1); i > 0; i--) { //ずらす
+        int a = i - 1;
         history_x[i] = history_x[a];
         history_y[i] = history_y[a];
     }
@@ -64,7 +63,7 @@ void BALL::read() {
 
     total_x = 0;
     total_y = 0;
-    for (size_t i = 0; i < history_size; i++) {
+    for (int i = 0; i < history_size; i++) {
         total_x += history_x[i];
         total_y += history_y[i];
     }

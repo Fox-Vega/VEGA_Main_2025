@@ -29,7 +29,7 @@ class BALL {
         const byte NUMball = 16;
         int history_x[3];
         int history_y[3];
-        size_t history_size;
+        int history_size;
         const int ballPINs[16] = {31, 29, 27, 25, 23, 19, 17, 15, 32, 34, 36, 38, 40, 42, 44, 46};
         const float balldirs[16] = {0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5}; //ボールセンサの角度
 };
