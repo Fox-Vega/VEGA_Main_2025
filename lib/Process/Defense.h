@@ -33,6 +33,10 @@ private:
         int blue;
         float alpha;
     };
-    RGBA P_line = {0, 255, 0, 0.5};
+
+    RGBA background;
+    RGBA P_line;
+    RGBA P_ball;
+    
 
 };
