@@ -10,7 +10,7 @@ void Attack::attack_() {
     } else if (ball.get_stat() == 1) {
         float ball_azimuth = ball.get_azimuth();
         if (ball_azimuth > 180) ball_azimuth -= 360;
-        ball_azimuth *= 1.39;
+        ball_azimuth *= 1.38;
         if (ball_azimuth < 0) {
             ball_azimuth += 360;
         }
