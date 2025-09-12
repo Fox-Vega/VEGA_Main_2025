@@ -71,7 +71,23 @@ void Defense::resetUI() {
     background.blue = 187;
     background.alpha = 0.5;
 
-    // ライン　#ffffff7f
+    // ライン　#00C832BF
+    P_line.red = 0;
+    P_line.green = 200;
+    P_line.blue = 50;
+    P_line.alpha = 0.75;
+
+    // ボール　#FF0000BF
+    P_ball.red = 255;
+    P_ball.green = 0;
+    P_ball.blue = 0;
+    P_ball.alpha = 0.75;
+
+    // 移動方向　#0000FFFF
+    move_ang.red = 0;
+    move_ang.green = 0;
+    move_ang.blue = 255;
+    move_ang.alpha = 0.75;
 }
 
 int getErr(int a, int b) {
