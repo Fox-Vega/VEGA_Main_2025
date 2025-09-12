@@ -124,12 +124,7 @@ void Test::input() {
 
     ball.read();
     if (ball.get_stat() != 0) {
-        int value = constrain(ball.get_value(99) / 4, 0, 255); //入力値を0~255の範囲に制限
-        int r, g, b;
-        r = 255;
-        g = 255 - value; //緑をよりゆるやかに減らす
-        b = 0;
-        mypixel.closest(ball.get_azimuth(), r, g, b, 1);
+        mypixel.closest(ball.get_azimuth(), 255, 255, 0, 1);
     }
 }
 
