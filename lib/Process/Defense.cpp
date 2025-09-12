@@ -11,6 +11,7 @@ void Defense::setup() {
 }
 
 void Defense::defense_() {
+    resetUI();
     if (line.get_type() == 0) { // ラインなし 戻る
         mymotor.run(lastdetect, 180, 0);
         mybuzzer.start(1500, 999);
@@ -62,6 +63,7 @@ void Defense::defense_() {
             }
         }
     }
+    applyUI();
 }
 
 void Defense::resetUI() {
@@ -88,6 +90,10 @@ void Defense::resetUI() {
     move_ang.green = 0;
     move_ang.blue = 255;
     move_ang.alpha = 0.75;
+}
+
+void Defense::applyUI() {
+    
 }
 
 int getErr(int a, int b) {
