@@ -26,12 +26,13 @@ private:
 
     inline int norm360(int a) { a %= 360; if(a < 0) a += 360; return a; }
     inline bool diff_signs(int a, int b) {return (a >= 0 && b < 0) || (a < 0 && b >= 0);}
-        // --- NeoPixel ---
-    // struct RGBA {
-    //     int red;
-    //     int green;
-    //     int blue;
-    //     float alpha;
-    // };
+    //--- NeoPixel ---
+    struct RGBA {
+        int red;
+        int green;
+        int blue;
+        float alpha;
+    };
+    RGBA P_line = {0, 255, 0, 0.5};
 
 };
