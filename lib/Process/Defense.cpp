@@ -71,7 +71,7 @@ void Defense::resetUI() {
     background.blue = 187;
     background.alpha = 0.5;
 
-    
+    // ライン　#ffffff7f
 }
 
 int getErr(int a, int b) {
