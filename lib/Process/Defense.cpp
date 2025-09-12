@@ -13,11 +13,9 @@ void Defense::defense_() {
     if (line.get_type() == 0) { // ラインなし 戻る
         mymotor.run(lastdetect, 180, 0);
         mybuzzer.start(1500, 999);
-        mypixel.closest(lastdetect, 255, 0, 0, 1);
     } else { // ラインあり
         mybuzzer.stop();
         lastdetect = myvector.get_azimuth(line.get_x(), line.get_y());
-        mypixel.closest(lastdetect, 0, 255, 0, 1);
 
         ball_move = true;
         if ((ball.get_azimuth() > (360 - ball_move_border) || ball.get_azimuth() < ball_move_border) && ball.get_stat() == 1) {
@@ -27,26 +25,19 @@ void Defense::defense_() {
         }
 
         if (ball_move) { // ボールを追いかける
-            int a = 270;
             move_x = -ball_power;
             move_y = (line.get_y() * 5) * line_late;
             if (ball.get_azimuth() < 180) {
                 move_x = ball_power;
-                a = 90;
             }
-            mypixel.closest(a, 0, 0, 255, 3);
             if (line.get_type() == 2 || abs(line.get_x()) > 3) {
                 if (diff_signs(line.get_x(), move_x)) {
                     move_x = line.get_x() * 10;
-                    int lastmx=move_x;
-                    a = move_x < 0 ? 270 : 90;
-                    mypixel.closest(a, 0, 255, 255, 3);
+                    int lastmx = move_x;
                     if (((getErr(line.get_azimuth(), 90) < 5 || getErr(line.get_azimuth(), 270) < 5))) { // つまり縦ライン
                         if (!(ball.get_y() < 0)) {
                             move_y = 200;
-                            move_x=lastmx/2;
-                            a = 0;
-                            mypixel.closest(a, 255, 255, 0, 3);
+                            move_x = lastmx / 2;
                         }
                     }
                 }
@@ -63,7 +54,7 @@ void Defense::defense_() {
             move_y = (line.get_y() * 20) * line_late;
             move_azimuth = myvector.get_azimuth(move_x, move_y);
             move_power = myvector.get_magnitude(abs(move_x), move_y);
-            if(move_power>50){
+            if (move_power > 50) {
                 mymotor.run(move_azimuth, move_power, 0);
             } else {
                 mymotor.free();
