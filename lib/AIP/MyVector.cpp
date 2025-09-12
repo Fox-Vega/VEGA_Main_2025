@@ -2,13 +2,10 @@
 #include "MyVector.h"
 
 float MyVECTOR::get_azimuth(float x, float y) {
-    theta = atan2(-y, x);
-    azimuth = degrees(theta) - 90;
-    if (azimuth < 0) {
-        azimuth += 360;
-    } else if (azimuth >= 360) {
-        azimuth -= 360;
-    }
+    theta = atan2(y, x);
+    azimuth = 90.0f - (theta * 180.0f / M_PI);
+    if (azimuth < 0) azimuth += 360;
+    else if (azimuth >= 360) azimuth -= 360;
     return azimuth;
 }
 
@@ -22,11 +19,11 @@ void MyVECTOR::get_cord(float azimuth, float magnitude) {
         if (azimuth >= 360) azimuth -= 360;
         magnitude = -magnitude;
     }
-    theta = azimuth - 90;
+    theta = 90 - azimuth;
     while (theta > 180) theta -= 360;
     while (theta < -180) theta += 360;
     x = round(cos(theta * M_PI / 180.0) * magnitude);
-    y = -round(sin(theta * M_PI / 180.0) * magnitude);
+    y = round(sin(theta * M_PI / 180.0) * magnitude);
 }
 
 float MyVECTOR::get_x() {
