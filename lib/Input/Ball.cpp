@@ -83,11 +83,11 @@ bool BALL::get_stat() {
 }
 
 int BALL::get_azimuth() {
-    return myvector.get_azimuth(-ball_x, -ball_y); //反転
+    return myvector.get_azimuth(ball_x, ball_y);
 }
 
 int BALL::get_magnitude() {
-    return myvector.get_magnitude(-ball_x, -ball_y); //反転
+    return myvector.get_magnitude(ball_x, ball_y);
 }
 
 int BALL::get_x() {
