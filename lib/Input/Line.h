@@ -37,7 +37,7 @@ class LINE {
         bool trip = false;
         bool over = false;
 
-        const int line_r = 1000;
+        const int line_r = 12;
         const uint8_t selectPIN[3] = {22, 24, 26};
         const uint8_t outputPIN[3] = {A9, A11, A13};
 
