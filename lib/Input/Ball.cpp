@@ -31,6 +31,7 @@ void BALL::read() {
             max_ballNUM = i;
         }
     }
+    Serial.println(max_ballNUM);
 
     if (max_ballNUM == 99) {
         ball = 0;

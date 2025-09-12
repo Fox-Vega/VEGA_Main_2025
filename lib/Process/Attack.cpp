@@ -12,13 +12,20 @@ void Attack::attack_() {
     if (line.get_type() != 0) {
         mymotor.run(line.get_eazimuth(), avoid_speed, 0);
     } else if (ball.get_stat() == 1) {
-        float ball_azimuth = ball.get_azimuth();
+        int ball_azimuth = ball.get_azimuth();
         if (ball_azimuth > 180) ball_azimuth -= 360;
-        ball_azimuth *= 1.38;
-        if (ball_azimuth < 0) {
-            ball_azimuth += 360;
+
+        for (size_t i = 0; i < (wrap_size - 1); i++) {//-1が最適
+            if (wrap[i][0] < ball_azimuth < wrap[i + 1][0]) {
+                movement_azimuth = ball_azimuth * wrap[i + 1][1];
+            }
         }
-        mymotor.run(ball_azimuth, wrap_speed, 0);
+
+
+        if (movement_azimuth < 0) {
+            movement_azimuth += 360;
+        }
+        mymotor.run(movement_azimuth, wrap_speed, 0);
     } else {
         mymotor.free();
     }

@@ -14,6 +14,6 @@ class Attack {
 
         short ball_dir;
         short face;
-        int movedir;
+        int movement_azimuth;
         size_t wrap_size;
 };
