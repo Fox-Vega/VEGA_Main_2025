@@ -65,7 +65,8 @@ void Defense::defense_() {
     }
 }
 
-
+void resetUI() {
+}
 
 int getErr(int a, int b) {
     int diff = (a - b + 540) % 360 - 180;
