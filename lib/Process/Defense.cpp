@@ -63,7 +63,7 @@ void Defense::defense_() {
             }
         }
     }
-    applyUI();
+    applyUI(1);
 }
 
 void Defense::resetUI() {
@@ -92,7 +92,7 @@ void Defense::resetUI() {
     move_ang.alpha = 0.75;
 }
 
-void Defense::applyUI() {
+void Defense::applyUI(int mode) {
     mypixel.multi(0, 15, background.red * background.alpha, background.green * background.alpha, background.blue * background.alpha); //背景
     mypixel.closest(line.get_azimuth(),P_line.red * P_line.alpha, P_line.green * P_line.alpha, P_line.blue * P_line.alpha, 3); //ライン
 }
