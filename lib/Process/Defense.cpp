@@ -4,8 +4,7 @@
 #include "AIP.h"
 
 int getErr(int a, int b);
-void resetUI();
-void applyUI();
+
 
 void Defense::setup() {
     // null
@@ -65,12 +64,14 @@ void Defense::defense_() {
     }
 }
 
-void resetUI() {
+void Defense::resetUI() {
     //　背景　#39C5BB7F
     background.red = 57;
     background.green = 197;
     background.blue = 187;
     background.alpha = 0.5;
+
+    
 }
 
 int getErr(int a, int b) {

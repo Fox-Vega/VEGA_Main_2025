@@ -39,4 +39,7 @@ private:
     RGBA P_ball;
     RGBA move_ang;
 
+    void resetUI();
+    void applyUI();
+
 };
