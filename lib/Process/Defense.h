@@ -40,6 +40,6 @@ private:
     RGBA move_ang;
 
     void resetUI();
-    void applyUI();
+    void applyUI(int mode);
 
 };
