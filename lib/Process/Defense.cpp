@@ -10,7 +10,7 @@ void Defense::setup(){
 
 void Defense::defense_(){
     if(line.get_type() == 0){//
-        mymotor.run(lastdetect, 180, 0);
+        // mymotor.run(lastdetect, 180, 0);
         mybuzzer.start(1500,999);
         mypixel.closest(lastdetect,255,0,0,1);
     } else {//ラインあり
@@ -35,7 +35,7 @@ void Defense::defense_(){
             move_azimuth=myvector.get_azimuth(move_x,move_y);
             move_power=myvector.get_magnitude(move_x,move_y);
             if(ball.get_stat()==1){
-                mymotor.run(move_azimuth,move_power,0);
+                // mymotor.run(move_azimuth,move_power,0);
             } else {
                 mymotor.free();
             }

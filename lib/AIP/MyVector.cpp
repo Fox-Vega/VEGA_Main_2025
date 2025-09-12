@@ -2,7 +2,7 @@
 #include "MyVector.h"
 
 float MyVECTOR::get_azimuth(float x, float y) {
-    theta = atan2(x, y);
+    theta = atan2(-y, x);
     azimuth = degrees(theta) - 90;
     if (azimuth < 0) {
         azimuth += 360;
@@ -26,7 +26,7 @@ void MyVECTOR::get_cord(float azimuth, float magnitude) {
     while (theta > 180) theta -= 360;
     while (theta < -180) theta += 360;
     x = round(cos(theta * M_PI / 180.0) * magnitude);
-    y = round(sin(theta * M_PI / 180.0) * magnitude);
+    y = -round(sin(theta * M_PI / 180.0) * magnitude);
 }
 
 float MyVECTOR::get_x() {
