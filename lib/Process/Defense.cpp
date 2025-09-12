@@ -4,6 +4,8 @@
 #include "AIP.h"
 
 int getErr(int a, int b);
+void resetUI();
+void applyUI();
 
 void Defense::setup() {
     // null
@@ -62,6 +64,8 @@ void Defense::defense_() {
         }
     }
 }
+
+
 
 int getErr(int a, int b) {
     int diff = (a - b + 540) % 360 - 180;
