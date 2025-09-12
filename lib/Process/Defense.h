@@ -12,9 +12,9 @@ public:
     // void timerReset();
 private:
     const int dash_border=8000;
-    const int ball_move_border=15;
+    const int ball_move_border=7;
     const int ball_power=180;//ball
-    const float line_late=1;
+    const float line_late=0.9;
 
     int lastdetect;
     int move_azimuth;
@@ -23,6 +23,9 @@ private:
     double move_y;
     bool ball_move=false;
     Timer Dtimer;
+
+    inline int norm360(int a) { a %= 360; if(a < 0) a += 360; return a; }
+    inline bool diff_signs(int a, int b) {return (a >= 0 && b < 0) || (a < 0 && b >= 0);}
     // モード定義
     // bool SerialEnabled = false;        // シリアル通信の有効/無効
     // bool PixelEnabled = true;
