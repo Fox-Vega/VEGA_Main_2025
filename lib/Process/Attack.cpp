@@ -27,6 +27,6 @@ void Attack::attack_() {
         }
         mymotor.run(movement_azimuth, wrap_speed, 0);
     } else {
-        mymotor.free();
+        mymotor.run(180, back_speed, 0);
     }
 }
