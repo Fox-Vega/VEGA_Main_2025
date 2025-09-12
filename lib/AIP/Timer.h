@@ -10,5 +10,5 @@ class Timer {
 
     private:
         unsigned long milliseconds;
-        unsigned long microseconds; 
+        unsigned long microseconds;
 };

@@ -140,19 +140,19 @@ void LINE::read() {
         oldline_y = line_y;
 
         //デバッグ用
-        for (int i = 0; i < 24; i++) {
-            Serial.print(line_stat[i]);
-        }
-        Serial.print("  ");
-        Serial.print(line.get_azimuth());
-        Serial.print("  ");
-        Serial.print(line.get_eazimuth());
-        Serial.print(" ");
-        Serial.print(trip);
-        Serial.print(" ");
-        Serial.print(over);
-        Serial.print(" ");
-        Serial.println(pack_NUM);
+        // for (int i = 0; i < 24; i++) {
+        //     Serial.print(line_stat[i]);
+        // }
+        // Serial.print("  ");
+        // Serial.print(line.get_azimuth());
+        // Serial.print("  ");
+        // Serial.print(line.get_eazimuth());
+        // Serial.print(" ");
+        // Serial.print(trip);
+        // Serial.print(" ");
+        // Serial.print(over);
+        // Serial.print(" ");
+        // Serial.println(pack_NUM);
     }
 }
 

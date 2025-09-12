@@ -319,9 +319,9 @@ inline void General::readCommand(){//シリアル使ってるけど送信しな�
                 } else if(command=="defense"||command=="1"||command=="Defense"||command=="DEFENSE"||command=="Defence"||command=="DEFENCE"||command=="Defence"){
                     if(parts[1]=="Serial"){
                         if(parts[2]=="true"||parts[2]=="on"){
-                            Serial.println("defense:Uses Serial set to "+String(defense.useSerial(true)));
+                            // Serial.println("defense:Uses Serial set to "+String(defense.useSerial(true)));
                         } else if(parts[2]=="false"||parts[2]=="off"){
-                            Serial.println("defense:Uses Serial set to "+String(defense.useSerial(false)));
+                            // Serial.println("defense:Uses Serial set to "+String(defense.useSerial(false)));
                         } else {
                             Serial.println("Invalid serial command. Use true or false.");
                         }
@@ -339,6 +339,6 @@ inline void General::readCommand(){//シリアル使ってるけど送信しな�
     }
 }
 int General::get_mode() {
-    defense.timerReset();
+    // defense.timerReset();
     return mode;
 }
