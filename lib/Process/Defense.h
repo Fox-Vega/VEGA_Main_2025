@@ -37,6 +37,6 @@ private:
     RGBA background;
     RGBA P_line;
     RGBA P_ball;
-    
+    RGBA move_ang;
 
 };
