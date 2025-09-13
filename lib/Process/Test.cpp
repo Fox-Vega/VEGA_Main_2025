@@ -115,9 +115,14 @@ void Test::input() {
 
 void Test::escape() {
     line.read();
-    mypixel.closest(line.get_azimuth(), 100, 100, 255, 1);
-    mypixel.closest(line.get_eazimuth(), 100, 255, 100, 3);
-    mymotor.run(line.get_eazimuth(), 200, 0);
+    if (line.get_type() != 0) {
+        mymotor.stabilization(0); //姿勢制御無効化
+        mypixel.closest(line.get_azimuth(), 100, 100, 255, 1);
+        mypixel.closest(line.get_eazimuth(), 100, 255, 100, 3);
+        mymotor.run(line.get_eazimuth(), 200, 0);
+    } else {
+        mymotor.free();
+    }
 }
 
 void Test::motor() {
