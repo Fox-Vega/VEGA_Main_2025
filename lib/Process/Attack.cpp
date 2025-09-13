@@ -15,7 +15,7 @@ void Attack::attack_() {
         int ball_azimuth = ball.get_azimuth();
         if (ball_azimuth > 180) ball_azimuth -= 360; //-179 ~ 180
         for (int i = 0; i < (wrap_size - 1); i++) {//-1が最適
-            if (wrap[i][0] <= ball_azimuth <= wrap[i + 1][0]) movement_azimuth = ball_azimuth * (wrap[i + 1][1] / wrap[i + 1][0]);
+            if (wrap[i][0] <= ball_azimuth && ball_azimuth <= wrap[i + 1][0]) movement_azimuth = ball_azimuth * (wrap[i + 1][1] / wrap[i + 1][0]);
         }
         if (movement_azimuth < 0) movement_azimuth += 360;
         mymotor.run(movement_azimuth, wrap_speed, 0);

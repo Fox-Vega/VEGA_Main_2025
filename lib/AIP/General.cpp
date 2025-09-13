@@ -146,7 +146,7 @@ void General::startup() {
                 break;
         }
         if(tact_pressed==15){
-            if(mypixel.pixelEnabled()==true){
+            if(mypixel.stat()==true){
                 mypixel.use_pixel(0);
             } else{
                 mypixel.use_pixel(1);

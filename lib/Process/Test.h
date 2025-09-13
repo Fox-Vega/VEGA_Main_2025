@@ -6,9 +6,9 @@ class Test {
     public:
         void test_();
         void input();
-        void processing();
+        void escape();
         void motor();
-        void attitudeControl();
+        void stabilize();
 
     private:
         uint8_t AT_Deadband = 1;//姿勢制御の±許容誤差範囲
@@ -16,7 +16,7 @@ class Test {
         bool lastPixelState = false;
         byte t_mode = 1;
         byte serial_mode = 0;
-        byte motor_mode = 0;
+        byte motor_mode = 0; //1正転　2フリー　3逆転
         byte old_motor_mode = 0;
         byte motor_speed = 0;
         byte old_motor_speed = 0;

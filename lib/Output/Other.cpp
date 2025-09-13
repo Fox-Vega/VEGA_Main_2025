@@ -109,7 +109,7 @@ void MyPIXEL::use_pixel(bool stat) {
     usePIXEL = stat;
 }
 
-bool MyPIXEL::pixelEnabled() {
+bool MyPIXEL::stat() {
     return usePIXEL;
 }
 
