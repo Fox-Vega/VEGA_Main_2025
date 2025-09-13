@@ -9,6 +9,7 @@ void BALL::setup() {
         pinMode(ballPINs[i], INPUT);
     }
     history_size = sizeof(history_x) / sizeof(history_x[0]);
+    NUMball = sizeof(ballPINs) / sizeof(ballPINs[0]);
 }
 
 void BALL::read() {
@@ -69,13 +70,6 @@ void BALL::read() {
     }
     ball_x = total_x / history_size;
     ball_y = total_y / history_size;
-
-    // //TODO
-    // for (int i = 0; i < 16; i++) {
-    //     Serial.print(ballvalues[i]);
-    //     Serial.print(" ");
-    // }
-    // Serial.println();
 }
 
 bool BALL::get_stat() {
