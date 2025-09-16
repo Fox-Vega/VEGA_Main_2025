@@ -28,7 +28,7 @@ class MyPIXEL {
         void clear(); //全消灯
         void clears();
         void use_pixel(bool stat);
-        bool pixelEnabled();
+        bool stat();
 
         //色関係
         void HEX6toRGB(String hex, int red, int green, int blue);

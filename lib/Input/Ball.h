@@ -15,7 +15,6 @@ class BALL {
 
     private:
         bool ball;
-        int value[16];
         int ball_x;
         int ball_y;
         int ball_x_;
@@ -26,7 +25,7 @@ class BALL {
         byte ballNUMstart;
         byte max_ballNUM = 0;
         int max_ballvalue = 0;
-        const byte NUMball = 16;
+        int NUMball;
         int history_x[3];
         int history_y[3];
         int history_size;

@@ -9,84 +9,81 @@ bool isPixelActive = false; // pixel() 実行中フラグ
 void Test::test_(){
     exit = false;
     t_mode = 1; // 初期モードを設定
-    lastPixelState = mypixel.pixelEnabled();
-    if(!lastPixelState)mypixel.use_pixel(1);
+    lastPixelState = mypixel.stat();
+    //if(!lastPixelState)mypixel.use_pixel(1);
+
     while (!exit) {
         gam.read_azimuth();
         mypixel.use_pixel(1);
-        mypixel.multi(0, 15, 255, 255, 255);
-        if (myswitch.check_toggle() == 1) {
-            for (int i = 0; i < 4; i++) {
-                analogWrite(motor_PIN1[i], 0);
-                analogWrite(motor_PIN2[i], 0);
-            }
-        if (myswitch.check_tact() == 1) {
-            t_mode -= 1;
-            if (t_mode <= 0) {
-                t_mode = 5;
-            }
-            delay(300);
-        } else if (myswitch.check_tact() == 9) {
-            t_mode += 1;
-            if (t_mode >= 6) {
-                t_mode = 1;
-            }
-            delay(300);
-        }
-        switch(t_mode) {
-            case 1:
-                mypixel.uni(0, 255, 0, 0);
-                mypixel.multi(7, 9, 255, 0,0);
-                break;
-            case 2:
-                mypixel.multi(0, 15, 255, 0,1);
-                break;
-            case 3:
-                mypixel.uni(0, 0, 0, 255);
-                mypixel.uni(4, 255, 0, 0);
-                mypixel.uni(8, 0, 0, 255);
-                mypixel.uni(12, 255, 0, 0);
-                break;
-            case 4:
-                mypixel.multi(0, 1, 255, 255, 0);
-                mypixel.multi(7, 15, 255, 255, 0);
-                break;
-            case 5:
-            mypixel.rainbow();
-                break;
-            default:
-                break;
+        mypixel.multi(0, 15, 255, 255, 255); //ベースの白
+
+        if (myswitch.check_toggle() == 1) { //off
             gam.dir_reset();
-        }
-        if ((millis() - lastbuzzer) > 1000) {
-            mybuzzer.start(300, 30);
-            lastbuzzer = millis();
-        }
-        motor_mode = 2;
-        motor_speed = 0;
-        mymotor.stabilization(1);
-        mymotor.move(1);
+            motor_mode = 2;
+            motor_speed = 0;
+            mymotor.stabilization(1);
+            mymotor.move(1);
+            mymotor.free();
+
+            //モード変更
+            if (myswitch.check_tact() == 1) {
+                t_mode -= 1;
+                if (t_mode <= 0) t_mode = 5;
+                delay(200);
+            } else if (myswitch.check_tact() == 9) {
+                t_mode += 1;
+                if (t_mode >= 6) t_mode = 1;
+                delay(200);
+            }
+
+            switch(t_mode) {
+                case 1: //Input
+                    mypixel.uni(0, 255, 0, 0);
+                    mypixel.multi(7, 9, 255, 0,0);
+                    break;
+                case 2:
+                    mypixel.closest(0, 100, 255, 100, 3);
+                    break;
+                case 3: //Motor
+                    mypixel.multi(0, 15, 255, 0, 1);
+                    break;
+                case 4: //Stabilize
+                    mypixel.multi(0, 1, 255, 255, 0);
+                    mypixel.multi(7, 15, 255, 255, 0);
+                    break;
+                case 5: //Exit
+                    mypixel.rainbow();
+                    break;
+                default:
+                    break;
+            }
+
+            //待機音
+            if (timer.read_milli() > 1000) {
+                mybuzzer.start(300, 30);
+                timer.reset();
+            }
         } else {
-        mypixel.clear();
-        switch(t_mode) {
-            case 1:
-                test.input();
-                break;
-            case 2:
-                test.motor();
-                break;
-            case 3:
-                test.processing();
-                break;
-            case 4:
-                test.attitudeControl();
-                break;
-            case 5:
-                mybuzzer.start(100, 500);
-                if(!lastPixelState)mypixel.use_pixel(0);
-                exit = true; // Exit the test loop
-                break;
-        }
+            mypixel.clear();
+            switch(t_mode) {
+                case 1:
+                    test.input();
+                    break;
+                case 2:
+                    test.escape();
+                    break;
+                case 3:
+                    test.motor();
+                    break;
+                case 4:
+                    test.stabilize();
+                    break;
+                case 5:
+                    mybuzzer.start(100, 500);
+                    if(!lastPixelState)mypixel.use_pixel(0);
+                    exit = true; // Exit the test loop
+                    break;
+            }
         }
         mypixel.shows();
     }
@@ -103,92 +100,70 @@ void Test::input() {
     } else {
         mybuzzer.stop();
     }
-    // if (line.get_magnitude() != 999) {
-    //     int line_azimuth = line.get_azimuth() + 180;
-    //     line_azimuth %= 360;
-    //     mypixel.closest(line_azimuth, 50, 255, 50, 3);
-    // }
 
-    mypixel.multi(0, 15, 255, 255, 255);
+    mypixel.multi(0, 15, 255, 255, 255); //ベースの白
 
-    line.read();
-    if (line.get_magnitude() != 999) {
-        mypixel.closest(line.get_eazimuth(), 0, 255, 0, 5);
-    }
+    //正面
+    int zero_azimuth = 0 - gam.get_azimuth();
+    if (zero_azimuth < 0) zero_azimuth += 360;
+    mypixel.closest(zero_azimuth, 255, 0, 100, 3);
 
-    int goal_azimuth = 0 - gam.get_azimuth();
-    if (goal_azimuth < 0) {
-        goal_azimuth += 360;
-    }
-    mypixel.closest(goal_azimuth, 255, 0, 100, 3);
-
+    //ボール
     ball.read();
-    if (ball.get_stat() != 0) {
-        int value = constrain(ball.get_value(99) / 4, 0, 255); //入力値を0~255の範囲に制限
-        int r, g, b;
-        r = 255;
-        g = 255 - value; //緑をよりゆるやかに減らす
-        b = 0;
-        mypixel.closest(ball.get_azimuth(), r, g, b, 1);
+    if (ball.get_stat() != 0) mypixel.closest(ball.get_azimuth(), 255, 255, 0, 1);
+}
+
+void Test::escape() {
+    line.read();
+    if (line.get_type() != 0) {
+        mymotor.stabilization(0); //姿勢制御無効化
+        mypixel.closest(line.get_azimuth(), 100, 100, 255, 1);
+        mypixel.closest(line.get_eazimuth(), 100, 255, 100, 3);
+        mymotor.run(line.get_eazimuth(), 200, 0);
+    } else {
+        mymotor.free();
     }
 }
 
 void Test::motor() {
-    mymotor.stabilization(0);
+    mymotor.stabilization(0); //姿勢制御無効化
     if (myswitch.check_tact() == 9) {
-        if (motor_mode != 1) {
-            motor_speed = 0;
-        } else {
-            motor_speed += 10;
-        }
+        if (motor_mode != 1) motor_speed = 0;
+        else motor_speed += 10;
+
         motor_mode = 1;
         old_motor_mode = motor_mode;
-        old_motor_speed = motor_speed;
         delay(200);
     } else if (myswitch.check_tact() == 5) {
-        if (motor_speed != 0) {
-            motor_mode = 2;
-            motor_speed = 0;
-        } else {
-            motor_mode = old_motor_mode;
-            motor_speed = old_motor_speed;
-        }
+        if (motor_speed != 0) motor_mode = 2;
+        else motor_mode = old_motor_mode;
         delay(200);
     } else if (myswitch.check_tact() == 1) {
-        if (motor_mode != 3) {
-            motor_speed = 0;
-        } else {
-            motor_speed += 10;
-        }
-        old_motor_mode = motor_mode;
-        old_motor_speed = motor_speed;
+        if (motor_mode != 3) motor_speed = 0;
+        else motor_speed += 10;
+
         motor_mode = 3;
+        old_motor_mode = motor_mode;
         delay(200);
     }
+
     if (motor_mode == 1) {
         mymotor.run(0, motor_speed, 0);
+        if (motor_speed == 0) {
+            mypixel.uni(0, 255, 100, 100);
+        } else {
+            mypixel.multi(0, motor_speed / 10, 255, 0, 0);
+        }
     } else if (motor_mode == 3) {
         mymotor.run(180, motor_speed, 0);
-    } else {
-        mymotor.free();
-    }
-    if (motor_mode != 2) {
-        if (motor_mode == 1) {
-            if (motor_speed == 0) {
-                mypixel.uni(0, 255, 100, 100);
-            } else {
-                mypixel.multi(0, motor_speed / 10, 255, 0, 0);
-            }
+        if (motor_speed == 0) {
+            mypixel.uni(0, 100, 100, 255);
         } else {
-            if (motor_speed == 0) {
-                mypixel.uni(0, 100, 100, 255);
-            } else {
-                byte startPIXEL = (16 - (motor_speed / 10)) % 16;
-                mypixel.uni(0, 0, 0, 255);
-                mypixel.multi(startPIXEL, 15, 0, 0, 255);
-            }
+            mypixel.uni(0, 0, 0, 255);
+            mypixel.multi((16 - (motor_speed / 10)) % 16, 15, 0, 0, 255);
         }
     } else {
+        mymotor.free();
         mypixel.uni(0, 255, 0, 255);
         mypixel.uni(2, 255, 0, 255);
         mypixel.uni(4, 255, 0, 255);
@@ -200,67 +175,6 @@ void Test::motor() {
     }
 }
 
-void Test::processing() {
-    mymotor.move(0);
-    if (myswitch.check_tact() == 5) {
-        serial_mode += 1;
-        serial_mode %= 2; //モード個数
-        delay(200);
-    }
-
-    Serial.print(8);  // 最初にデータの個数を送信
-    Serial.print(",");
-
-    Serial.print(serial_mode);
-    Serial.print(",");
-    Serial.print((gam.get_azimuth() + 180) % 360);  // 改行を追加して1行ずつ送信
-    Serial.print(",");
-
-    // gam.get_cord();
-    // Serial.print(582 - gam.get_x());
-    // Serial.print(",");
-    // Serial.print(430 - gam.get_y());
-    // Serial.print(",");
-    Serial.print(582);
-    Serial.print(",");
-    Serial.print(430);
-    Serial.print(",");
-
-    ball.read();
-    int ball_azimuth = (ball.get_azimuth() + gam.get_azimuth() + 90) % 360;
-    myvector.get_cord(ball_azimuth , ball.get_magnitude());
-    if (ball.get_value(99) == 0) {
-        Serial.print(0);
-        Serial.print(",");
-        Serial.print(0);
-        Serial.print(",");
-    } else {
-        Serial.print(myvector.get_x() * 0.5);
-        Serial.print(",");
-        Serial.print(-myvector.get_y() * 0.5);
-        Serial.print(",");
-    }
-    attack.attack_();
-    Serial.print(mymotor.get_azimuth());
-    Serial.print(",");
-    Serial.println(mymotor.get_magnitude());
-    // Serial.print(",");
-    delay(10);
-}
-
-void Test::attitudeControl() {//pde用シリアルはまだです
-    int r_azimuth = gam.get_azimuth();
-    Serial.println();
-    if (myswitch.check_tact() == 5) { //方向と座標をリセット
-        gam.dir_reset();
-        mybuzzer.start(300, 500);
-    }
-    if(r_azimuth < 5 || r_azimuth > 355){
-        mymotor.free();
-        mypixel.multi(0, 15, 255, 255, 255);
-    } else {
-        mymotor.run(0, 0, 0);
-        int r_absorate_azimuth__0 = (360 + (-r_azimuth)) % 360;
-        mypixel.closest(r_absorate_azimuth__0, 255, 0, 0,3);
-    }
+void Test::stabilize() {
+    mymotor.run(0, 0, 0);
 }
