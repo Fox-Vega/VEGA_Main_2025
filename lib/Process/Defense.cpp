@@ -1,46 +1,96 @@
-#include"Defense.h"
+#include "Defense.h"
 #include "Input.h"
 #include "Output.h"
 #include "AIP.h"
 
-
-void Defense::setup(){
-    //null
+void Defense::setup() {
+    // null
 }
 
-void Defense::defense_(){
-    if(line.get_type() == 0){//
-        // mymotor.run(lastdetect, 180, 0);
-        mybuzzer.start(1500,999);
-        mypixel.closest(lastdetect,255,0,0,1);
-    } else {//ラインあり
+void Defense::defense_() {
+    resetUI();
+    if (line.get_type() == 0) { // ラインなし 戻る
+        mymotor.run(lastdetect, 180, 0);
+        mybuzzer.start(1500, 999);
+    } else { // ラインあり
         mybuzzer.stop();
-        lastdetect=myvector.get_azimuth(line.get_x(),line.get_y());
-        mypixel.closest(lastdetect,0,255,0,1);
-        Serial.println("line y:"+String(line.get_y())+" x:"+String(line.get_x())+" azimuth:"+String(line.get_azimuth()));
+        lastdetect = myvector.get_azimuth(line.get_x(), line.get_y());
 
-        ball_move=true;
-        if((ball.get_azimuth()>(360-ball_move_border)||ball.get_azimuth()<ball_move_border)&&ball.get_stat()==1){
-            ball_move=false;
+        ball_move = true;
+        if ((ball.get_azimuth() > (360 - ball_move_border) || ball.get_azimuth() < ball_move_border) && ball.get_stat() == 1) {
+            ball_move = false;
         } else {
             Dtimer.reset();
         }
 
-        if(ball_move){//ボールを追いかける
-            move_x=ball_power;
-            if(ball.get_azimuth()<180){
-                move_x=-ball_power;
+        if (ball_move) { // ボールを追いかける
+            move_x = -ball_power;
+            move_y = (line.get_y() * 5) * line_late;
+            if (ball.get_azimuth() < 180) {
+                move_x = ball_power;
             }
-            move_y=(line.get_y()/10)*line_late;
-            move_azimuth=myvector.get_azimuth(move_x,move_y);
-            move_power=myvector.get_magnitude(move_x,move_y);
-            if(ball.get_stat()==1){
-                // mymotor.run(move_azimuth,move_power,0);
+            if (line.get_type() == 2 || abs(line.get_x()) > 3) {
+                if (diff_signs(line.get_x(), move_x)) {
+                    move_x = line.get_x() * 10 * (14.0/12.0);
+                    int lastmx = move_x;
+                    if (((getErr(line.get_azimuth(), 90) < 5 || getErr(line.get_azimuth(), 270) < 5))) { // つまり縦ライン
+                        if (!(ball.get_y() < 0)) {
+                            move_y = 200;
+                            move_x = lastmx;
+                        }
+                    }
+                }
+            }
+            move_azimuth = myvector.get_azimuth(move_x, move_y);
+            move_power = myvector.get_magnitude(abs(move_x), move_y);
+            if (ball.get_stat() == 1) {
+                mymotor.run(move_azimuth, move_power, 0);
             } else {
                 mymotor.free();
             }
-        } else {//ラインのみ
-            mymotor.free();
+        } else { // ボールがない → ラインのみ
+            move_x = 0;
+            move_y = (line.get_y() * 20) * line_late;
+            move_azimuth = myvector.get_azimuth(move_x, move_y);
+            move_power = myvector.get_magnitude(abs(move_x), move_y);
+            if (move_power > 50) {
+                mymotor.run(move_azimuth, move_power, 0);
+            } else {
+                mymotor.free();
+            }
         }
     }
+    applyUI(1);
 }
+
+void Defense::resetUI() {
+    //　背景　#39C5BB7F
+    background.red = 57;
+    background.green = 197;
+    background.blue = 187;
+    background.alpha = 0.5;
+
+    // ライン　#00C832BF
+    P_line.red = 0;
+    P_line.green = 200;
+    P_line.blue = 50;
+    P_line.alpha = 0.75;
+
+    // ボール　#FF0000BF
+    P_ball.red = 255;
+    P_ball.green = 0;
+    P_ball.blue = 0;
+    P_ball.alpha = 0.75;
+
+    // 移動方向　#0000FFFF
+    move_ang.red = 0;
+    move_ang.green = 0;
+    move_ang.blue = 255;
+    move_ang.alpha = 0.75;
+}
+
+void Defense::applyUI(int mode) {
+    mypixel.multi(0, 15, background.red * background.alpha, background.green * background.alpha, background.blue * background.alpha); //背景
+    mypixel.closest(line.get_azimuth(),P_line.red * P_line.alpha, P_line.green * P_line.alpha, P_line.blue * P_line.alpha, 3); //ライン
+}
+
