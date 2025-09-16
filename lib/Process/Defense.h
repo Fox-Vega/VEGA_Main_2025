@@ -26,6 +26,7 @@ private:
 
     inline int norm360(int a) { a %= 360; if(a < 0) a += 360; return a; }
     inline bool diff_signs(int a, int b) {return (a >= 0 && b < 0) || (a < 0 && b >= 0);}
+    inline int getErr(int a, int b) {return (a - b + 540) % 360 - 180;}
     //--- NeoPixel ---
     struct RGBA {
         int red;

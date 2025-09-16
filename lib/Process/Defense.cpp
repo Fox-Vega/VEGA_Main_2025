@@ -3,9 +3,6 @@
 #include "Output.h"
 #include "AIP.h"
 
-int getErr(int a, int b);
-
-
 void Defense::setup() {
     // null
 }
@@ -34,12 +31,12 @@ void Defense::defense_() {
             }
             if (line.get_type() == 2 || abs(line.get_x()) > 3) {
                 if (diff_signs(line.get_x(), move_x)) {
-                    move_x = line.get_x() * 10* (14/12);
+                    move_x = line.get_x() * 10 * (14.0/12.0);
                     int lastmx = move_x;
                     if (((getErr(line.get_azimuth(), 90) < 5 || getErr(line.get_azimuth(), 270) < 5))) { // つまり縦ライン
                         if (!(ball.get_y() < 0)) {
                             move_y = 200;
-                            move_x = lastmx / 2;
+                            move_x = lastmx;
                         }
                     }
                 }
@@ -97,7 +94,3 @@ void Defense::applyUI(int mode) {
     mypixel.closest(line.get_azimuth(),P_line.red * P_line.alpha, P_line.green * P_line.alpha, P_line.blue * P_line.alpha, 3); //ライン
 }
 
-int getErr(int a, int b) {
-    int diff = (a - b + 540) % 360 - 180;
-    return diff;
-}

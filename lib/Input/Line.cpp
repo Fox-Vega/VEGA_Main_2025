@@ -139,12 +139,12 @@ void LINE::read() {
         oldline_x = line_x;
         oldline_y = line_y;
 
-        //デバッグ用
-        for (int i = 0; i < 24; i++) {
-            Serial.print(line_values[i]);
-            Serial.print(" ");
-        }
-        Serial.println();
+        // //デバッグ用
+        // for (int i = 0; i < 24; i++) {
+        //     Serial.print(line_values[i]);
+        //     Serial.print(" ");
+        // }
+        // Serial.println();
         // Serial.print("  ");
         // Serial.print(line.get_azimuth());
         // Serial.print("  ");
