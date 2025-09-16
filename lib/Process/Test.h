@@ -9,8 +9,10 @@ class Test {
         void escape();
         void motor();
         void stabilize();
+        void free();
 
     private:
+        int modeNUM = 6;
         uint8_t AT_Deadband = 1;//姿勢制御の±許容誤差範囲
         bool exit = false;
         bool lastPixelState = false;

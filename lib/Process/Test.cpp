@@ -28,11 +28,11 @@ void Test::test_(){
             //モード変更
             if (myswitch.check_tact() == 1) {
                 t_mode -= 1;
-                if (t_mode <= 0) t_mode = 5;
+                if (t_mode <= 0) t_mode = modeNUM;
                 delay(200);
             } else if (myswitch.check_tact() == 9) {
                 t_mode += 1;
-                if (t_mode >= 6) t_mode = 1;
+                if (t_mode > modeNUM) t_mode = 1;
                 delay(200);
             }
 
@@ -51,7 +51,10 @@ void Test::test_(){
                     mypixel.multi(0, 1, 255, 255, 0);
                     mypixel.multi(7, 15, 255, 255, 0);
                     break;
-                case 5: //Exit
+                case 5:
+                    mypixel.multi(0, 15, 255, 255, 255);
+                    break;
+                case 6: //Exit
                     mypixel.rainbow();
                     break;
                 default:
@@ -79,6 +82,9 @@ void Test::test_(){
                     test.stabilize();
                     break;
                 case 5:
+                    test.free();
+                    break;
+                case 6:
                     mybuzzer.start(100, 500);
                     if(!lastPixelState)mypixel.use_pixel(0);
                     exit = true; // Exit the test loop
@@ -177,4 +183,18 @@ void Test::motor() {
 
 void Test::stabilize() {
     mymotor.run(0, 0, 0);
+}
+
+void Test::free() {
+    //なんでもいれていいところ　内容書いてね->　アタックの進行方向
+
+    mymotor.move(0);
+    ball.read();
+    attack.attack_();
+
+    Serial.print(ball.get_azimuth());
+    Serial.print(" ");
+    Serial.println(mymotor.get_azimuth());
+
+    mypixel.closest(mymotor.get_azimuth(), 255, 100, 100, 1);
 }
