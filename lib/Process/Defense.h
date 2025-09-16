@@ -14,7 +14,7 @@ private:
     const int dash_border=8000;
     const int ball_move_border=7;
     const int ball_power=180;//ball
-    const float line_late=0.9;
+    const float line_late=0.5;
 
     int lastdetect;
     int move_azimuth;

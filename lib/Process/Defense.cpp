@@ -34,7 +34,7 @@ void Defense::defense_() {
             }
             if (line.get_type() == 2 || abs(line.get_x()) > 3) {
                 if (diff_signs(line.get_x(), move_x)) {
-                    move_x = line.get_x() * 10;
+                    move_x = line.get_x() * 10* (14/12);
                     int lastmx = move_x;
                     if (((getErr(line.get_azimuth(), 90) < 5 || getErr(line.get_azimuth(), 270) < 5))) { // つまり縦ライン
                         if (!(ball.get_y() < 0)) {
