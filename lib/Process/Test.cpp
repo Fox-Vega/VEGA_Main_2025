@@ -195,6 +195,4 @@ void Test::free() {
     Serial.print(ball.get_azimuth());
     Serial.print(" ");
     Serial.println(mymotor.get_azimuth());
-
-    mypixel.closest(mymotor.get_azimuth(), 255, 100, 100, 1);
 }

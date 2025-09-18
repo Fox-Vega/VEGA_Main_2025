@@ -8,18 +8,19 @@ class Attack {
         void attack_();
 
     private:
-        const short wrap_speed = 200;
-        const short avoid_speed = 200; //ライン回避
-        const short back_speed = 50;
-        const float wrap[5][2] = {//最初は0,0必須　最低2セット　2つ目に進む方向
+        const int wrap_speed = 170;
+        const int avoid_speed = 200; //ライン回避
+        const int back_speed = 50;
+
+        // {},
+        const float wrap[4][2] = {//最初は0,0必須　最低2セット　2つ目に進む方向
             {0, 0},
-            {12, 12},
-            {45, 90},
-            {90, 190},
-            {180, 250},
+            {10, 1.0},
+            {90, 1.0},
+            {180, 1.0}
         };
 
-        short face;
-        int movement_azimuth;
+        float ball_azimuth;
+        float movement_azimuth;
         int wrap_size;
 };
