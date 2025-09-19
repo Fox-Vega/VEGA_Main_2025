@@ -12,6 +12,7 @@ void Attack::attack_() {
     if (line.get_type() != 0) {
         mymotor.run(line.get_eazimuth(), avoid_speed, 0);
     } else if (ball.get_stat() == 1) {
+        back = false;
         ball_azimuth = ball.get_azimuth();
         if (ball_azimuth > 180) ball_azimuth -= 360; //-179 ~ 180
         for (int i = 0; i < (wrap_size - 1); i++) {//-1が最適
@@ -30,6 +31,14 @@ void Attack::attack_() {
         mypixel.closest(movement_azimuth, 0, 255, 0, 3);
         mypixel.closest(ball_azimuth, 255, 100, 100, 1);
     } else {
-        mymotor.run(180, back_speed, 0);
+        if (back == false) {
+            back = true;
+            back_start = millis();
+        }
+        if ((millis() - back_start) < back_border) {
+            mymotor.run(180, back_speed, 0);
+        } else {
+            mymotor.brake();
+        }
     }
 }
