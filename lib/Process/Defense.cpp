@@ -136,6 +136,9 @@ void Defense::reset() {
 // ===================================
 
 int Defense::ball_get_Aazimuth() {
+    #ifdef BALL_FILTER_OFF
+    return ball.get_azimuth(); // フィルタをオフにする場合
+    #endif
     return ball_azimuth; // フィルタされた角度を返すだけ
 }
 

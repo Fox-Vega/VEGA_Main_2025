@@ -17,6 +17,7 @@ public:
 
 private:
     // === 調整用定数 ===
+    //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
     static const int dash_border = 8000;        // ダッシュ待ち時間
     static const int dash_time = 1500;
     static const int ball_move_border = 7;      // ボール移動境界(±角度)
