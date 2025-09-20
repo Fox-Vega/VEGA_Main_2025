@@ -14,6 +14,7 @@ class LINE {
         int get_type(); //種類　0=無し　1=辺　2=角
         int get_eazimuth(); //逃げる方向
         int get_value(byte lineNUM);
+        int get_R();
 
     private:
         const int detection_border = 700;//610

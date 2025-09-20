@@ -23,6 +23,8 @@ void General::setup() {
     Serial.println("gamFinish");
     attack.setup();
     Serial.println("attackFinish");
+    defense.setup();
+    Serial.println("defenseFinish");
     mypixel.multi(0, 15, 255, 255, 255);
     mypixel.show();
     if(myswitch.check_tact() == 15){
