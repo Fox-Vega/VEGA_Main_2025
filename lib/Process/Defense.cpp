@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "Output.h"
 #include "AIP.h"
+#include "Process.h"
 
 // フィルタされたボール角度（static変数）
 static int ball_azimuth = 0;
@@ -31,7 +32,7 @@ void Defense::defense_() {
             ball.read();
             line.read();
             if(line.get_type()!=0){lastdetect=line.get_azimuth();}
-            mymotor.run(ball.get_azimuth(),200,0);
+            attack.attack_();
         }
         SilentTime.reset();
         int mm=180;
@@ -71,11 +72,11 @@ void Defense::defense_() {
             // === ボールあり ===
 
             // --- ボール(X軸)処理 ---
-            
+
             if (ball.get_azimuth() < 180) {
                 move_x = ball_power;
             } else{
-                
+
                 move_x = -ball_power;
             }
 
@@ -94,21 +95,18 @@ void Defense::defense_() {
                 if (diff_signs(line.get_x(), move_x)) {
                     // X軸はライン優先
                     ex=true;
-                    move_x = ((125 / line_r) * line.get_x()) * line_late;
+                    move_x = ((150 / line_r) * line.get_x()) * line_late;
                 }
 
                 if (diff_signs(line.get_x(), ball.get_x())) {
                     // ボール距離が大きくかつラインに近いなら賭ける
-                    if (ball.x() > exitCorner && line.get_magnitude() < (line_max / 3)) {
+                    if (ball.get_x() > exitCorner && line.get_magnitude() < (line_max / 3)) {
                         frog=5;
                         move_x = -ball_power;
                         if (ball.get_azimuth() < 180) {
                             move_x = ball_power;
                         }
                         move_y = ball_power;
-                        if (ball.get_y() < 0) {
-                            move_y = -ball_power;
-                        }
                     }
                 }
             }
