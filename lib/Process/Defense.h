@@ -17,23 +17,23 @@ public:
 
 private:
     // === 調整用定数 ===
-    //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
-    static const int dash_border = 5000;        // ダッシュ待ち時間
-    static const int dash_time = 1500;          // ダッシュ時間
-    static const int ball_move_border = 7;      // ボール移動境界(±角度)
-    static const int ball_power = 180;          // ボール対応パワー(x軸)
-    static const int move_border = 50;          // 移動最小値
-    static const int ballFilter = 10;           // ボールフィルタ閾値(度)
-    static const int exitCorner = 75;           // コーナー退避距離
+    #define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
+    static const float dash_border = 5000.0;        // ダッシュ待ち時間
+    static const float dash_time = 1500.0;          // ダッシュ時間
+    static const float ball_move_border = 7.0;      // ボール移動境界(±角度)
+    static const float ball_power = 200.0;          // ボール対応パワー(x軸)
+    static const float move_border = 50.0;          // 移動最小値
+    static const float ballFilter = 7.0;           // ボールフィルタ閾値(度)
+    static const float exitCorner = 70.0;           // コーナー退避距離
     static const float line_late = 1.0;         // ライン反応倍率
     static const float ball_late = 1.0;         // ボール反応倍率
-    static const float line_max = 100.0;        // ライン移動最大値
+    static const float line_max = 50.0;        // ライン移動最大値
 
     // === 処理用変数 ===
     int frog;                          //フラグ　1ノーマル 2ラインなし 3ボールなし 4角 5角(賭け) 6移動量
     int lastdetect;                    // 最後検出方向
     int move_azimuth;                  // 移動方向
-    int move_power;                    // 移動パワー
+    float move_power;                    // 移動パワー
     double move_x;                     // X軸移動量
     double move_y;                     // Y軸移動量
     bool ball_move = false;            // ボール移動フラグ
@@ -76,8 +76,8 @@ private:
     RGBA P_line;                       // ライン表示色
     RGBA P_ball;                       // ボール表示色
     RGBA move_ang;                     // 移動方向表示色
-    RGBA exMoveX;                    // 追加移動X軸色
-    RGBA exMoveY;                    // 追加移動Y軸色
+    RGBA exMoveX;                      // 追加移動X軸色
+    RGBA exMoveY;                      // 追加移動Y軸色
     RGBA dash_timer;                   // ダッシュタイマー色
 
     // === UI処理 ===

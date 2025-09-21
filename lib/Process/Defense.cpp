@@ -24,6 +24,8 @@ void Defense::defense_() {
             mymotor.run(0,100,0);
         }
         SilentTime.reset();
+        mypixel.multi(0,15,255,255,255);
+        mypixel.show();
         while(SilentTime.read_milli()<dash_time){
             ball.read();
             line.read();
@@ -96,7 +98,7 @@ void Defense::defense_() {
 
             // --- 移動実行 ---
             if (move_power > move_border) {
-                mymotor.run(move_azimuth, move_power, 0);
+                mymotor.run(move_azimuth, (int)move_power, 0);
             } else {
                 frog=6;
                 mymotor.free();
@@ -112,7 +114,7 @@ void Defense::defense_() {
             move_power = myvector.get_magnitude(abs(move_x), move_y);
 
             if (move_power > move_border) {
-                mymotor.run(move_azimuth, move_power, 0);
+                mymotor.run(move_azimuth, (int)move_power, 0);
             } else {
                 mymotor.free();
             }
@@ -346,15 +348,15 @@ void Defense::applyUI(int mode) {
         background.red * background.alpha,
         background.green * background.alpha,
         background.blue * background.alpha);
-    
+
     // --- サイレントタイマーのメーター表示 ---
     // dash_border(8000ms)のうち何％か
     float percent = (float)SilentTime.read_milli() / (float)dash_border;
     if(percent > 1.0) percent = 1.0;
-    
+
     // 16ピクセル中何個光らせるか
     int num_pixels = (int)(percent * 16);
-    
+
     if(num_pixels > 0){
         mypixel.multi(0, num_pixels-1, 
             dash_timer.red * dash_timer.alpha, 
