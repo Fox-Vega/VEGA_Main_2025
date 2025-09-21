@@ -20,18 +20,37 @@ void Defense::defense_() {
     if(SilentTime.read_milli()>dash_border&& USE_DASH == true){
         SilentTime.reset();
         while(SilentTime.read_milli()<100){
+            gam.read_azimuth();
             mymotor.run(0,100,0);
         }
         SilentTime.reset();
         mypixel.multi(0,15,255,255,255);
         mypixel.show();
         while(SilentTime.read_milli()<dash_time){
+            gam.read_azimuth();
             ball.read();
             line.read();
             if(line.get_type()!=0){lastdetect=line.get_azimuth();}
             mymotor.run(ball.get_azimuth(),200,0);
         }
         SilentTime.reset();
+        int mm=180;
+        while(1){
+            if(line.get_type()==1){
+                if((line.get_azimuth()<180-TL&&line.get_azimuth()>TL)||(line.get_azimuth()>180+TL&&line.get_azimuth()<360-TL)){
+                    if((line.get_azimuth()<180-TL&&line.get_azimuth()>TL)){
+                        mm=180-TLM;
+                    } else {
+                        mm=180+TLM;
+                    }
+                }
+                break;
+            }
+            gam.read_azimuth();
+            ball.read();
+            line.read();
+            mymotor.run(mm,100,0);
+        }
     }
     else{
     if (line.get_type() == 0) {
