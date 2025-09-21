@@ -43,14 +43,14 @@ void BALL::read() {
         total_x = 0;
         total_y = 0;
         int ballNUMstart = (max_ballNUM + 14) % NUMball; //ベクトル移動平均計算開始センサー番号
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             int ballNUM = (ballNUMstart + i) % NUMball;
             myvector.get_cord(balldirs[ballNUM], ballvalues[ballNUM]);
             total_x += myvector.get_x();
             total_y += myvector.get_y();
         }
-        ball_x_ = total_x / 5;
-        ball_y_ = total_y / 5;
+        ball_x_ = total_x / 3;
+        ball_y_ = total_y / 3;
     }
 
 
