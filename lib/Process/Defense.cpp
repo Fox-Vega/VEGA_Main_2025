@@ -61,7 +61,7 @@ void Defense::defense_() {
             }
 
             ball_filter();
-            if (getErr(0,ball_get_Aazimuth()) < ball_move_border) {
+            if (ball.get_azimuth() < ball_move_border||(360-ball.get_azimuth())<ball_move_border) {
                 move_x = 0;
             }
 
@@ -69,7 +69,7 @@ void Defense::defense_() {
             move_y = ((line_max / line_r) * line.get_y()) * line_late;
 
             // --- 角処理 ---
-            if (abs(line.get_x()) > 3) {
+            if (abs(line.get_x()) > 3||line.get_type()==2) {
                 frog=4;
                 ex=false;
                 if (diff_signs(line.get_x(), move_x)) {
