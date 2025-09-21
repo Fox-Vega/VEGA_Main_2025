@@ -17,7 +17,7 @@ public:
 
 private:
     // === 調整用定数 ===
-    #define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
+    //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
     #define USE_DASH true
     static constexpr float dash_border = 5000.0;        // ダッシュ待ち時間
     static constexpr float dash_time = 1500.0;          // ダッシュ時間
