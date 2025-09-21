@@ -26,11 +26,12 @@ private:
     static constexpr float move_border = 50.0;          // 移動最小値
     static constexpr float ballFilter = 7.0;           // ボールフィルタ閾値(度)
     static constexpr float exitCorner = 20.0;           // コーナー退避距離
-    static constexpr float line_late = 1.0;         // ライン反応倍率
+    static constexpr float line_late = 0.9;         // ライン反応倍率
     static constexpr float ball_late = 1.0;         // ボール反応倍率
     static constexpr float line_max = 75.0;// ライン移動最大値
     static constexpr float TL = 20.0;        //TL＝縦　ライン　(脳筋))
     static constexpr float TLM = 20.0;        //TL＝縦　ライン　(脳筋))
+
     // === 処理用変数 ===
     int frog;                          //フラグ　1ノーマル 2ラインなし 3ボールなし 4角 5角(賭け) 6移動量
     int lastdetect;                    // 最後検出方向
@@ -86,6 +87,7 @@ private:
     RGBA dash_timer;                   // ダッシュタイマー色
 
     // === UI処理 ===
+
     // UI色設定
     void resetUI();
     // UI表示実行
