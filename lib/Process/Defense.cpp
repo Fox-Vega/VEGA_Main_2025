@@ -58,7 +58,7 @@ void Defense::defense_() {
             }
 
             ball_filter();
-            if (getErr(ball_get_Aazimuth(), 0) < ball_move_border) {
+            if (ball.get_azimuth() < ball_move_border||(360-ball.get_azimuth())<ball_move_border) {
                 move_x = 0;
             }
 
