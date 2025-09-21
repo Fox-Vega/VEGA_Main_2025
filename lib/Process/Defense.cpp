@@ -17,8 +17,7 @@ void Defense::setup() {
 
 void Defense::defense_() {
     frog=0;
-    resetUI();
-    if(SilentTime.read_milli()>dash_border){
+    if(SilentTime.read_milli()>dash_border&& USE_DASH == true){
         SilentTime.reset();
         while(SilentTime.read_milli()<100){
             mymotor.run(0,100,0);
@@ -127,6 +126,7 @@ void Defense::defense_() {
 }
 
 void Defense::reset() {
+    resetUI();
     Dtimer.reset();
     for (int i = 0; i < 5; i++) {
         ball_history[i] = ball.get_azimuth();
