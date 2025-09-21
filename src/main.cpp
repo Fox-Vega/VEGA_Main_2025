@@ -29,6 +29,7 @@ void loop() {
         }
     } else {
         general.startup();
+        defense.reset();
     }
     mypixel.show();
 }

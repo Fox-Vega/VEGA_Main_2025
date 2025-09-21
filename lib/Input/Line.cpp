@@ -189,3 +189,7 @@ int LINE::get_eazimuth() {
 int LINE::get_value(byte lineNUM) {
     return line_values[lineNUM];
 }
+
+int LINE::get_R() {
+    return line_r;
+}
