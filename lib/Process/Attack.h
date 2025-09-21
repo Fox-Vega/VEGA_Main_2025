@@ -8,17 +8,17 @@ class Attack {
         void attack_();
 
     private:
-        const int wrap_speed = 190;
-        const int avoid_speed = 190; //ライン回避
-        const int back_speed = 130;
+        const int wrap_speed = 200;
+        const int avoid_speed = 210; //ライン回避
+        const int back_speed = 140;
         unsigned long back_border = 1000;
 
         // {},
         const float wrap[5][2] = {//最初は0,0必須　最低2セット　2つ目に進む方向
             {0, 0},
-            {15, 1.1},
-            {40, 1.3},
-            {90, 1.35},
+            {12, 1.0},
+            {30, 1.325},
+            {110, 1.6},
             {180, 1.4}
         };
 

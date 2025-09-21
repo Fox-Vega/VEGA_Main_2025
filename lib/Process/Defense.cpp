@@ -71,13 +71,16 @@ void Defense::defense_() {
             // === ボールあり ===
 
             // --- ボール(X軸)処理 ---
-            move_x = -ball_power;
+            
             if (ball.get_azimuth() < 180) {
                 move_x = ball_power;
+            } else{
+                
+                move_x = -ball_power;
             }
 
             ball_filter();
-            if (ball.get_azimuth() < ball_move_border||(360-ball.get_azimuth())<ball_move_border) {
+            if (ball.get_azimuth() < ball_move_border||ball.get_azimuth()>(360-ball_move_border)) {
                 move_x = 0;
             }
 
@@ -115,7 +118,7 @@ void Defense::defense_() {
             move_power = myvector.get_magnitude(abs(move_x), move_y);
 
             // --- 移動実行 ---
-            if (move_power > move_border) {
+            if (abs(move_power) > move_border) {
                 mymotor.run(move_azimuth, (int)move_power, 0);
             } else {
                 frog=6;

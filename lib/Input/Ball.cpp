@@ -22,7 +22,7 @@ void BALL::read() {
     max_ballvalue = 0;
     for (int i = 0; i < NUMball; i++) {
         ball_start = micros();
-        while((micros() - ball_start) <= (199 * 3)) {
+        while((micros() - ball_start) <= (199 * 4)) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
             }

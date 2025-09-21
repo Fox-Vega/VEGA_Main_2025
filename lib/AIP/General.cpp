@@ -167,5 +167,6 @@ void General::startup() {
 
 int General::get_mode() {
     timer.reset();
+    defense.reset();
     return mode;
 }
