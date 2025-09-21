@@ -17,7 +17,7 @@ class LINE {
         int get_R();
 
     private:
-        const int detection_border = 700;//610
+        const int detection_border = 750;//610
         const int over_border = 120;
 
         float total_x;
