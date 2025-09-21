@@ -26,6 +26,7 @@ void Defense::defense_() {
         mypixel.multi(0,15,255,255,255);
         mypixel.show();
         while(SilentTime.read_milli()<dash_time){
+            gam.read_azimuth();
             ball.read();
             line.read();
             if(line.get_type()!=0){lastdetect=line.get_azimuth();}
@@ -61,7 +62,7 @@ void Defense::defense_() {
             }
 
             ball_filter();
-            if (ball.get_azimuth() < ball_move_border||(360-ball.get_azimuth())<ball_move_border) {
+            if (ball.get_azimuth() < ball_move_border||ball.get_azimuth()>(360-ball_move_border)) {
                 move_x = 0;
             }
 
