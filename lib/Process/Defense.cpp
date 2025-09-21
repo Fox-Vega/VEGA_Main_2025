@@ -88,13 +88,13 @@ void Defense::defense_() {
             move_y = ((line_max / line_r) * line.get_y()) * line_late;
 
             // --- 角処理 ---
-            if (abs(line.get_x()) > 3||line.get_type()==2) {
+            if (abs(line.get_x()) > 2||line.get_type()==2) {
                 frog=4;
                 ex=false;
                 if (diff_signs(line.get_x(), move_x)) {
                     // X軸はライン優先
                     ex=true;
-                    move_x = ((line_max / line_r) * line.get_x()) * line_late;
+                    move_x = ((125 / line_r) * line.get_x()) * line_late;
                 }
 
                 if (diff_signs(line.get_x(), ball.get_x())) {
