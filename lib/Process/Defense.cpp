@@ -99,7 +99,7 @@ void Defense::defense_() {
 
                 if (diff_signs(line.get_x(), ball.get_x())) {
                     // ボール距離が大きくかつラインに近いなら賭ける
-                    if (ball.get_magnitude() > exitCorner && line.get_magnitude() < (line_max / 3)) {
+                    if (ball.x() > exitCorner && line.get_magnitude() < (line_max / 3)) {
                         frog=5;
                         move_x = -ball_power;
                         if (ball.get_azimuth() < 180) {
