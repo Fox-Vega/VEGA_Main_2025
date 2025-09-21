@@ -26,7 +26,7 @@ private:
     static constexpr float move_border = 50.0;          // 移動最小値
     static constexpr float ballFilter = 7.0;           // ボールフィルタ閾値(度)
     static constexpr float exitCorner = 20.0;           // コーナー退避距離
-    static constexpr float line_late = 0.4;         // ライン反応倍率
+    static constexpr float line_late = 0.8;         // ライン反応倍率
     static constexpr float ball_late = 1.0;         // ボール反応倍率
     static constexpr float line_max = 100.0;// ライン移動最大値
     static constexpr float TL = 20.0;        //TL＝縦　ライン　(脳筋))
