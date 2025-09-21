@@ -20,6 +20,7 @@ void Defense::defense_() {
     if(SilentTime.read_milli()>dash_border&& USE_DASH == true){
         SilentTime.reset();
         while(SilentTime.read_milli()<100){
+            gam.read_azimuth();
             mymotor.run(0,100,0);
         }
         SilentTime.reset();
@@ -33,6 +34,23 @@ void Defense::defense_() {
             mymotor.run(ball.get_azimuth(),200,0);
         }
         SilentTime.reset();
+        int mm=180;
+        while(1){
+            if(line.get_type()==1){
+                if((line.get_azimuth()<180-TL&&line.get_azimuth()>TL)||(line.get_azimuth()>180+TL&&line.get_azimuth()<360-TL)){
+                    if((line.get_azimuth()<180-TL&&line.get_azimuth()>TL)){
+                        mm=180-TLM;
+                    } else {
+                        mm=180+TLM;
+                    }
+                }
+                break;
+            }
+            gam.read_azimuth();
+            ball.read();
+            line.read();
+            mymotor.run(mm,100,0);
+        }
     }
     else{
     if (line.get_type() == 0) {
@@ -70,13 +88,13 @@ void Defense::defense_() {
             move_y = ((line_max / line_r) * line.get_y()) * line_late;
 
             // --- 角処理 ---
-            if (abs(line.get_x()) > 3||line.get_type()==2) {
+            if (abs(line.get_x()) > 2||line.get_type()==2) {
                 frog=4;
                 ex=false;
                 if (diff_signs(line.get_x(), move_x)) {
                     // X軸はライン優先
                     ex=true;
-                    move_x = ((line_max / line_r) * line.get_x()) * line_late;
+                    move_x = ((125 / line_r) * line.get_x()) * line_late;
                 }
 
                 if (diff_signs(line.get_x(), ball.get_x())) {
