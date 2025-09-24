@@ -26,8 +26,8 @@ class BALL {
         byte max_ballNUM = 0;
         int max_ballvalue = 0;
         int NUMball;
-        int history_x[5];
-        int history_y[5];
+        int history_x[2];
+        int history_y[2];
         int history_size;
         unsigned long ball_start;
         const int ballPINs[16] = {31, 29, 27, 25, 23, 19, 17, 15, 32, 34, 36, 38, 40, 42, 44, 46};
