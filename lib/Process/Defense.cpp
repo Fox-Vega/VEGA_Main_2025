@@ -19,13 +19,14 @@ void Defense::setup() {
 void Defense::defense_() {
     frog=0;
     if(SilentTime.read_milli()>dash_border&& USE_DASH == true){
+        if(SilentTime.read_milli()<dash_border*1.5){
+        mypixel.multi(0,15,255,50,50);
         SilentTime.reset();
-        while(SilentTime.read_milli()<100){
+        while(SilentTime.read_milli()<300){
             gam.read_azimuth();
-            mymotor.run(0,100,0);
+            mymotor.run(0,200,0);
         }
         SilentTime.reset();
-        mypixel.multi(0,15,255,255,255);
         mypixel.show();
         while(SilentTime.read_milli()<dash_time){
             gam.read_azimuth();
@@ -52,11 +53,14 @@ void Defense::defense_() {
             line.read();
             mymotor.run(mm,100,0);
         }
+    } else {
+        SilentTime.reset();
+    }
     }
     else{
     if (line.get_type() == 0) {
         // === ラインなし：戻り処理 ===
-        mymotor.run(lastdetect, 180, 0);
+        mymotor.run(lastdetect, 200, 0);
         mybuzzer.start(1500, 999);
         frog=2;
 
