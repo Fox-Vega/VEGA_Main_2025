@@ -22,13 +22,12 @@ void BALL::read() {
     max_ballNUM = 99;
     max_ballvalue = 0;
     ball_start = micros();
-    while(1) {
+    while((micros() - ball_start) > 833) {
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
             }
         }
-        if ((micros() - ball_start) > 833) break;
     }
 
     //最大値の記録
