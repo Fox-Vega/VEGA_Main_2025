@@ -13,7 +13,7 @@ void MyMOTOR::setup() {
 void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     max_power = constrain(power_, -pwmlimit, pwmlimit); //制限かける
 
-    motor_azimuth = movement_azimuth;
+    motor_azimuth = movement_azimuth; //記録用
     motor_magnitude = max_power * pwmscale;
 
     int difix = 0;
@@ -21,13 +21,13 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         difix = mymotor.difix(dir_azimuth);
     }
 
-    h = 0;
+    h = 0; //最高値
     for (int i = 0; i < 4; i++) {
-        int azimuth_motor = (movement_azimuth - motor_degrees[i] + 360) % 360;
+        int azimuth_motor = (movement_azimuth - motor_degrees[i] + 360) % 360; //モーター軸を0度とした時の進行方向
 
         // 座標計算
-        myvector.get_cord(azimuth_motor, max_power - abs(difix));
-        motor_power_[i] = myvector.get_x();
+        myvector.get_cord(azimuth_motor, max_power); //姿勢制御分の出力を引かずに計算
+        motor_power_[i] = myvector.get_x(); //仮出力
 
         if (abs(motor_power_[i]) > h) {
             h = abs(motor_power_[i]);
@@ -37,14 +37,9 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     for (int i = 0; i < 4; i++) {
         pp = abs(motor_power_[i]) / abs(h);
 
-        if (motor_power_[i] >= 0) {
-            power = ((max_power - abs(difix)) * pp) + difix;
-        } else {
-            power = ((-max_power + abs(difix)) * pp) + difix;
-        }
-
-        Serial.print(motor_power_[i]);
-        Serial.print(" ");
+        if (motor_power_[i] > 0) power = ((max_power - abs(difix)) * pp) + difix;
+        else if (motor_power_[i] < 0) power = ((-max_power + abs(difix)) * pp) + difix;
+        else power = difix;
 
         if (motor_move == 1) {
             if (power >= 0) {
@@ -56,7 +51,6 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
             }
         }
     }
-    Serial.println();
 }
 
 int MyMOTOR::difix(int target_azimuth) {
