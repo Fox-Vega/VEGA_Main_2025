@@ -15,9 +15,10 @@ class LINE {
         int get_eazimuth(); //逃げる方向
         int get_value(byte lineNUM);
         int get_R();
+        bool get_stat(byte lineNUM);
 
     private:
-        const int detection_border = 690;//610
+        const int detection_border = 980;//610
         const int over_border = 120;
 
         float total_x;

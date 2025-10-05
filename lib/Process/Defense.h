@@ -11,42 +11,41 @@ public:
     void defense_(void);               // メイン処理
     void reset();                      // リセット処理
 
-    // === ボールフィルタ ===
-    void ball_filter();                // ボール角度フィルタリング
-    int ball_get_Aazimuth();          // フィルタ済み角度取得
-
 private:
     // === 調整用定数 ===
-    #define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
-    #define USE_DASH true
+    //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
+    #define USE_DASH false
     static constexpr float dash_border = 5000.0;        // ダッシュ待ち時間
     static constexpr float dash_time = 1500.0;          // ダッシュ時間
     static constexpr float ball_move_border = 7.0;      // ボール移動境界(±角度)
-    static constexpr float ball_power = 350.0;          // ボール対応パワー(x軸)
-    static constexpr float move_border = 50.0;          // 移動最小値
-    static constexpr float ballFilter = 7.0;           // ボールフィルタ閾値(度)
-    static constexpr float exitCorner = 20.0;           // コーナー退避距離
+    static constexpr float ball_power = 220.0;          // ボール対応パワー(x軸)
+    static constexpr float move_border = -10.0;          // 移動最小値
     static constexpr float line_late = 0.8;         // ライン反応倍率
-    static constexpr float ball_late = 1.1;         // ボール反応倍率
-    static constexpr float line_max = 100.0;// ライン移動最大値
-    static constexpr float TL = 20.0;        //TL＝縦　ライン　(脳筋))
-    static constexpr float TLM = 20.0;        //TL＝縦　ライン　(脳筋))
+    static constexpr float ball_late = 1.0;         // ボール反応倍率
+    
 
     // === 処理用変数 ===
     int frog;                          //フラグ　1ノーマル 2ラインなし 3ボールなし 4角 5角(賭け) 6移動量
     int lastdetect;                    // 最後検出方向
     int move_azimuth;                  // 移動方向
-    float move_power;                    // 移動パワー
+    float move_power;                  // 移動パワー
     double move_x;                     // X軸移動量
     double move_y;                     // Y軸移動量
-    bool ball_move = false;            // ボール移動フラグ
+
+    float rad;
+    float ball_ang;                    // ボール回避方向
+    float line_ang;
+    float line_x;
+    float line_y;
+    float ball_x;
+    float ball_y;
     float line_r = 0;                  // ライン半径
-    bool ex = false;                   // 追加移動フラグ
-    int exmoveX;                       // 追加移動X角度
-    int exmoveY;                       // 追加移動Y角度
     Timer Dtimer;                      // ディフェンスタイマー
     Timer SilentTime;
+    bool timer_started;
 
+
+    int ppp;
     // === ボールフィルタ用 ===
     int ball_history[5] = {0,0,0,0,0}; // ボール角度履歴
 
@@ -64,9 +63,11 @@ private:
         return (a >= 0 && b < 0) || (a < 0 && b >= 0);
     }
 
-    //誤差測定
+    //誤差測定（度→ラジアンで最短差分を計算し、度で返す）
     inline int getErr(int a, int b) {
-        return (a - b + 540) % 360 - 180;
+        float dRad = atan2f(sinf((float)(b - a) * DEG_TO_RAD), cosf((float)(b - a) * DEG_TO_RAD));
+        int dDeg = (int)(dRad * RAD_TO_DEG); // -180～180 の範囲
+        return dDeg;
     }
 
     // === UI用構造体 ===
@@ -75,9 +76,21 @@ private:
         int green;
         int blue;
         float alpha;
+        void reset(){
+            red=0;
+            green=0;
+            blue=0;
+            alpha=0;
+        }
+        void applyAlpha(){
+            red=red*alpha;
+            green=green*alpha;
+            blue=blue*alpha;
+            alpha=1.0;
+        }
     };
 
-    // === UI用変数 ===
+    // === UI0用変数 ===
     RGBA background;                   // 背景色
     RGBA P_line;                       // ライン表示色
     RGBA P_ball;                       // ボール表示色

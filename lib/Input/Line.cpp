@@ -190,6 +190,10 @@ int LINE::get_value(byte lineNUM) {
     return line_values[lineNUM];
 }
 
+bool LINE::get_stat(byte lineNUM) {
+    return line_stat[lineNUM];
+}
+
 int LINE::get_R() {
     return line_r;
 }
