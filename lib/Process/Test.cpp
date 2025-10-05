@@ -117,6 +117,7 @@ void Test::input() {
     //ボール
     ball.read();
     if (ball.get_stat() != 0) mypixel.closest(ball.get_azimuth(), 255, 255, 0, 1);
+    Serial.println(ball.get_azimuth());
 }
 
 void Test::escape() {
