@@ -62,7 +62,7 @@ void Defense::defense_() {
     [this](){if(SilentTime.read_milli()>dash_border&& USE_DASH == true){ //なんでラムダで囲んでるかって？ まあ気分だよ気分
         float TL = 20.0;        //TL＝縦　ライン　(脳筋)
         float TLM = 20.0;        //TL＝縦　ライン　(脳筋)
-        if(SilentTime.read_milli()<dash_border*1.5){//最初に起動防止　まあほぼ意味はないけど
+        if(SilentTime.read_milli()<dash_border*1.5||1){//最初に起動防止　まあほぼ意味はないけど
             mypixel.multi(0,15,255,50,50);mypixel.show();
             SilentTime.reset();
 
@@ -70,7 +70,7 @@ void Defense::defense_() {
             while(SilentTime.read_milli()<300){gam.read_azimuth();mymotor.run(0,200,0);}SilentTime.reset();
 
 
-            while(SilentTime.read_milli()<dash_time){//こちらがメイン　アタック呼び出してるだけ　頭悪い
+            while(SilentTime.read_milli()<dash_time){//こちらがメイン　アタxック呼び出してるだけ　頭悪い
                 //while文の弊害たち
                 gam.read_azimuth();
                 ball.read();
@@ -105,7 +105,7 @@ void Defense::defense_() {
 
                 //動きます
                 mymotor.run(mm,(int)mt,0);
-                mt+=0.5;//だんだん早くなる♪
+                mt+=3;//だんだん早くなる♪
 
             }
         } else {//1.5倍過ぎたら止めましょうと　誤爆防止や
@@ -134,10 +134,10 @@ void Defense::defense_() {
             ball_x= sin(rad);
             ball_y= cos(rad);
 
-            // if(getErr(0,ball.get_azimuth())<ball_move_border){//目の前にあるときにボールを追いかける必要はない
-            //     ball_x= 0;
-            //     ball_y= 0;
-            // }
+            if(getErr(0,ball.get_azimuth())<ball_move_border){//目の前にあるときにボールを追いかける必要はない
+                ball_x= 0;
+                ball_y= 0;
+            }
 
             move_x=(line_x+ball_x)*ball_power;
             move_y=((line_y*line_late)+(ball_y*ball_late))*ball_power;
@@ -293,7 +293,7 @@ void Defense::applyUI(int mode) {
             mypixel.closest(move_azimuth, move_ang.red, move_ang.green, move_ang.blue, 2);
         }
 
-        int d=line_y<0?180:0;
+        int d=line_ang;
         mypixel.closest(d, P_line.red, P_line.green, P_line.blue, 3);
 
         int d2=ball_ang;

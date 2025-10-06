@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "new": "cpp"
-    }
+    },
+    "inline-bookmarks.view.showVisibleFilesOnly": true
 }
