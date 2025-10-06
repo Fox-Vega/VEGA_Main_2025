@@ -14,12 +14,12 @@ public:
 private:
     // === 調整用定数 ===
     //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
-    #define USE_DASH true
+    #define USE_DASH false
     static constexpr float dash_border = 5000.0;        // ダッシュ待ち時間
     static constexpr float dash_time = 1500.0;          // ダッシュ時間
     static constexpr float ball_move_border = 7.0;      // ボール移動境界(±角度)
     static constexpr float ball_power = 220.0;          // ボール対応パワー(x軸)
-    static constexpr float move_border = -10.0;          // 移動最小値
+    static constexpr float move_border = 20.0;          // 移動最小値
     static constexpr float line_late = 0.8;         // ライン反応倍率
     static constexpr float ball_late = 1.0;         // ボール反応倍率
     

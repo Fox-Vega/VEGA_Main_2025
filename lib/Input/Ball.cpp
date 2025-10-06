@@ -22,12 +22,13 @@ void BALL::read() {
     max_ballNUM = 99;
     max_ballvalue = 0;
     ball_start = micros();
-    while((micros() - ball_start) > 833) {
+    while(1) {
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
             }
         }
+        if ((micros() - ball_start) > 833) break;
     }
 
     //最大値の記録
@@ -44,7 +45,6 @@ void BALL::read() {
         ball_y_ = 0;
     } else {
         ball = 1;
-
         // 座標計算
         total_x = 0;
         total_y = 0;
@@ -59,29 +59,23 @@ void BALL::read() {
         ball_y_ = total_y / 3;
     }
 
-    if (history_size != 1) {
-        //ずらす
-        for (int i = (history_size - 1); i > 0; i--) {
-            int a = i - 1;
-            history_x[i] = history_x[a];
-            history_y[i] = history_y[a];
-        }
-        history_x[0] = ball_x_;
-        history_y[0] = ball_y_;
 
-        //平均計算
-        total_x = 0;
-        total_y = 0;
-        for (int i = 0; i < history_size; i++) {
-            total_x += history_x[i];
-            total_y += history_y[i];
-        }
-        ball_x = total_x / history_size;
-        ball_y = total_y / history_size;
-    } else {
-        ball_x = ball_x_;
-        ball_y = ball_y_;
+    for (int i = (history_size - 1); i > 0; i--) { //ずらす
+        int a = i - 1;
+        history_x[i] = history_x[a];
+        history_y[i] = history_y[a];
     }
+    history_x[0] = ball_x_;
+    history_y[0] = ball_y_;
+
+    total_x = 0;
+    total_y = 0;
+    for (int i = 0; i < history_size; i++) {
+        total_x += history_x[i];
+        total_y += history_y[i];
+    }
+    ball_x = total_x / history_size;
+    ball_y = total_y / history_size;
 }
 
 bool BALL::get_stat() {

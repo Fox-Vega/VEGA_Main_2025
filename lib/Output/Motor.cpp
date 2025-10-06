@@ -41,6 +41,7 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
         else if (motor_power_[i] < 0) power = ((-max_power + abs(difix)) * pp) + difix;
         else power = difix;
 
+        power = constrain(power, -pwmlimit, pwmlimit);
         if (motor_move == 1) {
             if (power >= 0) {
                 analogWrite(motor_PIN1[i], 0);
