@@ -115,8 +115,10 @@ void LINE::read() {
 
         //ライン種類判別
         line_type = 1;
-        if (pack_NUM >= 3) {
+        if (pack_NUM == 2) {
             line_type = 2;
+        } else if (pack_NUM >= 3) {
+            line_type = 3;
         }
 
         //クロ座標防止
