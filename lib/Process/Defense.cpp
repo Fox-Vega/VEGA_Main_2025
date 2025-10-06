@@ -135,10 +135,9 @@ void Defense::defense_() {
             ball_y= cos(rad);
             Serial.println(ball_x);
 
-            // if(getErr(0,ball.get_azimuth())<ball_move_border){//目の前にあるときにボールを追いかける必要はない
-            //     ball_x= 0;
-            //     ball_y= 0;
-            // }
+            if(getErr(0,ball.get_azimuth())<ball_move_border){//目の前にあるときにボールを追いかける必要はない
+                ball_x= 0;
+            }
 
             move_x=(line_x+ball_x)*ball_power;
             move_y=((line_y*line_late)+(ball_y*ball_late))*ball_power;
@@ -171,6 +170,7 @@ void Defense::defense_() {
 
             if (move_power > move_border) {
                 mymotor.run(move_azimuth, (int)move_power, 0);
+                SilentTime.reset();
             } else {
                 mymotor.free();
                 frog=6;
@@ -184,6 +184,7 @@ void Defense::defense_() {
 
             if (move_power > move_border) {
                 mymotor.run(move_azimuth, (int)move_power, 0);
+                SilentTime.reset();
             } else {
                 mymotor.free();
             }
