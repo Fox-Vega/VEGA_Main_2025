@@ -29,4 +29,14 @@ class Attack {
         float movement_azimuth;
         int wrap_size;
         unsigned long back_start;
+
+
+
+
+
+
+
+        //ディフェンス
+        int waypoint1;
+        int waypoint2;
 };

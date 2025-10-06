@@ -11,7 +11,7 @@ class LINE {
         int get_magnitude(); //大きさ
         int get_x();
         int get_y();
-        int get_type(); //種類　0=無し　1=辺　2=角
+        int get_type(); //種類　0=無し　1=点　2=辺　3=角
         int get_eazimuth(); //逃げる方向
         int get_value(byte lineNUM);
         bool get_stat(byte lineNUM);
