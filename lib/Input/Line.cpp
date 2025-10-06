@@ -194,6 +194,6 @@ bool LINE::get_stat(byte lineNUM) {
     return line_stat[lineNUM];
 }
 
-int LINE::get_R() {
-    return line_r;
+int LINE::get_pack(byte packNUM) {
+    return myvector.get_azimuth(pack_x[packNUM], pack_y[packNUM]);
 }
