@@ -12,6 +12,7 @@ void Attack::attack_() {
     if (line.get_type() != 0) { //ラインある
         mymotor.run(line.get_eazimuth(), avoid_speed, 0);
     } else if (ball.get_stat() == 1) { //ラインない　ボールある
+        mypixel.clear();
         back = false;
         speed = 0;
         ball_azimuth = ball.get_azimuth();
@@ -42,6 +43,7 @@ void Attack::attack_() {
         // mypixel.closest(movement_azimuth, 255, 255, 255, 1);
         // mypixel.closest(ball_azimuth, 255, 100, 100, 1);
     } else { //ラインない　ボールない
+        mypixel.multi(0, 15, 255, 0, 0);
         if (!back) {
             back = true;
             back_start = millis();
