@@ -18,14 +18,12 @@ private:
     static constexpr float dash_border = 5000.0;        // ダッシュ待ち時間
     static constexpr float dash_time = 1500.0;          // ダッシュ時間
     static constexpr float ball_move_border = 7.0;      // ボール移動境界(±角度)
-    static constexpr float ball_power = 220.0;          // ボール対応パワー(x軸)
-    static constexpr float move_border = 40.0;          // 移動最小値
-    static constexpr float line_late = 0.8;         // ライン反応倍率
+    static constexpr float move_speed = 220.0;          // 移動スピード（旧: ball_power）
+    static constexpr float move_border = 40.0;          // 移動最小値 判定に使う
+    static constexpr float line_late = 1.0;         // ライン反応倍率
     static constexpr float ball_late = 1.0;         // ボール反応倍率
-    
 
     // === 処理用変数 ===
-    int frog;                          //フラグ　1ノーマル 2ラインなし 3ボールなし 4角 5角(賭け) 6移動量
     int lastdetect;                    // 最後検出方向
     int move_azimuth;                  // 移動方向
     float move_power;                  // 移動パワー
@@ -34,20 +32,12 @@ private:
 
     float rad;
     float ball_ang;                    // ボール回避方向
-    float line_ang;
     float line_x;
     float line_y;
     float ball_x;
     float ball_y;
-    float line_r = 0;                  // ライン半径
     Timer Dtimer;                      // ディフェンスタイマー
     Timer SilentTime;
-    bool timer_started;
-
-
-    int ppp;
-    // === ボールフィルタ用 ===
-    int ball_history[5] = {0,0,0,0,0}; // ボール角度履歴
 
     // === ユーティリティ関数 ===
 
@@ -58,16 +48,24 @@ private:
         return a;
     }
 
-    //符号違い判定
-    inline bool diff_signs(int a, int b) {
-        return (a >= 0 && b < 0) || (a < 0 && b >= 0);
-    }
+    //誤差測定　差分の絶対値を返す
+    inline int getErr(int a, int b) { int d = abs((a - b) % 360); return (d > 180) ? (360 - d) : d; }
 
-    //誤差測定（度→ラジアンで最短差分を計算し、度で返す）
-    inline int getErr(int a, int b) {
-        float dRad = atan2f(sinf((float)(b - a) * DEG_TO_RAD), cosf((float)(b - a) * DEG_TO_RAD));
-        int dDeg = (int)(dRad * RAD_TO_DEG); // -180～180 の範囲
-        return dDeg;
+    //姿勢制御のせいで動かん
+    int m_ang[8] = {0,45,90,135,180,225,270,315};
+    //m_angの中で一番近い角度を返す
+    inline int getClosestAngle(int target) {
+        int minErr = 360;
+        int closest = m_ang[0];
+
+        for(int i = 0; i < 8; i++) {
+            int err = getErr(target, m_ang[i]);
+            if(err < minErr) {
+                minErr = err;
+                closest = m_ang[i];
+            }
+        }
+        return closest;
     }
 
     // === UI用構造体 ===
@@ -76,12 +74,14 @@ private:
         int green;
         int blue;
         float alpha;
+
         void reset(){
             red=0;
             green=0;
             blue=0;
             alpha=0;
         }
+
         void applyAlpha(){
             red=red*alpha;
             green=green*alpha;
@@ -95,9 +95,17 @@ private:
     RGBA P_line;                       // ライン表示色
     RGBA P_ball;                       // ボール表示色
     RGBA move_ang;                     // 移動方向表示色
-    RGBA exMoveX;                      // 追加移動X軸色
-    RGBA exMoveY;                      // 追加移動Y軸色
     RGBA dash_timer;                   // ダッシュタイマー色
+
+    enum class FROG : int {
+        NONE = 0,
+        NORMAL = 1,     // ノーマル
+        NO_LINE = 2,    // ラインなし
+        NO_BALL = 3,    // ボールなし
+        STOP = 4, // 停止
+        DASH = 5      // ダッシュ中
+    };
+    FROG frog;                          //フラグ　1ノーマル 2ラインなし 3ボールなし 4停止　5ダッシュ中
 
     // === UI処理 ===
 
@@ -105,4 +113,5 @@ private:
     void resetUI();
     // UI表示実行
     void applyUI(int mode);
+
 };

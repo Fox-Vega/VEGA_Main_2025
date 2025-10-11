@@ -154,7 +154,7 @@ void General::startup() {
                 mypixel.use_pixel(1);
             }
             mybuzzer.start(800, 50);
-            delay(200);
+            delay(500);
         }
         mypixel.shows();
     }
