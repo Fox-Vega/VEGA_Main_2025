@@ -117,11 +117,10 @@ void LINE::read() {
         if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > over_border && line_type == 0) over = !over;
 
         //ライン種類判別
-        line_type = 1;
-        if (pack_NUM == 2) {
-            line_type = 2;
-        } else if (pack_NUM >= 3) {
+        if (pack_NUM >= 3) {
             line_type = 3;
+        } else {
+            line_type = pack_NUM;
         }
 
         //逃げる方向更新
@@ -130,7 +129,7 @@ void LINE::read() {
             escape_y = -line_y;
         }
 
-        //情報更新
+        //更新
         oldline_x = line_x;
         oldline_y = line_y;
     }
