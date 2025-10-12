@@ -14,11 +14,11 @@ class BALL {
         int get_value(byte ballNUM);
 
     private:
-        bool ball;
-        int ball_x;
-        int ball_y;
-        int ball_x_;
-        int ball_y_;
+        bool ball; //検出ステータス
+        int ball_x; //最終座標
+        int ball_y; //最終座標
+        int ball_x_; //RAW座標
+        int ball_y_; //RAW座標
         int total_x = 0;
         int total_y = 0;
         int ballvalues[16]; //ボールの値を格納する配列

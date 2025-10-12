@@ -57,6 +57,7 @@ void LINE::read() {
         pack_x[i] = 0;
         pack_y[i] = 0;
     }
+
     //グループ分け
     byte startNUM = 99;
     for (int i = 23; i >= 0; i--) {
@@ -67,7 +68,6 @@ void LINE::read() {
     if (startNUM == 99) {
         startNUM = 0;
     }
-
     for (int i = startNUM; i < startNUM + 24; i++) {
         byte pLine = i % 24; //処理中のセンサー
         if (line_stat[pLine] == 1) {
@@ -97,12 +97,6 @@ void LINE::read() {
         escape_x = 0;
         escape_y = 0;
     } else { //検知している
-        //初回検知判定
-        trip = false;
-        if (line_type == 0) {
-            trip = true;
-        }
-
         //ライン位置計算
         int total_linex = 0;
         int total_liney = 0;
@@ -113,14 +107,6 @@ void LINE::read() {
         line_x = total_linex / pack_NUM;
         line_y = total_liney / pack_NUM;
 
-        //ライン種類判別
-        line_type = 1;
-        if (pack_NUM == 2) {
-            line_type = 2;
-        } else if (pack_NUM >= 3) {
-            line_type = 3;
-        }
-
         //クロ座標防止
         if (line_x == 0 && line_y == 0) {
             line_x = oldline_x;
@@ -128,8 +114,15 @@ void LINE::read() {
         }
 
         //ライン越え判定
-        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > over_border && trip == false) over = !over;
-        // if (myvector.get_vectordegree(line_x, line_y, escape_x, escape_y) > over_border) over = false;
+        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > over_border && line_type == 0) over = !over;
+
+        //ライン種類判別
+        line_type = 1;
+        if (pack_NUM == 2) {
+            line_type = 2;
+        } else if (pack_NUM >= 3) {
+            line_type = 3;
+        }
 
         //逃げる方向更新
         if (over == false) {
@@ -140,23 +133,6 @@ void LINE::read() {
         //情報更新
         oldline_x = line_x;
         oldline_y = line_y;
-
-        // //デバッグ用
-        // for (int i = 0; i < 24; i++) {
-        //     Serial.print(line_values[i]);
-        //     Serial.print(" ");
-        // }
-        // Serial.println();
-        // Serial.print("  ");
-        // Serial.print(line.get_azimuth());
-        // Serial.print("  ");
-        // Serial.print(line.get_eazimuth());
-        // Serial.print(" ");
-        // Serial.print(trip);
-        // Serial.print(" ");
-        // Serial.print(over);
-        // Serial.print(" ");
-        // Serial.println(pack_NUM);
     }
 }
 

@@ -24,20 +24,19 @@ class LINE {
         float total_x;
         float total_y;
 
-        float line_x;
-        float line_y;
-        float oldline_x;
-        float oldline_y;
-        float escape_x;
-        float escape_y;
+        int line_x;
+        int line_y;
+        int oldline_x;
+        int oldline_y;
+        int escape_x;
+        int escape_y;
 
         int line_type;
         //0なら反応なし
         //1なら線検知
         //2なら角検知
 
-        bool trip = false;
-        bool over = false;
+        bool over = false; //反転したか
 
         const int line_r = 12;
         const uint8_t selectPIN[3] = {22, 24, 26};
@@ -45,7 +44,7 @@ class LINE {
 
         float pack_x[4];
         float pack_y[4];
-        int line_values[24]; //アナログ値　UI用に使う
+        int line_values[24]; //アナログ値　UI用
         int line_stat[24];
         int line_stat_[24];
 
