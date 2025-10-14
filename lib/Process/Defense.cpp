@@ -95,24 +95,24 @@ void Defense::defense_() {
             } else {
                 ball_y= -1;
             }
-            if(!tl&&line.get_x()==0){ball_y=0;}//縦ラインじゃなかったらｙは0にしておく
+            if(!tl&&line.get_x()==0&&line.get_type()!=2){ball_y=0;}//縦ラインじゃなかったらｙは0にしておく
             if(ball.get_azimuth()<180){//ラインに対して180;
                 ball_x= 1;
             } else {
                 ball_x= -1;
             }
 
-            move_x=((line_x*line_late)+(ball_x*ball_late))*move_speed;
-            move_y=((line_y*line_late)+(ball_y*ball_late))*move_speed;
+            int calc_move_speed=move_speed;
+            if(tl==true||line.get_type()==2||abs(line.get_x())>2){
+                calc_move_speed=calc_move_speed>>1;
+            }
+            move_x=((line_x*line_late)+(ball_x*ball_late))*calc_move_speed;
+            move_y=((line_y*line_late)+(ball_y*ball_late))*calc_move_speed;
             move_azimuth = myvector.get_azimuth(move_x, move_y);
             move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
-            if(tl==true||line.get_type()==2||abs(line.get_x())>2){
-                move_power = static_cast<int>(move_power)>>1;
-            }
 
             if (move_power > move_border) {
                 mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
-                // mymotor.free();
                 SilentTime.reset();
             } else {
                 mymotor.free();
@@ -121,14 +121,21 @@ void Defense::defense_() {
         } else {
             frog=FROG::NO_BALL;
             // === ボールなし === ラインに戻る
-            move_y = line.get_y() * 20;
+            rad = radians(line.get_azimuth());
+            move_x = sin(rad) * line_late * move_speed;
+            move_y = cos(rad) * line_late * move_speed;
             move_azimuth = myvector.get_azimuth(0, move_y);
-            move_power = myvector.get_magnitude(abs(move_x), move_y);
+            move_power = static_cast<int>(
+                myvector.get_magnitude(
+                    abs(move_x),
+                    abs(move_y)
+                )
+            )
+            <<1;
 
             if (move_power > move_border) {
-                // mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
+                mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
                 SilentTime.reset();
-                mymotor.free();
             } else {
                 mymotor.free();
             }
@@ -151,11 +158,6 @@ void Defense::reset() {
     Dtimer.reset();
     SilentTime.reset();
 }
-
-
-// ===================================
-// UI処理
-// ===================================
 
 void Defense::resetUI() {
     background.reset();
@@ -208,10 +210,10 @@ void Defense::applyUI(int mode) {
         // --- 背景 ---
         mypixel.multi(0, 15, background.red, background.green, background.blue);
 
-        mypixel.closest(norm360(line.get_azimuth()) , P_line.red, P_line.green, P_line.blue, 3);
+        mypixel.closest(line.get_azimuth(), P_line.red, P_line.green, P_line.blue, 3);
 
         // int d2=ball_ang;
-        mypixel.closest(norm360(ball_ang) , P_ball.red, P_ball.green, P_ball.blue, 3);
+        mypixel.closest(ball_ang, P_ball.red, P_ball.green, P_ball.blue, 3);
 
         //--- 移動方向 ---
         if (move_power > move_border)
