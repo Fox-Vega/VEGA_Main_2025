@@ -14,13 +14,12 @@ class Attack {
         unsigned long back_border = 1200;
 
         // {},
-        const float wrap[6][3] = {//最初は0,0必須　最低2セット　2つ目に進む方向
+        const float wrap[5][3] = {//最初は0,0必須　最低2セット　2つ目に進む方向
             {0, 0, 200},
-            {18, 1.0, 200},
-            {40, 1.1, 200},
-            {70, 1.38, 200}, //イキすぎぃ！なときは範囲上げる(だいたい通用する)
-            {120, 1.6, 200},
-            {180, 1.2, 200}
+            {90, 1.0, 200},
+            {140, 1.35, 200},
+            {170, 1.4, 200},
+            {180, 1.5, 200}
         };
 
         int speed = 0;
@@ -29,14 +28,4 @@ class Attack {
         float movement_azimuth;
         int wrap_size;
         unsigned long back_start;
-
-
-
-
-
-
-
-        //ディフェンス
-        int waypoint1;
-        int waypoint2;
 };

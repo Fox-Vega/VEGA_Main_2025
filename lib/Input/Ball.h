@@ -14,11 +14,11 @@ class BALL {
         int get_value(byte ballNUM);
 
     private:
-        bool ball;
-        int ball_x;
-        int ball_y;
-        int ball_x_;
-        int ball_y_;
+        bool ball; //検出ステータス
+        int ball_x; //最終座標
+        int ball_y; //最終座標
+        int ball_x_; //RAW座標
+        int ball_y_; //RAW座標
         int total_x = 0;
         int total_y = 0;
         int ballvalues[16]; //ボールの値を格納する配列
@@ -26,8 +26,8 @@ class BALL {
         byte max_ballNUM = 0;
         int max_ballvalue = 0;
         int NUMball;
-        int history_x[2];
-        int history_y[2];
+        int history_x[3];
+        int history_y[3];
         int history_size;
         unsigned long ball_start;
         const int ballPINs[16] = {31, 29, 27, 25, 23, 19, 17, 15, 32, 34, 36, 38, 40, 42, 44, 46};
