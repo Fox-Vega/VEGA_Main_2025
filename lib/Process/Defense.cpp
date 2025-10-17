@@ -5,10 +5,13 @@
 #include "Process.h"
 
 void Defense::setup() {
-    reset();//あれ？
+    reset();//初期化
+
+    //...あれ？
 }
 
 void Defense::defense_() {
+    resetUI();
     frog = FROG::NONE; //フ　ラ　グ　付　け
     bool tl=false;{bool frog1=false;bool frog2=false;int leng=4;for(int i=0; i<leng;i++){if(line.get_stat(i)==true){frog1=true;break;}}for(int i=1; i<leng;i++){if(line.get_stat(24-i)==true){frog1=true;break;}}for(int i=0; i<leng;i++){if(line.get_stat(11+i)==true){frog2=true;break;}}for(int i=1; i<leng;i++){if(line.get_stat(12-i)==true){frog2=true;break;}}if(frog1&&frog2){tl=true;}}
 
@@ -42,7 +45,7 @@ void Defense::defense_() {
             while(SilentTime.read_milli()<300){gam.read_azimuth();mymotor.run(180,200,0);if(exitDash()){SilentTime.reset();break;}}SilentTime.reset();
 
             int mm=180; //ムーブ向き　　ネーミングセンスは-100点
-            int mt=100; //ムーブ力　　　名前の付け方頭悪い
+            int mt=75; //ムーブ力　　　名前の付け方頭悪い
 
             while(1){ //戻ろう
 
@@ -64,10 +67,11 @@ void Defense::defense_() {
 
                 //動きます
                 mymotor.run(mm,static_cast<int>(mt),0);
-                mt+=3;//だんだん早くなる♪
+                if(mt<120)mt+=1;//だんだん早くなる♪
 
                 if(exitDash()){SilentTime.reset();break;}
             }
+            mymotor.brake();
             return;//はじめに戻る
         } else {//1.5倍過ぎたら止めましょうと　誤爆防止や
             SilentTime.reset();
@@ -94,7 +98,7 @@ void Defense::defense_() {
             } else {
                 ball_y= -1;
             }
-            if(!tl&&line.get_x()==0&&line.get_type()!=2){ball_y=0;}//縦ラインじゃなかったらｙは0にしておく
+            if(!tl&&line.get_x()==0){ball_y=0;}//縦ラインじゃなかったらｙは0にしておく
             if(ball.get_azimuth()<180){//ラインに対して180;
                 ball_x= 1;
             } else {
@@ -102,18 +106,19 @@ void Defense::defense_() {
             }
 
             int calc_move_speed=move_speed;
-            if(tl==true||line.get_type()==2||abs(line.get_x())>2){
-                mybuzzer.start(1000,999);
-                calc_move_speed=calc_move_speed>>1;
+            if((tl||abs(line.get_x())>2)&&!(line.get_type()==2)){
+                mybuzzer.start(500,999);
+                calc_move_speed>>1;
             } else {
                 mybuzzer.stop();
             }
             move_x=((line_x*line_late*x_late)+(ball_x*ball_late*x_late))*calc_move_speed;
             move_y=((line_y*line_late*y_late)+(ball_y*ball_late*y_late))*calc_move_speed;
+            if(abs(line.get_y())<2){move_y=0;};
             move_azimuth = myvector.get_azimuth(move_x, move_y);
             move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
 
-            if (move_power > move_border && !(getErr(0,ball.get_azimuth())<ball_move_border)) {
+            if (move_power > move_border && !(getErr(norm360(-10),ball.get_azimuth())<ball_move_border)) {
                 mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
                 SilentTime.reset();
             } else {
@@ -124,22 +129,23 @@ void Defense::defense_() {
             frog=FROG::NO_BALL;
             // === ボールなし === ラインに戻る
             mybuzzer.start(500,999);
-            rad = radians(line.get_azimuth());
-            move_x = sin(rad) * line_late * move_speed;
-            move_y = cos(rad) * line_late * move_speed;
-            move_azimuth = myvector.get_azimuth(0, move_y);
-            move_power = static_cast<int>(
-                myvector.get_magnitude(
-                    abs(move_x),
-                    abs(move_y)
-                )
-            )
-            <<1;
+            // rad = radians(line.get_azimuth());
+            // move_x = sin(rad) * line_late * move_speed;
+            // move_y = cos(rad) * line_late * move_speed;
+            // move_azimuth = myvector.get_azimuth(0, move_y);
+            // move_power = static_cast<int>(
+            //     myvector.get_magnitude(
+            //         abs(move_x),
+            //         abs(move_y)
+            //     )
+            // )
+            // <<1;
 
-            if (move_power > move_border) {
-                mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
-                SilentTime.reset();
-            } else {
+            // if (move_power > 50) {
+            //     mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
+            //     SilentTime.reset();
+            // } else {
+            {
                 mymotor.free();
             }
             Dtimer.reset();
@@ -237,6 +243,7 @@ void Defense::applyUI(int mode) {
     } else if (mode == 3) {
         mypixel.multi(0, 15, 255, 100, 255);
     } else if (mode == 4) { // 移動量（サイレントタイマーメーター）
+        // mybuzzer.start(200+(SilentTime.read_milli()/3),999);
         // --- 背景 ---
         mypixel.multi(0, 15, background.red, background.green, background.blue);
 
