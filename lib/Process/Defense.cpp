@@ -106,12 +106,12 @@ void Defense::defense_() {
             if(tl==true||line.get_type()==2||abs(line.get_x())>2){
                 calc_move_speed=calc_move_speed>>1;
             }
-            move_x=((line_x*line_late)+(ball_x*ball_late))*calc_move_speed;
-            move_y=((line_y*line_late)+(ball_y*ball_late))*calc_move_speed;
+            move_x=((line_x*line_late*x_late)+(ball_x*ball_late*x_late))*calc_move_speed;
+            move_y=((line_y*line_late*y_late)+(ball_y*ball_late*y_late))*calc_move_speed;
             move_azimuth = myvector.get_azimuth(move_x, move_y);
             move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
 
-            if (move_power > move_border) {
+            if (move_power > move_border && !(getErr(0,ball.get_azimuth())<ball_move_border)) {
                 mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
                 SilentTime.reset();
             } else {
