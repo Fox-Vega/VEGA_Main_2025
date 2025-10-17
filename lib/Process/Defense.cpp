@@ -127,22 +127,6 @@ void Defense::defense_() {
             frog=FROG::NO_BALL;
             // === ボールなし === ラインに戻る
             mybuzzer.start(500,999);
-            // rad = radians(line.get_azimuth());
-            // move_x = sin(rad) * line_late * move_speed;
-            // move_y = cos(rad) * line_late * move_speed;
-            // move_azimuth = myvector.get_azimuth(0, move_y);
-            // move_power = static_cast<int>(
-            //     myvector.get_magnitude(
-            //         abs(move_x),
-            //         abs(move_y)
-            //     )
-            // )
-            // <<1;
-
-            // if (move_power > 50) {
-            //     mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
-            //     SilentTime.reset();
-            // } else {
             {
                 mymotor.free();
             }
