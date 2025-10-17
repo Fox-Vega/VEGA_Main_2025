@@ -5,9 +5,7 @@
 #include "Process.h"
 
 void Defense::setup() {
-    reset();//初期化
-
-    //...あれ？
+    reset();//初期化　その他は何にもない
 }
 
 void Defense::defense_() {
