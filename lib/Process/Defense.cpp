@@ -83,7 +83,6 @@ void Defense::defense_() {
         [this](){lastdetect = line.get_azimuth();}();
 
         if (ball.get_stat() == 1) {// === ボールあり ===
-            mybuzzer.stop();
             ball_ang=ball.get_azimuth();//ボールの方向
 
             rad = radians(line.get_azimuth());//ラインに対しての戻る力
@@ -104,7 +103,10 @@ void Defense::defense_() {
 
             int calc_move_speed=move_speed;
             if(tl==true||line.get_type()==2||abs(line.get_x())>2){
+                mybuzzer.start(1000,999);
                 calc_move_speed=calc_move_speed>>1;
+            } else {
+                mybuzzer.stop();
             }
             move_x=((line_x*line_late*x_late)+(ball_x*ball_late*x_late))*calc_move_speed;
             move_y=((line_y*line_late*y_late)+(ball_y*ball_late*y_late))*calc_move_speed;
@@ -121,6 +123,7 @@ void Defense::defense_() {
         } else {
             frog=FROG::NO_BALL;
             // === ボールなし === ラインに戻る
+            mybuzzer.start(500,999);
             rad = radians(line.get_azimuth());
             move_x = sin(rad) * line_late * move_speed;
             move_y = cos(rad) * line_late * move_speed;
