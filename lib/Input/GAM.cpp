@@ -1,11 +1,9 @@
-#include "GAM.h"
 #include "Input.h"
 #include "Output.h"
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
-#include <avr/wdt.h>
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
@@ -13,45 +11,22 @@ void GAM::setup() {
     mybuzzer.start(400, 100);
     delay(50);
     mybuzzer.start(300, 100);
-    delay(3000);
+    delay(500);
     Wire.begin();
-    if (!bno.begin()) {
-        Serial.println("BNO055 not detected.");
-        for(int i=0;i<3;i++){
-            mybuzzer.start(1000,500);
-            delay(500);
-        }
-        if(myswitch.check_tact()==15){
-            mybuzzer.start(1500,1000);
-        } else {
-            mypixel.use_pixel(true);
-            mypixel.brightness(200);
-            mypixel.multi(0,15,255,0,0);
-            mypixel.show();
-            while(1){
-                if(myswitch.check_tact()>0){
-                    mypixel.multi(0,15,0,0,255);
-                    mypixel.show();
-                    mybuzzer.start(200,500);
-                    delay(500);
-                    while (1) {}
-                }
-            }
-        }
-    }
+    if (!bno.begin()) Serial.println("BNO055 not detected.");
     bno.setExtCrystalUse(true);
     bno.setMode(OPERATION_MODE_AMG);
-    while (millis() < 5500) {
-        sensors_event_t accel_event;
-        bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
-        float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
-        for (int i = 0; i < 2; i++) {
-            sample[i] += accel_data[i];
-        }
-        sampleNUM += 1;
-    }
-    accel_bias[0] = sample[0] / sampleNUM;
-    accel_bias[1] = sample[1] / sampleNUM;
+    // while (millis() < 5500) {
+    //     sensors_event_t accel_event;
+    //     bno.getEvent(&accel_event, Adafruit_BNO055::VECTOR_ACCELEROMETER);
+    //     float accel_data[2] = {accel_event.acceleration.x, accel_event.acceleration.y};
+    //     for (int i = 0; i < 2; i++) {
+    //         sample[i] += accel_data[i];
+    //     }
+    //     sampleNUM += 1;
+    // }
+    // accel_bias[0] = sample[0] / sampleNUM;
+    // accel_bias[1] = sample[1] / sampleNUM;
 }
 
 void GAM::read_azimuth() {
