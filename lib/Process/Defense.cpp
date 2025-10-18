@@ -3,6 +3,8 @@
 #include "Output.h"
 #include "AIP.h"
 #include "Process.h"
+#define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+#define printf_s_long(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
 
 void Defense::setup() {
     reset();//初期化　その他は何にもない
@@ -96,7 +98,7 @@ void Defense::defense_() {
             } else {
                 ball_y= -1;
             }
-            if(!tl&&line.get_x()==0){ball_y=0;}//縦ラインじゃなかったらｙは0にしておく
+            if(!tl&&line.get_x()==0){ball_y=0;printf_s("detect vertical line -> ball_y=0\n");}//縦ラインじゃなかったらｙは0にしておく
             if(ball.get_azimuth()<180){//ラインに対して180;
                 ball_x= 1;
             } else {
@@ -105,31 +107,67 @@ void Defense::defense_() {
 
             int calc_move_speed=move_speed;
             if((tl||abs(line.get_x())>2)&&!(line.get_type()==2)){
-                mybuzzer.start(500,999);
-                calc_move_speed>>1;
+                mybuzzer.start(100,999);
+                calc_move_speed=calc_move_speed>>1;
             } else {
                 mybuzzer.stop();
             }
             move_x=((line_x*line_late*x_late)+(ball_x*ball_late*x_late))*calc_move_speed;
+            if(tl){
+                move_x=0;
+                printf_s("vertical line -> move_x=0\n");
+            }
             move_y=((line_y*line_late*y_late)+(ball_y*ball_late*y_late))*calc_move_speed;
-            if(abs(line.get_y())<2){move_y=0;};
+            if(abs(line.get_y())<2&&!tl){move_y=0;
+                printf_s("parallel line -> move_y=0\n");
+            }//並行ラインでの処理やったけど縦でおかしいからtl判定を有効にした
             move_azimuth = myvector.get_azimuth(move_x, move_y);
             move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
+            printf_s_long(R"RAW(
+                | ====================
+                | move_x: %d ;
+                | move_y: %d ;
+                | move_azimuth: %d ;
+                | move_power: %d ;
+                | ball_ang: %d ;
+                | ball_x : %d ;
+                | ball_y : %d ;
+                | line_x : %d ;
+                | line_y : %d ;
 
-            if (move_power > move_border && !(getErr(norm360(-10),ball.get_azimuth())<ball_move_border)) {
-                mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
+                | X||%d+%d|| %d
+                | Y||%d+%d|| %d
+                | ====================
+                )RAW",
+                static_cast<int>(move_x),
+                static_cast<int>(move_y),
+                static_cast<int>(move_azimuth),
+                static_cast<int>(move_power),
+                static_cast<int>(ball_ang),
+                static_cast<int>(ball_x),
+                static_cast<int>(ball_y),
+                static_cast<int>(line_x),
+                static_cast<int>(line_y),
+                static_cast<int>(line_x),
+                static_cast<int>(ball_x),
+                (static_cast<int>(line_x)+static_cast<int>(ball_x)),
+                static_cast<int>(line_y),
+                static_cast<int>(ball_y),
+                (static_cast<int>(line_y)+static_cast<int>(ball_y))
+                );
+
+            if (move_power > move_border) {
+                // mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
                 SilentTime.reset();
             } else {
                 mymotor.free();
-                frog=FROG::STOP;
+                // frog=FROG::STOP;
             }
         } else {
             frog=FROG::NO_BALL;
             // === ボールなし === ラインに戻る
             mybuzzer.start(500,999);
-            {
-                mymotor.free();
-            }
+            mymotor.free();
             Dtimer.reset();
         }
 

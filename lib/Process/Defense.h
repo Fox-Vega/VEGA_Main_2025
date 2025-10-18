@@ -9,6 +9,7 @@ public:
     // === メイン処理 ===
     void setup(void);                  // 初期設定
     void defense_(void);               // メイン処理
+    void NewFunction();
     void reset();                      // リセット処理
 
 private:
