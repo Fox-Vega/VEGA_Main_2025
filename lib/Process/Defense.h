@@ -15,12 +15,15 @@ private:
     // === 調整用定数 ===
     //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
     #define USE_DASH false
-    static constexpr float dash_border = 5000.0;        // ダッシュ待ち時間
-    static constexpr float dash_time = 1500.0;          // ダッシュ時間
+    static constexpr float dash_border = 1000.0;        // ダッシュ待ち時間
+    static constexpr float dash_time = 1200.0;          // ダッシュ時間
+    static constexpr int dash_border_ball = 2000;    // ボール検出でダッシュ待ち時間リセット
     static constexpr float ball_move_border = 7.0;      // ボール移動境界(±角度)
     static constexpr float move_speed = 220.0;          // 移動スピード（旧: ball_power）
-    static constexpr float move_border = 40.0;          // 移動最小値 判定に使う
+    static constexpr float move_border = 70.0;          // 移動最小値 判定に使う
     static constexpr float line_late = 1.0;         // ライン反応倍率
+    static constexpr float y_late = 0.8;         // ライン反応倍率
+    static constexpr float x_late = 1.0;
     static constexpr float ball_late = 1.0;         // ボール反応倍率
 
     // === 処理用変数 ===
@@ -47,11 +50,6 @@ private:
     /// @brief 360度の範囲に正規化する
     /// @param a 正規化する角度　単位：度
     /// @return 正規化された角度
-    /// @details a を 360 で剰余した後、負値は 360 を足して 0..359 にします。
-    /// @code
-    /// int x = norm360(-90); // -> 270
-    /// int y = norm360(370); // -> 10
-    /// @endcode
     inline int norm360(int a) {
         a %= 360;
         if(a < 0) a += 360;
