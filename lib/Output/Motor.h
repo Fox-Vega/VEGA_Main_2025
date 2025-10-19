@@ -7,6 +7,7 @@ class MyMOTOR {
     public:
         void setup(); //初期設定
         void run(int movement_azimuth, int power_, int dir_azimuth); //進む方向、力（最大Powerは255）、向く方向（姿勢制御用）を引数にいれる
+        void run_non_stabilization(int movement_azimuth, int power_); //姿勢制御なしで動かす
         int difix(int target_azimuth); //PID姿勢制御用
         void free(); //自由回転
         void brake(); //ブレーキ

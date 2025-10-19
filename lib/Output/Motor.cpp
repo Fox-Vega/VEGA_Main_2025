@@ -54,6 +54,45 @@ void MyMOTOR::run(int movement_azimuth, int power_, int dir_azimuth) {
     }
 }
 
+void MyMOTOR::run_non_stabilization(int movement_azimuth, int power_) {
+    max_power = constrain(power_, -pwmlimit, pwmlimit); //制限かける
+
+    motor_azimuth = movement_azimuth; //記録用
+    motor_magnitude = max_power * pwmscale;
+
+    h = 0; //最高値
+    for (int i = 0; i < 4; i++) {
+        int azimuth_motor = (movement_azimuth - motor_degrees[i] + 360) % 360; //モーター軸を0度とした時の進行方向
+
+        // 座標計算
+        myvector.get_cord(azimuth_motor, max_power); //姿勢制御分の出力を引かずに計算
+        motor_power_[i] = myvector.get_x(); //仮出力
+
+        if (abs(motor_power_[i]) > h) {
+            h = abs(motor_power_[i]);
+        }
+    }
+
+    for (int i = 0; i < 4; i++) {
+        pp = abs(motor_power_[i]) / abs(h);
+
+        if (motor_power_[i] > 0) power = (max_power * pp);
+        else if (motor_power_[i] < 0) power = (-max_power * pp);
+        else power = 0;
+
+        power = constrain(power, -pwmlimit, pwmlimit);
+        if (motor_move == 1) {
+            if (power >= 0) {
+                analogWrite(motor_PIN1[i], 0);
+                analogWrite(motor_PIN2[i], abs(power));
+            } else {
+                analogWrite(motor_PIN1[i], abs(power));
+                analogWrite(motor_PIN2[i], 0);
+            }
+        }
+    }
+}
+
 int MyMOTOR::difix(int target_azimuth) {
     float dt = (millis() - lastupdate) / 1000.0; //秒に直す
     int current_azimuth = gam.get_azimuth();

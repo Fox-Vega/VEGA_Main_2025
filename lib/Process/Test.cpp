@@ -52,7 +52,7 @@ void Test::test_(){
                     mypixel.multi(7, 15, 255, 255, 0);
                     break;
                 case 5:
-                    mypixel.multi(0, 15, 255, 255, 255);
+                    mypixel.multi(0, 15, 57, 197, 187);
                     break;
                 case 6: //Exit
                     mypixel.rainbow();
@@ -66,6 +66,7 @@ void Test::test_(){
                 mybuzzer.start(300, 30);
                 timer.reset();
             }
+            crr=0;
         } else {
             mypixel.clear();
             switch(t_mode) {
@@ -186,14 +187,19 @@ void Test::stabilize() {
     mymotor.run(0, 0, 0);
 }
 
-void Test::free() {
-    //なんでもいれていいところ　内容書いてね->　アタックの進行方向
+void Test::free() {//グルグルするやつ　左に進むだけ
+    // //なんでもいれていいところ　内容書いてね->　アタックの進行方向
 
-    mymotor.move(0);
-    ball.read();
-    attack.attack_();
+    // mymotor.move(0);
+    // ball.read();
+    // attack.attack_();
 
-    Serial.print(ball.get_azimuth());
-    Serial.print(" ");
-    Serial.println(mymotor.get_azimuth());
+    // Serial.print(ball.get_azimuth());
+    // Serial.print(" ");
+    // Serial.println(mymotor.get_azimuth());
+    crr++;
+    mypixel.multi(0, 15, 255, 255, 255);
+    mypixel.closest(270-gam.get_azimuth(), 255, 0, 0, 1);
+    mypixel.closest(crr%360, 255, 255, 0, 1);
+    mymotor.run(270-gam.get_azimuth(), 140,(crr%720)/2);
 }

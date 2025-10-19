@@ -13,9 +13,13 @@ public:
     void reset();                      // リセット処理
 
 private:
+
+
+    bool mmm=true;
     // === 調整用定数 ===
     //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
     #define USE_DASH false
+    static constexpr int ball_cal =-10;
     static constexpr float dash_border = 1000.0;        // ダッシュ待ち時間
     static constexpr float dash_time = 1200.0;          // ダッシュ時間
     static constexpr int dash_border_ball = 2000;    // ボール検出でダッシュ待ち時間リセット
@@ -23,25 +27,31 @@ private:
     static constexpr float move_speed = 220.0;          // 移動スピード（旧: ball_power）
     static constexpr float move_border = 70.0;          // 移動最小値 判定に使う
     static constexpr float line_late = 1.0;         // ライン反応倍率
-    static constexpr float y_late = 0.8;         // ライン反応倍率
+    static constexpr float y_late = 1.0;         // ライン反応倍率
     static constexpr float x_late = 1.0;
     static constexpr float ball_late = 1.0;         // ボール反応倍率
 
-    // === 処理用変数 ===
-    int lastdetect;                    // 最後検出方向
-    int move_azimuth;                  // 移動方向
-    float move_power;                  // 移動パワー
-    double move_x;                     // X軸移動量
-    double move_y;                     // Y軸移動量
+    int edge_list[6]={5,6,7,17,18,19};
 
-    float rad;
-    float ball_ang;                    // ボール回避方向
-    float line_x;
-    float line_y;
-    float ball_x;
-    float ball_y;
-    Timer Dtimer;                      // ディフェンスタイマー
-    Timer SilentTime;
+    // === 処理用変数 ===
+    int lastdetect[2]{0};                    // 最後検出方向
+    static int move_azimuth;                  // 移動方向
+    static float move_power;                  // 移動パワー
+    static double move_x;                     // X軸移動量
+    static double move_y;                     // Y軸移動量
+
+    static float rad;
+    static float ball_ang;                    // ボール回避方向
+    static float line_x;
+    static float line_y;
+    static float ball_x;
+    static float ball_y;
+    static Timer Dtimer;                      // ディフェンスタイマー
+    static Timer SilentTime;
+
+    static int calb;
+    bool tl;
+    bool edge;
 
     // === ユーティリティ関数 ===
 
@@ -59,23 +69,6 @@ private:
 
     //誤差測定　差分の絶対値を返す
     inline int getErr(int a, int b) { int d = abs((a - b) % 360); return (d > 180) ? (360 - d) : d; }
-
-    //姿勢制御のせいで動かん
-    int m_ang[8] = {0,45,90,135,180,225,270,315};
-    //m_angの中で一番近い角度を返す
-    inline int getClosestAngle(int target) {
-        int minErr = 360;
-        int closest = m_ang[0];
-
-        for(int i = 0; i < 8; i++) {
-            int err = getErr(target, m_ang[i]);
-            if(err < minErr) {
-                minErr = err;
-                closest = m_ang[i];
-            }
-        }
-        return closest;
-    }
 
     // === UI用構造体 ===
     struct RGBA {
