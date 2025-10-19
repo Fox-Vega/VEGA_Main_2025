@@ -3,26 +3,39 @@
 #include "Output.h"
 #include "AIP.h"
 #include "Process.h"
-// #define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-// #define printf_s_long(fmt, ...) ({ char buf[700]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-#define printf_s {}
-#define printf_s_long {}
+#define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+#define printf_s_long(fmt, ...) ({ char buf[700]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+
+//staticのやつら
+int Defense::lastdetect[2] = {0};
 int Defense::move_azimuth = 0;
 float Defense::move_power = 0.0f;
 double Defense::move_x = 0.0;
 double Defense::move_y = 0.0;
+int Defense::calc_move_speed = 0;
+int Defense::lastpower = 999;
+int Defense::last_x = 999;
+int Defense::last_y = 999;
 float Defense::rad = 0.0f;
 float Defense::ball_ang = 0.0f;
 float Defense::line_x = 0.0f;
 float Defense::line_y = 0.0f;
 float Defense::ball_x = 0.0f;
 float Defense::ball_y = 0.0f;
-int Defense::calb = 0;
 Timer Defense::Dtimer;
 Timer Defense::SilentTime;
+int Defense::calb = 0;
+bool Defense::tl = false;
+bool Defense::edge = false;
+Defense::RGBA Defense::background;
+Defense::RGBA Defense::P_line;
+Defense::RGBA Defense::P_ball;
+Defense::RGBA Defense::move_ang;
+Defense::RGBA Defense::dash_timer;
 
 void Defense::setup() {
     reset();//初期化　その他は何にもない
+    //...あれれ？　意味ないじゃんけ
 }
 
 void Defense::defense_() {
@@ -97,7 +110,7 @@ void Defense::defense_() {
 
                 if(exitDash()){SilentTime.reset();break;}
             }
-            mymotor.brake();
+            mymotor.brake();//ブレ~~~~~~~き
             delay(100);
             return;//はじめに戻る
         } else {//1.5倍過ぎたら止めましょうと　誤爆防止や
@@ -117,64 +130,79 @@ void Defense::defense_() {
         if (ball.get_stat() == 1) {// === ボールあり ===
             calb=0-gam.get_azimuth();//進行方向補正
 
+            //line
             rad = radians(line.get_azimuth());//ラインに対しての戻る力
             line_x = sin(rad);
             line_y = cos(rad);
+            //---
 
-
-
+            //ball
             ball_ang=ball.get_azimuth()+ball_cal;//ボールの方向
 
             ball_y= (ball_ang<90||ball_ang>270)?1:-1;
 
             ball_x= (ball_ang<180)?1:-1;
+            //---
 
-            int calc_move_speed=move_speed;//速度減算
-            if((tl||abs(line.get_x())>2)){
-                mybuzzer.start(100,999);
-                //calc_move_speed=calc_move_speed>>1;
-            } else {
-                mybuzzer.stop();
-            }
+            //減算
+            calc_move_speed=(line.get_x()>3||tl)?static_cast<int>(move_speed)>>1:move_speed;//速度減算
+            //---
 
-            if(tl||abs(line.get_x())>2){ball_x=0;
-            printf_s("vertical or edge ball x=0\n");}//縦ラインorエッジならｘは0にしておく
+            //x
+            if(tl||abs(line.get_x())>2)
+            ball_x=0;
+            //縦ラインならballｘは0にしておく
+
             move_x=((line_x*line_late*x_late)+(ball_x*ball_late*x_late))*calc_move_speed;
-            if(tl&&abs(line.get_x())<3){move_x=0;
-            printf_s("vertical move x=0\n");}//縦ライン
 
-            if(!tl&&abs(line.get_x())<2){ball_y=0;
-            printf_s("not vertical ball y=0\n");}//縦ラインじゃなかったらｙは0にしておく
+            if(tl&&abs(line.get_x())<3)
+            move_x=0;
+            //縦ラインでの速度上昇用
+
+            //---
+
+            //y
+            if(!tl&&abs(line.get_x())<2)
+            ball_y=0;
+            //縦ラインじゃなかったらballｙは0にしておく
+
             move_y=((line_y*line_late*y_late)+(ball_y*ball_late*y_late))*calc_move_speed;
-            if(abs(line.get_y())<3&&!tl&&abs(line.get_x())<2){move_y=0;
-            printf_s("not vertical and near line move y=0\n");}//並行ラインでの処理やったけど縦でおかしいからtl判定を有効にした
 
+            if(abs(line.get_y())<3&&!tl&&abs(line.get_x())<2)
+            move_y=0;
+            //並行ラインでの処理やったけど縦でおかしいからtl判定を有効にした
+            //---
+
+            //計算
             move_azimuth = myvector.get_azimuth(move_x, move_y);
             move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
+            //---
 
             if(getErr(0+ball_cal,ball.get_azimuth())<ball_move_border&&!tl&&!(line.get_x()<3)){
+                //縦ラインじゃないかつボールが正面に近ければ止まる
                 move_power=0;
             }
             if (move_power > move_border ) {
                 if(diff_signs(move_x, last_x)||diff_signs(move_y, last_y)){
-                    mymotor.brake();
+                    mymotor.brake();//方向転換時は一旦停止
                 } else{
-                mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
-            }
+                    mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
+                }
                 SilentTime.reset();
             } else {
-                if(move_power==0&&lastpower>100){
+                if(move_power==0&&lastpower>100){//急停止はブレーキ
                     mymotor.brake();
                 } else {
-                    printf_s("motor free\n");
                     mymotor.free();
                     frog=FROG::STOP;
                 }
             }
 
+            {//保存保存！
             lastpower=static_cast<int>(move_power);
             last_x=static_cast<int>(line_x);
             last_y=static_cast<int>(line_y);
+            }
 
         } else {
             frog=FROG::NO_BALL;
@@ -187,7 +215,7 @@ void Defense::defense_() {
     } else {
         // === ラインなし：戻り処理 ===
         mymotor.run_non_stabilization(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230);
-        mybuzzer.start(1500, 999);
+        //一応姿勢制御なし　まあ機体角度とか考慮してなんとか
         frog=FROG::NO_LINE;//フ　ラ　グ　付　け
     }
     applyUI(static_cast<int>(frog));
@@ -276,7 +304,7 @@ void Defense::applyUI(int mode) {
     } else if (mode == 3) {
         mypixel.multi(0, 15, 255, 100, 255);
     } else if (mode == 4) { // 移動量（サイレントタイマーメーター）
-        // mybuzzer.start(200+(SilentTime.read_milli()/3),999);
+        mybuzzer.start(200+(SilentTime.read_milli()/3),999);
         // --- 背景 ---
         mypixel.multi(0, 15, background.red, background.green, background.blue);
 

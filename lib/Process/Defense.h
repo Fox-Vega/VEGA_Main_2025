@@ -9,13 +9,9 @@ public:
     // === メイン処理 ===
     void setup(void);                  // 初期設定
     void defense_(void);               // メイン処理
-    void NewFunction();
     void reset();                      // リセット処理
 
 private:
-
-
-    bool mmm=true;
     // === 調整用定数 ===
     //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
     #define USE_DASH false
@@ -31,17 +27,18 @@ private:
     static constexpr float x_late = 1.0;
     static constexpr float ball_late = 1.0;         // ボール反応倍率
 
-    int edge_list[6]={5,6,7,17,18,19};
+    static constexpr uint8_t edge_list[6] = {5,6,7,17,18,19};
 
     // === 処理用変数 ===
-    int lastdetect[2]{0};                    // 最後検出方向
+    static int lastdetect[2];                    // 最後検出方向
     static int move_azimuth;                  // 移動方向
     static float move_power;                  // 移動パワー
     static double move_x;                     // X軸移動量
     static double move_y;                     // Y軸移動量
-    int lastpower=999;
-    int last_x=999;
-    int last_y=999;
+    static int calc_move_speed;             // 速度減算
+    static int lastpower;
+    static int last_x;
+    static int last_y;
 
     static float rad;
     static float ball_ang;                    // ボール回避方向
@@ -53,8 +50,8 @@ private:
     static Timer SilentTime;
 
     static int calb;
-    bool tl;
-    bool edge;
+    static bool tl;
+    static bool edge;
 
     // === ユーティリティ関数 ===
 
@@ -99,12 +96,12 @@ private:
         }
     };
 
-    // === UI0用変数 ===
-    RGBA background;                   // 背景色
-    RGBA P_line;                       // ライン表示色
-    RGBA P_ball;                       // ボール表示色
-    RGBA move_ang;                     // 移動方向表示色
-    RGBA dash_timer;                   // ダッシュタイマー色
+    // === UI用変数 ===
+    static RGBA background;                   // 背景色
+    static RGBA P_line;                       // ライン表示色
+    static RGBA P_ball;                       // ボール表示色
+    static RGBA move_ang;                     // 移動方向表示色
+    static RGBA dash_timer;                   // ダッシュタイマー色
 
     enum class FROG : int {
         NONE = 0,
