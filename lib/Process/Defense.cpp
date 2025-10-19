@@ -3,10 +3,10 @@
 #include "Output.h"
 #include "AIP.h"
 #include "Process.h"
-#define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-#define printf_s_long(fmt, ...) ({ char buf[512]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-// #define printf_s {}
-// #define printf_s_long {}
+// #define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+// #define printf_s_long(fmt, ...) ({ char buf[700]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+#define printf_s {}
+#define printf_s_long {}
 int Defense::move_azimuth = 0;
 float Defense::move_power = 0.0f;
 double Defense::move_x = 0.0;
@@ -28,12 +28,16 @@ void Defense::setup() {
 void Defense::defense_() {
     resetUI();
     frog = FROG::NONE; //フ　ラ　グ　付　け
-    /*縦ライン*/tl=false;{bool frog1=false;bool frog2=false;int leng=4;for(int i=0; i<leng;i++){if(line.get_stat(i)==true){frog1=true;break;}}for(int i=1; i<leng;i++){if(line.get_stat(24-i)==true){frog1=true;break;}}for(int i=0; i<leng;i++){if(line.get_stat(11+i)==true){frog2=true;break;}}for(int i=1; i<leng;i++){if(line.get_stat(12-i)==true){frog2=true;break;}}if(frog1&&frog2){tl=true;background=RGBA{255,0,255,1};}}
+
+    /*縦ライン*/
+    tl=false;{bool frog1=false;bool frog2=false;int leng=4;for(int i=0; i<leng;i++){if(line.get_stat(i)==true){frog1=true;break;}}for(int i=1; i<leng;i++){if(line.get_stat(24-i)==true){frog1=true;break;}}for(int i=0; i<leng;i++){if(line.get_stat(11+i)==true){frog2=true;break;}}for(int i=1; i<leng;i++){if(line.get_stat(12-i)==true){frog2=true;break;}}if(frog1&&frog2){tl=true;background=RGBA{255,0,255,1};}}
     if(tl){printf_s("vertical line detected\n");}
-    /*左右の端*/edge=false;{bool frog1=false;for (size_t i = 0; i < (sizeof(edge_list) / sizeof(edge_list[0])); i++) {if (line.get_stat(edge_list[i]) == true) {frog1 = true;break;}}if(frog1){edge=true;}}
+    /*左右の端*/
+    edge=false;{bool frog1=false;for (size_t i = 0; i < (sizeof(edge_list) / sizeof(edge_list[0])); i++) {if (line.get_stat(edge_list[i]) == true) {frog1 = true;break;}}if(frog1){edge=true;}}
     if(edge){printf_s("edge line detected\n");}
+
     // === ダッシュ処理 ===
-    [this](){if(SilentTime.read_milli()>dash_border&& USE_DASH == true){ //なんでラムダで囲んでるかって？ まあ気分だよ気分
+    auto dash = [this]() -> void {if(SilentTime.read_milli()>dash_border&& USE_DASH == true){ //なんでラムダで囲んでるかって？ まあ気分だよ気分
         frog=FROG::DASH; //フ　ラ　グ　付　け
         float TL = 20.0;         //TL＝縦　ライン　(脳筋)
         float TLM = 60.0;        //TL＝縦　ライン　(脳筋)
@@ -94,43 +98,41 @@ void Defense::defense_() {
                 if(exitDash()){SilentTime.reset();break;}
             }
             mymotor.brake();
+            delay(100);
             return;//はじめに戻る
         } else {//1.5倍過ぎたら止めましょうと　誤爆防止や
             SilentTime.reset();
             return;//はじめに戻る
         }
     }
-    }();
+    };
+    dash();
 
     if (line.get_type() != 0) {// === ラインあり ===
         frog = FROG::NORMAL;//フ　ラ　グ　付　け
 
         // --- 次回用保存処理 ---
-        [this](){lastdetect[0]=line.get_azimuth();lastdetect[1]=gam.get_azimuth();}();
+        lastdetect[0]=line.get_azimuth();lastdetect[1]=gam.get_azimuth();
 
         if (ball.get_stat() == 1) {// === ボールあり ===
-            calb=0-gam.get_azimuth();//キャリブレーション補正
-            ball_ang=ball.get_azimuth()+ball_cal;//ボールの方向
+            calb=0-gam.get_azimuth();//進行方向補正
 
             rad = radians(line.get_azimuth());//ラインに対しての戻る力
             line_x = sin(rad);
             line_y = cos(rad);
 
-            if(ball.get_azimuth()<90||ball.get_azimuth()>270){//ボールが前にあるか
-                ball_y= 1;
-            } else {
-                ball_y= -1;
-            }
-            if(ball.get_azimuth()<180){//ラインに対して180;
-                ball_x= 1;
-            } else {
-                ball_x= -1;
-            }
+
+
+            ball_ang=ball.get_azimuth()+ball_cal;//ボールの方向
+
+            ball_y= (ball_ang<90||ball_ang>270)?1:-1;
+
+            ball_x= (ball_ang<180)?1:-1;
 
             int calc_move_speed=move_speed;//速度減算
             if((tl||abs(line.get_x())>2)){
                 mybuzzer.start(100,999);
-                calc_move_speed=calc_move_speed>>1;
+                //calc_move_speed=calc_move_speed>>1;
             } else {
                 mybuzzer.stop();
             }
@@ -138,69 +140,41 @@ void Defense::defense_() {
             if(tl||abs(line.get_x())>2){ball_x=0;
             printf_s("vertical or edge ball x=0\n");}//縦ラインorエッジならｘは0にしておく
             move_x=((line_x*line_late*x_late)+(ball_x*ball_late*x_late))*calc_move_speed;
+            if(tl&&abs(line.get_x())<3){move_x=0;
+            printf_s("vertical move x=0\n");}//縦ライン
 
-            if(!tl&&line.get_x()==0){ball_y=0;
+            if(!tl&&abs(line.get_x())<2){ball_y=0;
             printf_s("not vertical ball y=0\n");}//縦ラインじゃなかったらｙは0にしておく
             move_y=((line_y*line_late*y_late)+(ball_y*ball_late*y_late))*calc_move_speed;
-            if(abs(line.get_y())<3&&!tl&&line.get_x()<2){move_y=0;
+            if(abs(line.get_y())<3&&!tl&&abs(line.get_x())<2){move_y=0;
             printf_s("not vertical and near line move y=0\n");}//並行ラインでの処理やったけど縦でおかしいからtl判定を有効にした
 
             move_azimuth = myvector.get_azimuth(move_x, move_y);
             move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
-            printf_s_long(R"RAW(
-                | ============================
-                | move_x: %d ;
-                | move_y: %d ;
-                | move_azimuth: %d ;
-                | mod : %d ;
-                | move_power: %d ;
-                | ball_ang: %d ;
-                | ball_x : %d ;
-                | ball_y : %d ;
-                | line_x : %d ;
-                | line_y : %d ;
 
-                | calb : %d ;
-
-                | X||%d+%d|| %d
-                | Y||%d+%d|| %d
-
-                | line_distance : %d ;
-                | line_y : %d ;
-                | =============================
-                )RAW",
-                static_cast<int>(move_x),
-                static_cast<int>(move_y),
-                static_cast<int>(move_azimuth),
-                static_cast<int>(move_azimuth+calb),
-                static_cast<int>(move_power),
-                static_cast<int>(ball_ang),
-                static_cast<int>(ball_x),
-                static_cast<int>(ball_y),
-                static_cast<int>(line_x),
-                static_cast<int>(line_y),
-                calb,
-                static_cast<int>(line_x),
-                static_cast<int>(ball_x),
-                (static_cast<int>(line_x)+static_cast<int>(ball_x)),
-                static_cast<int>(line_y),
-                static_cast<int>(ball_y),
-                (static_cast<int>(line_y)+static_cast<int>(ball_y)),
-                static_cast<int>(abs(line.get_magnitude())),
-                static_cast<int>(line.get_y())
-                );
-
-            if (move_power > move_border && !(getErr(0+ball_cal,ball.get_azimuth())<ball_move_border)) {
+            if(getErr(0+ball_cal,ball.get_azimuth())<ball_move_border&&!tl&&!(line.get_x()<3)){
+                move_power=0;
+            }
+            if (move_power > move_border ) {
+                if(diff_signs(move_x, last_x)||diff_signs(move_y, last_y)){
+                    mymotor.brake();
+                } else{
                 mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
+            }
                 SilentTime.reset();
             } else {
-                if(getErr(0+ball_cal,ball.get_azimuth())<ball_move_border&&line.get_magnitude()>3){
-                    mymotor.run(line.get_azimuth()+calb, 180, 0);
+                if(move_power==0&&lastpower>100){
+                    mymotor.brake();
                 } else {
+                    printf_s("motor free\n");
                     mymotor.free();
                     frog=FROG::STOP;
                 }
             }
+
+            lastpower=static_cast<int>(move_power);
+            last_x=static_cast<int>(line_x);
+            last_y=static_cast<int>(line_y);
 
         } else {
             frog=FROG::NO_BALL;
@@ -317,3 +291,56 @@ void Defense::applyUI(int mode) {
         }
     }
 }
+
+
+/*
+printf_s_long(R"RAW(
+| ============================
+| move_x: %d ;
+| move_y: %d ;
+| move_azimuth: %d ;
+| mod : %d ;
+| move_power: %d ;
+| ball_ang: %d ;
+| ball_x : %d ;
+| ball_y : %d ;
+| line_x : %d ;
+| line_y : %d ;
+
+| calb : %d ;
+
+| X||%d+%d|| %d
+| Y||%d+%d|| %d
+
+| line_distance : %d ;
+| line_y : %d ;
+| line_x : %d ;
+
+|line_x cal: %d/100;
+| =============================
+
+
+)RAW",
+static_cast<int>(move_x),
+static_cast<int>(move_y),
+static_cast<int>(move_azimuth),
+norm360(static_cast<int>(move_azimuth+calb)),
+static_cast<int>(move_power),
+static_cast<int>(ball_ang),
+static_cast<int>(ball_x),
+static_cast<int>(ball_y),
+static_cast<int>(line_x),
+static_cast<int>(line_y),
+calb,
+static_cast<int>(line_x),
+static_cast<int>(ball_x),
+static_cast<int>(line_x+ball_x*calc_move_speed),
+static_cast<int>(line_y),
+static_cast<int>(ball_y),
+(static_cast<int>(line_y)+static_cast<int>(ball_y)*calc_move_speed),
+static_cast<int>(abs(line.get_magnitude())),
+static_cast<int>(line.get_y()),
+static_cast<int>(line.get_x()),
+static_cast<int>(line_x * 100)  // 小数点以下2桁を整数として表示
+);
+*/

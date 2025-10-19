@@ -39,6 +39,9 @@ private:
     static float move_power;                  // 移動パワー
     static double move_x;                     // X軸移動量
     static double move_y;                     // Y軸移動量
+    int lastpower=999;
+    int last_x=999;
+    int last_y=999;
 
     static float rad;
     static float ball_ang;                    // ボール回避方向
@@ -69,6 +72,10 @@ private:
 
     //誤差測定　差分の絶対値を返す
     inline int getErr(int a, int b) { int d = abs((a - b) % 360); return (d > 180) ? (360 - d) : d; }
+
+    inline bool diff_signs(int a, int b) {
+        return (a >= 0 && b < 0) || (a < 0 && b >= 0);
+    }
 
     // === UI用構造体 ===
     struct RGBA {
