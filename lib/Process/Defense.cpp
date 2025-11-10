@@ -44,10 +44,8 @@ void Defense::defense_() {
 
     /*縦ライン*/
     tl=false;{bool frog1=false;bool frog2=false;int leng=4;for(int i=0; i<leng;i++){if(line.get_stat(i)==true){frog1=true;break;}}for(int i=1; i<leng;i++){if(line.get_stat(24-i)==true){frog1=true;break;}}for(int i=0; i<leng;i++){if(line.get_stat(11+i)==true){frog2=true;break;}}for(int i=1; i<leng;i++){if(line.get_stat(12-i)==true){frog2=true;break;}}if(frog1&&frog2){tl=true;background=RGBA{255,0,255,1};}}
-    if(tl){printf_s("vertical line detected\n");}
     /*左右の端*/
     edge=false;{bool frog1=false;for (size_t i = 0; i < (sizeof(edge_list) / sizeof(edge_list[0])); i++) {if (line.get_stat(edge_list[i]) == true) {frog1 = true;break;}}if(frog1){edge=true;}}
-    if(edge){printf_s("edge line detected\n");}
 
     // === ダッシュ処理 ===
     auto dash = [this]() -> void {if(SilentTime.read_milli()>dash_border&& USE_DASH == true){ //なんでラムダで囲んでるかって？ まあ気分だよ気分
@@ -61,6 +59,11 @@ void Defense::defense_() {
                 }
                 return false;
             };
+            auto readSensors = [&]() -> void {
+                gam.read_azimuth();
+                ball.read();
+                line.read();
+            };
             if(exitDash()){SilentTime.reset(); return;} //ダッシュ中止
 
             mypixel.multi(0,15,255,50,50);mypixel.show();
@@ -71,10 +74,8 @@ void Defense::defense_() {
 
 
             while(SilentTime.read_milli()<dash_time){//こちらがメイン　アタック呼び出してるだけ　頭悪い
-                //while文の弊害たち
-                gam.read_azimuth();
-                ball.read();
-                line.read();
+                //while文の弊害
+                readSensors();
                 if(line.get_type()!=0){lastdetect[0]=line.get_azimuth();lastdetect[1]=gam.get_azimuth();} //更新
                 attack.attack_();
                 if(exitDash()){SilentTime.reset();break;}
@@ -99,10 +100,8 @@ void Defense::defense_() {
                     break;
                 }
 
-                //while文の弊害たち
-                gam.read_azimuth();
-                ball.read();
-                line.read();
+                //while文の弊害
+                readSensors();
 
                 //動きます
                 mymotor.run(mm,static_cast<int>(mt),0);
@@ -125,7 +124,8 @@ void Defense::defense_() {
         frog = FROG::NORMAL;//フ　ラ　グ　付　け
 
         // --- 次回用保存処理 ---
-        lastdetect[0]=line.get_azimuth();lastdetect[1]=gam.get_azimuth();
+        lastdetect[0]=line.get_azimuth();
+        lastdetect[1]=gam.get_azimuth();
 
         if (ball.get_stat() == 1) {// === ボールあり ===
             calb=0-gam.get_azimuth();//進行方向補正
@@ -139,24 +139,23 @@ void Defense::defense_() {
             //ball
             ball_ang=ball.get_azimuth()+ball_cal;//ボールの方向
 
-            ball_y= (ball_ang<90||ball_ang>270)?1:-1;
-
-            ball_x= (ball_ang<180)?1:-1;
+            ball_y= (ball_ang<90||ball_ang>270) ? 1 : -1;//0か1か
+            ball_x= (ball_ang<180) ? 1 : -1;
             //---
 
-            //減算
+            //減算　縦か角
             calc_move_speed=(line.get_x()>3||tl)?static_cast<int>(move_speed)>>1:move_speed;//速度減算
             //---
 
             //x
             if(tl||abs(line.get_x())>2)
-            ball_x=0;
+                ball_x=0;
             //縦ラインならballｘは0にしておく
 
             move_x=((line_x*line_late*x_late)+(ball_x*ball_late*x_late))*calc_move_speed;
 
             if(tl&&abs(line.get_x())<3)
-            move_x=0;
+                move_x=0;
             //縦ラインでの速度上昇用
 
             //---
@@ -182,20 +181,21 @@ void Defense::defense_() {
                 //縦ラインじゃないかつボールが正面に近ければ止まる
                 move_power=0;
             }
+
             if (move_power > move_border ) {
-                if(diff_signs(move_x, last_x)||diff_signs(move_y, last_y)){
+                //if(diff_signs(move_x, last_x)||diff_signs(move_y, last_y)){
                     mymotor.brake();//方向転換時は一旦停止
-                } else{
+                //} else{
                     mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
-                }
+                // }
                 SilentTime.reset();
             } else {
-                if(move_power==0&&lastpower>100){//急停止はブレーキ
+                //if(move_power==0&&lastpower>100){//急停止はブレーキ
                     mymotor.brake();
-                } else {
+                //} else {
                     mymotor.free();
                     frog=FROG::STOP;
-                }
+                //}
             }
 
             {//保存保存！
