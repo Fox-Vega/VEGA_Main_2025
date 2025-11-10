@@ -114,9 +114,9 @@ void LINE::read() {
         }
 
         //ライン越え判定
-        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > over_border && line_type == 0) {
-            if (over == false) over = true;
-            else over = false;
+        if (myvector.get_vectordegree(line_x, line_y, oldline_x, oldline_y) > over_border && line_type != 0) {
+            over = !over;
+            // Serial.println(over);
         }
 
         //ライン種類判別
