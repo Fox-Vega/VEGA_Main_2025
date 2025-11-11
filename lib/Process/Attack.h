@@ -13,7 +13,6 @@ class Attack {
         const int back_speed = 110;
         unsigned long back_border = 1200;
 
-        // {},
         const float wrap[6][3] = {//最初は0,0必須　最低2セット　2つ目に進む方向
             {0, 0, 200},
             {15, 1.0, 200},
@@ -25,8 +24,8 @@ class Attack {
 
         int speed = 0;
         bool back = false;
-        float ball_azimuth;
-        float movement_azimuth;
+        int ball_azimuth;
+        int movement_azimuth;
         int wrap_size;
         unsigned long back_start;
 };
