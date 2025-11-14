@@ -19,9 +19,9 @@ private:
     static constexpr float dash_border = 1000.0;        // ダッシュ待ち時間
     static constexpr float dash_time = 1200.0;          // ダッシュ時間
     static constexpr int dash_border_ball = 2000;    // ボール検出でダッシュ待ち時間リセット
-    static constexpr float ball_move_border = 7.0;      // ボール移動境界(±角度)
+    static constexpr float ball_move_border = 15.0;      // ボール移動境界(±角度)
     static constexpr float move_speed = 220.0;          // 移動スピード（旧: ball_power）
-    static constexpr float move_border = 70.0;          // 移動最小値 判定に使う
+    static constexpr float move_border = 20.0;          // 移動最小値 判定に使う
     static constexpr float line_late = 1.0;         // ライン反応倍率
     static constexpr float y_late = 1.0;         // ライン反応倍率
     static constexpr float x_late = 1.0;
@@ -72,6 +72,38 @@ private:
 
     inline bool diff_signs(int a, int b) {
         return (a >= 0 && b < 0) || (a < 0 && b >= 0);
+    }
+
+    /// @brief 角度を0, 90, 180, 270の最も近い値に丸める
+    /// @param angle 入力角度（0-359）
+    /// @return 最も近い基本方向（0, 90, 180, 270）
+    inline int roundToCardinal(int angle) {
+        angle = norm360(angle);  // 0-359に正規化
+        
+        // 各方向との誤差を計算
+        int err0 = getErr(angle, 0);
+        int err90 = getErr(angle, 90);
+        int err180 = getErr(angle, 180);
+        int err270 = getErr(angle, 270);
+        
+        // 最小誤差の方向を返す
+        int minErr = err0;
+        int result = 0;
+        
+        if (err90 < minErr) {
+            minErr = err90;
+            result = 90;
+        }
+        if (err180 < minErr) {
+            minErr = err180;
+            result = 180;
+        }
+        if (err270 < minErr) {
+            minErr = err270;
+            result = 270;
+        }
+        
+        return result;
     }
 
     // === UI用構造体 ===

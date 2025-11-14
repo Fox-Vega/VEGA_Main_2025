@@ -4,14 +4,15 @@
 #include "AIP.h"
 #include "Process.h"
 #define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
-#define printf_s_long(fmt, ...) ({ char buf[700]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
+#define printf_s_long(fmt, ...) ({ char buf[3000]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })
 
 //staticのやつら
+constexpr uint_fast8_t Defense::edge_list[6];
 int Defense::lastdetect[2] = {0};
 int Defense::move_azimuth = 0;
 float Defense::move_power = 0.0f;
 double Defense::move_x = 0.0f;
-double Defense::move_y = 0.0f;
+double Defense::move_y = 0.0f                                                                                                   ;
 int Defense::calc_move_speed = 0;
 int Defense::lastpower = 999;
 int Defense::last_x = 999;
@@ -48,77 +49,76 @@ void Defense::defense_() {
     edge=false;{bool frog1=false;for (size_t i = 0; i < (sizeof(edge_list) / sizeof(edge_list[0])); i++) {if (line.get_stat(edge_list[i]) == true) {frog1 = true;break;}}if(frog1){edge=true;}}
 
     // === ダッシュ処理 ===
-    auto dash = [this]() -> void {if(SilentTime.read_milli()>dash_border&& USE_DASH == true){ //なんでラムダで囲んでるかって？ まあ気分だよ気分
-        frog=FROG::DASH; //フ　ラ　グ　付　け
-        float TL = 20.0;         //TL＝縦　ライン　(脳筋)
-        float TLM = 60.0;        //TL＝縦　ライン　(脳筋)
-        if(SilentTime.read_milli()<dash_border*1.2){//最初に起動防止　まあほぼ意味はないけど
-            auto exitDash = [&]() -> bool {
-                if(myswitch.check_toggle()==0){
-                    return true;
-                }
-                return false;
-            };
-            auto readSensors = [&]() -> void {
-                gam.read_azimuth();
-                ball.read();
-                line.read();
-            };
-            if(exitDash()){SilentTime.reset(); return;} //ダッシュ中止
+    // auto dash = [this]() -> void {if(SilentTime.read_milli()>dash_border&& USE_DASH == true){ //なんでラムダで囲んでるかって？ まあ気分だよ気分
+    //     frog=FROG::DASH; //フ　ラ　グ　付　け
+    //     float TL = 20.0;         //TL＝縦　ライン　(脳筋)
+    //     float TLM = 60.0;        //TL＝縦　ライン　(脳筋)
+    //     if(SilentTime.read_milli()<dash_border*1.2){//最初に起動防止　まあほぼ意味はないけど
+    //         auto exitDash = [&]() -> bool {
+    //             if(myswitch.check_toggle()==0){
+    //                 return true;
+    //             }
+    //             return false;
+    //         };
+    //         auto readSensors = [&]() -> void {
+    //             gam.read_azimuth();
+    //             ball.read();
+    //             line.read();
+    //         };
+    //         if(exitDash()){SilentTime.reset(); return;} //ダッシュ中止
 
-            mypixel.multi(0,15,255,50,50);mypixel.show();
-            SilentTime.reset();
+    //         mypixel.multi(0,15,255,50,50);mypixel.show();
+    //         SilentTime.reset();
 
-            //少し前に進みます
-            while(SilentTime.read_milli()<300){gam.read_azimuth();mymotor.run(0,200,0);if(exitDash()){SilentTime.reset();break;}}SilentTime.reset();
+    //         //少し前に進みます
+    //         while(SilentTime.read_milli()<300){gam.read_azimuth();mymotor.run(0,200,0);if(exitDash()){SilentTime.reset();break;}}SilentTime.reset();
 
 
-            while(SilentTime.read_milli()<dash_time){//こちらがメイン　アタック呼び出してるだけ　頭悪い
-                //while文の弊害
-                readSensors();
-                if(line.get_type()!=0){lastdetect[0]=line.get_azimuth();lastdetect[1]=gam.get_azimuth();} //更新
-                attack.attack_();
-                if(exitDash()){SilentTime.reset();break;}
-            }SilentTime.reset();
+    //         while(SilentTime.read_milli()<dash_time){//こちらがメイン　アタック呼び出してるだけ　頭悪い
+    //             //while文の弊害
+    //             readSensors();
+    //             if(line.get_type()!=0){lastdetect[0]=line.get_azimuth();lastdetect[1]=gam.get_azimuth();} //更新
+    //             attack.attack_();
+    //             if(exitDash()){SilentTime.reset();break;}
+    //         }SilentTime.reset();
 
-            //少し後ろに進みます
-            while(SilentTime.read_milli()<300){gam.read_azimuth();mymotor.run(180,200,0);if(exitDash()){SilentTime.reset();break;}}SilentTime.reset();
+    //         //少し後ろに進みます
+    //         while(SilentTime.read_milli()<300){gam.read_azimuth();mymotor.run(180,200,0);if(exitDash()){SilentTime.reset();break;}}SilentTime.reset();
 
-            int mm=180; //ムーブ向き　　ネーミングセンスは-100点
-            int mt=75; //ムーブ力　　　名前の付け方頭悪い
+    //         int mm=180; //ムーブ向き　　ネーミングセンスは-100点
+    //         int mt=75; //ムーブ力　　　名前の付け方頭悪い
 
-            while(1){ //戻ろう
+    //         while(1){ //戻ろう
 
-                if(line.get_type()==1){//縦ライン見えたら少しずらす　水平やったら抜けますね
-                    if((line.get_azimuth()<180-TL&&line.get_azimuth()>TL)||(line.get_azimuth()>180+TL&&line.get_azimuth()<360-TL)){
-                        if((line.get_azimuth()<180-TL&&line.get_azimuth()>TL)){
-                            mm=180-TLM;
-                        } else {
-                            mm=180+TLM;
-                        }
-                    }
-                    break;
-                }
+    //             if(line.get_type()==1){//縦ライン見えたら少しずらす　水平やったら抜けますね
+    //                 if((line.get_azimuth()<180-TL&&line.get_azimuth()>TL)||(line.get_azimuth()>180+TL&&line.get_azimuth()<360-TL)){
+    //                     if((line.get_azimuth()<180-TL&&line.get_azimuth()>TL)){
+    //                         mm=180-TLM;
+    //                     } else {
+    //                         mm=180+TLM;
+    //                     }
+    //                 }
+    //                 break;
+    //             }
 
-                //while文の弊害
-                readSensors();
+    //             //while文の弊害
+    //             readSensors();
 
-                //動きます
-                mymotor.run(mm,static_cast<int>(mt),0);
-                if(mt<120)mt+=1;//だんだん早くなる♪
+    //             //動きます
+    //             mymotor.run(mm,static_cast<int>(mt),0);
+    //             if(mt<120)mt+=1;//だんだん早くなる♪
 
-                if(exitDash()){SilentTime.reset();break;}
-            }
-            mymotor.brake();//ブレ~~~~~~~き
-            delay(100);
-            return;//はじめに戻る
-        } else {//1.5倍過ぎたら止めましょうと　誤爆防止や
-            SilentTime.reset();
-            return;//はじめに戻る
-        }
-    }
-    };
-    dash();
+    //             if(exitDash()){SilentTime.reset();break;}
+    //         }
+    //         mymotor.brake();//ブレ~~~~~~~き
+    //         delay(100);
+    //         return;//はじめに戻る
+    //     } else {//1.5倍過ぎたら止めましょうと　誤爆防止や
+    //         SilentTime.reset();
+    //         return;//はじめに戻る
+    //     }
+    // }
+    // };
 
     if (line.get_type() != 0) {// === ラインあり ===
         frog = FROG::NORMAL;//フ　ラ　グ　付　け
@@ -148,26 +148,29 @@ void Defense::defense_() {
             //---
 
             //x
-            if(tl||abs(line.get_x())>2)
+            if(tl)
                 ball_x=0;
             //縦ラインならballｘは0にしておく
 
             move_x=((line_x*line_late*x_late)+(ball_x*ball_late*x_late))*calc_move_speed;
 
-            if(tl&&abs(line.get_x())<3)
+            if(tl)
                 move_x=0;
             //縦ラインでの速度上昇用
 
             //---
 
             //y
-            if(!tl&&abs(line.get_x())<2)
-            ball_y=0;
+                if(!tl&&abs(line.get_x())<2)
+                ball_y=0;
+
+                if(tl||abs(line.get_x())>2)
+                line_y=0;
             //縦ラインじゃなかったらballｙは0にしておく
 
             move_y=((line_y*line_late*y_late)+(ball_y*ball_late*y_late))*calc_move_speed;
 
-            if(abs(line.get_y())<3&&!tl&&abs(line.get_x())<2)
+            if((!tl&&line.get_type()==1)&&abs(line.get_y())<3)
             move_y=0;
             //並行ラインでの処理やったけど縦でおかしいからtl判定を有効にした
             //---
@@ -177,21 +180,21 @@ void Defense::defense_() {
             move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
             //---
 
-            if(getErr(0+ball_cal,ball.get_azimuth())<ball_move_border&&!tl&&!(line.get_x()<3)){
+            if(getErr(0+ball_cal,ball.get_azimuth())<ball_move_border&&!tl){
                 //縦ラインじゃないかつボールが正面に近ければ止まる
                 move_power=0;
             }
 
             if (move_power > move_border ) {
                 //if(diff_signs(move_x, last_x)||diff_signs(move_y, last_y)){
-                    mymotor.brake();//方向転換時は一旦停止
+
                 //} else{
                     mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
                 // }
                 SilentTime.reset();
             } else {
                 //if(move_power==0&&lastpower>100){//急停止はブレーキ
-                    mymotor.brake();
+                    //mymotor.brake();
                 //} else {
                     mymotor.free();
                     frog=FROG::STOP;
@@ -202,6 +205,218 @@ void Defense::defense_() {
             lastpower=static_cast<int>(move_power);
             last_x=static_cast<int>(line_x);
             last_y=static_cast<int>(line_y);
+            }
+            
+            {
+            // 計算式表示用の変数準備
+            double line_component_x = line_x * line_late * x_late * calc_move_speed;
+            double ball_component_x = ball_x * ball_late * x_late * calc_move_speed;
+            double line_component_y = line_y * line_late * y_late * calc_move_speed;
+            double ball_component_y = ball_y * ball_late * y_late * calc_move_speed;
+            
+            printf_s_long(R"RAW(
+=================================================================================================================
+=== センサー入力値 ===
+line.get_azimuth()    : %d度
+line.get_type()       : %d
+line.get_x()          : %d
+line.get_y()          : %d
+line.get_magnitude()  : %d
+ball.get_azimuth()    : %d度
+ball.get_stat()       : %d
+gam.get_azimuth()     : %d度
+
+=== フラグ ===
+tl (縦ライン)         : %d
+edge (エッジ)         : %d
+
+=== 定数パラメータ ===
+ball_cal              : %d
+move_speed            : %d.%02d
+calc_move_speed       : %d
+line_late             : %d.%02d
+x_late                : %d.%02d
+y_late                : %d.%02d
+ball_late             : %d.%02d
+ball_move_border      : %d.%02d
+move_border           : %d.%02d
+
+=== 角度計算 ===
+calb = 0 - gam.get_azimuth()
+     = 0 - %d = %d
+
+ball_ang = ball.get_azimuth() + ball_cal
+         = %d + %d = %d.%02d度
+
+rad = radians(line.get_azimuth())
+    = radians(%d) = %d.%04d rad
+
+=== ライン方向ベクトル ===
+line_x = sin(rad) = sin(%d.%04d)
+       = %d.%04d
+line_y = cos(rad) = cos(%d.%04d)
+       = %d.%04d
+
+=== ボール方向判定 ===
+ball_y = (ball_ang<90 || ball_ang>270) ? 1 : -1
+       = (%d.%02d<90 || %d.%02d>270) ? 1 : -1
+       = %d
+ball_x = (ball_ang<180) ? 1 : -1
+       = (%d.%02d<180) ? 1 : -1
+       = %d
+
+=== 速度減算計算 ===
+calc_move_speed = (line.get_x()>3 || tl) ? move_speed>>1 : move_speed
+                = (%d>3 || %d) ? %d>>1 : %d
+                = %d
+
+=== X軸移動量計算 ===
+line_component_x = line_x * line_late * x_late * calc_move_speed
+                 = %d.%04d * %d.%02d * %d.%02d * %d
+                 = %d.%02d
+ball_component_x = ball_x * ball_late * x_late * calc_move_speed
+                 = %d * %d.%02d * %d.%02d * %d
+                 = %d.%02d
+move_x = line_component_x + ball_component_x
+       = %d.%02d + %d.%02d
+       = %d.%02d
+[tl補正後] move_x = %d.%02d
+
+=== Y軸移動量計算 ===
+line_component_y = line_y * line_late * y_late * calc_move_speed
+                 = %d.%04d * %d.%02d * %d.%02d * %d
+                 = %d.%02d
+ball_component_y = ball_y * ball_late * y_late * calc_move_speed
+                 = %d * %d.%02d * %d.%02d * %d
+                 = %d.%02d
+move_y = line_component_y + ball_component_y
+       = %d.%02d + %d.%02d
+       = %d.%02d
+[補正後] move_y = %d.%02d
+
+=== 最終移動ベクトル ===
+move_azimuth = myvector.get_azimuth(move_x, move_y)
+             = myvector.get_azimuth(%d.%02d, %d.%02d)
+             = %d度
+move_power = myvector.get_magnitude(abs(move_x), abs(move_y))
+           = myvector.get_magnitude(%d.%02d, %d.%02d)
+           = %d.%02d
+
+=== 停止判定 ===
+getErr(0+ball_cal, ball.get_azimuth()) < ball_move_border && !tl
+= getErr(%d, %d) < %d.%02d && !%d
+= %d < %d.%02d && !%d
+= %d (停止判定: %s)
+
+=== モーター制御 ===
+move_power > move_border: %d.%02d > %d.%02d = %s
+実行: %s
+
+========================================
+)RAW",
+            // センサー入力値
+            line.get_azimuth(), line.get_type(),
+            static_cast<int>(line.get_x()), static_cast<int>(line.get_y()),
+            static_cast<int>(line.get_magnitude()),
+            ball.get_azimuth(), ball.get_stat(),
+            gam.get_azimuth(),
+            
+            // フラグ
+            tl, edge,
+            
+            // 定数パラメータ
+            ball_cal,
+            static_cast<int>(move_speed), static_cast<int>(move_speed * 100) % 100,
+            calc_move_speed,
+            static_cast<int>(line_late), static_cast<int>(line_late * 100) % 100,
+            static_cast<int>(x_late), static_cast<int>(x_late * 100) % 100,
+            static_cast<int>(y_late), static_cast<int>(y_late * 100) % 100,
+            static_cast<int>(ball_late), static_cast<int>(ball_late * 100) % 100,
+            static_cast<int>(ball_move_border), static_cast<int>(ball_move_border * 100) % 100,
+            static_cast<int>(move_border), static_cast<int>(move_border * 100) % 100,
+            
+            // 角度計算
+            gam.get_azimuth(), calb,
+            ball.get_azimuth(), ball_cal,
+            static_cast<int>(ball_ang), static_cast<int>(ball_ang * 100) % 100,
+            line.get_azimuth(),
+            static_cast<int>(rad), static_cast<int>(rad * 10000) % 10000,
+            
+            // ライン方向ベクトル
+            static_cast<int>(rad), static_cast<int>(rad * 10000) % 10000,
+            static_cast<int>(line_x), static_cast<int>(abs(line_x) * 10000) % 10000,
+            static_cast<int>(rad), static_cast<int>(rad * 10000) % 10000,
+            static_cast<int>(line_y), static_cast<int>(abs(line_y) * 10000) % 10000,
+            
+            // ボール方向判定
+            static_cast<int>(ball_ang), static_cast<int>(ball_ang * 100) % 100,
+            static_cast<int>(ball_ang), static_cast<int>(ball_ang * 100) % 100,
+            static_cast<int>(ball_y),
+            static_cast<int>(ball_ang), static_cast<int>(ball_ang * 100) % 100,
+            static_cast<int>(ball_x),
+            
+            // 速度減算計算
+            static_cast<int>(line.get_x()), tl,
+            static_cast<int>(move_speed), static_cast<int>(move_speed),
+            calc_move_speed,
+            
+            // X軸移動量計算
+            static_cast<int>(line_x), static_cast<int>(abs(line_x) * 10000) % 10000,
+            static_cast<int>(line_late), static_cast<int>(line_late * 100) % 100,
+            static_cast<int>(x_late), static_cast<int>(x_late * 100) % 100,
+            calc_move_speed,
+            static_cast<int>(line_component_x), static_cast<int>(abs(line_component_x) * 100) % 100,
+            static_cast<int>(ball_x),
+            static_cast<int>(ball_late), static_cast<int>(ball_late * 100) % 100,
+            static_cast<int>(x_late), static_cast<int>(x_late * 100) % 100,
+            calc_move_speed,
+            static_cast<int>(ball_component_x), static_cast<int>(abs(ball_component_x) * 100) % 100,
+            static_cast<int>(line_component_x), static_cast<int>(abs(line_component_x) * 100) % 100,
+            static_cast<int>(ball_component_x), static_cast<int>(abs(ball_component_x) * 100) % 100,
+            static_cast<int>(line_component_x + ball_component_x), static_cast<int>(abs(line_component_x + ball_component_x) * 100) % 100,
+            static_cast<int>(move_x), static_cast<int>(abs(move_x) * 100) % 100,
+            
+            // Y軸移動量計算
+            static_cast<int>(line_y), static_cast<int>(abs(line_y) * 10000) % 10000,
+            static_cast<int>(line_late), static_cast<int>(line_late * 100) % 100,
+            static_cast<int>(y_late), static_cast<int>(y_late * 100) % 100,
+            calc_move_speed,
+            static_cast<int>(line_component_y), static_cast<int>(abs(line_component_y) * 100) % 100,
+            static_cast<int>(ball_y),
+            static_cast<int>(ball_late), static_cast<int>(ball_late * 100) % 100,
+            static_cast<int>(y_late), static_cast<int>(y_late * 100) % 100,
+            calc_move_speed,
+            static_cast<int>(ball_component_y), static_cast<int>(abs(ball_component_y) * 100) % 100,
+            static_cast<int>(line_component_y), static_cast<int>(abs(line_component_y) * 100) % 100,
+            static_cast<int>(ball_component_y), static_cast<int>(abs(ball_component_y) * 100) % 100,
+            static_cast<int>(line_component_y + ball_component_y), static_cast<int>(abs(line_component_y + ball_component_y) * 100) % 100,
+            static_cast<int>(move_y), static_cast<int>(abs(move_y) * 100) % 100,
+            
+            // 最終移動ベクトル
+            static_cast<int>(move_x), static_cast<int>(abs(move_x) * 100) % 100,
+            static_cast<int>(move_y), static_cast<int>(abs(move_y) * 100) % 100,
+            move_azimuth,
+            static_cast<int>(abs(move_x)), static_cast<int>(abs(move_x) * 100) % 100,
+            static_cast<int>(abs(move_y)), static_cast<int>(abs(move_y) * 100) % 100,
+            static_cast<int>(move_power), static_cast<int>(move_power * 100) % 100,
+            
+            // 停止判定
+            0 + ball_cal, ball.get_azimuth(),
+            static_cast<int>(ball_move_border), static_cast<int>(ball_move_border * 100) % 100,
+            tl,
+            getErr(0 + ball_cal, ball.get_azimuth()),
+            static_cast<int>(ball_move_border), static_cast<int>(ball_move_border * 100) % 100,
+            tl,
+            (getErr(0 + ball_cal, ball.get_azimuth()) < ball_move_border && !tl),
+            (getErr(0 + ball_cal, ball.get_azimuth()) < ball_move_border && !tl) ? "停止" : "動作",
+            
+            // モーター制御
+            static_cast<int>(move_power), static_cast<int>(move_power * 100) % 100,
+            static_cast<int>(move_border), static_cast<int>(move_border * 100) % 100,
+            (move_power > move_border) ? "true" : "false",
+            (move_power > move_border) ? "mymotor.run()" : "mymotor.free()"
+            );
+            delay(100);  // シリアル出力の安定化のため待機
             }
 
         } else {
@@ -214,13 +429,15 @@ void Defense::defense_() {
 
     } else {
         // === ラインなし：戻り処理 ===
-        mymotor.run_non_stabilization(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230);
+        mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230, 0);
         //一応姿勢制御なし　まあ機体角度とか考慮してなんとか
         frog=FROG::NO_LINE;//フ　ラ　グ　付　け
     }
     applyUI(static_cast<int>(frog));
-    if(static_cast<int>(frog)!=4)
+    if(static_cast<int>(frog)!=4){
         SilentTime.reset();
+        mybuzzer.stop();
+    }
 }
 
 void Defense::reset() {
@@ -280,14 +497,14 @@ void Defense::applyUI(int mode) {
         // --- 背景 ---
         mypixel.multi(0, 15, background.red, background.green, background.blue);
 
-        mypixel.closest(line.get_azimuth(), P_line.red, P_line.green, P_line.blue, 3);
+        if(line_x!=0||line_y!=0)mypixel.closest(roundToCardinal(myvector.get_azimuth(line_x,line_y)), P_line.red, P_line.green, P_line.blue, 3);
 
         // int d2=ball_ang;
-        mypixel.closest(ball_ang, P_ball.red, P_ball.green, P_ball.blue, 3);
+        if(ball_x!=0||ball_y!=0)mypixel.closest(roundToCardinal(myvector.get_azimuth(ball_x,ball_y)), P_ball.red, P_ball.green, P_ball.blue, 3);
 
         //--- 移動方向 ---
-        if (move_power > move_border)
-            mypixel.closest(move_azimuth+calb, move_ang.red, move_ang.green, move_ang.blue, 2);
+        // if (move_power > move_border)
+        //     mypixel.closest(roundToCardinal(move_azimuth+calb), move_ang.red, move_ang.green, move_ang.blue, 2);
 
     } else if (mode == 2) { // ラインなし
         // --- 背景 ---
@@ -304,7 +521,7 @@ void Defense::applyUI(int mode) {
     } else if (mode == 3) {
         mypixel.multi(0, 15, 255, 100, 255);
     } else if (mode == 4) { // 移動量（サイレントタイマーメーター）
-        mybuzzer.start(200+(SilentTime.read_milli()/3),999);
+        mybuzzer.start(200+(SilentTime.read_milli()/3)<2000?200+(SilentTime.read_milli()/3):2000,999);
         // --- 背景 ---
         mypixel.multi(0, 15, background.red, background.green, background.blue);
 
@@ -319,56 +536,3 @@ void Defense::applyUI(int mode) {
         }
     }
 }
-
-
-/*
-printf_s_long(R"RAW(
-| ============================
-| move_x: %d ;
-| move_y: %d ;
-| move_azimuth: %d ;
-| mod : %d ;
-| move_power: %d ;
-| ball_ang: %d ;
-| ball_x : %d ;
-| ball_y : %d ;
-| line_x : %d ;
-| line_y : %d ;
-
-| calb : %d ;
-
-| X||%d+%d|| %d
-| Y||%d+%d|| %d
-
-| line_distance : %d ;
-| line_y : %d ;
-| line_x : %d ;
-
-|line_x cal: %d/100;
-| =============================
-
-
-)RAW",
-static_cast<int>(move_x),
-static_cast<int>(move_y),
-static_cast<int>(move_azimuth),
-norm360(static_cast<int>(move_azimuth+calb)),
-static_cast<int>(move_power),
-static_cast<int>(ball_ang),
-static_cast<int>(ball_x),
-static_cast<int>(ball_y),
-static_cast<int>(line_x),
-static_cast<int>(line_y),
-calb,
-static_cast<int>(line_x),
-static_cast<int>(ball_x),
-static_cast<int>(line_x+ball_x*calc_move_speed),
-static_cast<int>(line_y),
-static_cast<int>(ball_y),
-(static_cast<int>(line_y)+static_cast<int>(ball_y)*calc_move_speed),
-static_cast<int>(abs(line.get_magnitude())),
-static_cast<int>(line.get_y()),
-static_cast<int>(line.get_x()),
-static_cast<int>(line_x * 100)  // 小数点以下2桁を整数として表示
-);
-*/

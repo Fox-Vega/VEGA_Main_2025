@@ -19,7 +19,7 @@ class LINE {
 
     private:
         const int detection_border = 700;//700;   990くさしお
-        const int over_border = 160;
+        const int over_border = 150;
 
         float total_x;
         float total_y;
