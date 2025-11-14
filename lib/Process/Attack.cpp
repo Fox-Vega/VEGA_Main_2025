@@ -21,25 +21,13 @@ void Attack::attack_() {
             if (wrap[i][0] <= abs(ball_azimuth) && abs(ball_azimuth) <= wrap[i + 1][0]) {
                 speed = wrap[i + 1][2];
                 movement_azimuth = ball_azimuth * wrap[i + 1][1];
-
-                //TODO
-                // if (i == 0) {
-                //     mypixel.multi(0, 15, 255, 0, 0);
-                // } else if (i == 1) {
-                //     mypixel.multi(0, 15, 255, 255, 0);
-                // } else if (i == 2) {
-                //     mypixel.multi(0, 15, 0, 255, 0);
-                // } else if (i == 3) {
-                //     mypixel.multi(0, 15, 0, 0, 255);
-                // }
+                break;
             }
         }
-        if (movement_azimuth < 0.0) movement_azimuth += 360.0;
+        movement_azimuth = (movement_azimuth % 360 + 360) % 360;
         mymotor.run(movement_azimuth, speed, 0);
 
-        //TODO
-        // Serial.print(movement_azimuth);
-        // Serial.print(" ");
+
         // mypixel.closest(movement_azimuth, 255, 255, 255, 1);
         // mypixel.closest(ball_azimuth, 255, 100, 100, 1);
     } else { //ラインない　ボールない

@@ -117,7 +117,7 @@ int MyMOTOR::difix(int target_azimuth) {
     // 微分先行型PD
     int pwm = kp * error - kd * derivative;
 
-    pwm = constrain(pwm, -pwmlimit, pwmlimit);
+    pwm = constrain(pwm, -stabimit, stabimit);
 
     lastupdate = millis();
     prev_azimuth = current_azimuth;
