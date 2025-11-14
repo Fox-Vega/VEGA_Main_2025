@@ -189,17 +189,4 @@ void Test::stabilize() {
 
 void Test::free() {//グルグルするやつ　左に進むだけ
     // //なんでもいれていいところ　内容書いてね->　アタックの進行方向
-
-    // mymotor.move(0);
-    // ball.read();
-    // attack.attack_();
-
-    // Serial.print(ball.get_azimuth());
-    // Serial.print(" ");
-    // Serial.println(mymotor.get_azimuth());
-    crr++;
-    mypixel.multi(0, 15, 255, 255, 255);
-    mypixel.closest(270-gam.get_azimuth(), 255, 0, 0, 1);
-    mypixel.closest(crr%360, 255, 255, 0, 1);
-    mymotor.run(270-gam.get_azimuth(), 140,(crr%720)/2);
 }
