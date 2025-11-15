@@ -157,3 +157,217 @@ private:
     void applyUI(int mode);
 
 };
+
+
+//             {
+    //             // 計算式表示用の変数準備
+    //             double line_component_x = line_x * line_late * x_late * calc_move_speed;
+    //             double ball_component_x = ball_x * ball_late * x_late * calc_move_speed;
+    //             double line_component_y = line_y * line_late * y_late * calc_move_speed;
+    //             double ball_component_y = ball_y * ball_late * y_late * calc_move_speed;
+                
+    //             printf_s_long(R"RAW(
+    // =================================================================================================================
+    // === センサー入力値 ===
+    // line.get_azimuth()    : %d度
+    // line.get_type()       : %d
+    // line.get_x()          : %d
+    // line.get_y()          : %d
+    // line.get_magnitude()  : %d
+    // ball.get_azimuth()    : %d度
+    // ball.get_stat()       : %d
+    // gam.get_azimuth()     : %d度
+    
+    // === フラグ ===
+    // tl (縦ライン)         : %d
+    // edge (エッジ)         : %d
+    
+    // === 定数パラメータ ===
+    // ball_cal              : %d
+    // move_speed            : %d.%02d
+    // calc_move_speed       : %d
+    // line_late             : %d.%02d
+    // x_late                : %d.%02d
+    // y_late                : %d.%02d
+    // ball_late             : %d.%02d
+    // ball_move_border      : %d.%02d
+    // move_border           : %d.%02d
+    
+    // === 角度計算 ===
+    // calb = 0 - gam.get_azimuth()
+    //      = 0 - %d = %d
+    
+    // ball_ang = ball.get_azimuth() + ball_cal
+    //          = %d + %d = %d.%02d度
+    
+    // rad = radians(line.get_azimuth())
+    //     = radians(%d) = %d.%04d rad
+    
+    // === ライン方向ベクトル ===
+    // line_x = sin(rad) = sin(%d.%04d)
+    //        = %d.%04d
+    // line_y = cos(rad) = cos(%d.%04d)
+    //        = %d.%04d
+    
+    // === ボール方向判定 ===
+    // ball_y = (ball_ang<90 || ball_ang>270) ? 1 : -1
+    //        = (%d.%02d<90 || %d.%02d>270) ? 1 : -1
+    //        = %d
+    // ball_x = (ball_ang<180) ? 1 : -1
+    //        = (%d.%02d<180) ? 1 : -1
+    //        = %d
+    
+    // === 速度減算計算 ===
+    // calc_move_speed = (line.get_x()>3 || tl) ? move_speed>>1 : move_speed
+    //                 = (%d>3 || %d) ? %d>>1 : %d
+    //                 = %d
+    
+    // === X軸移動量計算 ===
+    // line_component_x = line_x * line_late * x_late * calc_move_speed
+    //                  = %d.%04d * %d.%02d * %d.%02d * %d
+    //                  = %d.%02d
+    // ball_component_x = ball_x * ball_late * x_late * calc_move_speed
+    //                  = %d * %d.%02d * %d.%02d * %d
+    //                  = %d.%02d
+    // move_x = line_component_x + ball_component_x
+    //        = %d.%02d + %d.%02d
+    //        = %d.%02d
+    // [tl補正後] move_x = %d.%02d
+    
+    // === Y軸移動量計算 ===
+    // line_component_y = line_y * line_late * y_late * calc_move_speed
+    //                  = %d.%04d * %d.%02d * %d.%02d * %d
+    //                  = %d.%02d
+    // ball_component_y = ball_y * ball_late * y_late * calc_move_speed
+    //                  = %d * %d.%02d * %d.%02d * %d
+    //                  = %d.%02d
+    // move_y = line_component_y + ball_component_y
+    //        = %d.%02d + %d.%02d
+    //        = %d.%02d
+    // [補正後] move_y = %d.%02d
+    
+    // === 最終移動ベクトル ===
+    // move_azimuth = myvector.get_azimuth(move_x, move_y)
+    //              = myvector.get_azimuth(%d.%02d, %d.%02d)
+    //              = %d度
+    // move_power = myvector.get_magnitude(abs(move_x), abs(move_y))
+    //            = myvector.get_magnitude(%d.%02d, %d.%02d)
+    //            = %d.%02d
+    
+    // === 停止判定 ===
+    // getErr(0+ball_cal, ball.get_azimuth()) < ball_move_border && !tl
+    // = getErr(%d, %d) < %d.%02d && !%d
+    // = %d < %d.%02d && !%d
+    // = %d (停止判定: %s)
+    
+    // === モーター制御 ===
+    // move_power > move_border: %d.%02d > %d.%02d = %s
+    // 実行: %s
+    
+    // ========================================
+    // )RAW",
+    //             // センサー入力値
+    //             line.get_azimuth(), line.get_type(),
+    //             static_cast<int>(line.get_x()), static_cast<int>(line.get_y()),
+    //             static_cast<int>(line.get_magnitude()),
+    //             ball.get_azimuth(), ball.get_stat(),
+    //             gam.get_azimuth(),
+                
+    //             // フラグ
+    //             tl, edge,
+                
+    //             // 定数パラメータ
+    //             ball_cal,
+    //             static_cast<int>(move_speed), static_cast<int>(move_speed * 100) % 100,
+    //             calc_move_speed,
+    //             static_cast<int>(line_late), static_cast<int>(line_late * 100) % 100,
+    //             static_cast<int>(x_late), static_cast<int>(x_late * 100) % 100,
+    //             static_cast<int>(y_late), static_cast<int>(y_late * 100) % 100,
+    //             static_cast<int>(ball_late), static_cast<int>(ball_late * 100) % 100,
+    //             static_cast<int>(ball_move_border), static_cast<int>(ball_move_border * 100) % 100,
+    //             static_cast<int>(move_border), static_cast<int>(move_border * 100) % 100,
+                
+    //             // 角度計算
+    //             gam.get_azimuth(), calb,
+    //             ball.get_azimuth(), ball_cal,
+    //             static_cast<int>(ball_ang), static_cast<int>(ball_ang * 100) % 100,
+    //             line.get_azimuth(),
+    //             static_cast<int>(rad), static_cast<int>(rad * 10000) % 10000,
+                
+    //             // ライン方向ベクトル
+    //             static_cast<int>(rad), static_cast<int>(rad * 10000) % 10000,
+    //             static_cast<int>(line_x), static_cast<int>(abs(line_x) * 10000) % 10000,
+    //             static_cast<int>(rad), static_cast<int>(rad * 10000) % 10000,
+    //             static_cast<int>(line_y), static_cast<int>(abs(line_y) * 10000) % 10000,
+                
+    //             // ボール方向判定
+    //             static_cast<int>(ball_ang), static_cast<int>(ball_ang * 100) % 100,
+    //             static_cast<int>(ball_ang), static_cast<int>(ball_ang * 100) % 100,
+    //             static_cast<int>(ball_y),
+    //             static_cast<int>(ball_ang), static_cast<int>(ball_ang * 100) % 100,
+    //             static_cast<int>(ball_x),
+                
+    //             // 速度減算計算
+    //             static_cast<int>(line.get_x()), tl,
+    //             static_cast<int>(move_speed), static_cast<int>(move_speed),
+    //             calc_move_speed,
+                
+    //             // X軸移動量計算
+    //             static_cast<int>(line_x), static_cast<int>(abs(line_x) * 10000) % 10000,
+    //             static_cast<int>(line_late), static_cast<int>(line_late * 100) % 100,
+    //             static_cast<int>(x_late), static_cast<int>(x_late * 100) % 100,
+    //             calc_move_speed,
+    //             static_cast<int>(line_component_x), static_cast<int>(abs(line_component_x) * 100) % 100,
+    //             static_cast<int>(ball_x),
+    //             static_cast<int>(ball_late), static_cast<int>(ball_late * 100) % 100,
+    //             static_cast<int>(x_late), static_cast<int>(x_late * 100) % 100,
+    //             calc_move_speed,
+    //             static_cast<int>(ball_component_x), static_cast<int>(abs(ball_component_x) * 100) % 100,
+    //             static_cast<int>(line_component_x), static_cast<int>(abs(line_component_x) * 100) % 100,
+    //             static_cast<int>(ball_component_x), static_cast<int>(abs(ball_component_x) * 100) % 100,
+    //             static_cast<int>(line_component_x + ball_component_x), static_cast<int>(abs(line_component_x + ball_component_x) * 100) % 100,
+    //             static_cast<int>(move_x), static_cast<int>(abs(move_x) * 100) % 100,
+                
+    //             // Y軸移動量計算
+    //             static_cast<int>(line_y), static_cast<int>(abs(line_y) * 10000) % 10000,
+    //             static_cast<int>(line_late), static_cast<int>(line_late * 100) % 100,
+    //             static_cast<int>(y_late), static_cast<int>(y_late * 100) % 100,
+    //             calc_move_speed,
+    //             static_cast<int>(line_component_y), static_cast<int>(abs(line_component_y) * 100) % 100,
+    //             static_cast<int>(ball_y),
+    //             static_cast<int>(ball_late), static_cast<int>(ball_late * 100) % 100,
+    //             static_cast<int>(y_late), static_cast<int>(y_late * 100) % 100,
+    //             calc_move_speed,
+    //             static_cast<int>(ball_component_y), static_cast<int>(abs(ball_component_y) * 100) % 100,
+    //             static_cast<int>(line_component_y), static_cast<int>(abs(line_component_y) * 100) % 100,
+    //             static_cast<int>(ball_component_y), static_cast<int>(abs(ball_component_y) * 100) % 100,
+    //             static_cast<int>(line_component_y + ball_component_y), static_cast<int>(abs(line_component_y + ball_component_y) * 100) % 100,
+    //             static_cast<int>(move_y), static_cast<int>(abs(move_y) * 100) % 100,
+                
+    //             // 最終移動ベクトル
+    //             static_cast<int>(move_x), static_cast<int>(abs(move_x) * 100) % 100,
+    //             static_cast<int>(move_y), static_cast<int>(abs(move_y) * 100) % 100,
+    //             move_azimuth,
+    //             static_cast<int>(abs(move_x)), static_cast<int>(abs(move_x) * 100) % 100,
+    //             static_cast<int>(abs(move_y)), static_cast<int>(abs(move_y) * 100) % 100,
+    //             static_cast<int>(move_power), static_cast<int>(move_power * 100) % 100,
+                
+    //             // 停止判定
+    //             0 + ball_cal, ball.get_azimuth(),
+    //             static_cast<int>(ball_move_border), static_cast<int>(ball_move_border * 100) % 100,
+    //             tl,
+    //             getErr(0 + ball_cal, ball.get_azimuth()),
+    //             static_cast<int>(ball_move_border), static_cast<int>(ball_move_border * 100) % 100,
+    //             tl,
+    //             (getErr(0 + ball_cal, ball.get_azimuth()) < ball_move_border && !tl),
+    //             (getErr(0 + ball_cal, ball.get_azimuth()) < ball_move_border && !tl) ? "停止" : "動作",
+                
+    //             // モーター制御
+    //             static_cast<int>(move_power), static_cast<int>(move_power * 100) % 100,
+    //             static_cast<int>(move_border), static_cast<int>(move_border * 100) % 100,
+    //             (move_power > move_border) ? "true" : "false",
+    //             (move_power > move_border) ? "mymotor.run()" : "mymotor.free()"
+    //             );
+    //             delay(100);  // シリアル出力の安定化のため待機
+    //             }
+    
