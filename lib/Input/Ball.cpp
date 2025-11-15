@@ -1,5 +1,7 @@
 #include "Ball.h"
 #include "AIP.h"
+#include "Input.h"
+#include "Output.h"
 
 
 void BALL::setup() {
@@ -78,6 +80,11 @@ void BALL::read() {
         ball_x = ball_x_;
         ball_y = ball_y_;
     }
+
+    if(myswitch.check_tact() == 9){
+        sss+=10;
+        mybuzzer.start(100,50);
+    }
 }
 
 bool BALL::get_stat() {
@@ -85,7 +92,8 @@ bool BALL::get_stat() {
 }
 
 int BALL::get_azimuth() {
-    return myvector.get_azimuth(ball_x, ball_y) -10;
+    // return myvector.get_azimuth(ball_x, ball_y) -10;
+    return sss<360 ? sss : sss%360;
 }
 
 int BALL::get_magnitude() {
