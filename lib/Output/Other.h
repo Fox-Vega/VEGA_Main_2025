@@ -14,25 +14,67 @@
 
 class MyPIXEL {
     public:
-        void setup(); //初期設定
+        /// @brief NeoPixelの初期設定を行う
+        void setup();
+        /// @brief NeoPixelを点灯する
         void on();
-        void brightness(int brightness); //ネオピクの明るさ調整　999にすると既定値になる
+        /// @brief NeoPixelの明るさを調整する
+        /// @param brightness 明るさ（999で既定値）
+        void brightness(int brightness);
 
-        //ピクセル番号は時計回りで 0~15
-        void uni(int PIXELNUM, int red, int green, int blue); //単ピクセル点灯
-        void multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue); //連続ピクセル点灯
+        /// @brief 単一ピクセルを点灯する（ピクセル番号は時計回りで0~15）
+        /// @param PIXELNUM ピクセル番号
+        /// @param red 赤成分（0-255）
+        /// @param green 緑成分（0-255）
+        /// @param blue 青成分（0-255）
+        void uni(int PIXELNUM, int red, int green, int blue);
+        /// @brief 連続ピクセルを点灯する
+        /// @param PIXELNUMstart 開始ピクセル番号
+        /// @param PIXELNUMend 終了ピクセル番号
+        /// @param red 赤成分（0-255）
+        /// @param green 緑成分（0-255）
+        /// @param blue 青成分（0-255）
+        void multi(int PIXELNUMstart, int PIXELNUMend, int red, int green, int blue);
+        /// @brief 指定方位角に最も近いピクセルを点灯する
+        /// @param azimuth 方位角
+        /// @param red 赤成分（0-255）
+        /// @param green 緑成分（0-255）
+        /// @param blue 青成分（0-255）
+        /// @param num 点灯数
         void closest(int azimuth, int red, int green, int blue, int num);
+        /// @brief レインボーパターンを表示する
         void rainbow();
+        /// @brief ピクセル表示を更新する
         void show();
+        /// @brief ピクセル表示を更新する（別名）
         void shows();
-        void clear(); //全消灯
+        /// @brief 全ピクセルを消灯する
+        void clear();
+        /// @brief 全ピクセルを消灯する（別名）
         void clears();
+        /// @brief ピクセル使用の有効/無効を設定する
+        /// @param stat true:有効 false:無効
         void use_pixel(bool stat);
+        /// @brief ピクセル使用状態を取得する
+        /// @return true:有効 false:無効
         bool stat();
 
-        //色関係
+        /// @brief HEX6カラーコードをRGBに変換する
+        /// @param hex HEXカラーコード
+        /// @param red 赤成分（出力）
+        /// @param green 緑成分（出力）
+        /// @param blue 青成分（出力）
         void HEX6toRGB(String hex, int red, int green, int blue);
+        /// @brief HEX8カラーコードをRGBAに変換する
+        /// @param hex HEXカラーコード
+        /// @param red 赤成分（出力）
+        /// @param green 緑成分（出力）
+        /// @param blue 青成分（出力）
+        /// @param alpha アルファ成分（出力）
         void HEX8toRGBA(String hex, int red, int green, int blue, int alpha);
+        /// @brief RGBA成分を取得する
+        /// @param get 取得する成分（'r','g','b','a'）
+        /// @return 成分値
         double getRGBA(char get);
 
     private:
@@ -55,10 +97,17 @@ class MyPIXEL {
 
 class MyBUZZER {
     public:
+        /// @brief ブザーの初期設定を行う
         void setup();
-        void start(int BUZZERnote, int BUZZERduration); //音程、持続時間を指定して音を鳴らす　持続時間を999にすると無制限
+        /// @brief ブザーを鳴らす
+        /// @param BUZZERnote 音程（Hz）
+        /// @param BUZZERduration 持続時間（ms、999で無制限）
+        void start(int BUZZERnote, int BUZZERduration);
+        /// @brief ブザーを停止する
         void stop();
-        void preset(int BUZZERpresetNUM); //既定の音を鳴らす
+        /// @brief プリセット音を鳴らす
+        /// @param BUZZERpresetNUM プリセット番号
+        void preset(int BUZZERpresetNUM);
 
     private:
         const bool useBUZZER = 1;
