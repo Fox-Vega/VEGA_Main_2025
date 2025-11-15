@@ -96,8 +96,10 @@ private:
         }
     }
 
+};
 
-    // // === 調整用定数 ===
+
+// // === 調整用定数 ===
     // //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
     // #define USE_DASH true
     // static constexpr int ball_cal =-10;
@@ -220,7 +222,6 @@ private:
     // // UI表示実行
     // void applyUI(int mode);
 
-};
 
 
 //             {
