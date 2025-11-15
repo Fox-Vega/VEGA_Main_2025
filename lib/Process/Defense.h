@@ -27,6 +27,7 @@ private:
     static constexpr float x_late = 1.0;
     static constexpr float ball_late = 1.0;         // ボール反応倍率
     static constexpr float calblate_sir_late = 1.2;
+    static int ddddd; //デバッグ用
 
     static constexpr uint_fast8_t edge_list[6] = {5,6,7,17,18,19};
 
@@ -53,6 +54,8 @@ private:
     static int calb;
     static bool tl;
     static bool edge;
+    static bool frog1;
+    static bool frog2;
 
     // === ユーティリティ関数 ===
 
