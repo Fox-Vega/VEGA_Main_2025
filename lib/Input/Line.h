@@ -41,7 +41,7 @@ class LINE {
         int get_pack(byte packNUM);
 
     private:
-        const int detection_border = 990;//700;   990くさしお
+        const int detection_border = 700;//700;   990くさしお
         const int over_border = 150;
 
         float total_x;
