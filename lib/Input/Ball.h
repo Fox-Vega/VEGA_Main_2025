@@ -31,7 +31,6 @@ class BALL {
         void ss(int s);//debug
 
     private:
-        int sss=60;
         bool ball; //検出ステータス
         int ball_x; //最終座標
         int ball_y; //最終座標
