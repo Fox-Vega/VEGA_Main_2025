@@ -81,10 +81,6 @@ void BALL::read() {
         ball_y = ball_y_;
     }
 
-    if(myswitch.check_tact() == 9){
-        sss+=10;
-        mybuzzer.start(100,50);
-    }
 }
 
 bool BALL::get_stat() {
@@ -92,8 +88,7 @@ bool BALL::get_stat() {
 }
 
 int BALL::get_azimuth() {
-    // return myvector.get_azimuth(ball_x, ball_y) -10;
-    return sss<360 ? sss : sss%360;
+    return myvector.get_azimuth(ball_x, ball_y) -10;
 }
 
 int BALL::get_magnitude() {
