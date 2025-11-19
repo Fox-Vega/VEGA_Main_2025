@@ -40,71 +40,49 @@ void Defense::defense_(void) {
     if(frog == FROG::NORMAL) {
         mybuzzer.stop();
         lastdetect = line_azimuth;
-
-        switch (line_stat)
-        {
-        case 1:
-            move_ang=line_ang;
-            break;
-        case 2:
-            go_border[0] = line.get_pack(0);
-            go_border[1] = line.get_pack(1);
-            if(getErr(ball_azimuth, go_border[0]) < getErr(ball_azimuth, go_border[1])) {
-                move_ang = go_border[0];
-            } else {
-                move_ang = go_border[1];
-            }
-            break;
-        case 3:
-            move_ang=0;
-            break;
-            
-        default:
-            break;
+        if(isFront(line_azimuth)) {
+            go_border[0] = line_azimuth;
+            go_border[1] = norm360(line_azimuth + 180);
+        } else {
+            go_border[0] = norm360(line_azimuth - 180); //-かも
+            go_border[1] = line_azimuth;
         }
-        // if(isFront(line_azimuth)) {
-        //     go_border[0] = line_azimuth;
-        //     go_border[1] = norm360(line_azimuth + 180);
-        // } else {
-        //     go_border[0] = norm360(line_azimuth + 180); //-かも
-        //     go_border[1] = line_azimuth;
-        // }
-        // to_range(ball_azimuth, go_border[0], false);
+        to_range(ball_azimuth, go_border[0], false);
 
-        // int go_flag;
-        // if(go_border[0] < ball_azimuth && ball_azimuth < go_border[1]) {
-        //     go_flag = 0; // 範囲内
-        // } else {
-        //     go_flag = 1; // 範囲外
-        // }
+        int go_flag;
+        if(go_border[0] < ball_azimuth && ball_azimuth < go_border[1]) {
+            go_flag = 0; // 範囲内
+        } else {
+            go_flag = 1; // 範囲外
+        }
 
-        // int go_ang = go_border[go_flag] + 90; // 境界に垂直な角度
-        // norm360P(go_ang);
+        int go_ang = go_border[go_flag] + 90; // 境界に垂直な角度
+        norm360P(go_ang);
 
-        // if(line.get_type() == 2) {//縦ライン脱出
-        //     if(getErr(0,line.get_pack(0))<100 && getErr(180,line.get_pack(1))<10) {//縦ライン
-        //         if(getErr(ball_azimuth, line.get_pack(0)) < getErr(ball_azimuth, line.get_pack(1))) {
-        //             go_ang = line.get_pack(0);
-        //         } else {
-        //             go_ang = line.get_pack(1);
-        //         }
-        //     } else {
-        //         // if(getErr(180,go_ang)<20&&getErr(line.get_pack(0),line.get_pack(1))>100){//真後ろは避ける
-        //         //     go_ang+=180;
-        //         // }
-        //     }
-        // }
+        if(line.get_type() == 2) {//縦ライン脱出
+            if(getErr(0,line.get_pack(0))<100 && getErr(180,line.get_pack(1))<10) {//縦ライン
+                if(getErr(ball_azimuth, line.get_pack(0)) < getErr(ball_azimuth, line.get_pack(1))) {
+                    go_ang = line.get_pack(0);
+                } else {
+                    go_ang = line.get_pack(1);
+                }
+            } else {
+                // if(getErr(180,go_ang)<20&&getErr(line.get_pack(0),line.get_pack(1))>100){//真後ろは避ける
+                //     go_ang+=180;
+                // }
+            }
+        }
 
         // go_angに向かって移動
-        norm360P(move_ang);
-        mymotor.run(move_ang+calb, 170, 0);
+        norm360P(go_ang);
+        mymotor.run(go_ang+calb, 170, 0);
+        mypixel.closest(go_ang+calb, 57, 197, 187 , 1);
     } else if(frog == FROG::NO_LINE) {
         mymotor.run(lastdetect, return_power, 0);
     } else if(frog == FROG::NO_BALL) {
         mymotor.free();
     }
 }
-
 
 
 

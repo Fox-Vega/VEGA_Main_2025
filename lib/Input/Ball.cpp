@@ -88,7 +88,7 @@ bool BALL::get_stat() {
 }
 
 int BALL::get_azimuth() {
-    return myvector.get_azimuth(ball_x, ball_y) -10;
+    return myvector.get_azimuth(ball_x, ball_y) +10;
 }
 
 int BALL::get_magnitude() {

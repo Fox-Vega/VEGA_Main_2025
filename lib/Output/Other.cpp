@@ -65,6 +65,26 @@ void MyPIXEL::closest(int azimuth, int red, int green, int blue, int num) {
     }
 }
 
+void MyPIXEL::angle_range(int start_angle, int end_angle, int red, int green, int blue) {
+    if (usePIXEL == 1) {
+        // 角度を0-359の範囲に正規化
+        start_angle = ((start_angle % 360) + 360) % 360;
+        end_angle = ((end_angle % 360) + 360) % 360;
+        
+        // 角度をピクセル番号に変換
+        int start_pixel = round(start_angle / 360.0f * NUMPIXEL) % NUMPIXEL;
+        int end_pixel = round(end_angle / 360.0f * NUMPIXEL) % NUMPIXEL;
+        
+        // 時計回りで点灯（start_pixelからend_pixelまで）
+        int current = start_pixel;
+        while (true) {
+            mypixel.uni(current, red, green, blue);
+            if (current == end_pixel) break;
+            current = (current + 1) % NUMPIXEL;
+        }
+    }
+}
+
 void MyPIXEL::rainbow() {
     if (usePIXEL == 1) {
         for(int i = 0; i < (int)PIXEL.numPixels(); i++) {

@@ -42,6 +42,13 @@ class MyPIXEL {
         /// @param blue 青成分（0-255）
         /// @param num 点灯数
         void closest(int azimuth, int red, int green, int blue, int num);
+        /// @brief 指定角度範囲のピクセルを点灯する
+        /// @param start_angle 開始角度（0-359度）
+        /// @param end_angle 終了角度（0-359度）
+        /// @param red 赤成分（0-255）
+        /// @param green 緑成分（0-255）
+        /// @param blue 青成分（0-255）
+        void angle_range(int start_angle, int end_angle, int red, int green, int blue);
         /// @brief レインボーパターンを表示する
         void rainbow();
         /// @brief ピクセル表示を更新する
