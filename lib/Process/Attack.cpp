@@ -21,22 +21,8 @@ void Attack::attack_() {
             if (wrap[i][0] <= abs(ball_azimuth) && abs(ball_azimuth) <= wrap[i + 1][0]) {
                 speed = wrap[i + 1][2];
                 movement_azimuth = ball_azimuth * wrap[i + 1][1];
+                if (wrap[i + 1][1] == 999) movement_azimuth = 0;
                 break;
-
-                switch (i) {
-                    case 0:
-                    mypixel.multi(0, 15, 255, 0, 0);
-                    case 1:
-                    mypixel.multi(0, 15, 255, 127, 0);
-                    case 2:
-                    mypixel.multi(0, 15, 127, 255, 0);
-                    case 3:
-                    mypixel.multi(0, 15, 0, 255, 0);
-                    case 4:
-                    mypixel.multi(0, 15, 0, 255, 127);
-                    case 5:
-                    mypixel.multi(0, 15, 0, 127, 255);
-                }
             }
         }
         movement_azimuth = (movement_azimuth % 360 + 360) % 360;

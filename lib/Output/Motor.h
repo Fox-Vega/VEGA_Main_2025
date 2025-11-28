@@ -12,10 +12,6 @@ class MyMOTOR {
         /// @param power_ パワー（0-255）
         /// @param dir_azimuth 向く方向（姿勢制御用）
         void run(int movement_azimuth, int power_, int dir_azimuth);
-        /// @brief モーターを制御して移動する（姿勢制御なし）
-        /// @param movement_azimuth 進行方向（0-359度）
-        /// @param power_ パワー（0-255）
-        void run_non_stabilization(int movement_azimuth, int power_);
         /// @brief PID姿勢制御の補正値を計算する
         /// @param target_azimuth 目標方位角
         /// @return 補正値
@@ -41,7 +37,7 @@ class MyMOTOR {
         //調整用
         const float kp = 2.6; //比例 を大きくすると応答が速くなるが、振動しやすくなる
         const float kd = 0.176; //微分 を大きくするとどうなるかわからん
-        const int pwmlimit = 190;
+        const int pwmlimit = 200;
         const int stabimit = 170;
         const float pwmscale = 1.0;
 

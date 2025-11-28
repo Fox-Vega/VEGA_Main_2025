@@ -259,10 +259,10 @@ void Defense::defense_() {
         ReturnTime.reset();
     } else {
         // === ラインなし：戻り処理 ===
-        if(ReturnTime.read_milli()>1000)
-        mymotor.run_non_stabilization(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230);
-        else
-        mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230, 0);
+        // sif(ReturnTime.read_milli()>1000)
+        // mymotor.run_non_stabilization(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230);
+        // else
+        // mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230, 0);
 
         frog=FROG::NO_LINE;//フ　ラ　グ　付　け
     }
