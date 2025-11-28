@@ -4,7 +4,9 @@
 
 class Attack {
     public:
+        /// @brief Attackクラスの初期設定を行う
         void setup();
+        /// @brief Attackのメイン処理ループ
         void attack_();
 
     private:

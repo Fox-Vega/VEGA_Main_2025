@@ -4,11 +4,17 @@
 
 class Test {
     public:
+        /// @brief テストモードのメイン処理
         void test_();
+        /// @brief 入力センサーのテスト
         void input();
+        /// @brief ライン回避のテスト
         void escape();
+        /// @brief モーター動作のテスト
         void motor();
+        /// @brief 姿勢制御のテスト
         void stabilize();
+        /// @brief モーターフリー状態のテスト
         void free();
 
     private:

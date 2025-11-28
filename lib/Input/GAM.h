@@ -4,17 +4,35 @@
 
 class GAM { //いろいろエラーが出てたから弄った結果、GAMクラス誕生☆　Gyro,Accelometer,Magneticをテキトーにもじりました
     public:
-        void setup(); //初期設定
+        /// @brief GAMセンサー（ジャイロ・加速度・磁気）の初期設定を行う
+        void setup();
+        /// @brief 方位角データを読み取る
         void read_azimuth();
-        int get_azimuth(); //方位角取得
-        void dir_reset(); //方向初期化
+        /// @brief 現在の方位角を取得する
+        /// @return 方位角（0-359度）
+        int get_azimuth();
+        /// @brief 方向データを初期化する
+        void dir_reset();
 
-        void get_cord(); //自己位置取得
-        void get_speed(float dt, float accel,short i); //半自動計算関数
+        /// @brief 自己位置座標を取得する
+        void get_cord();
+        /// @brief 速度を計算する（半自動計算関数）
+        /// @param dt 時間差分
+        /// @param accel 加速度
+        /// @param i インデックス
+        void get_speed(float dt, float accel,short i);
+        /// @brief 加速度データをリセットする
         void accel_reset();
-        void cord_custom(int x, int y); //自由座標に設定可能
-        int get_x(); //座標のxを取得
-        int get_y(); //座標のyを取得
+        /// @brief 自己位置座標をカスタム設定する
+        /// @param x X座標
+        /// @param y Y座標
+        void cord_custom(int x, int y);
+        /// @brief 自己位置のX座標を取得する
+        /// @return X座標
+        int get_x();
+        /// @brief 自己位置のY座標を取得する
+        /// @return Y座標
+        int get_y();
 
     private:
         //使用機体 0はオフェンス　1はディフェンス

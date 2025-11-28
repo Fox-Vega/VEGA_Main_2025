@@ -4,9 +4,14 @@
 
 class Timer {
     public:
+        /// @brief タイマーをリセットする
         void reset();
-        unsigned long read_milli(); //時間を取得(1/1000s)
-        unsigned long read_micro(); //時間を取得(1/1000000s)
+        /// @brief 経過時間を取得する（ミリ秒）
+        /// @return 経過時間（1/1000秒単位）
+        unsigned long read_milli();
+        /// @brief 経過時間を取得する（マイクロ秒）
+        /// @return 経過時間（1/1000000秒単位）
+        unsigned long read_micro();
 
     private:
         unsigned long milliseconds;

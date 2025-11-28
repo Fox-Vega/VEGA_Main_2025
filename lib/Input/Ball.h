@@ -4,14 +4,31 @@
 
 class BALL {
     public:
-        void setup(); //初期設定
-        void read(); //センサーデータ取得
+        /// @brief ボールセンサーの初期設定を行う
+        void setup();
+        /// @brief ボールセンサーのデータを読み取る
+        void read();
+        /// @brief ボール検出状態を取得する
+        /// @return true:検出 false:非検出
         bool get_stat();
-        int get_azimuth(); //ボールの方向を取得する関数
+        /// @brief ボールの方向を取得する
+        /// @return 方位角（0-359度）
+        int get_azimuth();
+        /// @brief ボール信号の強度を取得する
+        /// @return 信号強度
         int get_magnitude();
+        /// @brief ボールのX座標を取得する
+        /// @return X座標
         int get_x();
+        /// @brief ボールのY座標を取得する
+        /// @return Y座標
         int get_y();
+        /// @brief 指定されたボールセンサーの生値を取得する
+        /// @param ballNUM センサー番号
+        /// @return センサー値
         int get_value(byte ballNUM);
+
+        void ss(int s);//debug
 
     private:
         bool ball; //検出ステータス

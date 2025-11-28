@@ -5,17 +5,40 @@
 
 class LINE {
     public:
+        /// @brief ラインセンサーの初期設定を行う
         void setup();
+        /// @brief ラインセンサーのデータを読み取る
         void read();
-        int get_azimuth(); //方位角
-        int get_magnitude(); //大きさ
+        /// @brief ラインの方位角を取得する
+        /// @return 方位角（0-359度）
+        int get_azimuth();
+        /// @brief ラインの大きさ（強度）を取得する
+        /// @return 大きさ
+        int get_magnitude();
+        /// @brief ラインのX座標を取得する
+        /// @return X座標
         int get_x();
+        /// @brief ラインのY座標を取得する
+        /// @return Y座標
         int get_y();
-        int get_type(); //種類　0=無し　1=点　2=辺　3=角
-        int get_eazimuth(); //逃げる方向
+        /// @brief ラインの種類を取得する
+        /// @return 0=無し 1=点 2=辺 3=角
+        int get_type();
+        /// @brief ライン回避方向を取得する
+        /// @return 逃げる方向
+        int get_eazimuth();
+        /// @brief 指定されたラインセンサーの生値を取得する
+        /// @param lineNUM センサー番号
+        /// @return センサー値
         int get_value(byte lineNUM);
+        /// @brief 指定されたラインセンサーの検出状態を取得する
+        /// @param lineNUM センサー番号
+        /// @return true:検出 false:非検出
         bool get_stat(byte lineNUM);
-        int get_pack(byte packNUM); //0が1つ目
+        /// @brief センサーパックの値を取得する
+        /// @param packNUM パック番号（0が1つ目）
+        /// @return パック値
+        int get_pack(byte packNUM);
 
     private:
         const int detection_border = 700;//700;   990くさしお

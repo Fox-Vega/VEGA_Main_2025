@@ -5,15 +5,36 @@
 
 class MyMOTOR {
     public:
-        void setup(); //初期設定
-        void run(int movement_azimuth, int power_, int dir_azimuth); //進む方向、力（最大Powerは255）、向く方向（姿勢制御用）を引数にいれる
-        void run_non_stabilization(int movement_azimuth, int power_); //姿勢制御なしで動      かす
-        int difix(int target_azimuth); //PID姿勢制御用
-        void free(); //自由回転
-        void brake(); //ブレーキ
+        /// @brief モーターの初期設定を行う
+        void setup();
+        /// @brief モーターを制御して移動する（姿勢制御あり）
+        /// @param movement_azimuth 進行方向（0-359度）
+        /// @param power_ パワー（0-255）
+        /// @param dir_azimuth 向く方向（姿勢制御用）
+        void run(int movement_azimuth, int power_, int dir_azimuth);
+        /// @brief モーターを制御して移動する（姿勢制御なし）
+        /// @param movement_azimuth 進行方向（0-359度）
+        /// @param power_ パワー（0-255）
+        void run_non_stabilization(int movement_azimuth, int power_);
+        /// @brief PID姿勢制御の補正値を計算する
+        /// @param target_azimuth 目標方位角
+        /// @return 補正値
+        int difix(int target_azimuth);
+        /// @brief モーターをフリー状態にする
+        void free();
+        /// @brief モーターにブレーキをかける
+        void brake();
+        /// @brief モーターの現在方位角を取得する
+        /// @return 方位角
         int get_azimuth();
+        /// @brief モーターの出力強度を取得する
+        /// @return 出力強度
         int get_magnitude();
+        /// @brief 姿勢制御の有効/無効を設定する
+        /// @param stat true:有効 false:無効
         void stabilization(bool stat);
+        /// @brief モーター動作の有効/無効を設定する
+        /// @param stat true:有効 false:無効
         void move(bool stat);
 
     private:
