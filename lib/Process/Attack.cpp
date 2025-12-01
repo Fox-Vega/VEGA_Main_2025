@@ -9,9 +9,10 @@ void Attack::setup() {
 }
 
 void Attack::attack_() {
-    if (line.get_type() != 0) { //ラインある
-        mymotor.run(line.get_eazimuth(), avoid_speed, 0);
-    } else if (ball.get_stat() == 1) { //ラインない　ボールある
+    // if (line.get_type() != 0) { //ラインある
+    //     mymotor.run(line.get_eazimuth(), avoid_speed, 0);
+    // } else 
+    if (ball.get_stat() == 1) { //ラインない　ボールある
         mypixel.clear();
         back = false;
         speed = 0;
@@ -25,7 +26,7 @@ void Attack::attack_() {
                 break;
             }
         }
-        movement_azimuth = (movement_azimuth % 360 + 360) % 360;
+        movement_azimuth = (movement_azimuth + 360) % 360;
         mymotor.run(movement_azimuth, speed, 0);
 
 

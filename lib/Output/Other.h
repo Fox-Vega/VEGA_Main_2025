@@ -117,6 +117,6 @@ class MyBUZZER {
         void preset(int BUZZERpresetNUM);
 
     private:
-        const bool useBUZZER = 1;
+        const bool useBUZZER = 0;
         const byte BUZZER_PIN = 47;
 };

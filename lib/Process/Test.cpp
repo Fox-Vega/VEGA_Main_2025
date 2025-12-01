@@ -118,7 +118,9 @@ void Test::input() {
     //ボール
     ball.read();
     if (ball.get_stat() != 0) mypixel.closest(ball.get_azimuth(), 255, 255, 0, 1);
-    Serial.println(ball.get_magnitude());
+    int ball_azimuth = ball.get_azimuth();
+    if (ball_azimuth > 180) ball_azimuth -= 360; //-179 ~ 180
+    Serial.println(ball_azimuth);
 }
 
 void Test::escape() {
