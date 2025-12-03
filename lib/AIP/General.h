@@ -5,19 +5,11 @@
 
 class General {
     public:
-        /// @brief Generalクラスの初期設定を行う
-        void setup();
-        /// @brief 起動時の設定処理を行う
-        void startup();
-        /// @brief トグルスイッチを確認し実行可否を取得する
-        /// @return 実行可否
-        int get_run();
-        /// @brief 現在のモードを取得する
-        /// @return モード番号
-        int get_mode();
+        void setup(); //初期設定
+        void startup(); //始動処理
+        int get_mode(); //現在のモードを取得
 
     private:
-        // int step_num = 0;
         byte startcord = 0;
         byte tact_pressed; //押されたスイッチ
         bool toggle_stat; //トグルスイッチの状態

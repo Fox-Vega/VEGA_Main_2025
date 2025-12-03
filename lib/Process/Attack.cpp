@@ -13,6 +13,7 @@ void Attack::attack_() {
     //     mymotor.run(line.get_eazimuth(), avoid_speed, 0);
     // } else 
     if (ball.get_stat() == 1) { //ラインない　ボールある
+        // mymotor.move(0);
         mypixel.clear();
         back = false;
         speed = 0;
@@ -22,11 +23,14 @@ void Attack::attack_() {
             if (wrap[i][0] <= abs(ball_azimuth) && abs(ball_azimuth) <= wrap[i + 1][0]) {
                 speed = wrap[i + 1][2];
                 movement_azimuth = ball_azimuth * wrap[i + 1][1];
+                Serial.print(movement_azimuth);
+                Serial.print(" ");
                 if (wrap[i + 1][1] == 999) movement_azimuth = 0;
                 break;
             }
         }
         movement_azimuth = (movement_azimuth + 360) % 360;
+        Serial.println(movement_azimuth);
         mymotor.run(movement_azimuth, speed, 0);
 
 

@@ -114,7 +114,6 @@ void General::startup() {
                     } else {
                         startcord = 0;
                     }
-                    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
                     mybuzzer.start(500, 50);
                     mybuzzer.start(500, 50);
                 } else if (tact_pressed == 9) {//確定　次のフェーズへ
@@ -161,7 +160,6 @@ void General::startup() {
     //mypixel.brightness(100);
     mypixel.clear();
     mypixel.show();
-    gam.cord_custom(startcords_x[startcord], startcords_y[startcord]);
     mymotor.stabilization(1);
     mymotor.move(1);
 }
