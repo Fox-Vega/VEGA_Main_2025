@@ -19,8 +19,8 @@ void BALL::read() {
     }
 
     //センサー値取得
-    ball_start = micros();
-    while((micros() - ball_start) < (833 * 3)) {
+    unsigned long ball_start = micros();
+    while((micros() - ball_start) < (833 * 4)) {
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
@@ -88,7 +88,8 @@ bool BALL::get_stat() {
 }
 
 int BALL::get_azimuth() {
-    return myvector.get_azimuth(ball_x, ball_y) +10;
+    int azimuth = myvector.get_azimuth(ball_x, ball_y) + 20; //8
+    return azimuth % 360;
 }
 
 int BALL::get_magnitude() {

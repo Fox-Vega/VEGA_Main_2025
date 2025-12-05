@@ -5,43 +5,21 @@
 
 class MyMOTOR {
     public:
-        /// @brief モーターの初期設定を行う
-        void setup();
-        /// @brief モーターを制御して移動する（姿勢制御あり）
-        /// @param movement_azimuth 進行方向（0-359度）
-        /// @param power_ パワー（0-255）
-        /// @param dir_azimuth 向く方向（姿勢制御用）
-        void run(int movement_azimuth, int power_, int dir_azimuth);
-        /// @brief モーターを制御して移動する（姿勢制御なし）
-        /// @param movement_azimuth 進行方向（0-359度）
-        /// @param power_ パワー（0-255）
-        void run_non_stabilization(int movement_azimuth, int power_);
-        /// @brief PID姿勢制御の補正値を計算する
-        /// @param target_azimuth 目標方位角
-        /// @return 補正値
-        int difix(int target_azimuth);
-        /// @brief モーターをフリー状態にする
-        void free();
-        /// @brief モーターにブレーキをかける
-        void brake();
-        /// @brief モーターの現在方位角を取得する
-        /// @return 方位角
-        int get_azimuth();
-        /// @brief モーターの出力強度を取得する
-        /// @return 出力強度
-        int get_magnitude();
-        /// @brief 姿勢制御の有効/無効を設定する
-        /// @param stat true:有効 false:無効
-        void stabilization(bool stat);
-        /// @brief モーター動作の有効/無効を設定する
-        /// @param stat true:有効 false:無効
-        void move(bool stat);
+        void setup(); //初期設定
+        void run(int movement_azimuth, int power_, int dir_azimuth); //移動する（方向、パワー（０～２５５）、姿勢制御の方向）
+        int difix(int target_azimuth); //姿勢制御出力を取得
+        void free(); //空転
+        void brake(); //ブレーキ
+        int get_azimuth(); //現在の移動方向を取得
+        int get_magnitude(); //現在のパワーを取得
+        void stabilization(bool stat); //姿勢制御を行う　有効・無効
+        void move(bool stat); //モーターへ信号を送る　有効・無効
 
     private:
         //調整用
         const float kp = 2.6; //比例 を大きくすると応答が速くなるが、振動しやすくなる
         const float kd = 0.176; //微分 を大きくするとどうなるかわからん
-        const int pwmlimit = 190;
+        const int pwmlimit = 210;
         const int stabimit = 170;
         const float pwmscale = 1.0;
 

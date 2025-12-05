@@ -4,14 +4,9 @@
 
 class MySWITCH {
     public:
-        /// @brief スイッチの初期設定を行う
-        void setup();
-        /// @brief タクトスイッチの状態を確認する
-        /// @return 左1 中央5 右9 反応なし0
-        int check_tact();
-        /// @brief トグルスイッチの状態を確認する
-        /// @return 0:奥 1:手前
-        int check_toggle();
+        void setup(); //初期設定
+        int check_tact(); //タクトを確認
+        int check_toggle(); //トグルを確認　０＝奥、１＝手前
 
     private:
         byte pushed_tact;

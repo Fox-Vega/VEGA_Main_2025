@@ -350,8 +350,11 @@ void Defense::normal() {
         ReturnTime.reset();
     } else {
         // === ラインなし：戻り処理 ===
-        if(ReturnTime.read_milli()>1000)
-            mymotor.run_non_stabilization(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230);
+        if(ReturnTime.read_milli()>1000){
+            mymotor.stabilization(0);
+            mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230,0);
+            mymotor.stabilization(1);
+        }
         else
             mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230, 0);
 
@@ -471,11 +474,13 @@ void Defense::resetUI() {
 // }
 
 void Defense::noline() {
-    if(ReturnTime.read_milli() > 1000) {
-        mymotor.run_non_stabilization(norm360(lastdetect[0] + (lastdetect[1] - gam.get_azimuth())), 230);
-    } else {
-        mymotor.run(norm360(lastdetect[0] + (lastdetect[1] - gam.get_azimuth())), 230, 0);
+    if(ReturnTime.read_milli()>1000){
+        mymotor.stabilization(0);
+        mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230,0);
+        mymotor.stabilization(1);
     }
+    else
+        mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230, 0);
 }
 
 void Defense::noball() {
@@ -486,8 +491,6 @@ void Defense::noball() {
 void Defense::stop() {
     mymotor.free();
 }
-
-// 重複定義を削除しました
 
 void Defense::updateTimers() {
     if(static_cast<int>(frog) != 4 && MoveTime.read_milli() > 500) {

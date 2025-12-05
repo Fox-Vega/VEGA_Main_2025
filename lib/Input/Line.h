@@ -5,72 +5,49 @@
 
 class LINE {
     public:
-        /// @brief ラインセンサーの初期設定を行う
-        void setup();
-        /// @brief ラインセンサーのデータを読み取る
-        void read();
-        /// @brief ラインの方位角を取得する
-        /// @return 方位角（0-359度）
-        int get_azimuth();
-        /// @brief ラインの大きさ（強度）を取得する
-        /// @return 大きさ
-        int get_magnitude();
-        /// @brief ラインのX座標を取得する
-        /// @return X座標
-        int get_x();
-        /// @brief ラインのY座標を取得する
-        /// @return Y座標
-        int get_y();
-        /// @brief ラインの種類を取得する
-        /// @return 0=無し 1=点 2=辺 3=角
-        int get_type();
-        /// @brief ライン回避方向を取得する
-        /// @return 逃げる方向
-        int get_eazimuth();
-        /// @brief 指定されたラインセンサーの生値を取得する
-        /// @param lineNUM センサー番号
-        /// @return センサー値
-        int get_value(byte lineNUM);
-        /// @brief 指定されたラインセンサーの検出状態を取得する
-        /// @param lineNUM センサー番号
-        /// @return true:検出 false:非検出
-        bool get_stat(byte lineNUM);
-        /// @brief センサーパックの値を取得する
-        /// @param packNUM パック番号（0が1つ目）
-        /// @return パック値
-        int get_pack(byte packNUM);
+        void setup(); //初期設定
+        void read(); //センサーの読み取り
+        int get_azimuth(); //方位角を取得
+        int get_magnitude(); //距離を取得
+        int get_x(); //X座標取得
+        int get_y(); //Y座標取得
+        int get_type(); //検出ステータスを取得（反応グループの数）
+        int get_eazimuth(); //逃げる方向を取得
+        int get_value(byte lineNUM); //指定したセンサーの強度を取得（引数は０～１５）
+        bool get_stat(byte lineNUM); //指定したセンサーの検出ステータスを取得（０＝検出失敗、１＝検出成功）
+        int get_pack(byte packNUM); //指定した反応グループの角度を取得（引数はget_typeで反応した数の範囲）
 
     private:
-        const int detection_border = 700;//700;   990くさしお
-        const int over_border = 150;
+        const int detection_border = 700; //700＠部室　990＠草塩
+        const int over_border = 150; //ライン越え判定を行う変化量
 
-        float total_x;
-        float total_y;
+        float total_x; //X座標合計値
+        float total_y; //Y座標合計値
 
-        int line_x;
-        int line_y;
-        int oldline_x;
-        int oldline_y;
-        int escape_x;
-        int escape_y;
+        int line_x; //最終座標（処理済み）
+        int line_y; //最終座標（処理済み）
+        int oldline_x; //前回の最終座標（処理済み）
+        int oldline_y; //前回の最終座標（処理済み）
+        int escape_x; //最終逃げる座標（処理済み）
+        int escape_y; //最終逃げる座標（処理済み）
 
         int line_type;
-        //0なら反応なし
-        //1なら点検知
-        //2なら辺検知
-        //3なら角検知
+        //０＝反応なし
+        //１＝点検知
+        //２＝辺検知
+        //３＝角検知
 
-        bool over = false; //反転したか
+        bool over = false; //ライン越え判定
 
-        const int line_r = 12;
-        const uint8_t selectPIN[3] = {22, 24, 26};
-        const uint8_t outputPIN[3] = {A9, A11, A13};
+        const int line_r = 12; //ラインセンサーの半径
+        const uint8_t selectPIN[3] = {22, 24, 26}; //選択ピン
+        const uint8_t outputPIN[3] = {A9, A11, A13}; //取得ピン
 
-        float pack_x[4];
-        float pack_y[4];
-        int line_values[24]; //アナログ値　UI用
-        int line_stat[24];
-        int line_stat_[24];
+        float pack_x[4]; //反応グループのX座標
+        float pack_y[4]; //反応グループのY座標
+        int line_values[24]; //センサー値（そのまま）
+        int line_stat[24]; //最終ステータス
+        int line_stat_[24]; //ステータス
 
         const byte Reader[8][3] = {
             {1, 1, 1},
@@ -82,5 +59,5 @@ class LINE {
             {0, 0, 1},
             {0, 0, 0},
         };
-        const int line_degs[24] = {15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 0};
+        const int line_degs[24] = {15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 0}; //各センサー角度
 };
