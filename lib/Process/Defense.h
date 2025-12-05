@@ -22,10 +22,10 @@ private:
 
 static constexpr int ball_cal =-10;
 static constexpr float dash_border = 13000.0;        // ダッシュ待ち時間
-static constexpr float dash_time = 1200.0;          // ダッシュ時間
+static constexpr float dash_time = 1500.0;          // ダッシュ時間
 static constexpr int dash_border_ball = 2000;    // ボール検出でダッシュ待ち時間リセット
 static constexpr float ball_move_border = 7.0;      // ボール移動境界(±角度)
-static constexpr float move_speed = 300.0;          // 移動スピード（旧: ball_power）
+static constexpr float move_speed = 200.0;          // 移動スピード（旧: ball_power）
 static constexpr float move_border = 50.0;          // 移動最小値 -o判定に使う
 static constexpr float calblate_sir_late = 1.2;
 static int ddddd; //デバッグ用
@@ -121,6 +121,22 @@ static Timer ReturnTime;
     inline void norm360P( int &a) {
         a %= 360;
         if(a < 0) a += 360;
+    }
+
+    /// @brief 範囲を比例変換する
+    /// @param min1 元の範囲の最小値
+    /// @param max1 元の範囲の最大値
+    /// @param min2 変換先範囲の最小値
+    /// @param max2 変換先範囲の最大値
+    /// @param value 変換する値
+    /// @return 変換された値
+    inline static int scaleRange(int min1, int max1, int min2, int max2, int value) {
+        // 範囲チェック
+        if(value <= min1) return min2;
+        if(value >= max1) return max2;
+        
+        // 比例計算: (value - min1) / (max1 - min1) * (max2 - min2) + min2
+        return ((value - min1) * (max2 - min2) + (max1 - min1) / 2) / (max1 - min1) + min2;
     }
 
     //誤差測定　差分の絶対値を返す
@@ -228,6 +244,7 @@ static Timer ReturnTime;
         NONE = 0,
         NORMAL = 1,     // ノーマル
         NO_LINE = 2,    // ラインなし
+        BAD_LINE = 6,
         NO_BALL = 3,    // ボールなし
         STOP = 4, // 停止
         DASH = 5      // ダッシュ中
