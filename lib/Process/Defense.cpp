@@ -29,6 +29,7 @@ Timer Defense::ReturnTime;
 int Defense::calb = 0;
 bool Defense::tl = false;
 bool Defense::edge = false;
+bool Defense::corner = false;
 Defense::RGBA Defense::background;
 Defense::RGBA Defense::P_line;
 Defense::RGBA Defense::P_ball;
@@ -36,233 +37,323 @@ Defense::RGBA Defense::move_ang;
 Defense::RGBA Defense::dash_timer;
 int Defense::ddddd = 0;
 
+// === 入力キャッシュ変数の定義 ===
+int Defense::line_azimuth_cache = 0;
+int Defense::line_type_cache = 0;
+int Defense::line_x_cache = 0;
+int Defense::line_y_cache = 0;
+int Defense::ball_azimuth_cache = 0;
+bool Defense::ball_stat_cache = false;
+int Defense::gam_azimuth_cache = 0;
+
 void Defense::setup() {
     reset();//初期化　その他は何にもない
     //...あれれ？　意味ないじゃんけ
 }
 
 void Defense::defense_() {
+    // === 1. 入力データ取得・キャッシュ ===
     resetUI();
-    frog = FROG::NONE; //フ　ラ　グ　付　け
+    readSensorData();
+    
+    // === 2. ダッシュ判定（最優先） ===
+    if(checkDashCondition()) {
+        dash();
+        return;
+    }
+    
+    // === 3. フラグ決定 ===
+    determineFrog();
+    
+    // === 4. フラグに応じた動作実行 ===
+    switch(frog) {
+        case FROG::NORMAL:
+            normal();
+            break;
+        case FROG::NO_LINE:
+            noline();
+            break;
+        case FROG::NO_BALL:
+            noball();
+            break;
+        case FROG::STOP:
+            stop();
+            break;
+        case FROG::DASH:
+            // ダッシュ処理は上で実行済み
+            break;
+        default:
+            mymotor.free();
+            break;
+    }
+    
+    // === 5. UI更新 ===
+    applyUI(static_cast<int>(frog));
+    
+    // === 6. タイマー処理 ===
+    updateTimers();
+}
 
-    /*縦ライン*/
+void Defense::readSensorData() {
+    // センサーデータを一度だけ読み取ってキャッシュ
+    line_azimuth_cache = line.get_azimuth();
+    line_type_cache = line.get_type();
+    line_x_cache = line.get_x();
+    line_y_cache = line.get_y();
+    ball_azimuth_cache = ball.get_azimuth();
+    ball_stat_cache = ball.get_stat();
+    gam_azimuth_cache = gam.get_azimuth();
+    
+    // 共通計算
+    calb = 0 - gam_azimuth_cache;
+    
+    // 縦ライン判定
     tl = false;
-    bool frog1 =line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||
+    bool frog1 = line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||
                 line.get_stat(23) || line.get_stat(22);
-    bool frog2 =line.get_stat(11) || line.get_stat(12) || line.get_stat(13) ||
+    bool frog2 = line.get_stat(11) || line.get_stat(12) || line.get_stat(13) ||
                 line.get_stat(10) || line.get_stat(9);
     if(frog1 && frog2) {
         tl = true;
         background = RGBA{255, 0, 255, 1};
     }
 
-    /*左右の端*/
-    edge =  line.get_stat(5) || line.get_stat(6) || line.get_stat(7) ||
-            line.get_stat(17) || line.get_stat(18) || line.get_stat(19  );
+    // エッジ判定
+    edge = line.get_stat(5) || line.get_stat(6) || line.get_stat(7) ||
+           line.get_stat(17) || line.get_stat(18) || line.get_stat(19);
 
-    //=== ダッシュ処理 ===
-    if(SilentTime.read_milli() > dash_border && USE_DASH == true) {
-        frog = FROG::DASH;
-        float TL = 20.0;  //TL＝縦　ライン　(脳筋)
-        float TLM = 60.0; //TL＝縦　ライン　(脳筋)
+    corner =(line.get_type()==2&&(getErr(line.get_pack(0),line.get_pack(1))<110));
+}
 
-        if(SilentTime.read_milli() < dash_border * 1.2) { //最初に起動防止
-            if(myswitch.check_toggle() == 0) {
-                SilentTime.reset();
-                return; //ダッシュ中止
-            }
+bool Defense::checkDashCondition() {
+    return (SilentTime.read_milli() > dash_border && USE_DASH == true);
+}
 
-            mypixel.multi(0, 15, 255, 50, 50);
-            mypixel.show();
-            SilentTime.reset();
+void Defense::determineFrog() {
+    frog = FROG::NONE;
 
-            //少し前に進みます
-            while(SilentTime.read_milli() < 300) {
-                gam.read_azimuth();
-                mymotor.run(0, 200, 0);
-                if(myswitch.check_toggle() == 0) {
-                    SilentTime.reset();
-                    break;
-                }
-            }
-            SilentTime.reset();
+    if(line_type_cache == 0) {
+        // ライン無し
+        frog = FROG::NO_LINE;
+    } else if(line_type_cache == 3) {
+        // 角ライン（特殊処理）
+        frog = FROG::NORMAL; // 仮
+    } else if(!ball_stat_cache) {
+        // ボール無し
+        frog = FROG::NO_BALL;
+    } else {
+        // 通常モード
+        frog = FROG::NORMAL;
+    }
+}
 
-            //こちらがメイン　アタック呼び出してるだけ
-            while(SilentTime.read_milli() < dash_time) {
-                gam.read_azimuth();
-                ball.read();
-                line.read();
-                if(line.get_type() != 0) {
-                    lastdetect[0] = line.get_azimuth();
-                    lastdetect[1] = gam.get_azimuth();
-                }
-                attack.attack_();
-                if(myswitch.check_toggle() == 0) {
-                    SilentTime.reset();
-                    break;
-                }
-            }
-            SilentTime.reset();
 
-            //少し後ろに進みます
-            while(SilentTime.read_milli() < 300) {
-                gam.read_azimuth();
-                mymotor.run(180, 200, 0);
-                if(myswitch.check_toggle() == 0) {
-                    SilentTime.reset();
-                    break;
-                }
-            }
-            SilentTime.reset();
+void Defense::dash() {
+    frog = FROG::DASH;
+    float TL = 20.0;
+    float TLM = 60.0;
 
-            int mm = 180; //ムーブ向き
-            int mt = 75;  //ムーブ力
-
-            while(1) { //戻ろう
-                if(line.get_type() == 1) { //縦ライン見えたら少しずらす
-                    if((line.get_azimuth() < 180 - TL && line.get_azimuth() > TL) ||
-                        (line.get_azimuth() > 180 + TL && line.get_azimuth() < 360 - TL)) {
-                        if(line.get_azimuth() < 180 - TL && line.get_azimuth() > TL) {
-                            mm = 180 - TLM;
-                        } else {
-                            mm = 180 + TLM;
-                        }
-                    }
-                    break;
-                }
-
-                gam.read_azimuth();
-                ball.read();
-                line.read();
-
-                mymotor.run(mm, static_cast<int>(mt), 0);
-                if(mt < 120) mt += 1; //だんだん早くなる♪
-
-                if(myswitch.check_toggle() == 0) {
-                    SilentTime.reset();
-                    break;
-                }
-            }
-            mymotor.brake();
-            delay(100);
-            return;
-        } else { //1.5倍過ぎたら止めましょうと　誤爆防止や
+    if(SilentTime.read_milli() < dash_border * 1.2) {
+        if(myswitch.check_toggle() == 0) {
             SilentTime.reset();
             return;
         }
-    }
 
-    if (line.get_type() != 0) {// === ラインあり ===
-        if(line.get_type()!=3){
-        frog = FROG::NORMAL;//フ　ラ　グ　付　け
+        mypixel.multi(0, 15, 255, 50, 50);
+        mypixel.show();
+        SilentTime.reset();
 
-        // --- 次回用保存処理 ---
-        lastdetect[0]=line.get_azimuth();
-        lastdetect[1]=gam.get_azimuth();
-
-        if (/*ball.get_stat() == 1*/1) {// === ボールあり ===
-            calb = 0 - gam.get_azimuth(); //進行方向補正
-
-            //line
-            int line_az = line.get_azimuth();
-            rad = radians(line_az); //ラインに対しての戻る力
-            line_x = sin(rad);
-            line_y = cos(rad);
-            //---
-
-            //ball
-            int ball_az = ball.get_azimuth();
-            ball_ang = ball_az + ball_cal; //ボールの方向
-
-            ball_y = (ball_ang < 90 || ball_ang > 270) ? 1 : -1; //0か1か
-            ball_x = (ball_ang < 180) ? 1 : -1;
-            //---
-
-            //減算　縦か角
-            int line_x_val = line.get_x();
-            calc_move_speed = (line_x_val > 3 || tl) ? static_cast<int>(move_speed) >> 1 : move_speed; //速度減算
-            // calc_move_speed=move_speed;
-            //---
-
-            //x
-            if(tl)
-                ball_x = 0;
-            //縦ラインならballｘは0にしておく
-            move_x = ((line_x) + (ball_x)) * calc_move_speed;
-
-            if(tl&&abs(line_x)<2)
-                move_x = 0;
-            //縦ラインでの速度上昇用
-
-            //---
-
-            //y
-            if(!tl && abs(line_x_val) < 2)
-                ball_y = 0;
-
-            if(tl)
-                line_y = 0;
-            //縦ラインじゃなかったらballｙは0にしておく
-
-            move_y = ((line_y) + (ball_y)) * calc_move_speed;
-
-            if((!tl)&&abs(line.get_y())<2)
-                move_y/=2;
-            //並行ラインでの処理
-            //---
-
-            //計算
-            move_azimuth = myvector.get_azimuth(move_x, move_y);
-            move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
-            //---
-
-            if(getErr(0,ball.get_azimuth())<ball_move_border&&!tl){
-                //縦ラインじゃないかつボールが正面に近ければ止まる
-                move_power=0;
+        // 前進
+        while(SilentTime.read_milli() < 300) {
+            gam.read_azimuth();
+            mymotor.run(0, 200, 0);
+            if(myswitch.check_toggle() == 0) {
+                SilentTime.reset();
+                break;
             }
+        }
+        SilentTime.reset();
 
-            if (move_power > move_border ) {
-                // if(diff_signs(last_x, move_x)&&lastpower>(move_border*1.2)){
-                //     mymotor.brake();
-                //     mypixel.multi(0, 15, 255, 255, 0);
-                // }
+        // アタック
+        while(SilentTime.read_milli() < dash_time) {
+            gam.read_azimuth();
+            ball.read();
+            line.read();
+            if(line.get_type() != 0) {
+                lastdetect[0] = line.get_azimuth();
+                lastdetect[1] = gam.get_azimuth();
+            }
+            attack.attack_();
+            if(myswitch.check_toggle() == 0) {
+                SilentTime.reset();
+                break;
+            }
+        }
+        SilentTime.reset();
+
+        // 後退
+        while(SilentTime.read_milli() < 300) {
+            gam.read_azimuth();
+            mymotor.run(180, 200, 0);
+            if(myswitch.check_toggle() == 0) {
+                SilentTime.reset();
+                break;
+            }
+        }
+        SilentTime.reset();
+
+        // 復帰
+        int mm = 180;
+        int mt = 75;
+        while(1) {
+            if(line.get_type() == 1) {
+                if((line.get_azimuth() < 180 - TL && line.get_azimuth() > TL) ||
+                    (line.get_azimuth() > 180 + TL && line.get_azimuth() < 360 - TL)) {
+                    if(line.get_azimuth() < 180 - TL && line.get_azimuth() > TL) {
+                        mm = 180 - TLM;
+                    } else {
+                        mm = 180 + TLM;
+                    }
+                }
+                break;
+            }
+            gam.read_azimuth();
+            ball.read();
+            line.read();
+            mymotor.run(mm, static_cast<int>(mt), 0);
+            if(mt < 120) mt += 1;
+            if(myswitch.check_toggle() == 0) {
+                SilentTime.reset();
+                break;
+            }
+        }
+        mymotor.brake();
+        delay(100);
+    } else {
+        SilentTime.reset();
+    }
+}
+void Defense::normal() {
+    if (line.get_type() != 0) {// === ラインあり ===
+        if(!(line.get_type()>=3)){
+            frog = FROG::NORMAL;//フ　ラ　グ　付　け
+
+            // --- 次回用保存処理 ---
+            lastdetect[0]=line.get_azimuth();
+            lastdetect[1]=gam.get_azimuth();
+
+            if (/*ball.get_stat() == 1*/1) {// === ボールあり ===
+                calb = 0 - gam.get_azimuth(); //進行方向補正
+
+                //line
+                int line_az = line.get_azimuth();
+                rad = radians(line_az); //ラインに対しての戻る力
+                line_x = sin(rad);
+                line_y = cos(rad);
+                //---
+
+                //ball
+                int ball_az = ball.get_azimuth();
+                ball_ang = ball_az + ball_cal; //ボールの方向
+
+                ball_y = (ball_ang < 90 || ball_ang > 270) ? 1 : -1; //0か1か
+                ball_x = (ball_ang < 180) ? 1 : -1;
+                //---
+
+                //減算　縦か角
+                int line_x_val = line.get_x();
+                calc_move_speed = (line_x_val > 3 || tl) ? static_cast<int>(move_speed) >> 1 : move_speed; //速度減算
+                // calc_move_speed=move_speed;
+                //---
+
+                //x
+                if(tl)
+                    ball_x = 0;
+                //縦ラインならballｘは0にしておく
+
+                if(corner){
+                    line_x*=1.5;
+                }
+                move_x = ((line_x) + (ball_x)) * calc_move_speed;
+
+                if(tl&&abs(line_x)<2)
+                    move_x = 0;
+                //縦ラインでの速度上昇用
+
+                //---
+
+                //y
+                if(corner){
+                    line_y*=1.5;
+                }else{
+                    if(!tl && abs(line_x_val) < 2)
+                        ball_y = 0;
+
+                    if(tl)
+                        line_y = 0;
+                    //縦ラインじゃなかったらballｙは0にしておく
+                }
+
+                move_y = ((line_y) + (ball_y)) * calc_move_speed;
+
+                if((!tl)&&abs(line.get_y())<2)
+                    move_y/=2;
+                //並行ラインでの処理
+                //---
+
+
+                //計算
+                move_azimuth = myvector.get_azimuth(move_x, move_y);
+                move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
+                //---
+
+                if(getErr(0,ball.get_azimuth())<ball_move_border&&!tl){
+                    //縦ラインじゃないかつボールが正面に近ければ止まる
+                    move_power=0;
+                }
+
+                if (move_power > move_border ) {
+                    // if(diff_signs(last_x, move_x)&&lastpower>(move_border*1.2)){
+                    //     mymotor.brake();
+                    //     mypixel.multi(0, 15, 255, 255, 0);
+                    // }
 
                     mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
                     if(MoveTime.read_milli()>500){
-                SilentTime.reset();
+                        SilentTime.reset();
                     }
-            } else {
-                // if(lastpower>(move_border))
-                //     mymotor.brake();
-                // else
+                } else {
+                    // if(lastpower>(move_border))
+                    //     mymotor.brake();
+                    // else
                     mymotor.free();
 
                     frog=FROG::STOP;
                     MoveTime.reset();
-            }
+                }
 
-            {//保存保存！
-            lastpower=static_cast<int>(move_power);
-            last_x=static_cast<int>(line_x);
-            last_y=static_cast<int>(line_y);
-            }
+                {//保存保存！
+                    lastpower=static_cast<int>(move_power);
+                    last_x=static_cast<int>(line_x);
+                    last_y=static_cast<int>(line_y);
+                }
 
+            } else {
+                frog=FROG::NO_BALL;
+                // === ボールなし === ラインに戻る
+                mybuzzer.start(500,999);
+                mymotor.free();
+            }
         } else {
-            frog=FROG::NO_BALL;
-            // === ボールなし === ラインに戻る
-            mybuzzer.start(500,999);
-            mymotor.free();
+            mymotor.run(0,200,0);
         }
-    } else {
-        mymotor.run(0,200,0);
-    }
         ReturnTime.reset();
     } else {
         // === ラインなし：戻り処理 ===
         if(ReturnTime.read_milli()>1000)
-        mymotor.run_non_stabilization(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230);
+            mymotor.run_non_stabilization(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230);
         else
-        mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230, 0);
+            mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230, 0);
 
         frog=FROG::NO_LINE;//フ　ラ　グ　付　け
     }
@@ -321,11 +412,102 @@ void Defense::resetUI() {
 
 }
 
+// void Defense::normal() {
+//     mybuzzer.stop();
+    
+//     // 次回用保存処理
+//     lastdetect[0] = line_azimuth_cache;
+//     lastdetect[1] = gam_azimuth_cache;
+
+//     // line方向ベクトル計算
+//     rad = radians(line_azimuth_cache);
+//     line_x = sin(rad);
+//     line_y = cos(rad);
+
+//     // ball方向ベクトル計算
+//     ball_ang = ball_azimuth_cache + ball_cal;
+//     ball_y = (ball_ang < 90 || ball_ang > 270) ? 1 : -1;
+//     ball_x = (ball_ang < 180) ? 1 : -1;
+
+//     // 速度減算
+//     calc_move_speed = (line_x_cache > 3 || tl) ? static_cast<int>(move_speed) >> 1 : move_speed;
+
+//     // X軸移動量計算
+//     if(tl) ball_x = 0;
+//     move_x = (line_x + ball_x) * calc_move_speed;
+//     if(tl && abs(line_x) < 2) move_x = 0;
+
+//     // Y軸移動量計算
+//     if(!tl && abs(line_x_cache) < 2) ball_y = 0;
+//     if(tl) line_y = 0;
+//     move_y = (line_y + ball_y) * calc_move_speed;
+//     if((!tl) && abs(line_y_cache) < 2) move_y /= 2;
+
+//     // 最終移動ベクトル計算
+//     move_azimuth = myvector.get_azimuth(move_x, move_y);
+//     move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
+
+//     // 停止判定
+//     if(getErr(0, ball_azimuth_cache) < ball_move_border && !tl) {
+//         move_power = 0;
+//     }
+
+//     // モーター制御
+//     if (move_power > move_border) {
+//         mymotor.run(move_azimuth, static_cast<int>(move_power), 0);
+//         if(MoveTime.read_milli() > 500) {
+//             SilentTime.reset();
+//         }
+//     } else {
+//         mymotor.free();
+//         frog = FROG::STOP;
+//         MoveTime.reset();
+//     }
+
+//     // 保存
+//     lastpower = static_cast<int>(move_power);
+//     last_x = static_cast<int>(line_x);
+//     last_y = static_cast<int>(line_y);
+// }
+
+void Defense::noline() {
+    if(ReturnTime.read_milli() > 1000) {
+        mymotor.run_non_stabilization(norm360(lastdetect[0] + (lastdetect[1] - gam.get_azimuth())), 230);
+    } else {
+        mymotor.run(norm360(lastdetect[0] + (lastdetect[1] - gam.get_azimuth())), 230, 0);
+    }
+}
+
+void Defense::noball() {
+    mybuzzer.start(500, 999);
+    mymotor.free();
+}
+
+void Defense::stop() {
+    mymotor.free();
+}
+
+// 重複定義を削除しました
+
+void Defense::updateTimers() {
+    if(static_cast<int>(frog) != 4 && MoveTime.read_milli() > 500) {
+        SilentTime.reset();
+    }
+
+    if(line.get_type() != 0 && line.get_type() != 3) {
+        ReturnTime.reset();
+    }
+
+    ddddd = Dtimer.read_milli();
+    Serial.println(ddddd);
+    Dtimer.reset();
+}
+
 void Defense::applyUI(int mode) {
     // --- alpha適用 ---
     background.applyAlpha();
     P_line.applyAlpha();
-    P_ball.applyAlpha();
+    P_ball.applyAlpha();;
     move_ang.applyAlpha();
     dash_timer.applyAlpha();
 

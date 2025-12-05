@@ -204,9 +204,18 @@ void Test::stabilize() {
 //     mymotor.run(270-gam.get_azimuth(), 140,(crr%720)/2);
 // }
 
+inline static int getErr( int a, int b) { int d = abs((a - b) % 360); return (d > 180) ? (360 - d) : d; }
+
 void Test::free(){
-    if(line.get_type()==3){
-        mybuzzer.start(1000,999);
+    line.read();
+    if(line.get_type()==2){
+        mypixel.closest(line.get_pack(0),255,255,255,1);
+        mypixel.closest(line.get_pack(1),255,255,255,1);
+        if(getErr(line.get_pack(0),line.get_pack(1))<140){
+            mybuzzer.start(1500,999);
+        } else {
+            mybuzzer.stop();
+        }
     }else{
         mybuzzer.stop();
     }

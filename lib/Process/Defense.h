@@ -54,11 +54,32 @@ static Timer SilentTime;
 static Timer MoveTime;
 static Timer ReturnTime;
 
-static int calb;
-static bool tl;
-static bool edge;
-static bool frog1;
-static bool frog2;
+    static int calb;
+    static bool tl;
+    static bool edge;
+    static bool corner;
+    static bool frog1;
+    static bool frog2;
+
+    // === 入力キャッシュ変数 ===
+    static int line_azimuth_cache;
+    static int line_type_cache;
+    static int line_x_cache;
+    static int line_y_cache;
+    static int ball_azimuth_cache;
+    static bool ball_stat_cache;
+    static int gam_azimuth_cache;
+
+    // === ヘルパーメソッド ===
+    void readSensorData();
+    bool checkDashCondition();
+    void dash();
+    void determineFrog();
+    void normal();
+    void noline();
+    void noball();
+    void stop();
+    void updateTimers();
 
     // static constexpr int return_power = 200;
     // static int go_flag;
