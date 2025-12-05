@@ -9,10 +9,9 @@ void Attack::setup() {
 }
 
 void Attack::attack_() {
-    // if (line.get_type() != 0) { //ラインある
-    //     mymotor.run(line.get_eazimuth(), avoid_speed, 0);
-    // } else 
-    if (ball.get_stat() == 1) { //ラインない　ボールある
+    if (line.get_type() != 0) { //ラインある
+        mymotor.run(line.get_eazimuth(), avoid_speed, 0);
+    } else if (ball.get_stat() == 1) { //ラインない　ボールある
         // mymotor.move(0);
         mypixel.clear();
         back = false;

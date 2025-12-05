@@ -13,9 +13,9 @@ class LINE {
         int get_y(); //Y座標取得
         int get_type(); //検出ステータスを取得（反応グループの数）
         int get_eazimuth(); //逃げる方向を取得
-        int get_value(byte lineNUM); //指定したセンサーの強度を取得（引数は０～１５）
-        bool get_stat(byte lineNUM); //指定したセンサーの検出ステータスを取得（０＝検出失敗、１＝検出成功）
-        int get_pack(byte packNUM); //指定した反応グループの角度を取得（引数はget_typeで反応した数の範囲）
+        int get_value(byte lineNUM); //指定したセンサー（０～２３）の強度を取得（引数は０～１５）
+        bool get_stat(byte lineNUM); //指定したセンサー（０～２３）の検出ステータスを取得（０＝検出失敗、１＝検出成功）
+        int get_pack(byte packNUM); //指定した反応グループの角度を取得（引数はget_typeで反応した数の範囲　２なら０～１）
 
     private:
         const int detection_border = 700; //700＠部室　990＠草塩

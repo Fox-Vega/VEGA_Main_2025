@@ -26,8 +26,8 @@ class BALL {
         byte max_ballNUM = 0; //最大強度を持つセンサー番号を保存
         int max_ballvalue = 0; //最大強度を保存
         int NUMball; //センサーの数を自動保存
-        int history_x[4]; //X座標の履歴（LPF用）
-        int history_y[4]; //Y座標の履歴（LPF用）
+        int history_x[3]; //X座標の履歴（LPF用）
+        int history_y[3]; //Y座標の履歴（LPF用）
         int history_size; //履歴配列の大きさを自動保存
         const int ballPINs[16] = {31, 29, 27, 25, 23, 19, 17, 15, 32, 34, 36, 38, 40, 42, 44, 46}; //各センサーピン
         const float balldirs[16] = {0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5}; //各センサー角度
