@@ -217,7 +217,7 @@ void Test::free(){//テストモードの水色のやつで起動
     // line.read();
     // for(int i=0;1,i<24;i++){
     //     Serial.print(line.get_value(i));
-    //     Serial.print(" ");
+    //     Serial.print(" ");　
     // }
     // Serial.println();
     // // bool tl = false;
