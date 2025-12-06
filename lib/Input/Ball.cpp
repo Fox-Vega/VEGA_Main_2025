@@ -20,7 +20,7 @@ void BALL::read() {
 
     //センサー値取得
     unsigned long ball_start = micros();
-    while((micros() - ball_start) < (833 * 4)) {
+    while((micros() - ball_start) < (833 * 2)) {
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
