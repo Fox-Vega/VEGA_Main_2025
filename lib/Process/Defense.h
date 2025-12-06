@@ -25,6 +25,7 @@ static constexpr float dash_border = 13000.0;        // ダッシュ待ち時間
 static constexpr float dash_time = 15000.0;          // ダッシュ時間
 static constexpr int dash_border_ball = 2000;    // ボール検出でダッシュ待ち時間リセット
 static constexpr int vertical_exit=750;
+static constexpr int vertical_return=500;
 static constexpr float ball_move_border = 7.0;      // ボール移動境界(±角度)
 
 

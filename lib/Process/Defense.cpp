@@ -81,7 +81,7 @@ void Defense::defense_() {
             mybuzzer.start(1500, 999);
             verticalTime.reset();
             mymotor.run(0,200,0);
-            delay(500);
+            delay(vertical_return);
             mybuzzer.stop();
             break;
         case FROG::NO_BALL:
