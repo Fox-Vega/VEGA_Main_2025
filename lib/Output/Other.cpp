@@ -139,7 +139,6 @@ void MyBUZZER::start(int BUZZERnote, int BUZZERduration) {
             delay(10);
         } else {
             tone(BUZZER_PIN, BUZZERnote);
-            delay(10);
         }
     }
 }
