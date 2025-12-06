@@ -10,6 +10,7 @@ void General::setup() {
     myswitch.setup();
     mybuzzer.setup();
     mypixel.setup();
+    mypixel.use_pixel(true);//常時つけてまあああああああああああああああああああああああああああああああす
     mypixel.multi(0, 15, 255, 128,1);
     mypixel.show();
 
@@ -25,6 +26,7 @@ void General::setup() {
     Serial.println("attackFinish");
     defense.setup();
     Serial.println("defenseFinish");
+    mypixel.use_pixel(true);//常時つけてまあああああああああああああああああああああああああああああああす
     mypixel.multi(0, 15, 255, 255, 255);
     mypixel.show();
     if(myswitch.check_tact() == 15){
@@ -36,15 +38,16 @@ void General::setup() {
     Serial.println("GeneralSetupFinish");
 }
 
-void General::startup() {
+int General::startup() {
     Serial.println("GeneralStartupStart");
     mymotor.free();
     mybuzzer.stop();
-    // mypixel.brightness(999);
+    mypixel.brightness(50);//低くしてまああああああああああああああああああああああああああああああああす
 
     if (standby == 0) {
         phase = 1;
         mode = 0;
+        startcord = 0;
     } else {
         phase = 3;
     }
@@ -163,6 +166,7 @@ void General::startup() {
     mymotor.stabilization(1);
     mymotor.move(1);
     defense.reset();
+    return startcord;
 }
 
 int General::get_mode() {

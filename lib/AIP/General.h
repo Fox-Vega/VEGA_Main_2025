@@ -6,7 +6,7 @@
 class General {
     public:
         void setup(); //初期設定
-        void startup(); //始動処理
+        int startup(); //始動処理
         int get_mode(); //現在のモードを取得
 
     private:

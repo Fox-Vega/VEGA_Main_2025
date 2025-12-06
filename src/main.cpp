@@ -6,6 +6,7 @@
 #include "Defense.h"
 
 Timer timer_test;
+static int startcord_first = 999;
 
 void setup() {
     general.setup();
@@ -18,17 +19,19 @@ void loop() {
     ball.read();
     mypixel.clear();
     gam.read_azimuth();
-
     if (myswitch.check_toggle() == 1 ) {
         if (general.get_mode() == 1) {
             attack.attack_();
         } else if (general.get_mode() == 2) {
-            defense.defense_();
+            defense.defense_(startcord_first);
         } else if (general.get_mode() == 3) {
             test.test_();
         }
+        startcord_first = 999;
     } else {
-        general.startup();
+        mypixel.use_pixel(true);
+        startcord_first = general.startup();
+        mypixel.use_pixel(false);
         defense.reset();
     }
     mypixel.show();

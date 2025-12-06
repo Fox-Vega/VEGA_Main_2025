@@ -49,8 +49,23 @@ void Defense::setup() {
     //...あれれ？　意味ないじゃんけ
 }
 
-void Defense::defense_() {
+void Defense::defense_(
+    /// @brief 0なし、1左奥、2右奥、3右前、4左前
+    int start_cord
+) {
     // === 1. 入力データ取得・キャッシュ ===
+    if(start_cord != 999) {
+        while(line.get_type() == 2) {
+            line.read();
+            ball.read();
+            gam.read_azimuth();
+            mymotor.run(back_ang[start_cord-1], 150, 0);
+            if(myswitch.check_toggle() == 0) {
+                return;
+            }
+        }
+        return;
+    }
 
     // センサーデータを一度だけ読み取ってキャッシュ
     line_azimuth_cache = line.get_azimuth();
@@ -366,7 +381,7 @@ void Defense::noball() {
 
 
 void Defense::updateTimers() {
-    if(static_cast<int>(frog) != 4 && MoveTime.read_milli() > 500) {
+    if(static_cast<int>(frog) != 4 && MoveTime.read_milli() > noise_border) {
         SilentTime.reset();
     }
 
