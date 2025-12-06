@@ -210,14 +210,16 @@ inline static int getErr( int a, int b) { int d = abs((a - b) % 360); return (d 
 
 void Test::free(){
     line.read();
-    if(line.get_type()==2){
-        mypixel.closest(line.get_pack(0),255,255,255,1);
-        mypixel.closest(line.get_pack(1),255,255,255,1);
-        if(getErr(line.get_pack(0),line.get_pack(1))<140){
-            mybuzzer.start(1500,999);
-        } else {
-            mybuzzer.stop();
-        }
+    bool tl = false;
+    bool frog1 = line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||
+                line.get_stat(23) || line.get_stat(22);
+    bool frog2 = line.get_stat(11) || line.get_stat(12) || line.get_stat(13) ||
+                line.get_stat(10) || line.get_stat(9);
+    if(frog1 && frog2) {
+        tl = true;
+    }
+    if(tl){
+        mybuzzer.start(400, 999);
     }else{
         mybuzzer.stop();
     }
