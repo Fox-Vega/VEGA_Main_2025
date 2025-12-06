@@ -173,12 +173,12 @@ void Defense::dash() {
             gam.read_azimuth();
             ball.read();
             line.read();
-            attack.attack_();
-            // mymotor.run(ball.get_azimuth(), 200, 0);
-            // if(myswitch.check_toggle() == 0) {
-            //     SilentTime.reset();
-            //     break;
-            // }
+
+            mymotor.run(ball.get_azimuth(), 200, 0);
+            if(myswitch.check_toggle() == 0) {
+                SilentTime.reset();
+                break;
+            }
         }
         SilentTime.reset();
         mymotor.free();
