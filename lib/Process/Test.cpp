@@ -210,7 +210,7 @@ inline static int getErr( int a, int b) { int d = abs((a - b) % 360); return (d 
 
 void Test::free(){
     gam.read_azimuth();
-     mymotor.run(0,150,0);
+    mymotor.run(0,150,0);
     line.read();
     // bool tl = false;
     // bool frog1 = line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||
