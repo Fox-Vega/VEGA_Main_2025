@@ -5,45 +5,44 @@
 #include "Process.h"
 
 //staticのやつら
-constexpr uint_fast8_t Defense::edge_list[6];
-int Defense::lastdetect[2] = {0};
-int Defense::move_azimuth = 0;
-float Defense::move_power = 0.0f;
-double Defense::move_x = 0.0f;
-double Defense::move_y = 0.0f;
-int Defense::calc_move_speed = 0;
-int Defense::lastpower = 999;
-int Defense::last_x = 999;
-int Defense::last_y = 999;
-float Defense::rad = 0.0f;
-float Defense::ball_ang = 0.0f;
-float Defense::line_x = 0.0f;
-float Defense::line_y = 0.0f;
-float Defense::ball_x = 0.0f;
-float Defense::ball_y = 0.0f;
-Timer Defense::Dtimer;
-Timer Defense::SilentTime;
-Timer Defense::MoveTime;
-Timer Defense::ReturnTime;
-Timer Defense::verticalTime;
-int Defense::calb = 0;
-bool Defense::tl = false;
-bool Defense::corner = false;
-bool Defense::frog1 = false;
-bool Defense::frog2 = false;
-Defense::RGBA Defense::background;
-Defense::RGBA Defense::P_line;
-Defense::RGBA Defense::P_ball;
-Defense::RGBA Defense::move_ang;
-Defense::RGBA Defense::dash_timer;
-int Defense::ddddd = 0;
-int Defense::line_azimuth_cache = 0;
-int Defense::line_type_cache = 0;
-int Defense::line_x_cache = 0;
-int Defense::line_y_cache = 0;
-int Defense::ball_azimuth_cache = 0;
-bool Defense::ball_stat_cache = false;
-int Defense::gam_azimuth_cache = 0;
+// constexpr uint_fast8_t Defense::edge_list[6];//static変数用の定義
+int Defense::lastdetect[2] = {0};//static変数用の定義
+int Defense::move_azimuth = 0;//static変数用の定義
+float Defense::move_power = 0.0f;//static変数用の定義
+double Defense::move_x = 0.0f;//static変数用の定義
+double Defense::move_y = 0.0f;//static変数用の定義
+int Defense::calc_move_speed = 0;//static変数用の定義
+int Defense::lastpower = 999;//static変数用の定義
+int Defense::last_x = 999;//static変数用の定義
+int Defense::last_y = 999;//static変数用の定義
+float Defense::rad = 0.0f;//static変数用の定義
+float Defense::ball_ang = 0.0f;//static変数用の定義
+float Defense::line_x = 0.0f;//static変数用の定義
+float Defense::line_y = 0.0f;//static変数用の定義
+float Defense::ball_x = 0.0f;//static変数用の定義
+float Defense::ball_y = 0.0f;//static変数用の定義
+Timer Defense::Dtimer;//static変数用の定義
+Timer Defense::SilentTime;//static変数用の定義
+Timer Defense::MoveTime;//static変数用の定義
+Timer Defense::ReturnTime;//static変数用の定義
+int Defense::calb = 0;//static変数用の定義
+bool Defense::tl = false;//static変数用の定義
+bool Defense::corner = false;//static変数用の定義
+bool Defense::frog1 = false;//static変数用の定義
+bool Defense::frog2 = false;//static変数用の定義
+Defense::RGBA Defense::background;//static変数用の定義
+Defense::RGBA Defense::P_line;//static変数用の定義
+Defense::RGBA Defense::P_ball;//static変数用の定義
+Defense::RGBA Defense::move_ang;//static変数用の定義
+Defense::RGBA Defense::dash_timer;//static変数用の定義
+// int Defense::ddddd = 0;//static変数用の定義
+int Defense::line_azimuth_cache = 0;//static変数用の定義
+int Defense::line_type_cache = 0;//static変数用の定義
+int Defense::line_x_cache = 0;//static変数用の定義
+int Defense::line_y_cache = 0;//static変数用の定義
+int Defense::ball_azimuth_cache = 0;//static変数用の定義
+bool Defense::ball_stat_cache = false;//static変数用の定義
+int Defense::gam_azimuth_cache = 0;//static変数用の定義
 
 void Defense::setup() {
     reset();//初期化　その他は何にもない
@@ -73,7 +72,7 @@ void Defense::defense_() {
                 line.get_stat(10) || line.get_stat(9);
     if(frog1 && frog2) {
         tl = true;
-        background = RGBA{255, 0, 255, 1};
+        // background = RGBA{255, 0, 255, 1};
     }
 
     // エッジ判定
@@ -116,7 +115,6 @@ void Defense::defense_() {
             mybuzzer.start(1500, 999);
             mymotor.run(0,150,0);
             delay(vertical_return);
-            verticalTime.reset();
             mybuzzer.stop();
             break;
         case FROG::NO_BALL:
@@ -137,8 +135,8 @@ void Defense::defense_() {
     //applyUI(static_cast<int>(frog));
 
     // === 6. タイマー処理 ===
-    int ddddd = Dtimer.read_milli();
-    Serial.println(ddddd);
+    // int ddddd = Dtimer.read_milli();
+    // Serial.println(ddddd);
     updateTimers();
 }
 
@@ -236,7 +234,7 @@ void Defense::normal() {
     lastdetect[0] = line_azimuth_cache;
     lastdetect[1] = gam_azimuth_cache;
 
-    // 数学関数を一度だけ計算
+
     rad = radians(line_azimuth_cache);
     line_x = sin(rad);
     line_y = cos(rad);
@@ -246,15 +244,17 @@ void Defense::normal() {
     ball_y = (ball_ang < 90 || ball_ang > 270) ? 1 : -1;
     ball_x = (ball_ang < 180) ? 1 : -1;
 
+
     // 速度減算（軽量化）
     calc_move_speed = (line_x_cache > 3 || tl) ? move_speed / 2 : move_speed;
 
     // X軸移動量計算
     if(tl) ball_x = 0;
     if(corner) line_x *= 1.5;
+    if(corner) line_y *= 1.5;//もしかするとこれ消して角改善
     
     move_x = (line_x + ball_x) * calc_move_speed;
-    if(tl && abs(line_x) < 2) move_x = 0;
+    if(tl && abs(line_x) < 2) move_x = 0;//ただの改善
 
     // Y軸移動量計算
     if(corner) {
@@ -262,10 +262,11 @@ void Defense::normal() {
     } else {
         if(!tl && abs(line_x_cache) < 2) ball_y = 0;
         if(tl) line_y = 0;
+        line_y *= 1.1;//倍率基本は1
     }
-    
+//ここだよーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
     move_y = (line_y + ball_y) * calc_move_speed;
-    if((!tl) && abs(line_y_cache) < 2) move_y /= 2;
+    if((!tl) && abs(line_y_cache) < 2) move_y /= 2;//並行ラインのy減算　これちっちゃくしたらまだ増しになるのかもしれない
 
     // 最終移動ベクトル計算
     move_azimuth = myvector.get_azimuth(move_x, move_y);
@@ -306,7 +307,6 @@ void Defense::reset() {
     SilentTime.reset();
     MoveTime.reset();
     ReturnTime.reset();
-    verticalTime.reset();
 }
 
 
@@ -372,10 +372,6 @@ void Defense::updateTimers() {
 
     if(line.get_type() != 0 && line.get_type() != 3) {
         ReturnTime.reset();
-    }
-
-    if(!tl){
-        verticalTime.reset();
     }
 
     Dtimer.reset();

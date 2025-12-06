@@ -9,7 +9,7 @@ public:
     // === メイン処理 ===
     /// @brief Defenseクラスの初期設定を行う
     void setup(void);
-    /// @brief Defenseのメイン処理ループ
+    /// @brief Defenseのメイン処理ル
     void defense_(void);
     /// @brief Defenseの状態をリセットする
     void reset();
@@ -22,20 +22,18 @@ private:
 
 static constexpr int ball_cal =-10;
 static constexpr float dash_border = 13000.0;        // ダッシュ待ち時間
-static constexpr float dash_time = 3000.0;          // ダッシュ時間
+static constexpr float dash_time = 2000.0;          // ダッシュ時間
 static constexpr int dash_border_ball = 2000;    // ボール検出でダッシュ待ち時間リセット
-static constexpr int vertical_exit=1500;
-static constexpr int vertical_return=250;
+static constexpr int vertical_return=750;
 static constexpr float ball_move_border = 7.0;      // ボール移動境界(±角度)
 
 
 
-static constexpr float move_speed = 200.0;          // 移動スピード（旧: ball_power）
+static constexpr float move_speed = 220.0;          // 移動スピード（旧: ball_power）
 static constexpr float move_border = 50.0;          // 移動最小値 -o判定に使う
-static constexpr float calblate_sir_late = 1.2;
-static int ddddd; //デバッグ用
+// static int ddddd; //デバッグ用
 
-static constexpr uint_fast8_t edge_list[6] = {5,6,7,17,18,19};
+// static constexpr uint_fast8_t edge_list[6] = {5,6,7,17,18,19};
 
 // === 処理用変数 ===
 static int lastdetect[2];                    // 最後検出方向
@@ -58,7 +56,6 @@ static Timer Dtimer;                      // ディフェンスタイマー
 static Timer SilentTime;
 static Timer MoveTime;
 static Timer ReturnTime;
-static Timer verticalTime;
     static int calb;
     static bool tl;
     static bool edge;
