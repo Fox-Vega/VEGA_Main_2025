@@ -79,9 +79,9 @@ void Defense::defense_() {
         case FROG::BAD_LINE:
             // 3角ライン処理
             mybuzzer.start(1500, 999);
-            verticalTime.reset();
-            mymotor.run(0,200,0);
+            mymotor.run(0,150,0);
             delay(vertical_return);
+            verticalTime.reset();
             mybuzzer.stop();
             break;
         case FROG::NO_BALL:
@@ -148,7 +148,7 @@ void Defense::determineFrog() {
     if(line_type_cache == 0) {
         // ライン無し
         frog = FROG::NO_LINE;
-} else if(line_type_cache == 3|| verticalTime.read_milli()> vertical_exit) {
+} else if(line_type_cache == 3) {
         // 角ライン（特殊処理）
         frog = FROG::BAD_LINE;
     } else if(!ball_stat_cache) {
@@ -169,14 +169,14 @@ void Defense::dash() {
     if(SilentTime.read_milli() < dash_border * 1.2) {
         if(myswitch.check_toggle() == 0) {
             SilentTime.reset();
+            
             return;
         }
 
         mypixel.multi(0, 15, 255, 50, 50);
         mypixel.show();
         SilentTime.reset();
-
-        // 前進
+              // 前進
         while(SilentTime.read_milli() < 300) {
             gam.read_azimuth();
             mymotor.run(0, 200, 0);
@@ -296,16 +296,19 @@ void Defense::normal() {
     }
 
     // モーター制御
-    if (move_power > move_border) {
+    if (move_power > move_border && (!tl || (tl&&isFront(ball_azimuth_cache)))) {
         mymotor.run(move_azimuth, (int)move_power, 0);  // 軽量キャスト
-        if(MoveTime.read_milli() > 500) {
+        if(MoveTime.read_milli() > 300) {
             SilentTime.reset();
         }
     } else {
+        if(tl){
+            SilentTime.reset();
+        }
         mymotor.free();
         frog = FROG::STOP;
         MoveTime.reset();
-        mybuzzer.start((int)scaleRange(0.0f, dash_border, 500.0f, 2000.0f, (float)SilentTime.read_milli()), 999);
+        //mybuzzer.start((int)scaleRange(0.0f, dash_border, 500.0f, 2000.0f, (float)SilentTime.read_milli()), 999);
     }
 
     // 保存
@@ -418,6 +421,8 @@ void Defense::reset() {
     Dtimer.reset();
     SilentTime.reset();
     MoveTime.reset();
+    ReturnTime.reset();
+    verticalTime.reset();
 }
 
 

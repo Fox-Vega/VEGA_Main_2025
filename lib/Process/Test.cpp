@@ -209,18 +209,20 @@ void Test::stabilize() {
 inline static int getErr( int a, int b) { int d = abs((a - b) % 360); return (d > 180) ? (360 - d) : d; }
 
 void Test::free(){
+    gam.read_azimuth();
+     mymotor.run(0,150,0);
     line.read();
-    bool tl = false;
-    bool frog1 = line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||
-                line.get_stat(23) || line.get_stat(22);
-    bool frog2 = line.get_stat(11) || line.get_stat(12) || line.get_stat(13) ||
-                line.get_stat(10) || line.get_stat(9);
-    if(frog1 && frog2) {
-        tl = true;
-    }
-    if(tl){
-        mybuzzer.start(400, 999);
-    }else{
-        mybuzzer.stop();
-    }
+    // bool tl = false;
+    // bool frog1 = line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||
+    //             line.get_stat(23) || line.get_stat(22);
+    // bool frog2 = line.get_stat(11) || line.get_stat(12) || line.get_stat(13) ||
+    //             line.get_stat(10) || line.get_stat(9);
+    // if(frog1 && frog2) {
+    //     tl = true;
+    // }
+    // if(tl){
+    //     mybuzzer.start(400, 999);
+    // }else{
+    //     mybuzzer.stop();
+    // }
 }
