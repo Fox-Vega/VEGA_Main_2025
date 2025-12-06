@@ -9,7 +9,7 @@ public:
     // === メイン処理 ===
     /// @brief Defenseクラスの初期設定を行う
     void setup(void);
-    /// @brief Defenseのメイン処理ループ
+    /// @brief Defenseのメイン処理ル
     void defense_(void);
     /// @brief Defenseの状態をリセットする
     void reset();
@@ -22,22 +22,18 @@ private:
 
 static constexpr int ball_cal =-10;
 static constexpr float dash_border = 13000.0;        // ダッシュ待ち時間
-static constexpr float dash_time = 15000.0;          // ダッシュ時間
+static constexpr float dash_time = 2000.0;          // ダッシュ時間
 static constexpr int dash_border_ball = 2000;    // ボール検出でダッシュ待ち時間リセット
-static constexpr int vertical_exit=750;
-static constexpr int vertical_return=500;
+static constexpr int vertical_return=750;
 static constexpr float ball_move_border = 7.0;      // ボール移動境界(±角度)
 
 
 
-
-
-static constexpr float move_speed = 200.0;          // 移動スピード（旧: ball_power）
+static constexpr float move_speed = 220.0;          // 移動スピード（旧: ball_power）
 static constexpr float move_border = 50.0;          // 移動最小値 -o判定に使う
-static constexpr float calblate_sir_late = 1.2;
-static int ddddd; //デバッグ用
+// static int ddddd; //デバッグ用
 
-static constexpr uint_fast8_t edge_list[6] = {5,6,7,17,18,19};
+// static constexpr uint_fast8_t edge_list[6] = {5,6,7,17,18,19};
 
 // === 処理用変数 ===
 static int lastdetect[2];                    // 最後検出方向
@@ -60,7 +56,6 @@ static Timer Dtimer;                      // ディフェンスタイマー
 static Timer SilentTime;
 static Timer MoveTime;
 static Timer ReturnTime;
-static Timer verticalTime;
     static int calb;
     static bool tl;
     static bool edge;
@@ -78,40 +73,14 @@ static Timer verticalTime;
     static int gam_azimuth_cache;
 
     // === ヘルパーメソッド ===
-    void readSensorData();
-    bool checkDashCondition();
-    void dash();
-    void determineFrog();
+void dash();
     void normal();
     void noline();
     void noball();
-    void stop();
     void updateTimers();
 
-    // static constexpr int return_power = 200;
-    // static int go_flag;
-    // static int line_azimuth;
-    // static int line_stat;
-    // static int go_border[2];
-    // static int ball_azimuth;
-    // static int ball_stat;
-    // static int r_azimuth;
-    // static int line_ang;
-    // static int ball_ang;
-    // static int move_ang;
-    // static int lastdetect;
-    // static int calb;
-    // enum class FROG {
-    //     NONE = 0,
-    //     NORMAL = 1,     // ノーマル
-    //     NO_LINE = 2,    // ラインなし
-    //     NO_BALL = 3,    // ボールなし
-    // };
-    // FROG frog;
 
-    // // === ユーティリティ関数 ===
-
-    // //360補正
+    // === ユーティリティ関数 ===
 
     /// @brief 360度の範囲に正規化する
     /// @param a 正規化する角度　単位：度
@@ -156,66 +125,6 @@ static Timer verticalTime;
     inline bool isFront(int angle) {
         angle = norm360(angle);
         return (angle <=90||angle>=270);
-    }
-
-    void to_range(int &angle, int start_angle, bool ccw) {
-        angle = norm360(angle);  // まず正規化
-        int end_angle = norm360(start_angle + 180);
-        
-        if (!ccw) { // 時計回り180度範囲
-            // 360度境界をまたぐ場合（例: 270°～90°）
-            if (start_angle > end_angle) {
-                // 範囲内判定: angle >= start_angle OR angle <= end_angle
-                if (angle < start_angle && angle > end_angle) {
-                    // 範囲外なので最も近い境界に制限
-                    int err_start = getErr(angle, start_angle);
-                    int err_end = getErr(angle, end_angle);
-                    
-                    angle = (err_start < err_end) ? start_angle : end_angle;
-                }
-            } else {
-                // 通常範囲（例: 0°～180°）
-                if (angle < start_angle || angle > end_angle) {
-                    // 範囲外なので最も近い境界に制限
-                    int err_start = getErr(angle, start_angle);
-                    int err_end = getErr(angle, end_angle);
-                    
-                    angle = (err_start < err_end) ? start_angle : end_angle;
-                }
-            }
-        }
-    }
-
-    /// @brief 角度を0, 90, 180, 270の最も近い値に丸める
-    /// @param angle 入力角度（0-359）
-    /// @return 最も近い基本方向（0, 90, 180, 270）
-    inline int roundToCardinal(int angle) {
-        angle = norm360(angle);  // 0-359に正規化
-        
-        // 各方向との誤差を計算
-        int err0 = getErr(angle, 0);
-        int err90 = getErr(angle, 90);
-        int err180 = getErr(angle, 180);
-        int err270 = getErr(angle, 270);
-        
-        // 最小誤差の方向を返す
-        int minErr = err0;
-        int result = 0;
-        
-        if (err90 < minErr) {
-            minErr = err90;
-            result = 90;
-        }
-        if (err180 < minErr) {
-            minErr = err180;
-            result = 180;
-        }
-        if (err270 < minErr) {
-            minErr = err270;
-            result = 270;
-        }
-        
-        return result;
     }
 
     // === UI用構造体 ===

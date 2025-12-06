@@ -162,6 +162,7 @@ void General::startup() {
     mypixel.show();
     mymotor.stabilization(1);
     mymotor.move(1);
+    defense.reset();
 }
 
 int General::get_mode() {
