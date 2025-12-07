@@ -11,7 +11,7 @@ void General::setup() {
     mybuzzer.setup();
     mypixel.setup();
     mypixel.use_pixel(true);//常時つけてまあああああああああああああああああああああああああああああああす
-    mypixel.brightness(50);
+    mypixel.brightness(20);
     mypixel.multi(0, 15, 255, 128,1);
     mypixel.show();
 
@@ -43,7 +43,7 @@ int General::startup() {
     Serial.println("GeneralStartupStart");
     mymotor.free();
     mybuzzer.stop();
-    mypixel.brightness(50);//低くしてまああああああああああああああああああああああああああああああああす
+    mypixel.brightness(20);//低くしてまああああああああああああああああああああああああああああああああす
 
     if (standby == 0) {
         phase = 1;
@@ -58,9 +58,7 @@ int General::startup() {
         mypixel.clears();
         tact_pressed = myswitch.check_tact();
         toggle_stat = myswitch.check_toggle();
-        if(Serial.available()){
-            // readCommand();
-        }
+
         if (phase < 3) {
             if (mode == 1) {
                 mypixel.multi(0, 15, 255, 130, 130);//アタック

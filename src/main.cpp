@@ -11,7 +11,7 @@ static int startcord_first = 999;
 void setup() {
     general.setup();
     defense.setup();
-    general.startup();
+    startcord_first = general.startup();
 }
 
 void loop() {

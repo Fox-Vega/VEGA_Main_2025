@@ -57,6 +57,7 @@ void Defense::defense_(
     if(start_cord != 999) {
         mypixel.use_pixel(true);
         mypixel.multi(0,15,255,255,255);
+        mypixel.closest(back_ang[start_cord-1],255,0,0,1);
         mypixel.show();
         mybuzzer.start(500,999);
         delay(500);
@@ -64,7 +65,7 @@ void Defense::defense_(
             line.read();
             ball.read();
             gam.read_azimuth();
-            mymotor.run(back_ang[start_cord-1], 150, 0);
+            mymotor.run(back_ang[start_cord-1], 180, 0); //back_ang[start_cord-1]
             if(myswitch.check_toggle() == 0) {
                 return;
             }
