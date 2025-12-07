@@ -55,6 +55,11 @@ void Defense::defense_(
 ) {
     // === 1. 入力データ取得・キャッシュ ===
     if(start_cord != 999) {
+        mypixel.use_pixel(true);
+        mypixel.multi(0,15,255,255,255);
+        mypixel.show();
+        mybuzzer.start(500,999);
+        delay(500);
         while(line.get_type() == 2) {
             line.read();
             ball.read();
@@ -64,6 +69,8 @@ void Defense::defense_(
                 return;
             }
         }
+        mybuzzer.stop();
+        mypixel.use_pixel(false);
         return;
     }
 

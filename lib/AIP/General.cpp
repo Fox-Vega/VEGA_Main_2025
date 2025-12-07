@@ -11,6 +11,7 @@ void General::setup() {
     mybuzzer.setup();
     mypixel.setup();
     mypixel.use_pixel(true);//常時つけてまあああああああああああああああああああああああああああああああす
+    mypixel.brightness(50);
     mypixel.multi(0, 15, 255, 128,1);
     mypixel.show();
 
