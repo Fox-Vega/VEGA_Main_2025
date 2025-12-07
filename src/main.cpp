@@ -6,7 +6,7 @@
 #include "Defense.h"
 
 Timer timer_test;
-static int startcord_first = 999;
+static int startcord_first = 0;
 
 void setup() {
     general.setup();
@@ -27,7 +27,7 @@ void loop() {
         } else if (general.get_mode() == 3) {
             test.test_();
         }
-        startcord_first = 999;
+        startcord_first = 0;
     } else {
         mypixel.use_pixel(true);
         startcord_first = general.startup();

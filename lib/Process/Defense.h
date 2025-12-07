@@ -26,7 +26,7 @@ static constexpr float dash_time = 500.0;          // ダッシュ時間
 static constexpr int dash_border_ball = 2000;    // ボール検出でダッシュ待ち時間リセット
 static constexpr int vertical_return=750;
 static constexpr float ball_move_border = 10.0;      // ボール移動境界(±角度)
-static constexpr int noise_border = 750;          // ノイズ除去境界
+static constexpr int noise_border = 300;          // ノイズ除去境界
 
 
 
@@ -58,7 +58,7 @@ static Timer SilentTime;
 static Timer MoveTime;
 static Timer ReturnTime;
 /// @brief 0なし、1左奥、2右奥、3右前、4左前
-const int back_ang[4]={(180-10),(180+10),330,30};
+const int back_ang[4]={(180),(180),225,135};
     static int calb;
     static bool tl;
     static bool edge;

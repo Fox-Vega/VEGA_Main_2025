@@ -11,7 +11,7 @@ void General::setup() {
     mybuzzer.setup();
     mypixel.setup();
     mypixel.use_pixel(true);//常時つけてまあああああああああああああああああああああああああああああああす
-    mypixel.brightness(20);
+    mypixel.brightness(15);
     mypixel.multi(0, 15, 255, 128,1);
     mypixel.show();
 
@@ -43,7 +43,7 @@ int General::startup() {
     Serial.println("GeneralStartupStart");
     mymotor.free();
     mybuzzer.stop();
-    mypixel.brightness(20);//低くしてまああああああああああああああああああああああああああああああああす
+    mypixel.brightness(15);//低くしてまああああああああああああああああああああああああああああああああす
 
     if (standby == 0) {
         phase = 1;

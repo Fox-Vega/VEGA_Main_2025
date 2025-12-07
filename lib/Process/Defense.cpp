@@ -49,30 +49,35 @@ void Defense::setup() {
     //...あれれ？　意味ないじゃんけ
 }
 
-void Defense::defense_(
-    /// @brief 0なし、1左奥、2右奥、3右前、4左前
-    int start_cord
-) {
+void Defense::defense_(int start_cord) {
     // === 1. 入力データ取得・キャッシュ ===
-    if(start_cord != 999) {
+    if(start_cord != 0) {
+        int aaa = back_ang[start_cord-1];
         mypixel.use_pixel(true);
         mypixel.multi(0,15,255,255,255);
-        mypixel.closest(back_ang[start_cord-1],255,0,0,1);
+        mypixel.closest(aaa,255,0,0,1);
         mypixel.show();
         mybuzzer.start(500,999);
         delay(500);
-        while(line.get_type() == 2) {
+        while(!(line.get_type() == 2)) {
             line.read();
             ball.read();
             gam.read_azimuth();
-            mymotor.run(back_ang[start_cord-1], 180, 0); //back_ang[start_cord-1]
+            mymotor.run(aaa, 120, 0); //back_ang[start_cord-1]
             if(myswitch.check_toggle() == 0) {
                 return;
             }
         }
+        mymotor.run(0,200,0);
+        delay(100);
+        mymotor.free();
         mybuzzer.stop();
+        mypixel.clears();
+        mypixel.shows();
         mypixel.use_pixel(false);
         return;
+    }else{
+        mypixel.clear();
     }
 
     // センサーデータを一度だけ読み取ってキャッシュ
@@ -135,8 +140,9 @@ void Defense::defense_(
             break;
         case FROG::BAD_LINE:
             // 3角ライン処理
+            mymotor.stabilization(true);
             mybuzzer.start(1500, 999);
-            mymotor.run(0,150,0);
+            mymotor.run(0,200,0);
             delay(vertical_return);
             mybuzzer.stop();
             break;
@@ -289,7 +295,7 @@ void Defense::normal() {
     }
 //ここだよーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
     move_y = (line_y + ball_y) * calc_move_speed;
-    if((!tl) && abs(line_y_cache) < 2) move_y /= 2;//並行ラインのy減算　これちっちゃくしたらまだ増しになるのかもしれない
+    if((!tl) && abs(line_y_cache) < 1) move_y /= 2;//並行ラインのy減算　これちっちゃくしたらまだ増しになるのかもしれない
 
     // 最終移動ベクトル計算
     move_azimuth = myvector.get_azimuth(move_x, move_y);
@@ -373,7 +379,7 @@ void Defense::resetUI() {
 }
 
 void Defense::noline() {
-    if(ReturnTime.read_milli()>1000){
+    if(ReturnTime.read_milli()>2000){
         mymotor.stabilization(0);
         mymotor.run(norm360(lastdetect[0]+(lastdetect[1]-gam.get_azimuth())), 230,0);
         mymotor.stabilization(1);
@@ -393,7 +399,7 @@ void Defense::updateTimers() {
         SilentTime.reset();
     }
 
-    if(line.get_type() != 0 && line.get_type() != 3) {
+    if(line.get_type() != 0) {
         ReturnTime.reset();
     }
 
