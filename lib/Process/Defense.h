@@ -20,13 +20,15 @@ private:
 //#define BALL_FILTER_OFF   // ボールフィルタを無効にする場合
 #define USE_DASH true
 
-static constexpr int ball_cal =-5;
-static constexpr float dash_border = 15000.0;        // ダッシュ待ち時間
-static constexpr float dash_time = 500.0;          // ダッシュ時間
+static constexpr int ball_cal =-10;
+static constexpr float dash_border = 7000.0;        // ダッシュ待ち時間
+static constexpr float dash_time = 800.0;          // ダッシュ時間
 static constexpr int dash_border_ball = 2000;    // ボール検出でダッシュ待ち時間リセット
-static constexpr int vertical_return=750;
-static constexpr float ball_move_border = 10.0;      // ボール移動境界(±角度)
+static constexpr int vertical_return=350;
+static constexpr float ball_move_border = 5.0;      // ボール移動境界(±角度)
 static constexpr int noise_border = 300;          // ノイズ除去境界
+
+int lastball;
 
 
 
