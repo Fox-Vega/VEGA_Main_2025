@@ -16,7 +16,11 @@
  * @brief Defenseのヘッダファイル
  * @author okomeonigiri
  * @note 変数を外でstaticしているのは早いから
- * @note Doxygenコメント書いてもコンパイルで消えるからね
+ * @note Doxygenとかコメント多い？　コンパイルするんだからいいだろ
+ * @todo コメ地獄　//まあまあ
+ * @todo 書き換え完成　//もうすぐ
+ * @todo Old消したい　//上に依存
+ * @todo　並行ライン爆速目指して　//実際に試したいところ　大体処理速度かな
 */
 
 
@@ -131,6 +135,8 @@ public:
     void setup(void);
     /// @brief Defenseのメイン処理
     /// @param start_cord 開始座標
+    /// @return ない うん
+    /// @note 遅いのなおしたい
     void defense_(int start_cord);
     /// @brief タイマーなどの状態のリセット
     void reset(void);
@@ -146,10 +152,23 @@ private:
     void dash(void);
 
     //-----調整用定数-----//
-    static constexpr int dash_border = 15000; //ダッシュ待ち時間
-    static constexpr int move_speed = 200; //基本移動速度
-    static constexpr int move_border = 30; //最小移動速度
-    static constexpr int ball_cal =-10; //ボール補正角度
+
+    ///　@brief ダッシュ待ち時間
+    static constexpr int dash_border = 15000;
+    /// @brief 基本移動速度
+    static constexpr int move_speed = 200;
+    /// @brief 最小移動速度
+    static constexpr int move_border = 30;
+    /// @brief ボール補正角度
+    static constexpr int ball_cal =-10;
+    /// @brief ダッシュ待ち時間
+    static constexpr float dash_border = 7000.0;
+    //// @brief ダッシュ時間
+    static constexpr int dash_time = 2000;
+    /// @brief ボール移動境界(±角度)
+    static constexpr float ball_move_border = 7.5;
+    /// @brief ノイズ除去
+    static constexpr int noise_border = 300;
     /// @brief フラグ
     enum class FROG : int {
         //何もなし
@@ -173,6 +192,7 @@ private:
     /// @brief 360度の範囲に正規化する
     /// @param a 正規化する角度　単位：度
     /// @return ない
+    /// @note 基本こっちで行きたいなぁ
     inline void norm360P(int &a) {
         a %= 360;
         if(a < 0) a += 360;
@@ -181,7 +201,8 @@ private:
     /// @brief 360度の範囲に正規化する
     /// @param a 正規化する角度　単位：度
     /// @return 正規化された角度
-    inline int norm360(int &a) {
+    /// @note 条件式で保険としてかけるやつ　リターンする方
+    inline int norm360(int a) {
         a %= 360;
         if(a < 0) a += 360;
         return a;
@@ -190,8 +211,9 @@ private:
     /// @brief 前か後ろか判定
     /// @param angle 判定する角度
     /// @return 前であればtrue、後ろであればfalse
+    /// @note inlineやから条件式書くのと変わりませんと　見やすいぐらいか
     inline bool isFront(int angle) {
-        angle = norm360(angle);
+        norm360P(angle);
         return (angle <=90||angle>=270);
     }
 
@@ -200,6 +222,7 @@ private:
     /// @param a 値1
     /// @param b 値2
     /// @return 小さい方の差分の絶対値
+    /// @note inlineやから条件式書くのと変わりませんと　見やすいぐらいか
     inline static int getErr( int a, int b) { int d = abs((a - b) % 360); return (d > 180) ? (360 - d) : d; }
 
 
