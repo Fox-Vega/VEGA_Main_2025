@@ -40,6 +40,37 @@ void Defense::defense_(int start_cord){
         return;
     }
 
+        //-----キャッシュたち-----//
+
+    /**
+     * @brief line.get_azimuth()のキャッシュ
+     * @ingroup キャッシュ変数
+     */
+    static int line_azimuth;
+    /**
+     * @brief line.get_type()のキャッシュ
+     * @ingroup キャッシュ変数
+     */
+    int line_type;
+
+    /**
+     * @brief ball.get_azimuth()のキャッシュ
+     * @ingroup キャッシュ変数
+     */
+    int ball_azimuth;
+
+    /**
+     * @brief ball.get_stat()のキャッシュ
+     * @ingroup キャッシュ変数
+     */
+    int ball_stat;
+
+    /**
+     * @brief gam.get_azimuth()のキャッシュ
+     * @ingroup キャッシュ変数
+     */
+    int gam_azimuth;
+
     //input系を取得
     line_azimuth=line.get_azimuth();
     line_type=line.get_type();

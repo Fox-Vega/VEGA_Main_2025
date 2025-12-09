@@ -23,44 +23,6 @@
  * @todo　並行ライン爆速目指して　//実際に試したいところ　大体処理速度かな
 */
 
-
-//-----キャッシュたち-----//
-/**
- * @note こっちのほうが早いの
- * @defgroup キャッシュ変数
- * @brief 高速化のためのキャッシュ
- */
-
-/**
- * @brief line.get_azimuth()のキャッシュ
- * @ingroup キャッシュ変数
- */
-static int line_azimuth;
-
-/**
- * @brief line.get_type()のキャッシュ
- * @ingroup キャッシュ変数
- */
-static int line_type;
-
-/**
- * @brief ball.get_azimuth()のキャッシュ
- * @ingroup キャッシュ変数
- */
-static int ball_azimuth;
-
-/**
- * @brief ball.get_stat()のキャッシュ
- * @ingroup キャッシュ変数
- */
-static int ball_stat;
-
-/**
- * @brief gam.get_azimuth()のキャッシュ
- * @ingroup キャッシュ変数
- */
-static int gam_azimuth;
-
 /*
  *  staticは静的なので早いと
  *  クラス内に定義しないほうが早いのもある
