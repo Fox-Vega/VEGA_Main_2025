@@ -11,11 +11,6 @@
 
 //staticをクラス内で宣言したやつをcppで使えるように定義
 //(クラス外で定義すればこんな事にならなかっったはず...)
-const float Defense::dash_border;
-const int Defense::move_speed;
-const int Defense::move_border;
-const int Defense::ball_cal;
-const float Defense::ball_move_border;
 
 void Defense::setup(void){
     reset();

@@ -64,7 +64,7 @@ static float rad;
 static int lastdetect;
 
 /// @brief 復帰の方向リスト
-static constexpr int back_ang[4]={180,180,225,135};
+const int back_ang[4]={180,180,225,135};
 
 // /// @brief フラグ　再利用可能
 // static bool frog1;
@@ -116,21 +116,21 @@ private:
     //-----調整用定数-----//
 
     ///　@brief ダッシュ待ち時間
-    static constexpr int dash_border = 15000;
+    const int dash_border = 15000;
     /// @brief 基本移動速度
-    static constexpr int move_speed = 200;
+    const int move_speed = 100;
     /// @brief 最小移動速度
-    static constexpr int move_border = 30;
+    const int move_border = 30;
     /// @brief ボール補正角度
-    static constexpr int ball_cal =-10;
+    const int ball_cal =-10;
     /// @brief ダッシュ待ち時間
-    static constexpr float dash_border = 7000.0;
+    const float dash_border = 7000.0;
     //// @brief ダッシュ時間
-    static constexpr int dash_time = 2000;
+    const int dash_time = 2000;
     /// @brief ボール移動境界(±角度)
-    static constexpr float ball_move_border = 7.5;
+    const float ball_move_border = 7.5;
     /// @brief ノイズ除去
-    static constexpr int noise_border = 300;
+    const int noise_border = 300;
     /// @brief フラグ
     enum class FROG : int {
         //何もなし
