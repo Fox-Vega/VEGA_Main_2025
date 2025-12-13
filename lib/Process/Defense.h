@@ -28,43 +28,10 @@
  *  クラス内に定義しないほうが早いのもある
 */
 //-----普通の変数たち-----//
-
-/// @brief  縦ライン
-static bool tl;
-
-/// @brief 角
-static bool corner; //コーナーライン判定
-
-/// @brief 動く方向
-static int move_azimuth;
-/// @brief 動くパワー
-static float move_power;
-/// @brief 動くX
-static float move_x;
-/// @brief 動くY
-static float move_y;
-/**
- * @brief 減算とかしたあとの速度。
- * \n 減算は角とか縦とかでアウト防止として行ったりする
- */
-static int calc_move_speed;
-/// @brief ラインの計算用X
-static int line_x;
-/// @brief ラインの計算用Y
-static int line_y;
-/// @brief ボールの計算用角度
-static int ball_ang;
-/// @brief ボールの計算用X
-static int ball_x;
-/// @brief ボールの計算用Y
-static int ball_y;
-/// @brief ラジアン
-static float rad;
-/// @brief 最後のラインの検出角度
-static int lastdetect;
+// 変数の実体はDefense.cppで定義済み
 
 /// @brief 復帰の方向リスト
-const int back_ang[4]={180,180,225,135};
+extern const int back_ang[4];
 
 // /// @brief フラグ　再利用可能
 // static bool frog1;
@@ -81,13 +48,13 @@ const int back_ang[4]={180,180,225,135};
 
 
 /// @brief ダッシュ待ち時間カウント用
-static int LastSilent;
+extern Timer SilentTime;
 
 /// @brief 移動時間カウント用
-static int LastMove;
+extern Timer MoveTime;
 
 /// @brief ライン復帰時間カウント用
-static int LastReturn;
+extern int LastReturn;
 
 
 
@@ -118,15 +85,13 @@ private:
     ///　@brief ダッシュ待ち時間
     const int dash_border = 15000;
     /// @brief 基本移動速度
-    const int move_speed = 100;
+    const int move_speed = 200;
     /// @brief 最小移動速度
     const int move_border = 30;
     /// @brief ボール補正角度
     const int ball_cal =-10;
-    /// @brief ダッシュ待ち時間
-    const float dash_border = 7000.0;
     //// @brief ダッシュ時間
-    const int dash_time = 2000;
+    const unsigned int dash_time = 2000;
     /// @brief ボール移動境界(±角度)
     const float ball_move_border = 7.5;
     /// @brief ノイズ除去

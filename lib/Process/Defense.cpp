@@ -12,6 +12,30 @@
 //staticをクラス内で宣言したやつをcppで使えるように定義
 //(クラス外で定義すればこんな事にならなかっったはず...)
 
+// Timer変数の実体定義
+Timer SilentTime;
+Timer MoveTime;
+int LastReturn = 0;
+
+// 復帰方向リストの定義
+const int back_ang[4] = {180, 180, 225, 135};
+
+// グローバル変数の定義（Defense.cppでのみ定義）
+bool tl = false;
+bool corner = false;
+int move_azimuth = 0;
+float move_power = 0.0f;
+float move_x = 0.0f;
+float move_y = 0.0f;
+int calc_move_speed = 0;
+int line_x = 0;
+int line_y = 0;
+int ball_ang = 0;
+int ball_x = 0;
+int ball_y = 0;
+float rad = 0.0f;
+int lastdetect = 0;
+
 void Defense::setup(void){
     reset();
 }
@@ -80,11 +104,11 @@ void Defense::defense_(int start_cord){
     /// @note あんま信用ならん けど後でうまく行ってる
     corner =(line.get_type()==2&&(getErr(line.get_pack(0),line.get_pack(1))<110));
 
-    if(LastSilent-millis()>dash_border){//ダッシュ
-//        frog=FROG::DASH;//フラグ
-        dash();//ダッシュして
-        return;//抜ける
-    }
+//     if(SilentTime.readmilli()>dash_border){//ダッシュ
+// //        frog=FROG::DASH;//フラグ
+//         dash();//ダッシュして
+//         return;//抜ける
+//     }
 
     if(line_type==0){//ライン無し
 //        frog=FROG::NO_LINE;
@@ -128,8 +152,8 @@ void Defense::defense_(int start_cord){
      * それで言ったらこれライン強化としても動く
      * 運がいいな
     */
-    if(corner) line_x *= 1.5;
-    if(corner) line_y *= 1.5;
+    // if(corner) line_x *= 1.5;
+    // if(corner) line_y *= 1.5;
 
     if(tl) ball_x = 0;
     if(!tl) line_x = 0;
@@ -140,39 +164,46 @@ void Defense::defense_(int start_cord){
     move_azimuth = myvector.get_azimuth(move_x, move_y);
     norm360P(move_azimuth);//保険
     move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
+    mypixel.use_pixel(true);
+    mypixel.closest(myvector.get_azimuth(move_x,0), 0, 255, 0, 3);
+    mypixel.closest(move_y<0 ? 180:0, 255, 0, 0, 3);
+    if(line_y==0){
+        mybuzzer.start(2000,999);
+    }
+    mypixel.closest(move_azimuth, 0, 0, 255, 3);
     // 停止判定
     if(getErr(0, ball_azimuth) < ball_move_border && !tl) move_power = 0;
 
     if(move_power>move_border&&(!tl || (tl&&isFront(ball_azimuth)))){//動く条件
-        mymotor.run(move_azimuth, (int)move_power, 0);
-        if((LastMove-millis())>noise_border) LastSilent=millis();//サイレントタイマーリセット
+        mymotor.run(move_azimuth-gam_azimuth,(int)move_power, 0);
+        if(MoveTime.read_milli()>(unsigned int)noise_border) SilentTime.reset();//サイレントタイマーリセット
     }else{
-        if(!tl)LastSilent=millis();//サイレントタイマーリセット
-        LastMove=millis();//ムーブタイマーリセット
+        if(!tl)SilentTime.reset();//サイレントタイマーリセット
+        MoveTime.reset();//ムーブタイマーリセット
         mymotor.free();//フリィィ
     }
 }
 
 void Defense::reset(void){
-    LastMove=millis();
-    LastSilent=millis();
+    MoveTime.reset();
+    SilentTime.reset();
 }
 
 void Defense::dash(void){
-    LastMove=millis();//ムーブタイマーリセット
+    MoveTime.reset();
     
     float TL = 20.0;
     float TLM = 60.0;
 
-    if((LastSilent - millis()) < dash_border * 1.2) {
+    if(SilentTime.read_milli() < dash_border * 1.2) {
         if(myswitch.check_toggle() == 0) {
-            LastSilent = millis();
+            SilentTime.reset();
             return;
         }
 
         //mypixel.multi(0, 15, 255, 50, 50);
         mypixel.show();
-        LastSilent = millis();
+        SilentTime.reset();
         
         // アタック
         int dash_start = millis();
@@ -183,11 +214,11 @@ void Defense::dash(void){
 
             mymotor.run(0, 220, 0);
             if(myswitch.check_toggle() == 0 || !isFront(ball.get_azimuth())) {
-                LastSilent = millis();
+                SilentTime.reset();
                 break;
             }
         }
-        LastSilent = millis();
+        SilentTime.reset();
         mymotor.free();
 
         delay(10);//matuuuuuuuuuuuu
@@ -213,13 +244,13 @@ void Defense::dash(void){
             mymotor.run(mm, static_cast<int>(mt), 0);
             if(mt < 120) mt += 1;
             if(myswitch.check_toggle() == 0) {
-                LastSilent = millis();
+                SilentTime.reset();
                 break;
             }
         }
         mymotor.free();
         delay(100);
     } else {
-        LastSilent = millis();
+        SilentTime.reset();
     }
 }

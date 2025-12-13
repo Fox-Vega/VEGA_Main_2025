@@ -4,9 +4,16 @@
 
 class Timer {
     public:
-        void reset();
-        unsigned long read_milli();
-        unsigned long read_micro();
+        inline void reset(){
+            milliseconds = millis();
+            microseconds = micros();
+        };
+        inline unsigned long read_milli(){
+            return (millis() - milliseconds);
+        };
+        inline unsigned long read_micro(){
+            return (micros() - microseconds);
+        };
 
     private:
         unsigned long milliseconds;
