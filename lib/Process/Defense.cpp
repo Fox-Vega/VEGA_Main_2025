@@ -22,25 +22,52 @@ const int back_ang[4] = {180, 180, 225, 135};
 
 // グローバル変数の定義（Defense.cppでのみ定義）
 bool tl = false;
+bool edge = false;
 bool corner = false;
 int move_azimuth = 0;
 float move_power = 0.0f;
 float move_x = 0.0f;
 float move_y = 0.0f;
 int calc_move_speed = 0;
-int line_x = 0;
-int line_y = 0;
+float line_x = 0.0f;  // int → float に修正
+float line_y = 0.0f;  // int → float に修正
 int ball_ang = 0;
-int ball_x = 0;
-int ball_y = 0;
+float ball_x = 0.0f;  // int → float に修正
+float ball_y = 0.0f;  // int → float に修正
 float rad = 0.0f;
 int lastdetect = 0;
+int laststop = 0;
+int lastrl =0 ;
+
+//-----調整用定数-----//
+
+///　@brief ダッシュ待ち時間
+const int dash_border = 4000;
+/// @brief 基本移動速度
+const int move_speed = 200;
+/// @brief 最小移動速度
+const int move_border = 30;
+/// @brief ボール補正角度
+const int ball_cal =10;
+//// @brief ダッシュ時間
+const unsigned int dash_time = 2500;
+/// @brief ボール移動境界(±角度)
+const float ball_move_border = 7.5;
+/// @brief ノイズ除去
+const int noise_border = 300;
+/// @brief ライン強化
+const int line_back_mag=9;
+
+int dhst;//Defense handling speed time 処理速度計測
+
+Timer Dhs;//Defense handling speed time 処理速度計測
 
 void Defense::setup(void){
     reset();
 }
 
 void Defense::defense_(int start_cord){
+    Dhs.reset();//速度計測リセット
     if(start_cord != 0) {//復帰の開始座標が渡された
         int aaa = back_ang[start_cord-1];//方向決定
         mybuzzer.start(500,999);//ピー
@@ -90,28 +117,39 @@ void Defense::defense_(int start_cord){
      */
     int gam_azimuth;
 
+    /**
+     * @brief lineの距離のキャッシュ
+     * @ingroup キャッシュ変数
+     */
+    int line_mag;
+
     //input系を取得
     line_azimuth=line.get_azimuth();
     line_type=line.get_type();
-    ball_azimuth=ball.get_azimuth();
+    line_mag=line.get_magnitude();
+    ball_azimuth=ball.get_azimuth()+ball_cal;
     ball_stat=ball.get_stat();
     gam_azimuth=gam.get_azimuth();
 
     // 縦ライン判定　機体の前と後ろのラインが同時反応で縦を検知
     tl =(line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||line.get_stat(23) || line.get_stat(22))&&
     (line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(10) || line.get_stat(9));
+
+    // //5 6 7 ^ 17 18 19
+    // edge = (line.get_stat(5) || line.get_stat(6) || line.get_stat(7)) &&
+    //        (line.get_stat(17) || line.get_stat(18) || line.get_stat(19));
+    edge=false;//とりあえず無効化
     // 角判定　2つのパック数かつその間の角度小さければみたいな感じ
     /// @note あんま信用ならん けど後でうまく行ってる
     corner =(line.get_type()==2&&(getErr(line.get_pack(0),line.get_pack(1))<110));
 
-//     if(SilentTime.readmilli()>dash_border){//ダッシュ
-// //        frog=FROG::DASH;//フラグ
-//         dash();//ダッシュして
-//         return;//抜ける
-//     }
+    if(SilentTime.read_milli()>dash_border){//ダッシュ
+//        frog=FROG::DASH;//フラグ
+        dash();//ダッシュして
+        return;//抜ける
+    }
 
     if(line_type==0){//ライン無し
-//        frog=FROG::NO_LINE;
         mybuzzer.start(1500,999);//ビィーーー
         mymotor.run(lastdetect,200,0);//最後のラインの方向に向かう
         return;
@@ -142,8 +180,10 @@ void Defense::defense_(int start_cord){
     ball_x = (ball_ang < 180) ? 1 : -1;//右か左か
     ball_y = (ball_ang < 90 || ball_ang > 270) ? 1 : -1;//前か後ろか
 
-    if(tl||corner)//縦ラインorコーナー
+    if(tl)//縦ラインorコーナー
         calc_move_speed = move_speed>>1;//速度半分
+    else
+        calc_move_speed = move_speed;
 
     //X計算----------
 
@@ -152,25 +192,36 @@ void Defense::defense_(int start_cord){
      * それで言ったらこれライン強化としても動く
      * 運がいいな
     */
-    // if(corner) line_x *= 1.5;
-    // if(corner) line_y *= 1.5;
+    if(corner) line_x *= 1.8;
+    if(corner) line_y *= 1.8;
 
-    if(tl) ball_x = 0;
+    if(tl||edge) ball_x = 0;
     if(!tl) line_x = 0;
 
+    // if(!tl && abs(line_mag)<3) {
+    //     line_y *= 0.1;
+    //     mybuzzer.start(1000,999);}//縦ラインじゃないときにライン弱かったら減算;
+
     move_x = (line_x + ball_x) * calc_move_speed;
-    //ただの改善
+
+    // Y軸計算も追加！
+    if(!tl) ball_y = 0;  // 縦ラインの時はボールY成分を0に
+    move_y = (line_y + ball_y) * calc_move_speed;
+    if(tl&&isInSide30(ball_azimuth)){
+        move_x=line_x;
+        move_y=0.5;
+    }
 
     move_azimuth = myvector.get_azimuth(move_x, move_y);
     norm360P(move_azimuth);//保険
     move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
-    mypixel.use_pixel(true);
-    mypixel.closest(myvector.get_azimuth(move_x,0), 0, 255, 0, 3);
-    mypixel.closest(move_y<0 ? 180:0, 255, 0, 0, 3);
-    if(line_y==0){
-        mybuzzer.start(2000,999);
+    if(line_mag>line_back_mag){
+        mypixel.use_pixel(true);
+        mypixel.closest(line_azimuth, 0, 255, 0, 1);
+        move_azimuth=line_azimuth;
+        calc_move_speed=255;
     }
-    mypixel.closest(move_azimuth, 0, 0, 255, 3);
+    mypixel.use_pixel(true);
     // 停止判定
     if(getErr(0, ball_azimuth) < ball_move_border && !tl) move_power = 0;
 
@@ -178,10 +229,16 @@ void Defense::defense_(int start_cord){
         mymotor.run(move_azimuth-gam_azimuth,(int)move_power, 0);
         if(MoveTime.read_milli()>(unsigned int)noise_border) SilentTime.reset();//サイレントタイマーリセット
     }else{
-        if(!tl)SilentTime.reset();//サイレントタイマーリセット
+        if(tl)SilentTime.reset();//サイレントタイマーリセット
         MoveTime.reset();//ムーブタイマーリセット
         mymotor.free();//フリィィ
     }
+    dhst=Dhs.read_milli();//処理速度計測完了
+    mybuzzer.start((int)scaleRange(0.0f, dash_border, 500.0f, 1500.0f, (float)SilentTime.read_milli()), 999);
+}
+
+int Defense::dhstget(void){
+    return dhst;
 }
 
 void Defense::reset(void){
@@ -195,24 +252,32 @@ void Defense::dash(void){
     float TL = 20.0;
     float TLM = 60.0;
 
+    
+
     if(SilentTime.read_milli() < dash_border * 1.2) {
         if(myswitch.check_toggle() == 0) {
             SilentTime.reset();
             return;
         }
 
-        //mypixel.multi(0, 15, 255, 50, 50);
+        mypixel.multi(0, 15, 255, 50, 50);
         mypixel.show();
         SilentTime.reset();
         
         // アタック
         int dash_start = millis();
+        while((millis() - dash_start) < 750){
+            gam.read_azimuth();
+            mymotor.run(0, 220, 0);
+        }
+        mymotor.run(line.get_eazimuth(),220,0);
+        delay(500);
+        dash_start = millis();
+        ball.read();
         while((millis() - dash_start) < dash_time) {
             gam.read_azimuth();
-            ball.read();
             line.read();
-
-            mymotor.run(0, 220, 0);
+            mymotor.run(ball.get_azimuth(), 220, 0);
             if(myswitch.check_toggle() == 0 || !isFront(ball.get_azimuth())) {
                 SilentTime.reset();
                 break;
