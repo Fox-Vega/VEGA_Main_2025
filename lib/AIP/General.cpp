@@ -4,6 +4,10 @@
 #include "Process.h"
 #include "AIP.h"
 
+int alliveCount = 0;
+int remainingLife = 100;
+unsigned long deadtime = 0;
+
 
 void General::setup() {
     Serial.begin(9600);
@@ -14,7 +18,7 @@ void General::setup() {
     mypixel.brightness(15);
     mypixel.multi(0, 15, 255, 128,1);
     mypixel.show();
-
+    Serial.println("Booting-----");
     ball.setup();
     Serial.println("ballFinish");
     line.setup();
@@ -43,6 +47,7 @@ int General::startup() {
     Serial.println("GeneralStartupStart");
     mymotor.free();
     mybuzzer.stop();
+    mypixel.use_pixel(true);//常時つけてまあ
     mypixel.brightness(15);//低くしてまああああああああああああああああああああああああああああああああす
 
     if (standby == 0) {
@@ -52,6 +57,7 @@ int General::startup() {
     } else {
         phase = 3;
     }
+    alliveCount = 0;
 
     while (phase < 4) {
         gam.read_azimuth();
@@ -81,14 +87,13 @@ int General::startup() {
                 mypixel.uni(startPIXELs[startcord], 255, 255, 255);
             }
             ball.read();
-            //Serial.println("ball(read):"+String(timer_startup.read_milli()));timer_startup.reset();
             if (ball.get_value(99) != 0) {
                 mypixel.closest(ball.get_azimuth(), 80, 0, 255,1);
             }
-            //Serial.println("ball(get_value):"+String(timer_startup.read_milli()));timer_startup.reset();
         }
         switch (phase) {
             case 1://選択フェーズ
+                alliveCount = 0;
                 if (tact_pressed == 1){//アタック
                     mode = 1;
                     mybuzzer.start(500, 200);
@@ -104,7 +109,8 @@ int General::startup() {
                 }
                 delay(100);
                 break;
-            case 2:
+            case 2://座標選択
+                alliveCount = 0;
                 if (tact_pressed == 1){//一つ戻る　選択フェーズへ
                     phase = 1;
                     startcord = 0;
@@ -125,25 +131,41 @@ int General::startup() {
                     mypixel.show();
                 }
                 break;
-            case 3:
+            case 3://トグルまち
                 if (tact_pressed == 1){//一つ戻る　
                     phase = 2;
                     mybuzzer.start(100, 500);
                 } else if (tact_pressed == 5) { //方向と座標をリセット
                     gam.dir_reset();
                     mybuzzer.start(300, 500);
+                    alliveCount = 0;
                 } else if (tact_pressed == 9) {
                     //機能無し
+                    alliveCount = 0;
+                    mypixel.rainbow();
                 } else if (toggle_stat == 1) {//スタート！
                     standby = 1;
                     phase = 4;
                 } else {
-                    if (mode == 3||mode ==2) {
+                    if(alliveCount>=remainingLife){
+                        if(millis() - deadtime > 3000){
+                            mybuzzer.stop();
+                        } else if(millis() - lastbuzzer > 2930){
+                            mypixel.multi(0, 15, 255, 255, 255);
+                            mybuzzer.start(1800,999);
+                        } else {
+                            mypixel.multi(0, 15, 255, 0, 0);
+                            mybuzzer.start(400, 999);
+                        }
+                        if(alliveCount==remainingLife)deadtime=millis();
+                        alliveCount++;
+                    } else if (millis() - lastbuzzer > 500) {
                         mypixel.rainbow();
-                    }
-                    if (millis() - lastbuzzer > 500) {
+                        alliveCount++;
                         mybuzzer.start(400, 50);
                         lastbuzzer = millis();
+                    } else if (millis() - lastbuzzer > 320 && alliveCount > (remainingLife / 2+remainingLife/4)) {
+                        mypixel.rainbow();
                     }
                 }
                 break;

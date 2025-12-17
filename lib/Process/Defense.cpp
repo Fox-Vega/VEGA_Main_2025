@@ -4,55 +4,41 @@
 #include "AIP.h"
 #include "Process.h"
 
+///@brief　そゆこと
+#define diff(a) a/abs(a)
+
 // Timer変数の実体定義
-Timer SilentTime;
-Timer MoveTime;
+Timer SilentTime,MoveTime;
 int LastReturn = 0;
 
 // 復帰方向リストの定義
 const int back_ang[4] = {180, 180, 225, 135};
 
 // グローバル変数の定義（Defense.cppでのみ定義）
-bool tl = false;
-bool edge = false;
-bool corner = false;
-int move_azimuth = 0;
-float move_power = 0.0f;
-float move_x = 0.0f;
-float move_y = 0.0f;
-int calc_move_speed = 0;
-float line_x = 0.0f;  // int → float に修正
-float line_y = 0.0f;  // int → float に修正
-int ball_ang = 0;
-float ball_x = 0.0f;  // int → float に修正
-float ball_y = 0.0f;  // int → float に修正
-float rad = 0.0f;
-int lastdetect = 0;
-int laststop = 0;
-int lastrl =0 ;
+static int lastdetect =0 ;
 
 //-----調整用定数-----//
 
 ///　@brief ダッシュ待ち時間
-const int dash_border = 4000;
+const int dash_border = 12000;
 /// @brief 基本移動速度
 const int move_speed = 200;
 /// @brief 最小移動速度
 const int move_border = 30;
 /// @brief ボール補正角度
-const int ball_cal =10;
+const int ball_cal =20;
 //// @brief ダッシュ時間
 const unsigned int dash_time = 2500;
 /// @brief ボール移動境界(±角度)
-const float ball_move_border = 7.5;
+const float ball_move_border = 4;
 /// @brief ノイズ除去
-const int noise_border = 300;
+const int noise_border = 400;
 /// @brief ライン強化
-const int line_back_mag=9;
+const int line_back_mag=7;
 
+//処理速度
 int dhst;
-
-Timer Dhs;//Defense handling speed time 処理速度計測
+Timer Dhs;
 
 /// @brief 初期化
 void Defense::setup(void){
@@ -61,10 +47,11 @@ void Defense::setup(void){
 
 void Defense::defense_(int start_cord){
     Dhs.reset();
+    mypixel.use_pixel(true);
     if(start_cord != 0) {
         int aaa = back_ang[start_cord-1];
         mybuzzer.start(500,999);
-        delay(500);
+        delay(100);
         while(!(line.get_type() == 2)) {
             line.read();
             ball.read();
@@ -79,113 +66,82 @@ void Defense::defense_(int start_cord){
         return;
     }
 
-    int
-    line_azimuth,
-    line_type,
-    ball_azimuth,
-    ball_stat,
-    gam_azimuth,
-    line_mag;
-
+    int line_azimuth,line_type,ball_azimuth,ball_stat,gam_azimuth,line_mag;
+    float move_power,move_x,move_y,ball_x,ball_y,line_x,line_y= 0.0f;
+    int calc_move_speed,ball_ang,move_azimuth = 0;
     line_azimuth=line.get_azimuth();
     line_type=line.get_type();
     line_mag=line.get_magnitude();
-    ball_azimuth=ball.get_azimuth()+ball_cal;
+    ball_azimuth=ball.get_azimuth();
     ball_stat=ball.get_stat();
     gam_azimuth=gam.get_azimuth();
 
-    tl =(line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||line.get_stat(23) || line.get_stat(22))&&
+    bool tl =(line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||line.get_stat(23) || line.get_stat(22))&&
     (line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(10) || line.get_stat(9));
+    bool corner =(line.get_type()==2&&(getErr(line.get_pack(0),line.get_pack(1))<110));
 
-    edge=false;
-    // 角判定　2つのパック数かつその間の角度小さければみたいな感じ
-    /// @note あんま信用ならん けど後でうまく行ってる
-    corner =(line.get_type()==2&&(getErr(line.get_pack(0),line.get_pack(1))<110));
-
-    if(SilentTime.read_milli()>dash_border){
-        dash();
-        return;
-    }
-
+    // if(SilentTime.read_milli()>(unsigned long)dash_border){dash();return;}
     if(line_type==0){
+        SilentTime.reset();
         mybuzzer.start(1500,999);
         mymotor.run(lastdetect,200,0);
         return;
-    }
-    if(line_type==3){
+    }if(line_type==3){
+        SilentTime.reset();
         mymotor.run(0,200,0);
         return;
-    }
-    if(ball_stat==false){
+    }if(ball_stat==false){
         mymotor.free();
-        mybuzzer.start(500,999);
+        mybuzzer.start(250,999);
+        SilentTime.reset();
         return;
     }
     mybuzzer.stop();
     lastdetect=line_azimuth;
-
-
-    rad = radians(line_azimuth);
-    line_x = sin(rad);
-    line_y = cos(rad);
-
+    applyXY(line_azimuth, line_x, line_y);
     ball_ang = ball_azimuth + ball_cal;
-    ball_x = (ball_ang < 180) ? 1 : -1;
-    ball_y = (ball_ang < 90 || ball_ang > 270) ? 1 : -1;
-
-    if(tl)
-        calc_move_speed = move_speed>>1;
-    else
-        calc_move_speed = move_speed;
-
-    if(corner) line_x *= 1.8;
-    if(corner) line_y *= 1.8;
-
-    if(tl||edge) ball_x = 0;
-    if(!tl) line_x = 0;
-
-    if(!tl && abs(line_mag)<3) {
-        line_y *= 0.5;
-        ball_x *= 2;
-        mybuzzer.start(1000,999);}
-
+    ball_x = ball_ang < 180 ? 1 : -1;
+    ball_y = isFront(ball_ang) ? 1 : -1;
+    calc_move_speed=tl ? move_speed>>1 : move_speed;
+    line_x = corner ? line_x * 1.8 : line_x;
+    line_y = corner ? line_y * 1.8 : line_y;
+    ball_x = tl ? 0 : ball_x;
+    line_x = !tl ? 0 : line_x;
+    ball_y = !tl ? 0 : ball_y;
     move_x = (line_x + ball_x) * calc_move_speed;
-
-    if(!tl) ball_y = 0;
     move_y = (line_y + ball_y) * calc_move_speed;
 
-    if((tl&&isInSide30(ball_azimuth))||(tl&&isFront(ball_azimuth))){
-        move_x=line_x;
-        move_y=1;
+    if((tl&&isFront(ball_azimuth))){
+        move_x = diff(line_x) * move_speed;
+        move_y = move_speed;
+        mypixel.multi(0, 15, 0, 0, 255);
     }
 
-    move_azimuth = myvector.get_azimuth(move_x, move_y);
-    norm360P(move_azimuth);
+    move_azimuth = norm360(myvector.get_azimuth(move_x, move_y));
     move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
-    if(line_mag>line_back_mag){
+    if(line_mag > line_back_mag){
         mypixel.use_pixel(true);
         mypixel.closest(line_azimuth, 0, 255, 0, 1);
-        move_azimuth=line_azimuth;
-        calc_move_speed=255;
+        move_azimuth = line_azimuth;
+        calc_move_speed = 255;
     }
-    mypixel.use_pixel(true);
-    if(getErr(0, ball_azimuth) < ball_move_border && !tl) move_power = 0;
 
-    if(move_power>move_border&&(!tl || (tl&&isFront(ball_azimuth)))){
-        mymotor.run(move_azimuth-gam_azimuth,(int)move_power, 0);
-        if(MoveTime.read_milli()>(unsigned int)noise_border) SilentTime.reset();
+    move_power=getErr(0, ball_azimuth) < ball_move_border && (!tl) ? 0 : move_power;
+
+    if(move_power > move_border && (!tl || (tl && isFront(ball_azimuth)))){
+        mymotor.run(move_azimuth - gam_azimuth, (int) move_power, 0);
+        if(MoveTime.read_milli() > (unsigned int) noise_border) SilentTime.reset();
+        mypixel.closest(move_azimuth, 255, 255, 255, 1);
     }else{
         if(tl)SilentTime.reset();
         MoveTime.reset();
         mymotor.free();
     }
     dhst=Dhs.read_milli();
-    mybuzzer.start((int)scaleRange(0.0f, dash_border, 500.0f, 1500.0f, (float)SilentTime.read_milli()), 999);
+    //mybuzzer.start((int)scaleRange(0.0f, dash_border, 500.0f, 1500.0f, (float)SilentTime.read_milli()), 999);
 }
 
-int Defense::dhstget(void){
-    return dhst;
-}
+int Defense::dhstget(void){return dhst;}
 
 void Defense::reset(void){
     MoveTime.reset();
@@ -194,12 +150,8 @@ void Defense::reset(void){
 
 void Defense::dash(void){
     MoveTime.reset();
-    
     float TL = 20.0;
     float TLM = 60.0;
-
-    
-
     if(SilentTime.read_milli() < dash_border * 1.2) {
         if(myswitch.check_toggle() == 0) {
             SilentTime.reset();
