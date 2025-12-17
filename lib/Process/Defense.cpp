@@ -78,6 +78,8 @@ void Defense::defense_(int start_cord){
 
     bool tl =(line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||line.get_stat(23) || line.get_stat(22))&&
     (line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(10) || line.get_stat(9));
+
+    //実質的な角はこれに距離判定を入れる
     bool corner =(line.get_type()==2&&(getErr(line.get_pack(0),line.get_pack(1))<110));
 
     // if(SilentTime.read_milli()>(unsigned long)dash_border){dash();return;}
@@ -110,14 +112,13 @@ void Defense::defense_(int start_cord){
     ball_y = !tl ? 0 : ball_y;
     move_x = (line_x + ball_x) * calc_move_speed;
     move_y = (line_y + ball_y) * calc_move_speed;
-
-    if((tl&&isFront(ball_azimuth))){
+    if(tl&&isFront(ball_azimuth)){
         move_x = diff(line_x) * move_speed;
         move_y = move_speed;
         mypixel.multi(0, 15, 0, 0, 255);
     }
-
     move_azimuth = norm360(myvector.get_azimuth(move_x, move_y));
+    move_azimuth= (corner && line_mag<5) ? (line_azimuth<180) ? 90 : 270 : move_azimuth;
     move_power = myvector.get_magnitude(abs(move_x), abs(move_y));
     if(line_mag > line_back_mag){
         mypixel.use_pixel(true);
