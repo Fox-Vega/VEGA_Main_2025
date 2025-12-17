@@ -49,23 +49,18 @@ void Defense::defense_(int start_cord){
     Dhs.reset();
     mypixel.use_pixel(true);
     if(start_cord != 0) {
-        int aaa = back_ang[start_cord-1];
         mybuzzer.start(500,999);
         delay(100);
         while(!(line.get_type() == 2)) {
             line.read();
-            ball.read();
             gam.read_azimuth();
-            mymotor.run(aaa, 120, 0);
-            if(myswitch.check_toggle() == 0) {
-                return;
-            }
+            mymotor.run(back_ang[start_cord-1], 120, 0);
+            if(myswitch.check_toggle() == 0) return;
         }
         mymotor.run(0,200,0);
         delay(100);
         return;
     }
-
     int line_azimuth,line_type,ball_azimuth,ball_stat,gam_azimuth,line_mag;
     float move_power,move_x,move_y,ball_x,ball_y,line_x,line_y= 0.0f;
     int calc_move_speed,ball_ang,move_azimuth = 0;
@@ -75,13 +70,9 @@ void Defense::defense_(int start_cord){
     ball_azimuth=ball.get_azimuth();
     ball_stat=ball.get_stat();
     gam_azimuth=gam.get_azimuth();
-
     bool tl =(line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||line.get_stat(23) || line.get_stat(22))&&
     (line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(10) || line.get_stat(9));
-
-    //実質的な角はこれに距離判定を入れる
-    bool corner =(line.get_type()==2&&(getErr(line.get_pack(0),line.get_pack(1))<110));
-
+    bool corner =(line.get_type()==2&&(getErr(line.get_pack(0),line.get_pack(1))<110));//実質的な角はこれに距離判定を入れる
     // if(SilentTime.read_milli()>(unsigned long)dash_border){dash();return;}
     if(line_type==0){
         SilentTime.reset();
@@ -158,11 +149,9 @@ void Defense::dash(void){
             SilentTime.reset();
             return;
         }
-
         mypixel.multi(0, 15, 255, 50, 50);
         mypixel.show();
         SilentTime.reset();
-        
         int dash_start = millis();
         while((millis() - dash_start) < 750){
             gam.read_azimuth();
@@ -183,10 +172,7 @@ void Defense::dash(void){
         }
         SilentTime.reset();
         mymotor.free();
-
         delay(10);
-
-
         int mm = 180;
         int mt = 75;
         while(1) {
