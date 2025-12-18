@@ -6,14 +6,15 @@
 
 ///@brief　そゆこと
 #define diff(a) a/abs(a)
+
+
 constexpr int ball_x_calc=1;
 
 // Timer変数の実体定義
 Timer SilentTime,MoveTime;
-int LastReturn = 0;
 
 // 復帰方向リストの定義
-const int back_ang[4] = {180, 180, 225, 135};
+constexpr int back_ang[4] = {180, 180, 225, 135};
 
 // グローバル変数の定義（Defense.cppでのみ定義）
 static int lastdetect = 0;
@@ -22,23 +23,25 @@ static int last_exit_corner= 0;
 //-----調整用定数-----//
 
 ///　@brief ダッシュ待ち時間
-const int dash_border = 12000;
+constexpr int dash_border = 12000;
 /// @brief 基本移動速度
-const int move_speed = 200;
+constexpr int move_speed = 200;
 /// @brief 最小移動速度
 const int move_border = 30;
 /// @brief ボール補正角度
-const int ball_cal =20;
+constexpr int ball_cal =20;
 //// @brief ダッシュ時間
-const unsigned int dash_time = 2500;
+constexpr unsigned int dash_time = 2500;
 /// @brief ボール移動境界(±角度)
-const float ball_move_border = 4;
+constexpr float ball_move_border = 4;
 /// @brief ノイズ除去
-const int noise_border = 400;
+constexpr int noise_border = 400;
 /// @brief ライン強化
-const int line_back_mag=9;
+constexpr int line_back_mag=9;
 /// @brief ライン強化2
-const int line_powerup=1.8;
+constexpr int line_powerup=1.8;
+
+//-----調整できない定数-----//
 
 //処理速度
 int dhst;
