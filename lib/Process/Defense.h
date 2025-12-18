@@ -7,8 +7,6 @@ extern Timer SilentTime;
 extern Timer MoveTime;
 extern int LastReturn;
 
-
-
 class Defense{
 public:
     void setup(void);
