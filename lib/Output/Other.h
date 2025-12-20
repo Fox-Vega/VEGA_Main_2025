@@ -34,7 +34,7 @@ class MyPIXEL {
 
     private:
         //調整用
-        const float PIXELbrightness = 50; //最大で255
+        const float PIXELbrightness = 140; //最大で255
 
         int step_num = 0;
         int PIXELNUMstart;
