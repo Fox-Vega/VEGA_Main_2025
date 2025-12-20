@@ -6,12 +6,12 @@
 #include "Defense.h"
 
 Timer timer_test;
-static int startcord_first = 999;
+static int startcord_first = 0;
 
 void setup() {
     general.setup();
     defense.setup();
-    general.startup();
+    startcord_first = general.startup();
 }
 
 void loop() {
@@ -27,9 +27,10 @@ void loop() {
         } else if (general.get_mode() == 3) {
             test.test_();
         }
-        startcord_first = 999;
+        startcord_first = 0;
     } else {
         mypixel.use_pixel(true);
+        Serial.println(defense.dhstget());
         startcord_first = general.startup();
         mypixel.use_pixel(false);
         defense.reset();

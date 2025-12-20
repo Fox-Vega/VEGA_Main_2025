@@ -218,11 +218,13 @@ void Test::stabilize() {
 inline static int getErr( int a, int b) { int d = abs((a - b) % 360); return (d > 180) ? (360 - d) : d; }
 
 void Test::free(){//テストモードの水色のやつで起動
-    ball.read();//ボールの値全部シリアル
-    for(int i=0;i<15;i++){
-        Serial.println( i + String(":") + ball.get_value(i));
-    }
-    Serial.println("-----");
+    // ピクセルテスト
+    mypixel.closest(270, 0, 255, 255, 1);
+    // ball.read();//ボールの値全部シリアル
+    // for(int i=0;i<15;i++){
+    //     Serial.println( i + String(":") + ball.get_value(i));
+    // }
+    // Serial.println("-----");
     // line.read();
     // for(int i=0;1,i<24;i++){
     //     Serial.print(line.get_value(i));
