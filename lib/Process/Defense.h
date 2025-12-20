@@ -11,7 +11,6 @@ public:
 private:
 
 ///@brief　そゆこと
-#define abs(a) ((a)<0?-(a):(a))
 #define diff(a) a/abs(a)
 
     /// @warning inlineだからな！！！！
@@ -35,7 +34,11 @@ private:
     /// @param b 判定する変数２
     /// @return 符号が異なればtrue、同じならfalse
     // inline bool diff_signs(int a,int b){return (a>0&&b<0)||(a<0&&b>0);}
-    inline bool diff_signs(float a,float b){return diff(a)==diff(b);}
+    inline bool diff_signs(float a,float b){
+        // 0付近は符号判定できないので「異ならない」とする
+        if(a == 0.0f || b == 0.0f) return false;
+        return (a > 0.0f) != (b > 0.0f);
+    }
     /// @brief 左右30度範囲内か判定
     /// @param angle 判定する角度
     /// @return 範囲内ならtrue、そうでなければfalse

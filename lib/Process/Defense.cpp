@@ -75,9 +75,12 @@ void Defense::defense_(int start_cord){
 //    Serial.println(String("ballaz:")+ball_azimuth);
     ball_stat=ball.get_stat();//キャッシュ
     gam_azimuth=gam.get_azimuth();//キャッシュ
-    bool tl =(line.get_stat(0) || line.get_stat(1) || line.get_stat(2) ||line.get_stat(23) || line.get_stat(22))&&(line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(10) || line.get_stat(9));//縦ライン　前5つと後ろ5つが反応しているとき
-    bool corner = isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
-    if(SilentTime.read_milli()>(unsigned long)dash_border){dash();return;}//ダッシュ
+        // 縦ライン判定：前後のセンサ群が反応しているか（前7つ + 後ろ7つ）
+        bool tl = (line.get_stat(0) || line.get_stat(1) || line.get_stat(2) || line.get_stat(3) || line.get_stat(23) || line.get_stat(22) || line.get_stat(21))
+            && (line.get_stat(9) || line.get_stat(10) || line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(14) || line.get_stat(15));
+    bool corner = line_type==2&&isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
+    bool edge = /*line_type ==1 && */isInSide30(norm360(line_azimuth + gam_azimuth));//辺検知かつ前方30度以内
+    //if(SilentTime.read_milli()>(unsigned long)dash_border){dash();return;}//ダッシュ
     if(line_type==0){//ラインないとき
         SilentTime.reset();//ダッシュリセット
         //mybuzzer.start(1500,999);//ぴぃー
@@ -104,6 +107,7 @@ void Defense::defense_(int start_cord){
 
     line_x = !tl ? 0 : line_x;//並行ラインならラインのxは無効
     line_y = tl ? 0 : line_y;//縦ラインならラインのyは無効
+    line_y = line_mag<5 ? 0:line_y;
 
     ball_x = tl ? 0 : ball_x;//縦ラインではボールのxは無効
     ball_y = !tl ? 0 : ball_y;//並行ラインならボールのyは無効
@@ -111,8 +115,10 @@ void Defense::defense_(int start_cord){
     move_x = (line_x + ball_x) * calc_move_speed;//移動x
     move_y = (line_y + ball_y) * calc_move_speed;//移動y
 
-    if((tl&&isFront(ball_azimuth))&&!corner){//縦での脱出処理
-        move_x = diff(line_x) * move_speed;//xを01で
+    if(((tl&&isFront(ball_azimuth))&&!corner)||(edge&&!corner)){//縦での脱出処理
+//        mybuzzer.start(500,999);//デバッグ
+        applyXY(line_azimuth, line_x, line_y);//ライン直角方向ベクトル取得
+        move_x = line_mag<5 ? 0 : diff(line_x) * move_speed;//xを01で
         move_y = move_speed;//yは前に進むように
     }
 
@@ -122,7 +128,6 @@ void Defense::defense_(int start_cord){
         if(diff_signs(ball_x,line_x))mybuzzer.start(1000,999);//コーナーデバッグ
         move_x = diff_signs(ball_x,line_x) ? 0 : diff(ball_x)*move_speed;//x成分打ち消し
         move_y = 0;
-        printf_s("corner bx:%2f lx:%2f mx:%2f diffb:%d diffl:%d diffsigns:%d\n\n",ball_x,line_x,move_x,diff(ball_x),diff(line_x),diff_signs(line_x,ball_x));//デバッグ
     }
 
     move_azimuth=norm360(myvector.get_azimuth(move_x, move_y));//移動角度計算　もし角ならラインの直角方向(並行線の方向)に向きを補正でなければxy合成
@@ -136,7 +141,7 @@ void Defense::defense_(int start_cord){
     move_power= getErr(0, ball_azimuth) < ball_move_border && (!tl) ? 0 : myvector.get_magnitude(abs(move_x), abs(move_y));//移動力計算　ボールが中央に近ければ止まる出なければ合成
     // move_power= (corner && line.get_magnitude() < 4) ? 0 : move_power;//角なら止まる
     if(move_power > move_border && (!tl || (tl && isFront(ball_azimuth)))){//動く　条件は動く力が小さすぎないことと縦ラインでではない||縦ラインでも前にボールがあること
-        mymotor.run(move_azimuth - gam_azimuth, (int) move_power, 0);//移動実行
+        mymotor.run(move_azimuth, (int) move_power, 0);//移動実行
         if(MoveTime.read_milli() > (unsigned int) noise_border) SilentTime.reset();//ノイズ待ち時間過ぎたらダッシュの待ち時間をリセット
     }else{
         if(tl)SilentTime.reset();//縦ラインならダッシュ待ちリセット　縦ラインでの暴発防止　まあ前に動くけども
@@ -144,19 +149,24 @@ void Defense::defense_(int start_cord){
         mymotor.free();//動かない
     }
 
-    if(corner){
-        if(move_power > move_border)mypixel.multi(0, scaleRange(0.0f,255.0f,0.0f,15.0f,(float)move_power), 0, 255, 0);//移動力表示　デバッグ
-        mypixel.closest(myvector.get_azimuth(line_x,0), 255, 0, 255, 1);//コーナー表示　デバッグ
-        mypixel.closest(myvector.get_azimuth(ball_x,0), 255, 0, 0, 1);//コーナー表示　デバッグ
-    }
-    else{
-    if(move_power > move_border)mypixel.multi(0, scaleRange(0.0f,255.0f,0.0f,15.0f,(float)move_power), 0, 255, 0);//移動力表示　デバッグ
-    mypixel.closest(ball_azimuth, 255, 255, 0, 1);//ボール方向表示　デバッグ
-    if(move_power > move_border)mypixel.closest(move_azimuth, 57, 197, 187, 1);//移動方向表示　デバッグ
-    }
+    // if(corner){
+    //     mypixel.multi(0,15, 255, 0, 0);
+    //     mypixel.closest(myvector.get_azimuth(line_x,0), 255, 0, 255, 1);//コーナー表示　デバッグ
+    //     mypixel.closest(myvector.get_azimuth(ball_x,0), 255, 0, 0, 1);//コーナー表示　デバッグ
+    // }else if(edge){
+    //     mypixel.multi(0,15, 0, 0, 255);
+    //     mypixel.closest(line_azimuth, 255, 165, 0, 5);//エッジ表示　デバッグ
+    //     if(move_power > move_border)mypixel.closest(move_azimuth, 57, 197, 187, 1);//移動方向表示　デバッグ
+    // }
+    // else{
+    // mypixel.multi(0,15, 0, 255, 0);
+    // mypixel.closest(myvector.get_azimuth(0,line_y), 255, 0, 255, 3);//コーナー表示　デバッグ
+    // mypixel.closest(ball_azimuth, 255, 255, 0, 1);//ボール方向表示　デバッグ
+    // if(move_power > move_border)mypixel.closest(move_azimuth, 57, 197, 187, 1);//移動方向表示　デバッグ
+    // }
 
     //mybuzzer.start((int)scaleRange(0.0f, dash_border, 500.0f, 1500.0f, (float)SilentTime.read_milli()), 999);
-    // dhst=Dhs.read_milli();//処理速度取得
+    dhst=Dhs.read_milli();//処理速度取得
 }
 
 int Defense::dhstget(void){return dhst;}
