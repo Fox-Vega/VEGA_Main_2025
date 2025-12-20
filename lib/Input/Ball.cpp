@@ -20,7 +20,7 @@ void BALL::read() {
 
     //センサー値取得
     unsigned long ball_start = micros();
-    while((micros() - ball_start) < (833 * 2)) {
+    while((micros() - ball_start) < (833 * 1)) {
         for (int i = 0; i < NUMball; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
@@ -47,7 +47,7 @@ void BALL::read() {
         // 座標計算
         total_x = 0;
         total_y = 0;
-        int ballNUMstart = (max_ballNUM + 14) % NUMball; //ベクトル移動平均計算の開始センサー番号
+        int ballNUMstart = (max_ballNUM + 15) % NUMball; //ベクトル移動平均計算の開始センサー番号
         for (int i = 0; i < 3; i++) {
             int ballNUM = (ballNUMstart + i) % NUMball;
             myvector.get_cord(balldirs[ballNUM], ballvalues[ballNUM]);
@@ -88,7 +88,7 @@ bool BALL::get_stat() {
 }
 
 int BALL::get_azimuth() {
-    int azimuth = myvector.get_azimuth(ball_x, ball_y) + 20; //8
+    int azimuth = myvector.get_azimuth(ball_x, ball_y);
     return azimuth % 360;
 }
 

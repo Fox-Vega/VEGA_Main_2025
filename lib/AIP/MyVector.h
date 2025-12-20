@@ -9,7 +9,7 @@ class MyVECTOR {
         void get_cord(float azimuth, float magnitude); //方位角とマグニチュードからベクトルの座標を取得
         float get_x(); //ベクトルのＸ座標を取得
         float get_y(); //ベクトルのＹ座標を取得
-        float get_vectordegree(float ax, float ay, float bx, float by); //ＡベクトルとＢベクトルの角度を取得
+        float get_vectordegree(float ax, float ay, float bx, float by); //（０、０）を中心とした時、ＡベクトルとＢベクトルの最小角度を取得
 
     private:
         int x, y;

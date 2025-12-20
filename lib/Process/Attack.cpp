@@ -9,7 +9,7 @@ void Attack::setup() {
 }
 
 void Attack::attack_() {
-    // mypixel.rainbow();
+    mypixel.rainbow();
     if (line.get_type() != 0) { //ラインある
         mymotor.run(line.get_eazimuth(), avoid_speed, 0);
     } else if (ball.get_stat() == 1) { //ラインない　ボールある
@@ -29,13 +29,15 @@ void Attack::attack_() {
         movement_azimuth = (movement_azimuth + 360) % 360;
         mymotor.run(movement_azimuth, speed, 0);
     } else { //ラインない　ボールない
-        if (!back) {
-            back = true;
-            back_start = millis();
-        }
+        // if (!back) {
+        //     back = true;
+        //     back_start = millis();
+        // }
 
-        //ボールがない時の後退
-        if ((millis() - back_start) < back_border) mymotor.run(180, back_speed, 0);
-        else mymotor.free();
+        // //ボールがない時の後退
+        // if ((millis() - back_start) < back_border) mymotor.run(180, back_speed, 0);
+        // else mymotor.free();
+
+        mymotor.free();
     }
 }
