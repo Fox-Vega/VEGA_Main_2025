@@ -4,6 +4,8 @@
 #include "Output.h"
 
 
+
+
 void BALL::setup() {
     for (int i = 0; i < NUMball; i++) {
         pinMode(ballPINs[i], INPUT);
@@ -84,12 +86,14 @@ void BALL::read() {
 }
 
 bool BALL::get_stat() {
-    return ball;
+    // return ball;
+    return true;
 }
 
 int BALL::get_azimuth() {
-    int azimuth = myvector.get_azimuth(ball_x, ball_y) + 20; //8
-    return azimuth % 360;
+    // int azimuth = myvector.get_azimuth(ball_x, ball_y) + 20; //8
+    // return azimuth % 360;
+    return 45;
 }
 
 int BALL::get_magnitude() {

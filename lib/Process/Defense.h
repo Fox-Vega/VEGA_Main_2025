@@ -10,6 +10,10 @@ public:
     int dhstget(void);
 private:
 
+///@brief　そゆこと
+#define abs(a) ((a)<0?-(a):(a))
+#define diff(a) a/abs(a)
+
     /// @warning inlineだからな！！！！
 
     /// @brief ダッシュ　内部割り込み
@@ -30,7 +34,8 @@ private:
     /// @param a 判定する変数１
     /// @param b 判定する変数２
     /// @return 符号が異なればtrue、同じならfalse
-    inline bool diff_signs(int a,int b){return (a>0&&b<0)||(a<0&&b>0);}
+    // inline bool diff_signs(int a,int b){return (a>0&&b<0)||(a<0&&b>0);}
+    inline bool diff_signs(float a,float b){return diff(a)==diff(b);}
     /// @brief 左右30度範囲内か判定
     /// @param angle 判定する角度
     /// @return 範囲内ならtrue、そうでなければfalse
@@ -54,4 +59,9 @@ private:
     /// @param y 角度からのy
     /// @return 代入!
     inline void applyXY(int angle,float &x,float &y){float r=radians(angle);x=sin(r),y=cos(r);}
+    /// @brief 4角のやつ
+    /// @param deg 判定角度
+    /// @return 誤差30で4角に入るか
+    inline bool isDiagonalAngle(float deg){return(deg >= 30.0f  && deg <= 60.0f)||(deg >= 120.0f && deg <= 150.0f) ||(deg >= 210.0f && deg <= 240.0f) ||(deg >= 300.0f && deg <= 330.0f);}
+
 };
