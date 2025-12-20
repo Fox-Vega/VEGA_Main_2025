@@ -36,8 +36,8 @@ constexpr float ball_move_border = 10;
 constexpr int noise_border = 400;
 /// @brief ライン強化
 constexpr int line_back_mag=9;
-/// @brief ライン強化2
-constexpr int line_powerup=1.8;
+/// @brief ライン強化2 ms
+constexpr int line_least_times=100;
 
 //-----調整できない定数-----//
 
@@ -82,9 +82,21 @@ void Defense::defense_(int start_cord){
     bool edge = /*line_type ==1 && */isInSide30(norm360(line_azimuth + gam_azimuth));//辺検知かつ前方30度以内
     //if(SilentTime.read_milli()>(unsigned long)dash_border){dash();return;}//ダッシュ
     if(line_type==0){//ラインないとき
+        mypixel.closest(lastdetect, 255, 0, 0, 1);//赤表示
+        mypixel.shows();
         SilentTime.reset();//ダッシュリセット
         //mybuzzer.start(1500,999);//ぴぃー
-        mymotor.run(lastdetect,200,0);//最後の向きに行く
+        int line_detect_time=0;
+        while(line.get_type()==0){//ライン見えるまでループ
+            mypixel.closest(lastdetect, 255, 0, 0, 1);//赤表示
+            mypixel.shows();
+            line.read();//ライン読み
+            gam.read_azimuth();//姿勢制御用
+            mymotor.run(lastdetect,200,0);//最後の向きに行く
+            if(myswitch.check_toggle() == 0) return;//トグルで終了させるための処理
+            if(!line.get_type()==0)line_detect_time=millis()+line_least_times;//ライン見えたら時間セット
+            else if(line_detect_time!=0 && (int)millis()>line_detect_time)break;//ライン見えてから一定時間経ったら抜ける
+        }
         return;//関数強制終了
     }if(line_type==3){//3点ライン
         SilentTime.reset();//ダッシュリセット
@@ -125,7 +137,6 @@ void Defense::defense_(int start_cord){
     if(corner){//角処理
         applyXY(line_azimuth, line_x, line_y);//ライン直角方向ベクトル取得
         ball_x = ball_ang < 180 ? ball_x_calc : -1*ball_x_calc;//ボールのｘ 右左の01
-        if(diff_signs(ball_x,line_x))mybuzzer.start(1000,999);//コーナーデバッグ
         move_x = diff_signs(ball_x,line_x) ? 0 : diff(ball_x)*move_speed;//x成分打ち消し
         move_y = 0;
     }
@@ -138,7 +149,7 @@ void Defense::defense_(int start_cord){
         calc_move_speed = 220;//全力　ライントレースと向き同じやからいきなり変わることはないと思うけど
     }
 
-    move_power= getErr(0, ball_azimuth) < ball_move_border && (!tl) ? 0 : myvector.get_magnitude(abs(move_x), abs(move_y));//移動力計算　ボールが中央に近ければ止まる出なければ合成
+    move_power= ((getErr(0, ball_azimuth) < ball_move_border) && (line_mag<6) && (!tl)) ? 0 : myvector.get_magnitude(abs(move_x), abs(move_y));//移動力計算　ボールが中央に近ければ止まる出なければ合成
     // move_power= (corner && line.get_magnitude() < 4) ? 0 : move_power;//角なら止まる
     if(move_power > move_border && (!tl || (tl && isFront(ball_azimuth)))){//動く　条件は動く力が小さすぎないことと縦ラインでではない||縦ラインでも前にボールがあること
         mymotor.run(move_azimuth, (int) move_power, 0);//移動実行
@@ -166,6 +177,7 @@ void Defense::defense_(int start_cord){
     // }
 
     //mybuzzer.start((int)scaleRange(0.0f, dash_border, 500.0f, 1500.0f, (float)SilentTime.read_milli()), 999);
+    mypixel.closest(line_azimuth, 255, 255, 0, 1);//ボール方向表示　デバッグ
     dhst=Dhs.read_milli();//処理速度取得
 }
 
