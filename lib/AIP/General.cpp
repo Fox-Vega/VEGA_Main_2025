@@ -166,6 +166,8 @@ int General::startup() {
                         lastbuzzer = millis();
                     } else if (millis() - lastbuzzer > 320 && alliveCount > (remainingLife / 2+remainingLife/4)) {
                         mypixel.rainbow();
+                    } else {
+                        mypixel.rainbow();
                     }
                 }
                 break;

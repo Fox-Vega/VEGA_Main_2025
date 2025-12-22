@@ -4,6 +4,8 @@
 #include "Output.h"
 
 
+
+
 void BALL::setup() {
     for (int i = 0; i < 16; i++) {
         pinMode(ballPINs[i], INPUT);
@@ -92,7 +94,8 @@ void BALL::read() {
 }
 
 bool BALL::get_stat() {
-    return ball;
+    // return ball;
+    return true;
 }
 
 int BALL::get_azimuth() {

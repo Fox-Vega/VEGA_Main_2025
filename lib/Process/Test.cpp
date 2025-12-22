@@ -210,11 +210,22 @@ void Test::stabilize() {
 //     mymotor.run(270-gam.get_azimuth(), 140,(crr%720)/2);
 // }
 
-inline static int getErr( int a, int b) { int d = abs((a - b) % 360); return (d > 180) ? (360 - d) : d; }
+
+inline int norm360(int a){a%=360;return a<0?a+360:a;}
+inline bool isDiagonalAngle(float deg){return(deg >= 30.0f  && deg <= 60.0f)||(deg >= 120.0f && deg <= 150.0f) ||(deg >= 210.0f && deg <= 240.0f) ||(deg >= 300.0f && deg <= 330.0f);}
 
 void Test::free(){//テストモードの水色のやつで起動
+    line.read();
+    gam.read_azimuth();
+    bool corner = isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
+    if(corner){
+        mypixel.multi(0, 15, 0, 255, 255);//角なら水色表示
+        return;
+    }else{
+        mypixel.multi(0, 15, 255, 255, 255);//ライン検知中は白表示
+    }
     // ピクセルテスト
-    mypixel.closest(270, 0, 255, 255, 1);
+    // mypixel.closest(270, 0, 255, 255, 1);
     // ball.read();//ボールの値全部シリアル
     // for(int i=0;i<15;i++){
     //     Serial.println( i + String(":") + ball.get_value(i));
