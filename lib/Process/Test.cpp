@@ -120,11 +120,6 @@ void Test::input() {
     if (ball.get_stat() != 0) mypixel.closest(ball.get_azimuth(), 255, 255, 0, 1);
     int ball_azimuth = ball.get_azimuth();
     if (ball_azimuth > 180) ball_azimuth -= 360; //-179 ~ 180
-    for (int i=0; i<16; i++) {
-        Serial.print(ball.get_value(i));
-        Serial.print(" ");
-    }
-    Serial.println();
 }
 
 void Test::escape() {
@@ -137,11 +132,11 @@ void Test::escape() {
     } else {
         mymotor.free();
     }
-    for (int i=0; i<23; i++) {
-        Serial.print(line.get_value(i));
-        Serial.print(" ");
-    }
-    Serial.println();
+    // for (int i=0; i<23; i++) {
+    //     Serial.print(line.get_value(i));
+    //     Serial.print(" ");
+    // }
+    // Serial.println();
 }
 
 void Test::motor() {

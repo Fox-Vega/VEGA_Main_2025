@@ -18,8 +18,8 @@ class LINE {
         int get_pack(byte packNUM); //指定した反応グループの角度を取得（引数はget_typeで反応した数の範囲　２なら０～１）
 
     private:
-        const int detection_border = 990; //700＠部室　990＠草塩
-        const int over_border = 120; //ライン越え判定を行う変化量
+        const int detection_border = 750; //700＠部室　990＠草塩
+        const int over_border = 160; //ライン越え判定を行う変化量
 
         float total_x; //X座標合計値
         float total_y; //Y座標合計値
