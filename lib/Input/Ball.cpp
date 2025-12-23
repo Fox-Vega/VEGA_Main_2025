@@ -102,7 +102,7 @@ void BALL::read() {
 
 bool BALL::get_stat() {
     // return ball;
-    return true;
+    return ball;
 }
 
 int BALL::get_azimuth() {
