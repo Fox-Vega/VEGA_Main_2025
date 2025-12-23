@@ -23,7 +23,7 @@ static int lastdetect = 0;
 ///　@brief ダッシュ待ち時間
 constexpr int dash_border = 2000;
 /// @brief 基本移動速度
-constexpr int move_speed = 200;
+constexpr int move_speed = 220;
 /// @brief 最小移動速度
 const int move_border = 30;
 /// @brief ボール補正角度
@@ -31,7 +31,7 @@ constexpr int ball_cal =0;
 //// @brief ダッシュ時間
 constexpr unsigned int dash_time = 750;
 /// @brief ボール移動境界(±角度)
-constexpr float ball_move_border = 10;
+constexpr float ball_move_border = 4;
 /// @brief ノイズ除去
 constexpr int noise_border = 400;
 /// @brief ライン強化
@@ -43,22 +43,22 @@ constexpr int line_least_times=100;
 
 //処理速度
 int dhst;
-Timer Dhs;
+// Timer Dhs;
 
 /// @brief 初期化
 void Defense::setup(void){
     reset();
 }
 void Defense::defense_(int start_cord){
-    Dhs.reset();//処理速度リセット　ここから計測開始
-    mypixel.use_pixel(true);//デバッグ
+    // Dhs.reset();//処理速度リセット　ここから計測開始
+    // mypixel.use_pixel(true);//デバッグ
     if(start_cord != 0) {//開始座標が渡されたとき　{割り込み処理}
         mybuzzer.start(500,999);//ブー
         delay(100);//待つ　これは消していいかもしれないけどわかりやすいから残しておく
         while(!(line.get_type() == 2)) {//並行ラインまで待つ
             line.read();//ライン読み
             gam.read_azimuth();//これは多分姿勢制御に必要と見て読んでる
-            mymotor.run(back_ang[start_cord-1], 120, 0);//決められた角度に進むだけ　基本後ろか左後ろか右後ろ　特に特別な処理はない
+            mymotor.run(back_ang[start_cord-1], 180, 0);//決められた角度に進むだけ　基本後ろか左後ろか右後ろ　特に特別な処理はない
             if(myswitch.check_toggle() == 0) return;//トグルで終了させるための処理
         }
         mymotor.run(0,200,0);//少し前に進んでおく　前にいておけばなんとかる
@@ -177,8 +177,8 @@ void Defense::defense_(int start_cord){
     // }
 
     //mybuzzer.start((int)scaleRange(0.0f, dash_border, 500.0f, 1500.0f, (float)SilentTime.read_milli()), 999);
-    mypixel.closest(line_azimuth, 255, 255, 0, 1);//ボール方向表示　デバッグ
-    dhst=Dhs.read_milli();//処理速度取得
+    // mypixel.closest(line_azimuth, 255, 255, 0, 1);//ボール方向表示　デバッグ
+    // dhst=Dhs.read_milli();//処理速度取得
 }
 
 int Defense::dhstget(void){return dhst;}
