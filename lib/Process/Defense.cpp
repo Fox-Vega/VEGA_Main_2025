@@ -16,7 +16,6 @@ constexpr int back_ang[4] = {180, 180, 225, 135};
 
 // グローバル変数の定義（Defense.cppでのみ定義）
 static int lastdetect = 0;
-//static int last_exit_corner= 0;
 
 //-----調整用定数-----//
 
@@ -72,12 +71,11 @@ void Defense::defense_(int start_cord){
     line_type=line.get_type();//キャッシュ
     line_mag=line.get_magnitude();//キャッシュ
     ball_azimuth=ball.get_azimuth();//キャッシュ
-//    Serial.println(String("ballaz:")+ball_azimuth);
     ball_stat=ball.get_stat();//キャッシュ
     gam_azimuth=gam.get_azimuth();//キャッシュ
-        // 縦ライン判定：前後のセンサ群が反応しているか（前7つ + 後ろ7つ）
-        bool tl = (line.get_stat(0) || line.get_stat(1) || line.get_stat(2) || line.get_stat(3) || line.get_stat(23) || line.get_stat(22) || line.get_stat(21))
-            && (line.get_stat(9) || line.get_stat(10) || line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(14) || line.get_stat(15));
+    // 縦ライン判定：前後のセンサ群が反応しているか（前7つ + 後ろ7つ）
+    bool tl = (line.get_stat(0) || line.get_stat(1) || line.get_stat(2) || line.get_stat(3) || line.get_stat(23) || line.get_stat(22) || line.get_stat(21))
+    && (line.get_stat(9) || line.get_stat(10) || line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(14) || line.get_stat(15));
     bool corner = line_type==2&&isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
     bool edge = /*line_type ==1 && */isInSide30(norm360(line_azimuth + gam_azimuth));//辺検知かつ前方30度以内
     //if(SilentTime.read_milli()>(unsigned long)dash_border){dash();return;}//ダッシュ
