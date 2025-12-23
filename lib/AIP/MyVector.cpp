@@ -1,12 +1,13 @@
 #include "AIP.h"
 #include "MyVector.h"
 
+
 float MyVECTOR::get_azimuth(float x, float y) {
     theta = atan2(y, x);
     azimuth = 90.0f - (theta * 180.0f / M_PI);
     if (azimuth < 0) azimuth += 360;
     else if (azimuth >= 360) azimuth -= 360;
-    if (x == 0 || y == 0) azimuth = 0;
+    if (x == 0 && y == 0) azimuth = 0;
     return azimuth;
 }
 
