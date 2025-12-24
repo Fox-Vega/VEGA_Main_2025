@@ -110,7 +110,7 @@ int BALL::get_azimuth() {
     return azimuth;
 }
 
-int BALL::get_magnitude() {
+int BALL::get_intensity() {
     return myvector.get_magnitude(ball_x, ball_y);
 }
 
