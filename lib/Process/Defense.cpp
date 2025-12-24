@@ -211,7 +211,7 @@ void Defense::dash(bool tl){//後でなんとかする　今は触らない
         while(SilentTime.read_milli() < 500 && line.get_magnitude()>4){
             line.read();
             gam.read_azimuth();
-            mymotor.run(line.get_azimuth(), 100, 0);
+            mymotor.run(line.get_azimuth(), 180, 0);
             if(myswitch.check_toggle() == 0) {
                 SilentTime.reset();
                 break;
