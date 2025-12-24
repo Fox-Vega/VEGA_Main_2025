@@ -66,5 +66,7 @@ private:
     /// @param deg 判定角度
     /// @return 誤差30で4角に入るか
     inline bool isDiagonalAngle(float deg){return(deg >= 30.0f  && deg <= 60.0f)||(deg >= 120.0f && deg <= 150.0f) ||(deg >= 210.0f && deg <= 240.0f) ||(deg >= 300.0f && deg <= 330.0f);}
+    /// @brief トグルで戻るやつ　できれば使いたくないようにしたいけどまあ難しい
+    inline void ToggleReturn() {if(myswitch.check_toggle() == 0) return;}
 
 };
