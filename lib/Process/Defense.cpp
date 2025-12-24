@@ -4,6 +4,8 @@
 #include "AIP.h"
 #include "Process.h"
 
+#define mybuzzer \ _Pragma("message \"[WARN] \") mybuzzer
+
 #define printf_s(fmt, ...) ({ char buf[256]; snprintf(buf, sizeof(buf), fmt, ##__VA_ARGS__); Serial.print(buf); })//Serial.printのprintfフォーマット版
 
 constexpr int ball_x_calc=1;
@@ -16,7 +18,6 @@ constexpr int back_ang[4] = {180, 180, 225, 135};
 
 // グローバル変数の定義（Defense.cppでのみ定義）
 static int lastdetect = 0;
-//static int last_exit_corner= 0;
 
 //-----調整用定数-----//
 
@@ -45,47 +46,38 @@ constexpr int line_least_times=100;
 int dhst;
 // Timer Dhs;
 
+
 /// @brief 初期化
-void Defense::setup(void){
-    reset();
-}
+void Defense::setup(void){reset();}
 void Defense::defense_(int start_cord){
-    // Dhs.reset();//処理速度リセット　ここから計測開始
-    // mypixel.use_pixel(true);//デバッグ
     if(start_cord != 0) {//開始座標が渡されたとき　{割り込み処理}
-        mybuzzer.start(500,999);//ブー
-        delay(100);//待つ　これは消していいかもしれないけどわかりやすいから残しておく
         while(!(line.get_type() == 2)) {//並行ラインまで待つ
             line.read();//ライン読み
             gam.read_azimuth();//これは多分姿勢制御に必要と見て読んでる
             mymotor.run(back_ang[start_cord-1], 180, 0);//決められた角度に進むだけ　基本後ろか左後ろか右後ろ　特に特別な処理はない
-            if(myswitch.check_toggle() == 0) return;//トグルで終了させるための処理
+            ToggleReturn();
         }
         mymotor.run(0,200,0);//少し前に進んでおく　前にいておけばなんとかる
         delay(100);//進む時間
         return;//関数を強制終了してその後はmainで座標がリセットされつ　つまりここが呼び出されることは一度以降ない
     }
-    int line_azimuth,line_type,ball_azimuth,ball_stat,gam_azimuth,line_mag;//変数定義
+    const int line_azimuth = line.get_azimuth();//キャッシュ
+    const int line_type = line.get_type();//キャッシュ
+    const int line_mag = line.get_magnitude();//キャッシュ
+    const int ball_azimuth = ball.get_azimuth();//キャッシュ
+    const int ball_stat = ball.get_stat();//キャッシュ
+    const int gam_azimuth = gam.get_azimuth();//キャッシュ
     float move_power,move_x,move_y,ball_x,ball_y,line_x,line_y= 0.0f;//変数定義
     int calc_move_speed,ball_ang,move_azimuth = 0;//変数定義
-    line_azimuth=line.get_azimuth();//キャッシュ
-    line_type=line.get_type();//キャッシュ
-    line_mag=line.get_magnitude();//キャッシュ
-    ball_azimuth=ball.get_azimuth();//キャッシュ
-//    Serial.println(String("ballaz:")+ball_azimuth);
-    ball_stat=ball.get_stat();//キャッシュ
-    gam_azimuth=gam.get_azimuth();//キャッシュ
-        // 縦ライン判定：前後のセンサ群が反応しているか（前7つ + 後ろ7つ）
-        bool tl = (line.get_stat(0) || line.get_stat(1) || line.get_stat(2) || line.get_stat(3) || line.get_stat(23) || line.get_stat(22) || line.get_stat(21))
-            && (line.get_stat(9) || line.get_stat(10) || line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(14) || line.get_stat(15));
+    // 縦ライン判定：前後のセンサ群が反応しているか（前7つ + 後ろ7つ）
+    bool tl = (line.get_stat(0) || line.get_stat(1) || line.get_stat(2) || line.get_stat(3) || line.get_stat(23) || line.get_stat(22) || line.get_stat(21))&& (line.get_stat(9) || line.get_stat(10) || line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(14) || line.get_stat(15));
     bool corner = line_type==2&&isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
-    bool edge = /*line_type ==1 && */isInSide30(norm360(line_azimuth + gam_azimuth));//辺検知かつ前方30度以内
+    bool edge = isInSide30(norm360(line_azimuth + gam_azimuth));//辺検知かつ前方30度以内
     //if(SilentTime.read_milli()>(unsigned long)dash_border){dash();return;}//ダッシュ
     if(line_type==0){//ラインないとき
         mypixel.closest(lastdetect, 255, 0, 0, 1);//赤表示
         mypixel.shows();
         SilentTime.reset();//ダッシュリセット
-        //mybuzzer.start(1500,999);//ぴぃー
         int line_detect_time=0;
         while(line.get_type()==0){//ライン見えるまでループ
             mypixel.closest(lastdetect, 255, 0, 0, 1);//赤表示
