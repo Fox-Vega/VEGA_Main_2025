@@ -213,17 +213,21 @@ void Test::stabilize() {
 
 inline int norm360(int a){a%=360;return a<0?a+360:a;}
 inline bool isDiagonalAngle(float deg){return(deg >= 30.0f  && deg <= 60.0f)||(deg >= 120.0f && deg <= 150.0f) ||(deg >= 210.0f && deg <= 240.0f) ||(deg >= 300.0f && deg <= 330.0f);}
+inline static float scaleRange(float min1,float max1,float min2,float max2,float value){return value<=min1?min2:value>=max1?max2:(value-min1)/(max1-min1)*(max2-min2)+min2;}
 
 void Test::free(){//テストモードの水色のやつで起動
-    line.read();
-    gam.read_azimuth();
-    bool corner = isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
-    if(corner){
-        mypixel.multi(0, 15, 0, 255, 255);//角なら水色表示
-        return;
-    }else{
-        mypixel.multi(0, 15, 255, 255, 255);//ライン検知中は白表示
-    }
+    ball.read();
+    mypixel.multi(0.0f,scaleRange(0,30,0,15,ball.get_magnitude()), 57, 197, 187);//水色表示
+    Serial.println("Ball Azimuth: " + String(ball.get_azimuth()) + " Magnitude: " + String(ball.get_magnitude()));
+    // line.read();
+    // gam.read_azimuth();
+    // bool corner = isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
+    // if(corner){
+    //     mypixel.multi(0, 15, 0, 255, 255);//角なら水色表示
+    //     return;
+    // }else{
+    //     mypixel.multi(0, 15, 255, 255, 255);//ライン検知中は白表示
+    // }
     // ピクセルテスト
     // mypixel.closest(270, 0, 255, 255, 1);
     // ball.read();//ボールの値全部シリアル

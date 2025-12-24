@@ -21,7 +21,7 @@ static int lastdetect = 0;
 //-----調整用定数-----//
 
 ///　@brief ダッシュ待ち時間
-constexpr unsigned long  dash_border = 5000;
+constexpr unsigned long  dash_border = 2000;
 /// @brief 基本移動速度
 constexpr int move_speed = 200;
 /// @brief 最小移動速度
@@ -29,9 +29,9 @@ const int move_border = 30;
 /// @brief ボール補正角度
 constexpr int ball_cal =0;
 //// @brief ダッシュ時間
-constexpr unsigned long dash_time = 1500;
+constexpr unsigned long dash_time = 200;
 /// @brief ボール移動境界(±角度)
-constexpr float ball_move_border = 4;
+constexpr float ball_move_border = 2;
 /// @brief ノイズ除去
 constexpr unsigned long noise_border = 400;
 /// @brief ライン強化
@@ -111,7 +111,7 @@ void Defense::defense_(int start_cord){
     ball_x = ball_ang < 180 ? ball_x_calc : -1*ball_x_calc;//ボールのｘ 右左の01
     ball_y = isFront(ball_ang) ? ball_x_calc : -1*ball_x_calc;//y　これも上下で01
 
-    calc_move_speed = tl ? move_speed>>1 : move_speed;//速度減算(1/2)
+    calc_move_speed = corner ? move_speed>>1 : move_speed;//速度減算(1/2)
 
     line_x = !tl ? 0 : line_x;//並行ラインならラインのxは無効
     line_y = tl ? 0 : line_y;//縦ラインならラインのyは無効
@@ -174,7 +174,7 @@ void Defense::dash(bool tl){//後でなんとかする　今は触らない
             return;
         }
         SilentTime.reset();
-        mypixel.multi(0, 15, 255, 0, 255);//ダッシュ表示　デバッグ
+        mypixel.multi(0, 15, 255, 0, 0);//ダッシュ表示　デバッグ
         mypixel.shows();
         while(SilentTime.read_milli() < dash_time) {
             gam.read_azimuth();
@@ -188,9 +188,9 @@ void Defense::dash(bool tl){//後でなんとかする　今は触らない
         }
         SilentTime.reset();
         mymotor.free();
-        delay(100);
+        delay(50);
         lastdetect = 180;
-        mypixel.multi(0, 15, 255, 255, 255);//ダッシュ終了表示　デバッグ
+        mypixel.multi(0, 15, 0, 255, 0);//ダッシュ終了表示　デバッグ
         mypixel.shows();
         while(1){
             line.read();
@@ -205,8 +205,19 @@ void Defense::dash(bool tl){//後でなんとかする　今は触らない
                 break;
             }
         }
-        mymotor.free();
-        delay(100);
+        SilentTime.reset();
+        mypixel.multi(0, 15, 0, 0, 255);//ダッシュ表示　デバッグ
+        mypixel.shows();
+        while(SilentTime.read_milli() < 500 && line.get_magnitude()>4){
+            line.read();
+            gam.read_azimuth();
+            mymotor.run(line.get_azimuth(), 100, 0);
+            if(myswitch.check_toggle() == 0) {
+                SilentTime.reset();
+                break;
+            }
+        }
+        mypixel.clears();
     } else {
         SilentTime.reset();
     }
