@@ -147,8 +147,8 @@ void Defense::defense_(int start_cord){
     move_power= ((getErr(0, ball_azimuth) < ball_move_border) && (line_mag<6) && (!tl)) ? 0 : myvector.get_magnitude(abs(move_x), abs(move_y));//移動力計算　ボールが中央に近ければ止まる出なければ合成
     // move_power= (corner && line.get_magnitude() < 4) ? 0 : move_power;//角なら止まる
     if((move_power > move_border) && (!tl || (tl && isFront(ball_azimuth)))){//動く　条件は動く力が小さすぎないことと縦ラインでではない||縦ラインでも前にボールがあること
-        mymotor.run(move_azimuth, (int) move_power, 0);//移動実行
-        if((MoveTime.read_milli() > (unsigned int) noise_border)) SilentTime.reset();//ノイズ待ち時間過ぎたらダッシュの待ち時間をリセット
+        mymotor.run(move_azimuth, (int) move_power, ball.get_intensity()<23 ? ball_azimuth:0);//移動実行
+        if((MoveTime.read_milli() > (unsigned int) noise_border)&&!corner) SilentTime.reset();//ノイズ待ち時間過ぎたらダッシュの待ち時間をリセット
     }else{
         if(tl||!isFront(ball_ang))SilentTime.reset();//縦ラインならダッシュ待ちリセット　縦ラインでの暴発防止　まあ前に動くけども
         MoveTime.reset();//動いてないのでリセット
