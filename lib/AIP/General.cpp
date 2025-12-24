@@ -5,7 +5,7 @@
 #include "AIP.h"
 
 int alliveCount = 0;
-int remainingLife = 100;
+int remainingLife = 10000;
 unsigned long deadtime = 0;
 
 

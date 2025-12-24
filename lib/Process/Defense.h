@@ -17,7 +17,7 @@ private:
 
     /// @brief ダッシュ　内部割り込み
     /// @param  何もない
-    void dash(void);
+    void dash(bool tl);
     /// @brief 360正規化
     /// @param a 正規化する変数
     inline void norm360P(int &a){a%=360,a+=a<0?360:0;}
@@ -67,6 +67,5 @@ private:
     /// @return 誤差30で4角に入るか
     inline bool isDiagonalAngle(float deg){return(deg >= 30.0f  && deg <= 60.0f)||(deg >= 120.0f && deg <= 150.0f) ||(deg >= 210.0f && deg <= 240.0f) ||(deg >= 300.0f && deg <= 330.0f);}
     /// @brief トグルで戻るやつ　できれば使いたくないようにしたいけどまあ難しい
-    inline void ToggleReturn() {if(myswitch.check_toggle() == 0) return;}
 
 };
