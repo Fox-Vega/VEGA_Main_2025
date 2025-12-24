@@ -22,7 +22,8 @@ class Attack {
         };
 
         bool near;
-        bool side;
+        bool side; //回り込みの向き
+        bool turn; //ゴール向くか
         int speed = 0;
         bool back = false;
         int ball_azimuth;

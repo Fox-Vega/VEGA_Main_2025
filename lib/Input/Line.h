@@ -19,7 +19,7 @@ class LINE {
 
     private:
         const int detection_border = 750; //700＠部室　990＠草塩
-        const int over_border = 160; //ライン越え判定を行う変化量
+        const int over_border = 150; //ライン越え判定を行う変化量
 
         float total_x; //X座標合計値
         float total_y; //Y座標合計値
