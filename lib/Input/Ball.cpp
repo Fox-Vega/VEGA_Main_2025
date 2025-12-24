@@ -10,7 +10,6 @@ void BALL::setup() {
     for (int i = 0; i < 16; i++) {
         pinMode(ballPINs[i], INPUT);
     }
-    history_size = sizeof(history_x) / sizeof(history_x[0]);
 }
 
 void BALL::read() {
@@ -21,7 +20,7 @@ void BALL::read() {
 
     //センサー値取得
     unsigned long ball_start = micros();
-    while((micros() - ball_start) < (833 * 1)) {
+    while((micros() - ball_start) < (833 * 2)) {
         for (int i = 0; i < 16; i++) {
             if (digitalRead(ballPINs[i]) == LOW) {
                 ballvalues[i]++;
@@ -41,6 +40,14 @@ void BALL::read() {
         if (ballvalues[i] > max_ballvalue) {
             max_ballvalue = ballvalues[i];
             max_ballNUM = i;
+            combo = 1;
+        } else if (ballvalues[i] == max_ballvalue) {
+            combo += 1;
+            if (combo == 3) {
+                max_ballNUM = i - 1;
+            }
+        } else {
+            combo = 0;
         }
     }
 
@@ -55,7 +62,7 @@ void BALL::read() {
         total_y = 0;
         ballNUMstart = max_ballNUM + 15; //ベクトル移動平均計算の開始センサー番号
         for (int i = 0; i < 3; i++) {
-            int ballNUM = (ballNUMstart + i) % 16;
+            ballNUM = (ballNUMstart + i) % 16;
             myvector.get_cord(balldirs[ballNUM], ballvalues[ballNUM]);
             total_x += myvector.get_x();
             total_y += myvector.get_y();

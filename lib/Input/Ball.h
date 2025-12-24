@@ -15,6 +15,7 @@ class BALL {
 
     private:
         bool ball; //検出ステータス
+        int combo; //同じ数があったら増える
         int ball_x; //最終座標（処理済み）
         int ball_y; //最終座標（処理済み）
         int ball_x_; //RAW座標（そのまま）
@@ -22,6 +23,7 @@ class BALL {
         int total_x = 0; //X座標合計値
         int total_y = 0; //Y座標合計値
         int ballvalues[16]; //センサー値を保存
+        int ballNUM;
         int ballNUMstart; //グループ分け開始センサー番号
         int max_ballNUM = 0; //最大強度を持つセンサー番号を保存
         int max_ballvalue = 0; //最大強度を保存
@@ -30,5 +32,5 @@ class BALL {
         int history_y[2]; //Y座標の履歴（LPF用）
         int history_size; //履歴配列の大きさを自動保存
         const int ballPINs[16] = {31, 29, 27, 25, 23, 19, 17, 15, 32, 34, 36, 38, 40, 42, 44, 46}; //各センサーピン
-        const int balldirs[16] = {0, 22, 45, 67, 90, 112, 135, 157, 180, 202, 225, 247, 270, 292, 315, 337}; //各センサー角度 0.5は切り捨て
+        const int balldirs[16] = {0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5}; //各センサー角度 0.5は切り捨て
 };
