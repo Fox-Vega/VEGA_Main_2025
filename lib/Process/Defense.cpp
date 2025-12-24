@@ -33,7 +33,7 @@ constexpr unsigned long dash_time = 200;
 /// @brief ボール移動境界(±角度)
 constexpr float ball_move_border = 2;
 /// @brief ノイズ除去
-constexpr unsigned long noise_border = 400;
+constexpr unsigned long noise_border = 200;
 /// @brief ライン強化
 constexpr int line_back_mag=9;
 /// @brief ライン強化2 ms
@@ -44,7 +44,6 @@ constexpr int line_least_times=100;
 //処理速度
 int dhst;
 Timer Dhs;
-
 
 /// @brief 初期化
 void Defense::setup(void){reset();}
@@ -67,6 +66,7 @@ void Defense::defense_(int start_cord){
     const int line_mag = line.get_magnitude();//キャッシュ
     const int ball_azimuth = ball.get_azimuth();//キャッシュ
     const int ball_stat = ball.get_stat();//キャッシュ
+    const int ball_intensity = ball.get_intensity();//キャッシュ
     const int gam_azimuth = gam.get_azimuth();//キャッシュ
     float move_power,move_x,move_y,ball_x,ball_y,line_x,line_y= 0.0f;//変数定義
     int calc_move_speed,ball_ang,move_azimuth = 0;//変数定義
@@ -77,7 +77,7 @@ void Defense::defense_(int start_cord){
     (line.get_stat(10) || line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(14));
     bool corner = line_type==2&&isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
     bool edge = isInSide30(norm360(line_azimuth + gam_azimuth));//辺検知かつ前方30度以内
-    if(SilentTime.read_milli()>(unsigned long)dash_border){dash(tl);return;}//ダッシュ
+    if(SilentTime.read_milli()>(unsigned long)dash_border||ball_intensity>32){dash(tl);return;}//ダッシュ
     if(line_type==0){//ラインないとき
         mypixel.closest(lastdetect, 255, 0, 0, 1);//赤表示
         mypixel.shows();
@@ -147,10 +147,10 @@ void Defense::defense_(int start_cord){
     move_power= ((getErr(0, ball_azimuth) < ball_move_border) && (line_mag<6) && (!tl)) ? 0 : myvector.get_magnitude(abs(move_x), abs(move_y));//移動力計算　ボールが中央に近ければ止まる出なければ合成
     // move_power= (corner && line.get_magnitude() < 4) ? 0 : move_power;//角なら止まる
     if((move_power > move_border) && (!tl || (tl && isFront(ball_azimuth)))){//動く　条件は動く力が小さすぎないことと縦ラインでではない||縦ラインでも前にボールがあること
-        mymotor.run(move_azimuth, (int) move_power, ball.get_intensity()<23 ? ball_azimuth:0);//移動実行
+        mymotor.run(move_azimuth, (int) move_power,0);//移動実行
         if((MoveTime.read_milli() > (unsigned int) noise_border)&&!corner) SilentTime.reset();//ノイズ待ち時間過ぎたらダッシュの待ち時間をリセット
     }else{
-        if(tl||!isFront(ball_ang))SilentTime.reset();//縦ラインならダッシュ待ちリセット　縦ラインでの暴発防止　まあ前に動くけども
+        if(tl && !corner){SilentTime.reset();};//縦ラインならダッシュ待ちリセット　縦ラインでの暴発防止　まあ前に動くけども
         MoveTime.reset();//動いてないのでリセット
         mymotor.free();//動かない
     }
