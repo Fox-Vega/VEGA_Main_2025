@@ -123,17 +123,17 @@ void Defense::defense_(int start_cord){
     move_x = (line_x + ball_x) * calc_move_speed;//移動x
     move_y = (line_y + ball_y) * calc_move_speed;//移動y
 
-    if(((tl&&isFront(ball_azimuth))&&!corner)||(edge&&!corner)){//縦での脱出処理
-        applyXY(line_azimuth, line_x, line_y);//ライン直角方向ベクトル取得
-        move_x = line_mag<5 ? 0 : diff(line_x) * move_speed;//xを01で
-        move_y = move_speed;//yは前に進むように
-    }
-
     if(corner){//角処理
         applyXY(line_azimuth, line_x, line_y);//ライン直角方向ベクトル取得
         ball_x = ball_ang < 180 ? ball_x_calc : -1*ball_x_calc;//ボールのｘ 右左の01
         move_x = diff_signs(ball_x,line_x) ? 0 : diff(ball_x)*move_speed;//x成分打ち消し
         move_y = 0;
+    }
+
+    if(((tl&&isFront(ball_azimuth))&&!corner)||(edge&&!corner)){//縦での脱出処理
+        applyXY(line_azimuth, line_x, line_y);//ライン直角方向ベクトル取得
+        move_x = line_mag<5 ? 0 : diff(line_x) * move_speed;//xを01で
+        move_y = move_speed;//yは前に進むように
     }
 
     move_azimuth=norm360(myvector.get_azimuth(move_x, move_y));//移動角度計算　もし角ならラインの直角方向(並行線の方向)に向きを補正でなければxy合成

@@ -217,8 +217,8 @@ inline static float scaleRange(float min1,float max1,float min2,float max2,float
 
 void Test::free(){//テストモードの水色のやつで起動
     ball.read();
-    mypixel.multi(0.0f,scaleRange(0,30,0,15,ball.get_magnitude()), 57, 197, 187);//水色表示
-    Serial.println("Ball Azimuth: " + String(ball.get_azimuth()) + " Magnitude: " + String(ball.get_magnitude()));
+    mypixel.multi(0.0f,scaleRange(15,30,0,15,ball.get_intensity()), 57, 197, 187);//水色表示
+    Serial.println("Ball Azimuth: " + String(ball.get_azimuth()) + " Magnitude: " + String(ball.get_intensity()));
     // line.read();
     // gam.read_azimuth();
     // bool corner = isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
