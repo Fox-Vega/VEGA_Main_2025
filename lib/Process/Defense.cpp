@@ -29,7 +29,7 @@ const int move_border = 30;
 /// @brief ボール補正角度
 constexpr int ball_cal =0;
 //// @brief ダッシュ時間
-constexpr unsigned long dash_time = 750;
+constexpr unsigned long dash_time = 1500;
 /// @brief ボール移動境界(±角度)
 constexpr float ball_move_border = 4;
 /// @brief ノイズ除去
@@ -194,7 +194,9 @@ void Defense::dash(bool tl){//後でなんとかする　今は触らない
         mypixel.shows();
         while(1){
             line.read();
+            gam.read_azimuth();
             if(line.get_type() == 2) {
+                SilentTime.reset();
                 break;
             }
             mymotor.run(180, 150, 0);
