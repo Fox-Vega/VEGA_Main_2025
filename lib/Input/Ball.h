@@ -8,7 +8,7 @@ class BALL {
         void read(); //センサーの読み取り
         bool get_stat(); //検出ステータスを取得（０＝検出失敗、１＝検出成功）
         int get_azimuth(); //方位角を取得
-        int get_magnitude(); //距離を取得
+        int get_intensity(); //強度を取得
         int get_x(); //X座標取得
         int get_y(); //Y座標取得
         int get_value(byte ballNUM); //指定したセンサーの強度を取得（引数は０～１５）

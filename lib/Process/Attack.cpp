@@ -17,8 +17,8 @@ void Attack::attack_() {
         back = false;
         ball_azimuth = ball.get_azimuth();
         if (ball_azimuth > 180) ball_azimuth -= 360; //-179 ~ 180
-        if (ball.get_magnitude() > 10) near = 0;
-        else near = 1;
+        if (ball.get_intensity() > 5) near = 1;
+        else near = 0;
 
         if (abs(ball_azimuth) <= 15) {
             movement_azimuth = 0;
