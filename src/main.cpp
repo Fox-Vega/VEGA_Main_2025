@@ -31,6 +31,7 @@ void loop() {
     } else {
         mypixel.use_pixel(true);
         Serial.println(defense.dhstget());
+        Serial.println("-----");
         startcord_first = general.startup();
         mypixel.use_pixel(false);
         defense.reset();
