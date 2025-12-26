@@ -32,6 +32,7 @@ constexpr int line_back_mag=9;
 constexpr int line_least_times=100;
 constexpr unsigned long Vetical_border=1500;
 constexpr unsigned long Vetical_move_time=500;
+constexpr int ball_far = 20;//これより大きかったら近いってことね
 constexpr int back_ang[4] = {180, 180, 225, 135};
 //-----調整できない定数-----//
 constexpr int ball_x_calc=1;
@@ -125,15 +126,11 @@ void Defense::defense_(int start_cord){
             else {
                 mymotor.run(180, 190, 0);
             }
-            ToggleReturn();
         }
         return;
     }else{
         ball_flagged=0;
     }
-
-    // if(Dashtimer_milli>(unsigned long)dash_border){dash(tl);reset();return;}//ダッシュ
-
     if(line_type==0){//ラインないとき
         reset();
         int line_detect_time=0;
@@ -160,12 +157,18 @@ void Defense::defense_(int start_cord){
     }else{
         lastdetect=line_azimuth;//最後の角度を保存
         calc_move_speed = corner ? move_speed>>1 : move_speed;//速度減算(1/2)
-        ball_x = (ball_azimuth < 180 ? ball_x_calc : -1 * ball_x_calc) , (tl ? 0 : ball_x);//ボールのｘ 右左の01
-        ball_y = (isFront(ball_azimuth) ? ball_x_calc : -1 * ball_x_calc) , (!tl ? 0 : ball_y);//y　これも上下で01
-        line_x = (sin(radians(line_azimuth))) , (!tl ? 0 : line_x);//並行ラインならラインのxは無効
-        line_y = (cos(radians(line_azimuth))) , (tl ? 0 : line_y) , (line_mag<5 ? 0 : line_y);//縦ラインならラインのyは無効
+        ball_x = (ball_azimuth < 180 ? ball_x_calc : -1 * ball_x_calc);//ボールのｘ 右左の01
+        if(tl) ball_x = 0;
+        ball_y = (isFront(ball_azimuth) ? ball_x_calc : -1 * ball_x_calc);//y　これも上下で01
+        if(!tl) ball_y = 0;
+        line_x = (sin(radians(line_azimuth)));//並行ラインならラインのxは無効
+        if(!tl) line_x = 0;
+        line_y = (cos(radians(line_azimuth)));//縦ラインならラインのyは無効
+        if(tl) line_y = 0;
+        if(line_mag<5) line_y = 0;
         move_x = (line_x + ball_x) * calc_move_speed;//移動x
         move_y = (line_y + ball_y) * calc_move_speed;//移動y
+        //もしかしたらこれ/2する...?
 
         if(corner){//角処理
             applyXY(line_azimuth, line_x, line_y);//ライン直角方向ベクトル取得
@@ -186,7 +189,7 @@ void Defense::defense_(int start_cord){
         if((move_power > move_border) && (!tl || (tl && isFront(ball_azimuth)))){//動く　条件は動く力が小さすぎないことと縦ラインでではない||縦ラインでも前にボールがあること
             mymotor.run(move_azimuth, static_cast<int>(move_power),0);//移動実行
             const unsigned long MoveTime_milli = MoveTime.read_milli();
-            if(((MoveTime_milli > noise_border)&&!corner)||(((getErr(180, ball_azimuth) < 7)))) DashTimer.reset();//ノイズ待ち時間過ぎたらダッシュの待ち時間をリセット
+            if(((MoveTime_milli > noise_border)&&!corner)||(((getErr(180, ball_azimuth) < 7)))||ball_intensity<ball_far) DashTimer.reset();//ノイズ待ち時間過ぎたらダッシュの待ち時間をリセット
         }else{
             if((tl && !corner)||(getErr(180, ball_azimuth) < 7)){DashTimer.reset();};//縦ラインならダッシュ待ちリセット　縦ラインでの暴発防止　まあ前に動くけども
             MoveTime.reset();//動いてないのでリセット
@@ -202,7 +205,7 @@ void Defense::defense_(int start_cord){
 #if Debug
 int Defense::defense_hadling_timeget(void){return defense_hadling_time;}
 #else
-int Defense::defense_hadling_timeget(void){}
+int Defense::defense_hadling_timeget(void){return 999;}
 #endif
 
 
@@ -212,84 +215,7 @@ void Defense::reset(void){
     VeticalTime.reset();
 }
 
-// void Defense::dash(bool tl){//後でなんとかする　今は触らない
-//     MoveTime.reset();
-//     if((Dashtimer_milli < dash_border * 1.2)) {
-//         if(myswitch.check_toggle() == 0) {
-//             DashTimer.reset();
-//             return;
-//         }
-//         DashTimer.reset();
-//         mypixel.multi(0, 15, 255, 0, 0);//ダッシュ表示　デバッグ
-//         mypixel.shows();
-//         while(Dashtimer_milli < dash_time) {
-//             gam.read_azimuth();
-//             line.read();
-//             ball.read();
-//             mymotor.run(0, 220, 0);
-//             if(myswitch.check_toggle() == 0 || !isFront(ball.get_azimuth())) {
-//                 DashTimer.reset();
-//                 break;
-//             }
-//         }
-//         DashTimer.reset();
-//         mymotor.free();
-//         delay(50);
-//         lastdetect = 180;
-//         mypixel.multi(0, 15, 0, 255, 0);//ダッシュ終了表示　デバッグ
-//         mypixel.shows();
-//         while(1){
-//             line.read();
-//             gam.read_azimuth();
-//             if(line.get_type() == 1) {
-//                 reset();
-//                 mymotor.run(0, 200, 0);
-//                 delay(100);
-//                 lastdetect=180;
-//                 break;
-//             }
-//             mymotor.run(180, 150, 0);
-//             if(myswitch.check_toggle() == 0) {
-//                 DashTimer.reset();
-//                 break;
-//             }
-//         }
-//         mypixel.clears();
-//     } else {
-//         DashTimer.reset();
-//     }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 ガラクタ置き場
 bool tl = (line.get_stat(0) || line.get_stat(1) || line.get_stat(2) || line.get_stat(3) || line.get_stat(23) || line.get_stat(22) || line.get_stat(21))&& (line.get_stat(9) || line.get_stat(10) || line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(14) || line.get_stat(15));
-
-// DashTimer.reset();
-        // mypixel.multi(0, 15, 0, 0, 255);//ダッシュ表示　デバッグ
-        // mypixel.shows();
-        // while(Dashtimer_milli < 500 && line.get_magnitude()>4){
-        //     line.read();
-        //     gam.read_azimuth();
-        //     mymotor.run(line.get_azimuth(), 180, 0);
-        //     if(myswitch.check_toggle() == 0) {
-        //         DashTimer.reset();
-        //         break;
-        //     }
-        // }
-
 */
