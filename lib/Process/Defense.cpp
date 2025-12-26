@@ -69,16 +69,36 @@ void Defense::defense_(int start_cord){
     const int gam_azimuth = gam.get_azimuth();
     const unsigned long Dashtimer_milli = DashTimer.read_milli();
     if(Dashtimer_milli>(unsigned long)dash_border){
-        if(Dashtimer_milli){}
+        if(!isFront(ball_azimuth)){
+            reset();
+            return;
+        }
+        if(Dashtimer_milli<dash_border+dash_time){
+            mymotor.run(0, 220, 0);
+            return;
+        } else if(Dashtimer_milli>=dash_border+dash_time && Dashtimer_milli<dash_border+dash_time+50){
+            mymotor.free();
+            return;
+        }else if(Dashtimer_milli>=dash_border+dash_time+50){
+            if(line_type == 1) {
+                reset();
+                mymotor.run(0, 200, 0);
+                delay(100);
+                lastdetect=180;
+                return;
+            }
+            mymotor.run(180, 150, 0);
+            return;
+        }
     }
     float move_power,move_x,move_y,ball_x,ball_y,line_x,line_y= 0.0f;//変数定義
     int calc_move_speed,move_azimuth = 0;
-
     // 縦ライン判定：前後のセンサ群が反応しているか（前7つ + 後ろ7つ）
     bool tl =(line.get_stat(23) || line.get_stat(0) || line.get_stat(1) || line.get_stat(2) || line.get_stat(3)) &&(line.get_stat(10) || line.get_stat(11) || line.get_stat(12) || line.get_stat(13) || line.get_stat(14));
     bool corner = line_type==2&&isDiagonalAngle(norm360(line.get_azimuth()+gam.get_azimuth()));
     bool edge = isInSide30(norm360(line_azimuth + gam_azimuth));//辺検知かつ前方30度以内
-    if (VeticalTime.read_milli() >= Vetical_border  && VeticalTime.read_milli() < Vetical_border+Vetical_move_time) {
+    const unsigned long VeticalTime_milli = VeticalTime.read_milli();
+    if (VeticalTime_milli >= Vetical_border  && VeticalTime_milli < Vetical_border+Vetical_move_time) {
         if(ball_flagged==0){
             ball_flag = ball_azimuth < 180 ? 1 : -1;
             ball_flagged=1;
@@ -87,10 +107,10 @@ void Defense::defense_(int start_cord){
         move_azimuth = norm360(myvector.get_azimuth(ball_flag,0));//ライン直角方向に向く
         mymotor.run(move_azimuth, 200, 0);
         return;
-    } else if(VeticalTime.read_milli() >= Vetical_border+Vetical_move_time && VeticalTime.read_milli() < Vetical_border+Vetical_move_time+50){
+    } else if(VeticalTime_milli >= Vetical_border+Vetical_move_time && VeticalTime_milli < Vetical_border+Vetical_move_time+50){
         mymotor.free();
         return;
-    }else if (VeticalTime.read_milli() >= Vetical_border+Vetical_move_time+50){
+    }else if (VeticalTime_milli >= Vetical_border+Vetical_move_time+50){
         while(1){
             ToggleReturn();
             line.read();
@@ -165,7 +185,8 @@ void Defense::defense_(int start_cord){
         move_power= (((getErr(0, ball_azimuth) < ball_move_border)||(getErr(180, ball_azimuth) < 10)) && (line_mag<6) && (!tl)) ? 0 : myvector.get_magnitude(abs(move_x), abs(move_y));//移動力計算　ボールが中央に近ければ止まる出なければ合成
         if((move_power > move_border) && (!tl || (tl && isFront(ball_azimuth)))){//動く　条件は動く力が小さすぎないことと縦ラインでではない||縦ラインでも前にボールがあること
             mymotor.run(move_azimuth, static_cast<int>(move_power),0);//移動実行
-            if(((MoveTime.read_milli() > noise_border)&&!corner)||(((getErr(180, ball_azimuth) < 7)))) DashTimer.reset();//ノイズ待ち時間過ぎたらダッシュの待ち時間をリセット
+            const unsigned long MoveTime_milli = MoveTime.read_milli();
+            if(((MoveTime_milli > noise_border)&&!corner)||(((getErr(180, ball_azimuth) < 7)))) DashTimer.reset();//ノイズ待ち時間過ぎたらダッシュの待ち時間をリセット
         }else{
             if((tl && !corner)||(getErr(180, ball_azimuth) < 7)){DashTimer.reset();};//縦ラインならダッシュ待ちリセット　縦ラインでの暴発防止　まあ前に動くけども
             MoveTime.reset();//動いてないのでリセット
