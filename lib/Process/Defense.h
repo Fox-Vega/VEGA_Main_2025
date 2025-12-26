@@ -7,7 +7,7 @@ public:
     void setup(void);
     void defense_(int start_cord);
     void reset(void);
-    int dhstget(void);
+    int defense_hadling_timeget(void);
 private:
 
 ///@brief　そゆこと
